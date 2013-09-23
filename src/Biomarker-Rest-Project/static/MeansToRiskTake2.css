@@ -1,0 +1,95 @@
+body {
+	font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+	font-size: 75%;
+}
+
+.maincard {
+	width:800px;
+	height:750px;
+	border:2px black solid;
+}
+
+.highlight {
+	background-color:yellow;
+}
+
+table.table_data {
+	background-color:white;
+	border-collapse:collapse;
+	border:2px black solid;
+	margin-left:20px;
+	margin-right:20px;
+	font-size:small;
+	float:left;
+}
+
+table.output_data {
+	background-color:white;
+	border-collapse:collapse;
+	border:2px black solid;
+	margin-left:20px;
+	margin-right:20px;
+	font-size:small;
+}
+
+td.table_data {
+	font-family:sans-serif;
+	padding:5px;
+	text-align:left;
+}
+
+th.table_data {
+	font-family:sans-serif;
+	padding:5px;
+}
+
+th.header {
+	border-bottom: 1px black solid;
+	background-color:lightgrey;	
+}
+
+th.col1 {
+	text-align:right;
+}
+
+tr.table_data_header {
+	border-bottom: 1px black solid;
+	background-color:#A0A0A0;
+}
+
+tr.line-above {
+	border-top: 1px black solid;
+	
+}
+
+.main-title {
+	text-align:center;
+}
+
+.dialog {
+	display:none;
+}
+
+#inputs_card {
+	position:absolute;
+	top:80px;
+	left:0px;
+}
+
+
+#output_card {
+	position:absolute;
+	top:400px;
+	left:20px;
+}
+
+#graphic_card {
+	position:absolute;
+	top:80px;
+	left:555px;
+	border:1px solid black;
+	height:300px;
+	width:250px;
+	text-align:center;
+}
+
