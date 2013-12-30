@@ -1,0 +1,90 @@
+body {
+ font-family: Arial, Helvetica, sans-serif;
+ font-size: 14px;
+}
+
+table.input {
+	border: 0px solid black;
+	border-collapse:collapse;
+	width:97%;
+}
+
+.vertical-text {
+	 font-family: Arial, Helvetica, sans-serif;
+	 font-weight:bold;
+	 font-size: 10px;
+}
+
+
+/* coefficients.tfoot {
+ 	display:none;
+ }*/
+
+td.data {
+	background-color:F0F0F0;
+	text-align:right;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+td.header {
+	background-color:D0D0D0;
+	text-align:right;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight:bold;
+	font-size: 12px;
+	text-align:center;
+}
+
+th.header {
+	text-align:center;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+.border-top {
+	border-top: 2px solid black;
+}
+
+.border-left {
+	border-left: 2px solid black;
+}
+
+.border-right {
+	border-right: 2px solid black;
+}
+
+.border-dotted-left {
+	border-left: 1px dotted black;
+}
+
+.border-dotted-right {
+	border-right: 1px dotted black;
+}
+
+.border-bottom {
+	border-bottom: 2px solid black;
+}
+.border-dotted-bottom {
+	border-bottom: 1px dotted black;
+}
+
+.dotted {
+	border: 1px dotted black;
+}
+
+.paste_area {
+	position:absolute;
+	background-size:200px 200px;
+	background-repeat:no-repeat;
+	background-position:center; 
+	filter: alpha(opacity = 00);
+	opacity:0.0;
+	overflow:auto;
+}
+
+/* Used for jquery dialog to remove close botton */
+.no-titlebar .ui-dialog-titlebar {
+	display: none;
+}
+
