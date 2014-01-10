@@ -1,4 +1,4 @@
-DrawSensSpecLR <- function(sensref, specref,sensitivity,specificity) {
+DrawSensSpecLR <- function(sensref, specref, sensitivity, specificity) {
   jpeg('SensSpecLR.jpg')
   Specificity <- seq(from=0,to=1,by=0.00001)
   LRMinus <- specref/(1-sensref)
