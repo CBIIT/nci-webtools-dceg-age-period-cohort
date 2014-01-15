@@ -19,7 +19,7 @@ apc <- function(R, ...)
   v[v<0] <- NaN
   EFit <- matrix(1/v, nrow=A, ncol=P)
   OFit <- matrix((1/v)*exp(-ETA), nrow=A, ncol=P)
-  FittedRates <- list(fullname = paste('Fitted', PVP$fullname), 
+  FittedRates <- list(name = paste('Fitted', PVP$name),
                       events = EFit, 
                       offset = OFit, 
                       offset_tick = PVP$offset_tick, 
@@ -107,8 +107,8 @@ apc <- function(R, ...)
   lav <- XLA%*%s2VAR[c(1, 2, D$Pt[[4]]), c(1, 2, D$Pt[[4]])]%*%t(XLA)
   las <- matrix(sqrt(diag(lav)))
   lac <- cbind(lar - 1.96*las, lar + 1.96*las)
-  LongAge <- cbind(a, lar, lac)
-  dimnames(LongAge) <- list(c(), c("Age", "Log Rate", "CILo", "CIHi"))
+  LongAge <- cbind(a, exp(lar), exp(lac))
+  dimnames(LongAge) <- list(c(), c("Age", "Rate", "CILo", "CIHi"))
   
   #
   # (6) Cross-Sectional Age Curve
@@ -118,8 +118,8 @@ apc <- function(R, ...)
   xav <- XXA%*%s2VAR[c(1, 2, 3, D$Pt[[4]]), c(1, 2, 3, D$Pt[[4]])]%*%t(XXA)
   xas <- matrix(sqrt(diag(xav)))
   xac <- cbind(xar - 1.96*xas, xar + 1.96*xas)
-  CrossAge <- cbind(a, xar, xac)
-  dimnames(CrossAge) <- list(c(), c("Age", "Log Rate", "CILo", "CIHi"))
+  CrossAge <- cbind(a, exp(xar), exp(xac))
+  dimnames(CrossAge) <- list(c(), c("Age", "Rate", "CILo", "CIHi"))
   
   #
   # (6c) Ratio of Longitudinal-to-Cross-Sectional Age Curves
@@ -375,7 +375,8 @@ rates2data_set <- function(R) {
   colnames(D.DATA)<-c("Age","Period","Cohort","Events","Offset")
   
   
-  D <- list(fullname = R$fullname, 
+  D <- list(name = R$name,
+            description = R$description,
             DATA = D.DATA, 
             a = D.a,
             p = D.p,
@@ -623,15 +624,10 @@ line.apc <- function(M, Function)
     abline(0, 0, lty = 3)
     title(main = "Cohort Deviations", cex.main = 1.5)
   } else if (Function == "LongAge") {
-    DATA <- cbind(matrix(M$LongAge[,1]), exp(M$LongAge[,c(2,3,4)]))
-    dimnames(DATA) <- list(c(), c("Age", "Rate", "CILo", "CIHi"))
-    pcurve(DATA, col = "darkred", colf = "pink", lwd = 3, cex = 2.5, pch = 21)
+    pcurve(M$LongAge, col = "darkred", colf = "pink", lwd = 3, cex = 2.5, pch = 21)
     title(main = "Longitudinal Age Curve", cex.main = 1.5)
   } else if (Function == "CrossAge") {
-    DATA <- cbind(matrix(M$CrossAge[,1]), exp(M$CrossAge[,c(2,3,4)]))
-    dimnames(DATA) <- list(c(), c("Age", "Rate", "CILo", "CIHi"))
-    pcurve(DATA, lwd = 3, col = "darkred", colf = "pink", cex = 2.5, pch = 22)
-    (M$CrossAge)
+    pcurve(M$CrossAge, lwd = 3, col = "darkred", colf = "pink", cex = 2.5, pch = 22)
     title(main = "Cross-Sectional Age Curve", cex.main = 1.5)
   } else if (Function == "Long2CrossRR") {
     pcurve(M$Long2CrossRR, col = "darkred", colf = "pink", lwd = 4, type = "l")
