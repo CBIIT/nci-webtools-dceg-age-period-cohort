@@ -84,7 +84,8 @@ $(document).ready(function() {
      
 		var keys = ["AgeDeviations","PerDeviations","CohDeviations", 		"LongAge", 
 					"CrossAge", 	"Long2CrossRR", 	"FittedTemporalTrends",	"PeriodRR",
-					"CohortRR",		"LocalDrifts",	"Coefficients",			"Waldtests", "NetDrift" ];
+					"CohortRR",		"LocalDrifts",	"Coefficients",			"Waldtests", 
+					"NetDrift",		"Offset" ];
 		//-----
         $("#please_wait").dialog('open');
         open_threads = keys.length;
@@ -172,7 +173,8 @@ function getAPCData(data, keyData, uniqueId){
 				createResultDownloadLink(keyData, uniqueId);
 				if (keyData.localeCompare("Waldtests") != 0 && 
 					keyData.localeCompare("Coefficients") != 0 && 
-					keyData.localeCompare("NetDrift") != 0 ){
+					keyData.localeCompare("NetDrift") != 0 &&
+					keyData.localeCompare("Offset") != 0 ){
 					loadImage(keyData, uniqueId);	
 				}
 
