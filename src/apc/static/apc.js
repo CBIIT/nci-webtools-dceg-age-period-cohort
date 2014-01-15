@@ -129,8 +129,18 @@ $(document).ready(function() {
 		// TODO: send data to Larry's code somehow
 	});
 
-	$( "#countPopulation" ).bind("change",function() {
-		upload_file();
+	//$( "#countPopulation" ).bind("change",function() {
+//		upload_file();
+//	});
+        $('#countPopulation').change(function(){
+   		var file = this.files[0];
+   		var reader = new FileReader();
+   		reader.onload = function(theFile) {
+        	var text =reader.result;
+        	display_table(text, ',');
+    		};
+
+    		reader.readAsText(file);
 	});
 
 	// $( "#countPopulation" ).bind("changefileupload(function() {
@@ -149,9 +159,13 @@ function generateUID() {
 function getAPCData(data, keyData, uniqueId){
 //	var start_time = new Date().getTime();
 //	console.log("Starting Ajax Call [" + data.key + "] at [" + start_time + "]");
+        hostname = window.location.hostname;
 	$.ajax({
 			type: 'POST',
-			url: "createPanCanList",
+			//type: 'GET',
+			url: "/createPanCanList/list",
+			//url: "http://analysistools-dev.nci.nih.gov/createPanCanList/list",
+			//url: "http://"+hostname+"/createPanCanList/list",
 			data: data,
 			success: function(data) {
 				fillDataTable(data, keyData);
@@ -181,6 +195,7 @@ function getAPCData(data, keyData, uniqueId){
 				}
 			},
 			dataType: "json"
+			//dataType: "jsonp"
 		});
 }
 
@@ -203,7 +218,7 @@ function createResultDownloadLink (keyData, uniqueId){
 }
 
 function loadImage(keyData, uniqueId) {
-	$('#' + keyData + 'Graph').html("<img style='width: 75% ; height: 75%' class='center' src='img/" + keyData + uniqueId + ".png'>");
+	$('#' + keyData + 'Graph').html("<img style='width: 75% ; height: 75%' class='center' src='./static/img/" + keyData + uniqueId + ".png'>");
 }
 
 function getColumnHeaderData(data2d, keyName) {
@@ -293,7 +308,7 @@ function upload_file() {
 
 function parse_file(blob) {
 	var text = blob.replace(/,/g,'\t');	
-	display_table(text);
+	display_table(text, '\t');
 }
 
 function create_paste_binding (element) {
@@ -302,7 +317,7 @@ function create_paste_binding (element) {
         $(this).val("");
         setTimeout(function(e) {
         	var txt = $(self).val();
-        	var status = display_table(txt);
+        	var status = display_table(txt, '\t');
             if (status) $("#paste_area").val("Input Pasted");
             else $("#paste_area").val("Input Failed \nneeds to be 14,9");
         }, 0);          
@@ -414,11 +429,12 @@ function numberOfRows () {
 // 	return combo_str;	
 // }
 
-function display_table(txt) {
+function display_table(txt, delimiter) {
 	var lines = txt.split("\n");
 	line_array = new Array(lines.length);
 	for (count = 0; count < lines.length;count++) {
-		line_array[count] = lines[count].split("\t");
+		//line_array[count] = lines[count].split("\t");
+		line_array[count] = lines[count].split(delimiter);
 	}
 	
 	// Check for all conditions in which data size is wrong
