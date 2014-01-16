@@ -123,6 +123,11 @@ $(document).ready(function() {
 		setTableTitle();
 	});
 
+	$( "#description" ).change(function() {
+		//display_table(text);
+		setTableTitle();
+	});
+
 	$( "#startYear" ).change(function() {
 		on_change_start_year();
 	});
@@ -156,7 +161,7 @@ $(document).ready(function() {
 
 });
 function setTableTitle () {
-	$("#table-title").html($("#title").val());
+	$("#table-title").html($("#title").val()+ " <br/> " + $("#description").val());
 }
 
 function generateUID() {
@@ -670,4 +675,8 @@ function addCommas(nStr)
 		x1 = x1.replace(rgx, '$1' + ',' + '$2');
 	}
 	return x1 + x2;
+}
+
+function openHelpWindow(pageURL) {
+                window.open(pageURL, "Help", "alwaysRaised,dependent,status,scrollbars,resizable,width=1000,height=800");
 }
