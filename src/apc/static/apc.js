@@ -58,9 +58,13 @@ $(document).ready(function() {
     		return false;
     	}
      	if (title == "") {
-    		alert("Must enter a value in the Name Your Data field");
+    		alert("Must enter a value in the Title field");
     		return false;
     	}
+        if (description == "") {
+                alert("Must enter a value in the Description field");
+                return false;
+        }
     	if (isNaN(startYear) || startYear < 1900 || startYear > 2200) {
     		alert("Start year must be a valid number beween 1900 and 2200");
     		return false;
