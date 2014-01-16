@@ -34,6 +34,10 @@ app = Flask(__name__, static_folder='static', static_url_path='')
 def index():
     return render_template('index.html')
 
+@app.route('/glossary')
+def glossary():
+    return render_template('glossary.html')
+
 @app.route('/help')
 def help():
     return render_template('help.html')
