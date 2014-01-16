@@ -4,21 +4,21 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
-  <link rel="stylesheet" type="text/css" href="./static/shiny.css"/>
-  <link rel="stylesheet" type="text/css" href="./static/bootstrap.min.css"/>
-  <link rel="stylesheet" type="text/css" href="./static/bootstrap.css"/>
-  <link rel="stylesheet" href="./static/style.css" type="text/css" />  
-  <script src="./static/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/apc/static/shiny.css"/>
+  <link rel="stylesheet" type="text/css" href="/apc/static/bootstrap.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/apc/static/bootstrap.css"/>
+  <link rel="stylesheet" href="/apc/static/style.css" type="text/css" />  
+  <script src="/apc/static/bootstrap.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" type="text/css" href="./static/bootstrap-responsive.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/apc/static/bootstrap-responsive.min.css"/>
   <title>Age Period Cohort Analysis Tool</title>
   <!-- <link rel="stylesheet" type="text/css" href="DT_bootstrap2.css"/> -->
-  <script src="./static/jquery.dataTables.min.js"></script>
+  <script src="/apc/static/jquery.dataTables.min.js"></script>
   <!-- <script src="DT_bootstrap.js"></script> -->
   <!-- Larry's Imports -->
   <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css"/>
-  <link rel="stylesheet" href="./static/apc.css">
-  <script src="./static/apc.js"></script>
+  <link rel="stylesheet" href="/apc/static/apc.css">
+  <script src="/apc/static/apc.js"></script>
 
 
 </head>
@@ -26,13 +26,13 @@
 <body>
   <div id="wrapper">
 <div id="logos">
- <div id="left"><a href="http://www.cancer.gov" target="_blank"><img src="./static/images/nci.jpg" width="286" height="43" border="0" alt="National Cancer Institute" title="National Cancer Institute" /></a></div>
- <div id="right"><a href="http://www.cancer.gov" target="_blank"><img src="./static/images/nih.jpg" width="322" height="43" border="0" alt="at the National Institutes of Health" title="at the National Institutes of Health" /></a></div>
+ <div id="left"><a href="http://www.cancer.gov" target="_blank"><img src="/apc/static/images/nci.jpg" width="286" height="43" border="0" alt="National Cancer Institute" title="National Cancer Institute" /></a></div>
+ <div id="right"><a href="http://www.cancer.gov" target="_blank"><img src="/apc/static/images/nih.jpg" width="322" height="43" border="0" alt="at the National Institutes of Health" title="at the National Institutes of Health" /></a></div>
 </div>
 <br>
 <div id="banners">
-<div id="left"><img src="./static/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="43"/></div>
-<div id="right"><img src="./static/images/apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" height="43"/></div>
+<div id="left"><img src="/apc/static/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="43"/></div>
+<div id="right"><img src="/apc/static/images/apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" height="43"/></div>
 </div>
 <div id="blockcontent">
 
@@ -40,17 +40,17 @@
   <div class="row-fluid">
     <div class="span4">
       <form id="inputDataForm" class="well">
-          <label for="title">Title</label><a class="help" href="./help.html" target="_blank">Help</a>
+          <label for="title">Title</label><a class="help" href="/apc/help.html" target="_blank">Help</a>
           <input id="title" type="text" value=""/>
 
-          <label for="description">Description</label><a class="help" href="./help.html" target="_blank">Help</a>
+          <label for="description">Description</label><a class="help" href="/apc/help.html" target="_blank">Help</a>
           <textarea id="description" cols="70" rows="3"></textarea>
 
         <table>
         <tr> 
         	<td class='demographics'>Start Year</td>
         	<td class='demographics'>Start Age</td>
-        	<td class='demographics'>Interval<span class="spacer"><a class="help" href="./help.html" target="_blank">Help</a></spacer></td>
+        	<td class='demographics'>Interval<span class="spacer"><a class="help" href="/apc/help.html" target="_blank">Help</a></spacer></td>
         </tr>
         <tr>
         <td class='demographics'> <input style="width:58px;" id="startYear" type="number" value="" step="1"/> </td>
@@ -70,8 +70,7 @@
 
    		</table>     
 
-
-
+        <div><label for="browsebutton">Copy and paste into table on left or upload a csv</label></div><br />
         <div class="fileupload"><input id="countPopulation" type="file" accept="text,text/plain"/>
         <div id="countPopulation_progress" class="progress progress-striped active shiny-file-input-progress"></div></div>
         
@@ -79,7 +78,7 @@
             <div class="cOut"><b>Net Drift</b></div>
 
         <table id="NetDrift" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
-        <div id="NetDriftDownloadResultLink"></div>
+        <!--<div id="NetDriftDownloadResultLink"></div>-->
 
 
 
@@ -105,7 +104,7 @@
             <div class="cOut"><b>Coefficients</b></div>
               <div id="tab-4458-7">
                 <table id="Coefficients" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
-                <div id="CoefficientsDownloadResultLink"></div>
+                <!--<div id="CoefficientsDownloadResultLink"></div>-->
               </div>
         </div>
 
@@ -114,7 +113,7 @@
             <div class="cOut"><b>Wald Tests</b></div>
             <div id="tab-4458-18">
               <table id="Waldtests" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
-              <div id="WaldtestsDownloadResultLink"></div>
+              <!--<div id="WaldtestsDownloadResultLink"></div>-->
             </div>
         </div>
 
@@ -360,7 +359,7 @@
               </tr>
             </table>
             <!-- End Larry's Code and Send Data to Shiny -->
-            <div id='please_wait'><p>Please Wait...<br/><img src='./static/images/working.gif' /></p></div>
+            <div id='please_wait'><p>Please Wait...<br/><img src='/apc/static/images/working.gif' /></p></div>
             <div id='error_dialog'><p>There were errors in your request.</p></div>
             
             <form>
@@ -422,6 +421,7 @@
     </div>
   </div>
 </div>
+
 
 </div>
 
