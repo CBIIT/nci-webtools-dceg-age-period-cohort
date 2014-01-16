@@ -51,6 +51,7 @@ $(document).ready(function() {
     	var startYear = $("#startYear").val();
      	var startAge = $("#startAge").val();
      	var interval = $("#interval").val();
+     	var description = $("#description").val();
 
      	if (line_array == undefined || line_array == null || line_array.length == 0) {
     		alert(paste_instructions);
@@ -100,7 +101,8 @@ $(document).ready(function() {
 		                	rowCount: rowCount, 
 		                	countCSV: countCSV, 
 		                	populationCSV: populationCSV,
-		                	uniqueId: uniqueId
+		                	uniqueId: uniqueId,
+		                	description: description
 		                }, keys[i], uniqueId);
 			
 		}
@@ -169,8 +171,12 @@ function getAPCData(data, keyData, uniqueId){
 			//url: "http://"+hostname+"/createPanCanList/list",
 			data: data,
 			success: function(data) {
-				fillDataTable(data, keyData);
-				createResultDownloadLink(keyData, uniqueId);
+				if (keyData.localeCompare("Offset") != 0 ) {
+					fillDataTable(data, keyData);
+					createResultDownloadLink(keyData, uniqueId);
+				} else {
+					displayText(data, keyData);
+				}
 				if (keyData.localeCompare("Waldtests") != 0 && 
 					keyData.localeCompare("Coefficients") != 0 && 
 					keyData.localeCompare("NetDrift") != 0 &&
@@ -199,6 +205,9 @@ function getAPCData(data, keyData, uniqueId){
 			dataType: "json"
 			//dataType: "jsonp"
 		});
+}
+function displayText(jsonData, key){
+	$('#' + key).text(jsonData[0]);
 }
 
 function fillDataTable(jsonTableData, key){
