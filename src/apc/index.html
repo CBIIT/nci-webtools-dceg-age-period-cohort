@@ -40,17 +40,17 @@
   <div class="row-fluid">
     <div class="span4">
       <form id="inputDataForm" class="well">
-          <label for="title">Title</label><a class="help" href="/apc/help.html" target="_blank">Help</a>
+          <label for="title">Title</label><a class="help" href="#" onclick="openHelpWindow('/apc/help.html')">Help</a>
           <input id="title" type="text" value=""/>
 
-          <label for="description">Description</label><a class="help" href="/apc/help.html" target="_blank">Help</a>
+          <label for="description">Description</label><a class="help" href="#" onclick="openHelpWindow('/apc/help.html')">Help</a>
           <textarea id="description" cols="70" rows="3"></textarea>
 
         <table>
         <tr> 
         	<td class='demographics'>Start Year</td>
         	<td class='demographics'>Start Age</td>
-        	<td class='demographics'>Interval<span class="spacer"><a class="help" href="/apc/help.html" target="_blank">Help</a></spacer></td>
+        	<td class='demographics'>Interval<span class="spacer"><a class="help" href="#" onclick="openHelpWindow('/apc/help.html')" >Help</a></spacer></td>
         </tr>
         <tr>
         <td class='demographics'> <input style="width:58px;" id="startYear" type="number" value="" step="1"/> </td>
@@ -70,7 +70,7 @@
 
    		</table>     
 
-        <div><label for="browsebutton">Copy and paste into table on left or upload a csv</label></div><br />
+        <div><label for="browsebutton">Copy and paste into table on right or upload a csv</label></div><br />
         <div class="fileupload"><input id="countPopulation" type="file" accept="text,text/plain"/>
         <div id="countPopulation_progress" class="progress progress-striped active shiny-file-input-progress"></div></div>
         
@@ -118,10 +118,12 @@
         </div>
 
         <div>
-            <div class="cOut"><b>Offset Ticks</b></div>
+            <div class="cOut"><b>Unit Label</b></div>
             <div id="tab-4458-20">
               <table id="OffsetTicks" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
-              <div id="Offset"></div>
+              Results Per
+              <span id="Offset"></span>
+              Person-Years 
             </div>
         </div>        
 
@@ -182,10 +184,10 @@
               <tr>
                 <td></td>
                 <td class='header border-left'></td>
-                <td colspan='2' class='header border-left' id='year_1_year'>1998 - 2001</td>
-                <td colspan='2' class='header border-dotted-left' id='year_2_year'>2002 - 2005</td>
-                <td colspan='2' class='header border-dotted-left' id='year_3_year'>2006 - 2009</td>
-                <td colspan='2' class='header border-dotted-left border-right' id='year_4_year'>2010 - 2013</td>
+                <td colspan='2' class='header border-left' id='year_1_year'></td>
+                <td colspan='2' class='header border-dotted-left' id='year_2_year'></td>
+                <td colspan='2' class='header border-dotted-left' id='year_3_year'></td>
+                <td colspan='2' class='header border-dotted-left border-right' id='year_4_year'></td>
               </tr>
               <tr>
                 <td></td>
