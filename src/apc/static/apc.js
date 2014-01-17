@@ -502,7 +502,7 @@ function display_table(txt, delimiter) {
 	var third_header_row = $("<tr></tr>");
 	third_header_row.append("<td >&nbsp;</td>");
 	third_header_row.append("<td class='header border-left border-top'>&nbsp;</td>");
-	var table_title = $("<td id='table-title' colspan='" + (cols * 2) + "' class='header border-bottom border-right border-left  border-top'>" + $("#title").val() + "</td>");
+	var table_title = $("<td id='table-title' colspan='" + (cols * 2) + "' class='header border-bottom border-right border-left  border-top'>" + $("#title").val() + "<br/>" + $("#description").val()  + "</td>");
 
 	third_header_row.append(table_title);
 	
