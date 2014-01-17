@@ -182,7 +182,7 @@ function getAPCData(data, keyData, uniqueId){
 			success: function(data) {
 				if (keyData.localeCompare("Offset") != 0 ) {
 					fillDataTable(data, keyData);
-					createResultDownloadLink(keyData, uniqueId);
+					//createResultDownloadLink(keyData, uniqueId);
 				} else {
 					displayText(data, keyData);
 				}
