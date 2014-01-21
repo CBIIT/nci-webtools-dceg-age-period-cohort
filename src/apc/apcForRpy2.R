@@ -33,7 +33,7 @@ moveRowLabelsToData <- function (matrixWithNamedRows, key) {
   } else {
     dataNoRowNames <- data.frame(row.names(matrixWithNamedRows),matrixWithNamedRows, row.names = NULL);
     dataNoRowNames[,4]<-format(dataNoRowNames[,4],digits = 4);
-    
+    dataNoRowNames[,2]<-round(dataNoRowNames[,2], 3);
     colnames(dataNoRowNames)<- c(' ', 'X2', 'df', 'P-Value');
 
     row1 <- list(dataNoRowNames[1,]);
