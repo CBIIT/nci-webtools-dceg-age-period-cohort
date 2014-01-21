@@ -88,9 +88,9 @@ $(document).ready(function() {
      	var uniqueId = generateUID ();
      
 		var keys = ["AgeDeviations","PerDeviations","CohDeviations", 		"LongAge", 
-					"CrossAge", 	"Long2CrossRR", 	"FittedTemporalTrends",	"PeriodRR",
+					"CrossAge", 	"Long2CrossRR", "FittedTemporalTrends",	"PeriodRR",
 					"CohortRR",		"LocalDrifts",	"Coefficients",			"Waldtests", 
-					"NetDrift",		"Offset" ];
+					"NetDrift",		"Offset",		"RawData" ]; // add "Excel"
 		//-----
         $("#please_wait").dialog('open');
         open_threads = keys.length;
@@ -180,16 +180,19 @@ function getAPCData(data, keyData, uniqueId){
 			//url: "http://"+hostname+"/createPanCanList/list",
 			data: data,
 			success: function(data) {
-				if (keyData.localeCompare("Offset") != 0 ) {
+				if (keyData.localeCompare("Offset") != 0 &&
+					keyData.localeCompare("Excel") != 0 &&
+					keyData.localeCompare("RawData") != 0 ) {
 					fillDataTable(data, keyData);
-					//createResultDownloadLink(keyData, uniqueId);
 				} else {
 					displayText(data, keyData);
 				}
 				if (keyData.localeCompare("Waldtests") != 0 && 
 					keyData.localeCompare("Coefficients") != 0 && 
 					keyData.localeCompare("NetDrift") != 0 &&
-					keyData.localeCompare("Offset") != 0 ){
+					keyData.localeCompare("Offset") != 0 &&
+					keyData.localeCompare("Excel") != 0 &&
+					keyData.localeCompare("RawData") != 0 ){
 					loadImage(keyData, uniqueId);	
 				}
 
@@ -216,7 +219,19 @@ function getAPCData(data, keyData, uniqueId){
 		});
 }
 function displayText(jsonData, key){
-	$('#' + key).text(jsonData[0]);
+	if (key.localeCompare("Offset") == 0) {
+		$('#OffsetLongAge').text(jsonData[0]);
+		$('#OffsetCrossAge').text(jsonData[0]);
+		$('#OffsetFittedTemporalTrends').text(jsonData[0]);	
+	} else if (key.localeCompare("RawData") == 0) {
+		// TODO: Shaun Make R raw file download button here
+		$('#InputRawData').text(jsonData[0]);
+		$('#OutputRawData').text(jsonData[1]);	
+	} else {
+		// TODO: Shaun Make excel download button here
+		$('#' + key).text(jsonData[0]);
+	}
+	
 }
 
 function fillDataTable(jsonTableData, key){
@@ -233,9 +248,9 @@ function fillDataTable(jsonTableData, key){
 	});
 }
 
-function createResultDownloadLink (keyData, uniqueId){
-	$('#' + keyData + 'DownloadResultLink').html("<a href='csv/" + keyData + uniqueId + ".csv'>Download " + keyData +" CSV Data</a>");
-}
+// function createResultDownloadLink (keyData, uniqueId){
+// 	$('#' + keyData + 'DownloadResultLink').html("<a href='csv/" + keyData + uniqueId + ".csv'>Download " + keyData +" CSV Data</a>");
+// }
 
 function loadImage(keyData, uniqueId) {
 	$('#' + keyData + 'Graph').html("<img style='width: 75% ; height: 75%' class='center' src='./static/img/" + keyData + uniqueId + ".png'>");
