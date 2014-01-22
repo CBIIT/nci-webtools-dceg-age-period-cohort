@@ -44,6 +44,18 @@ margin-bottom:15px;
 #inputDataForm textarea {
 margin-bottom:20px;
 }
+#inputDataForm.well {
+height:425px;
+}
+
+
+table#NetDrift.bordered-table.zebra-striped.dataTable{
+border:1px solid #303995;
+}
+
+table#NetDrift.bordered-table.zebra-striped.dataTable th{
+background-color:#303995;
+}
 
 a.help {
 	background-image:url('images/help.png');

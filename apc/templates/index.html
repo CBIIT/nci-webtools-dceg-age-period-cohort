@@ -7,65 +7,50 @@
           <label for="title">Title</label><a class="help" href="#" onclick="openHelpWindow('/help')">Help</a>
           <input id="title" type="text" value=""/>
 
-          <label for="description">Description</label><a class="help" href="#" onclick="openHelpWindow('/help')">Help</a>
+          <label for="description">Description</label>
           <textarea id="description" cols="70" rows="3"></textarea>
 
         <table>
         <tr> 
-        	<td class='demographics'>Start Year</td>
-        	<td class='demographics'>Start Age</td>
-        	<td class='demographics'>Interval<span class="spacer"><a class="help" href="#" onclick="openHelpWindow('/help')">Help</a></spacer></td>
+          <td class='demographics'>Start Year</td>
+          <td class='demographics'>Start Age</td>
+          <td class='demographics'>Interval</td>
         </tr>
         <tr>
         <td class='demographics'> <input style="width:58px;" id="startYear" type="number" value="" step="1"/> </td>
         <td class='demographics'> <input style="width:40px;" id="startAge" type="number" value="" min="1" max="120" step="1" /> </td>
         <td class='demographics'> 
  
-        	<select style="width:90px;" id="interval">
-			 <option value=""></option>
-		         <option value="year1">1 year</option>
-		         <option value="year2">2 years</option>
-		         <option value="year3">3 years</option>
-		         <option value="year4">4 years</option>
-		         <option value="year5">5 years</option>
-        	</select>
-        	
+          <select style="width:90px;" id="interval">
+       <option value=""></option>
+             <option value="year1">1 year</option>
+             <option value="year2">2 years</option>
+             <option value="year3">3 years</option>
+             <option value="year4">4 years</option>
+             <option value="year5">5 years</option>
+          </select>
+          
         </td>
-   		</tr>
+      </tr>
 
-   		</table>     
+      </table>     
 
         <div><label for="browsebutton">Copy and paste into table on right or upload a csv</label></div><br />
         <div class="fileupload"><input id="countPopulation" type="file" accept="text,text/plain"/></div>
+            <form>
+              <button type="submit" id="cancel" class="btn btn-primary" style="display:none;float: left;margin-right:20px;">Cancel</button>
+
+              <button type="submit" id="calculate" class="btn btn-primary" style="float: left;">Calculate</button>
+            </form>
+
         <div id='Excel'></div>
         <div id='InputRawData'></div>
         <div id='OutputRawData'></div>
         <hr class="style-two">
-            <div class="cOut"><b>Net Drift</b></div>
+            <div class="cOut Net"><b>Net Drift</b></div>
 
 
         <table id="NetDrift" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
-        <!--<div id="NetDriftDownloadResultLink"></div>-->
-
-
-
-<!--         <div>
-            <div class="cOut" data-toggle="collapse" data-target="#tab-4458-7"><b>Coefficients</b></div>
-              <div class="collapse in" id="tab-4458-7">
-                <table id="Coefficients" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
-                <div id="CoefficientsDownloadResultLink"></div>
-              </div>
-        </div>
-
-        <br />
-        
-        <div>
-            <div class="cOut" data-toggle="collapse" data-target="#tab-4458-18"><b>Wald Tests</b></div>
-            <div class="collapse in" id="tab-4458-18">
-              <table id="Waldtests" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
-              <div id="WaldtestsDownloadResultLink"></div>
-            </div>
-        </div> -->
         
         <div>
             <div class="cOut"><b>Coefficients</b></div>
@@ -321,9 +306,6 @@
             <div id='please_wait'><p>Please Wait...<br/><img src='images/working.gif' /></p></div>
             <div id='error_dialog'><p>There were errors in your request.</p></div>
             
-            <form>
-              <button type="submit" id="calculate" class="btn btn-primary" style="float: left;">Calculate</button>
-            </form>
           </div>
         </div>
         <div class="tab-pane" id="tab-4458-8">
