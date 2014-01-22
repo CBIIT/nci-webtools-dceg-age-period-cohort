@@ -9,7 +9,10 @@ var csvResultData = {};
 var open_threads; // Used to determine if all calls have returned
 var error_count = 0;
 
+
 $(document).ready(function() { 
+
+	var main_table = $("#inputData").html();
 
 	$( "#R_upload_button" ).click(function() {
 		alert("Coming Soon");
@@ -44,6 +47,31 @@ $(document).ready(function() {
 	
 	create_paste_binding($(".paste_area"));
 	getGoogleData();
+
+	$( "#cancel" ).click(function() { 
+			$(".data").empty();
+			$("#main-table").empty();
+			$("#inputData").html(main_table);
+			$("#startYear").val("");
+			$("#startAge").val("");
+			$("#description").val("");
+			$("#interval").val("");
+			$("#title").val("");
+			line_array = null;
+
+			$("#please_wait").dialog({
+			    autoOpen: false
+			});
+
+			$("#error_dialog").dialog({
+			    autoOpen: false
+			});
+            $("#cancel").css("display","none");
+
+
+	    create_paste_binding($(".paste_area"));
+	});
+	
 	
 	$( "#calculate" ).click(function() {
 
@@ -353,7 +381,10 @@ function create_paste_binding (element) {
         setTimeout(function(e) {
         	var txt = $(self).val();
         	var status = display_table(txt, '\t');
-            if (status) $("#paste_area").val("Input Pasted");
+            if (status) {
+            	$("#cancel").css("display","block");
+            	$("#paste_area").val("Input Pasted");
+            }
             else $("#paste_area").val("Input Failed \nneeds to be 14,9");
         }, 0);          
      });	 
