@@ -1,0 +1,175 @@
+var oTable;
+var giRedraw = false;
+var aData;
+var numberOfRows;
+var selectedData;
+var referenceRow;
+var refSpec;
+var refSens;
+var specArray;
+var sensArray;
+var prevArray;
+
+$(document).ready(function() {
+	
+	/* Init the table */
+	//oTable = $('#example').dataTable( );
+        oTable = $('#example').dataTable ({
+	        "bPaginate": false,
+                "bLengthChange": false,
+                "bFilter": false,
+                "bSort": false,
+                "bInfo": false,
+                "bAutoWidth": true,
+          }).makeEditable({
+	//oTable = $('#example').dataTable( ).makeEditable({
+	            sAddNewRowButtonId: "btnAddNewRow",
+                    sUpdateURL: function(value, settings)
+                                {
+                                        return(value);
+                                }
+          });
+
+        $( "#calculate_button" ).click(function() {
+                 //get_inputs_for_calculation();
+                 //get_data_stream();
+                 numberOfRows = oTable.fnSettings().fnRecordsTotal(); 
+	             sensArray = "sensArray<-c(";
+                 specArray = "specArray<-c(";
+                 prevArray = "prevArray<-c(";
+                 for (i=0;i<numberOfRows;i++)
+                 {
+                     if (i != referenceRow)
+                     {
+                         rowData = oTable.fnGetData(i)
+	                     sensArray = sensArray + rowData[0];
+	                     specArray = specArray + rowData[1];
+	                     prevArray = prevArray + rowData[2];
+                         if (i != numberOfRows-1)
+	                     {
+	                           sensArray = sensArray + ",";
+	                           specArray = specArray + ",";
+	                           prevArray = prevArray + ",";
+	                     }
+                     }
+                 }
+	             sensArray = sensArray + ")";
+	             specArray = specArray + ")";
+	             prevArray = prevArray + ")";
+        }
+
+//        uniqueKey = (new Date()).getTime();
+//        hostname = window.location.hostname;
+//        $.ajax({
+//                type: "GET",
+//                url: "http://ncias-d1052-v.nci.nih.gov:8989/BiomarkerComparison",
+//                data: {refSpec: refSpec, 
+//                       refSens: refSens,
+//                       specArray:specArray, 
+//                       sensArray: sensArray,
+//                       prevArray: prevArray, 
+//                       unique_key: uniqueKey},
+//                dataType: "json",
+//                success: set_data,
+//                error: ajax_error
+//        });}
+//
+//        oTable.$('tr').click( function () {
+//            selectedData = oTable.fnGetData(this);
+//            refSpec = selectedData[1];
+//	    refSens = selectedData[0];
+//            referenceRow = oTable.fnGetPosition(this);
+//        } );
+};
+
+
+function fnClickAddRow() {
+	$('#example').dataTable().fnAddData( [
+		"0.1",
+		"0.2",
+		"0.3",
+		"0.4" ] );
+}
+
+
+function get_inputs_for_calculation()
+{
+        numberOfRows = oTable.fnSettings().fnRecordsTotal(); 
+	sensArray = "sensArray<-c(";
+        specArray = "specArray<-c(";
+        prevArray = "prevArray<-c(";
+        for (i=0;i<numberOfRows;i++)
+        {
+            if (i != referenceRow)
+            {
+               rowData = oTable.fnGetData(i)
+	       sensArray = sensArray + rowData[0];
+	       specArray = specArray + rowData[1];
+	       prevArray = prevArray + rowData[2];
+               if (i != numberOfRows-1)
+	       {
+	          sensArray = sensArray + ",";
+	          specArray = specArray + ",";
+	          prevArray = prevArray + ",";
+	       }
+            }
+        }
+	sensArray = sensArray + ")";
+	specArray = specArray + ")";
+	prevArray = prevArray + ")";
+
+        uniqueKey = (new Date()).getTime();
+        hostname = window.location.hostname;
+        $.ajax({
+                type: "GET",
+                url: "http://ncias-d1052-v.nci.nih.gov:8989/BiomarkerComparison",
+                data: {refSpec: refSpec, 
+                       refSens: refSens,
+                       specArray:specArray, 
+                       sensArray: sensArray,
+                       prevArray: prevArray, 
+                       unique_key: uniqueKey},
+                dataType: "json",
+                success: set_data,
+                error: ajax_error
+        });
+}
+
+function get_data_stream() {
+        uniqueKey = (new Date()).getTime();
+        hostname = window.location.hostname;
+        $.ajax({
+                type: "GET",
+                url: "http://ncias-d1052-v.nci.nih.gov:8989/BiomarkerComparison",
+                //url: "/BiomarkerComparison",
+                data: {refSpec: refSpec, 
+                       refSens: refSens,
+                       specArray:specArray, 
+                       sensArray: sensArray,
+                       prevArray: prevArray, 
+                       unique_key: uniqueKey},
+                dataType: "json",
+                success: set_data,
+                error: ajax_error
+        });
+}
+
+function set_data(dt)
+{
+        var jsonString;
+        for (property in dt) {
+                jsonString = dt[property];
+        }
+        var jsonObject = $.parseJSON(jsonString);
+	alert("jsonObject"+jsonObject);
+}
+
+
+function ajax_error()
+{
+   alert("ajax problem");
+}
+
+
+
+

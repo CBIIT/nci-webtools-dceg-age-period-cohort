@@ -1,0 +1,79 @@
+var oTable;
+var giRedraw = false;
+var aData;
+var numberOfRows;
+var selectedData;
+var indRow;
+
+$(document).ready(function() {
+	/* Add a click handler to the rows - this could be used as a callback */
+	$("#example tbody").click(function(event) {
+		$(oTable.fnSettings().aoData).each(function (){
+			$(this.nTr).removeClass('row_selected');
+		});
+		$(event.target.parentNode).addClass('row_selected');
+	});
+	
+	/* Add a click handler for the delete row */
+	$('#delete').click( function() {
+		var anSelected = fnGetSelected( oTable );
+		oTable.fnDeleteRow( anSelected[0] );
+	} );
+
+	
+	/* Init the table */
+	//oTable = $('#example').dataTable( );
+        var oTable = $('#example').dataTable ({
+	        "bPaginate": false,
+                "bLengthChange": false,
+                "bFilter": false,
+                "bSort": false,
+                "bInfo": false,
+                "bAutoWidth": true,
+          }).makeEditable({
+                    sUpdateURL: function(value, settings)
+                                {
+                                        return(value);
+                                }
+          });
+
+        $( "#calculate_button" ).click(function() {
+                 get_inputs_for_calculation();
+                 //get_data_stream();
+        });
+
+        oTable.$('tr').click( function () {
+            aData = oTable.fnGetData(this);
+            indRow = oTable.fnGetPosition(this);
+            alert('data for selected rows is '+aData.length);
+        } );
+
+} );
+
+function get_inputs_for_calculation()
+{
+        var selectedRow = fnGetSelected(oTable);
+        numberOfRows = oTable.fnSettings().fnRecordsTotal(); 
+        alert('number of selected rows is '+selectedRow.length);
+        alert('number of table rows is '+numberOfRows);
+        selectedData = oTable.fnGetData( selectedRow[0] )
+        alert('selected ind Row is'+indRow);
+}
+
+
+
+/* Get the rows which are currently selected */
+function fnGetSelected( oTableLocal )
+{
+	var aReturn = new Array();
+	var aTrs = oTableLocal.fnGetNodes();
+	
+	for ( var i=0 ; i<aTrs.length ; i++ )
+	{
+		if ( $(aTrs[i]).hasClass('row_selected') )
+		{
+			aReturn.push( aTrs[i] );
+		}
+	}
+	return aReturn;
+}
