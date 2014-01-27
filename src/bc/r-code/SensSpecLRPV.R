@@ -2,8 +2,6 @@ SensSpecLRPV <- function(sens,spec,prev) {
   
   	vecsens<-as.vector(sens)
   
-  	vecprev<-as.vector(prev)
-  
  	vecspec<-as.vector(spec)
   
   	lrplus<-as.vector(c(rep(NA,times=length(vecspec))))
@@ -13,12 +11,12 @@ SensSpecLRPV <- function(sens,spec,prev) {
 	for(i in 1:length(vecspec)) {
 		lrplus[i]<-sens[i]/(1-vecspec[i])
 		lrminus[i]<-vecspec[i]/(1-sens[i])
-		ppv[i]<-lrplus[i]*vecprev[i]/(1-vecprev[i])/(1 + lrplus[i]*vecprev[i]/(1-vecprev[i]))
-  		cnpv[i]<-((vecprev[i]/(1+vecprev[i]))/lrminus[i])/(1 + (vecprev[i]/(1+vecprev[i]))/lrminus[i])
+		ppv[i]<-lrplus[i]*prev/(1-prev)/(1 + lrplus[i]*prev/(1-prev))
+  		cnpv[i]<-((prev/(1+prev))/lrminus[i])/(1 + (prev/(1+prev))/lrminus[i])
 	}
 	
-	data<-matrix(c(vecspec,vecsens,lrplus,lrminus,vecprev,ppv,cnpv),nrow=length(vecspec),ncol=7) 
-	colnames(data)<-c("Specificity", "Sensitivity","LRplus","LRminus","Prevalence","PPV","cNPV")
+	data<-matrix(c(vecspec,vecsens,lrplus,lrminus,ppv,cnpv),nrow=length(vecspec),ncol=6) 
+	colnames(data)<-c("Specificity", "Sensitivity","LR+","LR-","Positive Predictive Value (PPV)","complement of the Negative Predictive Value (cNPV)")
 	T1<-as.table(data)  	
 	T1
 }
