@@ -170,7 +170,6 @@ $(document).ready(function() {
 	});
 
         $('#countPopulation').change(function(){
-        	// Check if IE version 9 or below
                 if ( window.FileReader ) {
                         var file = this.files[0];
                         var reader = new FileReader();
