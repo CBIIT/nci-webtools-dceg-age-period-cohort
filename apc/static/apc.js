@@ -168,24 +168,28 @@ $(document).ready(function() {
 	$( "#loadExampleData" ).click(function() {
 		// TODO: send data to Larry's code somehow
 	});
-
-	//$( "#countPopulation" ).bind("change",function() {
-//		upload_file();
-//	});
         $('#countPopulation').change(function(){
-   		var file = this.files[0];
-   		var reader = new FileReader();
-   		reader.onload = function(theFile) {
-        	var text =reader.result;
-        	display_table(text, ',');
-    		};
+                if ( window.FileReader ) {
+                        var file = this.files[0];
+                        var reader = new FileReader();
+                        reader.onload = function(theFile) {
+                        var text =reader.result;
+                        display_table(text, ',');
+                        };
 
-    		reader.readAsText(file);
-	});
+                        reader.readAsText(file);
+                }
+                else {
 
-	// $( "#countPopulation" ).bind("changefileupload(function() {
-	// 	upload_file();
-	// });
+                        var filePath = $("#countPopulation").val();
+                        var fso = new ActiveXObject("Scripting.FileSystemObject");
+                        var textStream = fso.OpenTextFile(filePath);
+                        var fileData = textStream.ReadAll();
+                        display_table(fileData,',');
+                }
+
+        });
+
 
 });
 function setTableTitle () {
