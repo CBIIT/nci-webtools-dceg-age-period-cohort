@@ -329,25 +329,52 @@ function JSON2CSV(objArray) {
 }
 
 function getGoogleData () {
-	var exampleDataSpreadsheetQuery = 'https://spreadsheets.google.com/feeds/list/0AiA747YDxiD1dFRfSlNudmRSY3Y5b2dOYXBNbjdLNmc/od6/public/values?alt=json';
-	// Load an entire sheet.
+    $.ajax({
+        dataType: "jsonp",
+        contentType: "text/json; charset=utf-8",
+        crossDomain: true,
+        type: "GET",
+        url: 'https://spreadsheets.google.com/feeds/list/0AiA747YDxiD1dFRfSlNudmRSY3Y5b2dOYXBNbjdLNmc/od6/public/values?alt=json',
+        error: function (xhr, statusText) {
+                //log error                    
+        },
+        success: function (data) {                    
+			var value;
+			for (var i = 0; i < data.feed.entry.length; i++) 
+				{
+					var newTableRow = '<tr>';
+					if (!Object.keys) {
+						  Object.keys = function(obj) {
+						    var keys = [];
 
-	$.getJSON(exampleDataSpreadsheetQuery, function(exampleData) {
-		var value;
-		for (var i = 0; i < exampleData.feed.entry.length; i++) {
-			var newTableRow = '<tr>';
-			var allColumnNames = Object.keys(exampleData.feed.entry[i]);
-			// First I have to figure out what the columns are called
-			for (var j=0; j < allColumnNames.length; j++) {
-				if ((allColumnNames[j].indexOf("gsx$count") > -1) || (allColumnNames[j].indexOf("gsx$population") > -1)) {
-					value = exampleData.feed.entry[i][allColumnNames[j]];
-					newTableRow = newTableRow + '<td>'+ value.$t + '</td>';
-				} 
-			}
-			newTableRow = newTableRow + '</tr>';
-			$("#exampleData-table").append(newTableRow);
-		}
-	});
+						    for (var i in obj) {
+						      if (obj.hasOwnProperty(i)) {
+						        keys.push(i);
+						      }
+						    }
+
+						    return keys;
+						  };
+						}
+					var allColumnNames = Object.keys(data.feed.entry[i]);
+					// First I have to figure out what the columns are called
+					for (var j=0; j < allColumnNames.length; j++) 
+						{
+							if ((allColumnNames[j].indexOf("gsx$count") > -1) || (allColumnNames[j].indexOf("gsx$population") > -1)) 
+								{
+									value = data.feed.entry[i][allColumnNames[j]];
+									newTableRow = newTableRow + '<td>'+ value.$t + '</td>';
+								} 
+						}
+					newTableRow = newTableRow + '</tr>';
+					if (window.FileReader) {$("#exampleData-table").append(newTableRow);} else {$("#helpcolumn2").append(newTableRow);};
+					
+				}
+        }
+    });
+
+
+
 }
  
 function upload_file() {
