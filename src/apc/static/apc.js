@@ -187,8 +187,9 @@ $(document).ready(function() {
                         var fileData = textStream.ReadAll();
                         display_table(fileData,',');
                 }
-
-        });
+                $("#cancel").css("display","block");
+        
+});
 
 
 });
