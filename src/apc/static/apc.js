@@ -169,29 +169,23 @@ $(document).ready(function() {
 		// TODO: send data to Larry's code somehow
 	});
 
+	//$( "#countPopulation" ).bind("change",function() {
+//		upload_file();
+//	});
         $('#countPopulation').change(function(){
-                if ( window.FileReader ) {
-                        alert("read");
-                        var file = this.files[0];
-                        var reader = new FileReader();
-                        reader.onload = function(theFile) {
-                        var text =reader.result;
-                        display_table(text, ',');
-                        };
+   		var file = this.files[0];
+   		var reader = new FileReader();
+   		reader.onload = function(theFile) {
+        	var text =reader.result;
+        	display_table(text, ',');
+    		};
 
-                        reader.readAsText(file);
-                }
-                else {
+    		reader.readAsText(file);
+	});
 
-                        var filePath = $("#countPopulation").val();
-                        var fso = new ActiveXObject("Scripting.FileSystemObject");
-                        var textStream = fso.OpenTextFile(filePath);
-                        var fileData = textStream.ReadAll();
-                        display_table(fileData,',');
-                }
-
-        });
-
+	// $( "#countPopulation" ).bind("changefileupload(function() {
+	// 	upload_file();
+	// });
 
 });
 function setTableTitle () {
