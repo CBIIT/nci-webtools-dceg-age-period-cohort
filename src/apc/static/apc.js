@@ -171,7 +171,6 @@ $(document).ready(function() {
 
         $('#countPopulation').change(function(){
                 if ( window.FileReader ) {
-                        alert("read");
                         var file = this.files[0];
                         var reader = new FileReader();
                         reader.onload = function(theFile) {
