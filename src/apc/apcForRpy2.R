@@ -1,15 +1,18 @@
 library('RJSONIO');
 library('stringr');
-#source ('~/myproject/nci-analysis-tools-web-presence/src/apc/apcLatest.R')
-#source ('~/myproject/nci-analysis-tools-web-presence/src/apc/writeToExcel.R')
-source ('apcLatest.R');
-#source ('writeToExcel.R')
+# Use These directories when testing locally running a Flask Server
+# source ('~/myproject/nci-analysis-tools-web-presence/src/apc/apcLatest.R')
+# source ('~/myproject/nci-analysis-tools-web-presence/src/apc/writeToExcel.R')
 
-# Use These directories when testing without running Flask Server
+# Use these directories in production
+source ('apcLatest.R');
+source ('writeToExcel.R')
+
+# Use These directories when testing locally running a Flask Server
 #imageDirectory <- "/home/brent/myproject/nci-analysis-tools-web-presence/src/apc/static/img/";
 #rawDirectory <- "/home/brent/myproject/nci-analysis-tools-web-presence/src/apc/static/raw/";
 
-# Use these directories when using Flask server
+# Use these directories in production
 imageDirectory <- "static/img/";
 rawDirectory <- "static/raw/";
 
@@ -34,7 +37,7 @@ moveRowLabelsToData <- function (matrixWithNamedRows, key) {
     returnValue <- c(row1,row2, row3, row4);
   } else {
     dataNoRowNames <- data.frame(row.names(matrixWithNamedRows),matrixWithNamedRows, row.names = NULL);
-    dataNoRowNames[,4]<-format(dataNoRowNames[,4],digits = 4);
+    dataNoRowNames[,4]<-format(round(dataNoRowNames[,4], 5), scientific = FALSE);
     dataNoRowNames[,2]<-round(dataNoRowNames[,2], 3);
     colnames(dataNoRowNames)<- c(' ', 'X2', 'df', 'P-Value');
 
