@@ -102,8 +102,9 @@ $(document).ready(function() {
     		return false;
     	}
     	if (interval != "year1" && interval != "year2" &&
-    		interval != "year3" && interval != "year4" && interval != "year5") {
-    		alert("Interval must be 1,2,3,4, or 5 years, it is: [" + interval + "]");
+    		interval != "year3" && interval != "year4" && 
+    		interval != "year5" && interval != "year10") {
+    		alert("Interval must be 1,2,3,4,5, or 10 years, it is: [" + interval + "]");
     		return false;
     	}
     	

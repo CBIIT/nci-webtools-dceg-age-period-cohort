@@ -6,7 +6,7 @@ library('stringr');
 
 # Use these directories in production
 source ('apcLatest.R');
-source ('writeToExcel.R')
+#source ('writeToExcel.R')
 
 # Use These directories when testing locally running a Flask Server
 #imageDirectory <- "/home/brent/myproject/nci-analysis-tools-web-presence/src/apc/static/img/";
@@ -116,7 +116,7 @@ createPanCanList <- function (inputList) {
   countCSV <-getCountData(inputList);
   populationCSV <- getPopulationData(inputList);
                          
-  interval <- switch(getInterval(inputList), year1 = 1, year2 = 2, year3 = 3, year4 = 4, year5 = 5);
+  interval <- switch(getInterval(inputList), year1 = 1, year2 = 2, year3 = 3, year4 = 4, year5 = 5, year10 = 10);
   panCan <- list(name = getTitle(inputList),
                  description = getDescription(inputList),
                  # events = to Count Columns in APC Spread Sheet
