@@ -24,7 +24,7 @@ from socket import gethostname
 #app = Flask(__name__)
 
 # --- Brent Added...
-app = Flask(__name__, static_folder='static', static_url_path='')
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 
 #@app.route('/')
 #def root():
