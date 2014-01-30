@@ -1,8 +1,8 @@
 library('xlsx');
 
-excelDirectory <- "/home/brent/myproject/nci-analysis-tools-web-presence/src/apc/static/xlsx/";
+#excelDirectory <- "/home/brent/myproject/nci-analysis-tools-web-presence/src/apc/static/xlsx/";
 
-#excelDirectory <- "static/xlsx/";
+excelDirectory <- "static/xlsx/";
 
 writeResultsToExcel <- function (apcdata, uniqueId, imageDirectory) {
   outwb <- createWorkbook();
