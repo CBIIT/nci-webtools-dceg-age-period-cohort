@@ -119,7 +119,7 @@ $(document).ready(function() {
 		var keys = ["AgeDeviations","PerDeviations","CohDeviations", 		"LongAge", 
 					"CrossAge", 	"Long2CrossRR", "FittedTemporalTrends",	"PeriodRR",
 					"CohortRR",		"LocalDrifts",	"Coefficients",			"Waldtests", 
-					"NetDrift",		"Offset",		"RawData" ]; // add "Excel"
+					"NetDrift",		"Offset",		"RawData", "Excel" ];
 		//-----
         $("#please_wait").dialog('open');
         open_threads = keys.length;
