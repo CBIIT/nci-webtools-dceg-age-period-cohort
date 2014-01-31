@@ -12,7 +12,7 @@ SensSpecLR <- function(sens,spec) {
   }
   
   data<-matrix(c(vecspec,vecsens,lrplus,lrminus),nrow=length(vecspec),ncol=4) 
-  colnames(data)<-c("Specificity", "Sensitivity","LR+","LR-")
+  colnames(data)<-c("Specificity", "Sensitivity","LRplus","LRminus")
   T1<-as.table(data)  	
   T1
 }

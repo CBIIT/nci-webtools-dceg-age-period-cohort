@@ -1,150 +1,133 @@
 <html>
  <head>
- <title>Title</title>
+ <title>Biomarker Comparison Tool</title>
  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
  <link rel="stylesheet" href="./css/style.css" type="text/css" />
-  <link rel="stylesheet" href="./js/jquery-ui-1.10.3.custom/css/custom-theme/jquery-ui-1.10.3.custom.css" type="text/css"/>
-  <script src="./js/datatable/DataTables-1.9.4/media/js/jquery.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
-  <script src="./js/datatable/DataTables-1.9.4/media/js/jquery.dataTables.min.js"></script>
-  <script src="./js/jquery.jeditable.js"></script>
-  <script src="./js/jquery-ui.js"></script>
-  <script src="./js/jquery.validate.js"></script>
-  <script src="./js/jquery.dataTables.editable.js"></script>
-  <style type="text/css" title="currentStyle">
-	@import "./css/demo_page.css";
-	@import "./css/demo_table.css";
-  </style>
-<style type="text/css">
-
-.box-footer
-        {
-        background: #999966;
-        padding: 0.5em;
-        clear: both;
-        border: none
-        }
-/* ====================================================================
-COLUMNS LAYOUT
--------------------------------------------------------------------- */
-.columns-float
-        {
-        float: left;
-        width: 100%;
-        }
-.columns-row-1
-        {
-        float: left;
-        width: 100%;
-        }
-.column-one
-        {
-        float: left;
-        width: 260px;
-        height: 300px
-        }
-.column-graph
-        {
-        float: right;
-        padding-left: 10px;
-        width: 260px;
-        height: 300px
-        }
-.columns-row-2
-        {
-        float: left;
-        width: 100%;
-        }
-.column-table
-        {
-        float: left;
-        width: 50%;
-        }
-.column-one-content, .column-two-content, .column-three-content
-        {
-        padding: 6px;
-        border: none;
-        color: #000000;
-        }
-.box-wrap, .columns-float, .column-one, .column-two, .column-three, h2
-        { p\osition: relative; }
-</style>
-  <script src="./js/bc.js"></script>
-  <link rel="stylesheet" href="./js/datatable/DataTables-1.9.4/media/css/jquery.dataTables.css" type="text/css" />
-  <link rel="stylesheet" href="./js/datatable/DataTables-1.9.4/media/css/jquery.dataTables_themeroller.css" type="text/css" />
+ <link rel="stylesheet" href="./css/bc.css" type="text/css" />
+ <link rel="stylesheet" href="./css/jquery-ui-1.10.3.custom.css" type="text/css"/>
+ <script src="./js/jquery-1.9.1.js"></script>
+ <script src="./js/jquery-ui-1.10.4.js"></script>
+ <script src="./js/bc.js"></script>
 </head>
 
 <body>
-<div id="wrapper">
-
-<div id="logos">
- <div id="left"><a href="http://www.cancer.gov" target="_blank"><img src="images/nci.jpg" width="286" height="43" border="0" alt="National Cancer Institute" title="National Cancer Institute" /></a></div>
- <div id="right"><a href="http://www.cancer.gov" target="_blank"><img src="images/nih.jpg" width="322" height="43" border="0" alt="at the National Institutes of Health" title="at the National Institutes of Health" /></a></div>
-</div>
+<div style='width:1000px;margin-left:auto;margin-right:auto;'> <!-- blockcontent was here -->
+<div id="wrapper"'>
+	<div id="logos">
+	 <div id="left"><a href="http://www.cancer.gov" target="_blank"><img src="images/nci.jpg" width="286" height="43" border="0" alt="National Cancer Institute" title="National Cancer Institute" /></a></div>
+	 <div id="right"><a href="http://www.cancer.gov" target="_blank"><img src="images/nih.jpg" width="322" height="43" border="0" alt="at the National Institutes of Health" title="at the National Institutes of Health" /></a></div>
+	</div>
 </div>
 <br>
+
 <div id="banners"> 
-<div id="left"><img src="images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="43"/></div>
+	<div id="left">
+		<img src="images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="43"/>
+	</div>
 </div>
 
-<div id="blockcontent">
+<div id='main'>
+
 <br>
-<p><h2 align="center"> Biomarker Comparison Tool </h2></p>
+<h2 align="center"> Biomarker Comparison Tool </h2></p>
+<p> Click on the sensitivity and specificity values to change the default pairs, and choose one as the reference pair.  To calculate PPV and cNPV, provide a prevalence value.<br>
+
 <br>
-<div class="columns-float">
-<div class="columns-row-1">
-<div class="column-one" id=tablearea>
-<table align="left" width=50% cellpadding="0" cellspacing="0" border="0" class="display" id="inputdata">
+<br>
+
+
+<div style='width:550px;float:left;'> <!-- Left Side -->
+<br />
+
+
+<table id="inputdata" >
 	<thead>
-		<tr>
-			<th width="20%">Sensitivity</th>
-			<th width="20%">Specificity</th>
-			<th width="20%">Prevalence</th>
-			<th width="20%">Reference</th>
+		<tr class='non-data-row'>
+			<th colspan='5' class='top-header'>Input Information</th>
+		</tr>
+		<tr class='non-data-row'>
+			<th class='header'>#</th>
+			<th class='header'>Reference</th>
+			<th class='header'>Sensitivity</th>
+			<th class='header'>Specificity</th>
+			<th class='header'>&nbsp;</th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<td class="center">0.1</td>
-			<td class="center">0.5</td>
-			<td class="center">0.5</td>
-			<td class="center">false</td>
+		<tr row='0' class='reference_row'>
+			<th class=''>1</th>
+			<td class="reference" row='0' col='reference'><img src='./images/checkbox.png' height='18' width='18' alt='check'/></td>
+			<td class="input sensitivity" row='0' col='sensitivity'>0.8</td>
+			<td class="input specificity" row='0' col='specificity'>0.7</td>
+			<td class=''>&nbsp;</td>
 		</tr>
-		<tr>
-			<td class="center">0.1</td>
-			<td class="center">0.5</td>
-			<td class="center">0.5</td>
-			<td class="center">false</td>
+		<tr row='1'>
+			<th class=''>2</th>
+			<td class="reference" row='1' col='reference'><img src='./images/uncheckbox.png' height='18' width='18' alt='uncheck'/></td>
+			<td class="input sensitivity" row='1' col='sensitivity'>0.85</td>
+			<td class="input specificity" row='1' col='specificity'>0.68</td>
+			<td><BUTTON class='remove_row_button'>Remove</BUTTON></td>
 		</tr>
-		<tr>
-			<td class="center">0.1</td>
-			<td class="center">0.5</td>
-			<td class="center">0.5</td>
-			<td class="center">false</td>
+		<tr row='2'>
+			<th class=''>3</th>
+			<td class="reference" row='2' col='reference'><img src='./images/uncheckbox.png' height='18' width='18' alt='uncheck'/></td>
+			<td class="input sensitivity" row='2' col='sensitivity'>0.9</td>
+			<td class="input specificity" row='2' col='specificity'>0.5</td>
+			<td><BUTTON class='remove_row_button'>Remove</BUTTON></td>
 		</tr>
-		<tr>
-			<td class="center">0.1</td>
-			<td class="center">0.5</td>
-			<td class="center">0.5</td>
-			<td class="center">false</td>
+		<tr class='non-data-row'>
+			<th class=''>&nbsp;</th>
+			<td class="">&nbsp;</td>
+			<td class="">&nbsp;</td>
+			<td class="">&nbsp;</td>
+			<td class=''><BUTTON id='new_row_button'>New Row</BUTTON></td>
 		</tr>
 	</tbody>
 </table>
-</br>
-</br>
-<button align="right" id="calculate_button" style="float: right;">Calculate</button>
-</div> <!-- END column one -->
+<br />
+<table>
+<tr>
+<td class='prevalence_label'>Prevalence</td>
+<td><input type="text" id="prevalence"></td>
+</tr>
+</table>
+<br />
+<button id="calculate_button" >Calculate</button>
+<br /><br /><br />
+<table id='output'> </table>
 
-<div class="column-graph">
-<img src="./images/initial.jpg" id="graph" alt="graph" height="275" width="250" border="1">
-</div> <!--  END column-graph -->
+</div> <!-- Left Side -->
+<div style='float:left;width=450px;'> <!-- Right Side -->
+<img src="./images/initial.jpg" id="graph" alt="graph" border="1" align="top" height='400' width='400' > 
+</div>
+<div class='bibliography'>
+<p><b>References:</b></p>
+<p>
+Marina V. Kondratovich, (2007), <i>Comparing Two Medical Tests When Results of Reference Standard Are 
+Unavailable for Those Negative via Both Tests,</i> Journal of Biopharmaceutical Statistics, 18:1, 145-166,
+<a target='_blank' href=http://www.tandfonline.com/doi/abs/10.1080/10543400701668308#.UubT8LQo670>
+	DOI: 10.1080/10543400701668308
+</a>
+</p>
+</div>
 
-</div> <!-- columns row 1 END -->
-<div class="columns-row-2">
-<div class="column-table">
-<table align="left" width=50% cellpadding="0" cellspacing="0" border="0" class="display" id="r-data">
-</div> <!-- columns table END -->
-</div> <!-- columns row 2 END -->
 </div> <!-- columns float END -->
+</div> <!-- main -->
+
+<div id="portal-footer">
+ <div class="footerLinks">
+ <a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+ <a href="mailto:ncicbiit@mail.nih.gov." title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+ <a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+ <a href="http://www.cancer.gov/global/web/policies/accessibility" title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+ <a href="http://cancer.gov/global/viewing-files" target="_blank" title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+ <a href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br /><br />
+ <a href="http://www.dhhs.gov/">Department of Health and Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+ <a href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+ <a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://www.usa.gov/">USA.gov</a>
+ </div><br /><br />
+ NIH...Turning Discovery Into Health<sup>&reg;</sup>
+ </div>
+</div>
 
 </body></html>
