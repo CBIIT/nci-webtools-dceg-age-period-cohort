@@ -63,11 +63,17 @@ $(document).ready(function() {
 			$("#ND").css("display","none");
         	$("#CE").css("display","none");
         	$("#WT").css("display","none");
+        	$(".rates").css("display","none");
 
-        	for (var x=8; x < 18; x++) {
-        		$("#tab-4458-"+x).html("");
-        	}
+        	// for (var x=8; x < 18; x++) {
+        	// 	$("#tab-4458-"+x).html("");
+        	// }
 
+        	tabTablesDivs = ['AgeDeviationsGraph','AgeDeviations','AgeDeviationsDownloadResultLink','PerDeviationsGraph','PerDeviations','CohDeviationsGraph','CohDeviations','LongAgeGraph','LongAge','CrossAgeGraph','CrossAge','Long2CrossRRGraph','Long2CrossRR','FittedTemporalTrendsGraph','FittedTemporalTrends','PeriodRRGraph','PeriodRR','CohortRRGraph','CohortRR','LocalDriftsGraph','LocalDrifts']
+        	for (var x=0; x<tabTablesDivs.length;x++)
+	        	{
+	        		$("#"+tabTablesDivs[x]).html("");
+	        	}
 
 			line_array = null;
 
@@ -142,6 +148,7 @@ $(document).ready(function() {
         $("#ND").css("display","block");
         $("#CE").css("display","block");
         $("#WT").css("display","block");
+        $(".rates").css("display","block");
 
         open_threads = keys.length;
 		for (var i in keys){
