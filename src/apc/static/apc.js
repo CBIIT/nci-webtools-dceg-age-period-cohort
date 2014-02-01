@@ -57,6 +57,18 @@ $(document).ready(function() {
 			$("#description").val("");
 			$("#interval").val("");
 			$("#title").val("");
+			$("#Excel").html("");
+			$("#InputRawData").html("");
+			$("#OutputRawData").html("");
+			$("#ND").css("display","none");
+        	$("#CE").css("display","none");
+        	$("#WT").css("display","none");
+
+        	for (var x=8; x < 18; x++) {
+        		$("#tab-4458-"+x).html("");
+        	}
+
+
 			line_array = null;
 
 			$("#please_wait").dialog({
@@ -75,6 +87,15 @@ $(document).ready(function() {
 	
 	$( "#calculate" ).click(function() {
 
+    	if ($("#title").val()=='') {
+    		var date = new Date();
+    		$("#title").val('APC Analysis - ' +date.getHours()+':' + date.getMinutes())
+    		setTableTitle();
+    	}
+    	else {
+			var title = encodeURIComponent($("#title").val());
+    	}
+    	
     	var title = encodeURIComponent($("#title").val());
     	var startYear = $("#startYear").val();
      	var startAge = $("#startAge").val();
@@ -85,14 +106,8 @@ $(document).ready(function() {
     		alert(paste_instructions);
     		return false;
     	}
-     	if (title == "") {
-    		alert("Must enter a value in the Title field");
-    		return false;
-    	}
-        if (description == "") {
-                alert("Must enter a value in the Description field");
-                return false;
-        }
+
+
     	if (isNaN(startYear) || startYear < 1900 || startYear > 2200) {
     		alert("Start year must be a valid number beween 1900 and 2200");
     		return false;
@@ -103,8 +118,10 @@ $(document).ready(function() {
     	}
     	if (interval != "year1" && interval != "year2" &&
     		interval != "year3" && interval != "year4" && 
-    		interval != "year5" && interval != "year10") {
-    		alert("Interval must be 1,2,3,4,5, or 10 years, it is: [" + interval + "]");
+    		interval != "year5" && interval != "year6" &&
+    		interval != "year7" && interval != "year8" && 
+    		interval != "year9" && interval != "year10") {
+    		alert("Interval must be 1,2,3,4,5,6,7,8,9 or 10 years, it is: [" + interval + "]");
     		return false;
     	}
     	
@@ -122,6 +139,10 @@ $(document).ready(function() {
 					"NetDrift",		"Offset",		"RawData", "Excel" ];
 		//-----
         $("#please_wait").dialog('open');
+        $("#ND").css("display","block");
+        $("#CE").css("display","block");
+        $("#WT").css("display","block");
+
         open_threads = keys.length;
 		for (var i in keys){
 			getAPCData({
@@ -172,6 +193,7 @@ $(document).ready(function() {
         $('#countPopulation').change(function(){
                 if ( window.FileReader ) {
                         var file = this.files[0];
+                        if ($("#title").val()=='') { $("#title").val(file.name);}
                         var reader = new FileReader();
                         reader.onload = function(theFile) {
                         var text =reader.result;
@@ -181,7 +203,7 @@ $(document).ready(function() {
                         reader.readAsText(file);
                 }
                 else {
-
+                        if ($("#title").val()=='') { $("#title").val($("#countPopulation").val());}
                         var filePath = $("#countPopulation").val();
                         var fso = new ActiveXObject("Scripting.FileSystemObject");
                         var textStream = fso.OpenTextFile(filePath);
@@ -268,7 +290,9 @@ function displayText(jsonData, key){
 
 	} else {
 		// TODO: Shaun Make excel download button here
-		$('#' + key).text(jsonData[0]);
+		outputData = jsonData[0];
+		$('#' + key).html('<a href="'+ inputData + '" class="btn btn-primary" style="margin-bottom:10px;">Download Excel</a>');
+
 	}
 	
 }
@@ -460,6 +484,21 @@ function getInterval (){
 		case "year5":
 			interval = 5;
 		break;
+		case "year6":
+			interval = 6;
+		break;
+		case "year7":
+			interval = 7;
+		break;
+		case "year8":
+			interval = 8;
+		break;				
+		case "year9":
+			interval = 9;
+		break;
+		case "year10":
+			interval = 10;
+		break;		
 	}
 	return interval;
 }
@@ -635,7 +674,7 @@ function display_table(txt, delimiter) {
 		var data_row = $("<tr></tr>");
 		// First Column is label, because of rowspan, only first row has it
 		if (y == 0) data_row.append("<td id='row-title' rowspan='" + rows + "' class='header vertical-text border-top border-bottom border-left'>" +
-				"Age at Diagnosis<br/><i>(" + rows + " Age Groups)</i></td>")
+				"Age<br/><i>(" + rows + " Age Groups)</i></td>")
 		
 		var age = compute_age(y);
 		if (isNaN(age)) age = "";

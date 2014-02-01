@@ -120,7 +120,7 @@ createPanCanList <- function (inputList) {
   countCSV <-getCountData(inputList);
   populationCSV <- getPopulationData(inputList);
                          
-  interval <- switch(getInterval(inputList), year1 = 1, year2 = 2, year3 = 3, year4 = 4, year5 = 5, year10 = 10);
+  interval <- switch(getInterval(inputList), year1 = 1, year2 = 2, year3 = 3, year4 = 4, year5 = 5, year6 = 6, year7 = 7, year8 = 8, year9 = 9, year10 = 10);
   panCan <- list(name = getTitle(inputList),
                  description = getDescription(inputList),
                  # events = to Count Columns in APC Spread Sheet
