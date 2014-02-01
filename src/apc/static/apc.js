@@ -296,13 +296,13 @@ function displayText(jsonData, key){
 		inputData = jsonData[0];
 		outputData =  jsonData[1];
 
-		 $('#InputRawData').html('<a href="'+ inputData + '" class="btn btn-primary" style="margin-bottom:10px;">Download Raw Input Data</a>');
-		 $('#OutputRawData').html('<a href="' + outputData + '" class="btn btn-primary">Download Raw Output Data</a>');
+		 $('#InputRawData').html('<a href="'+ inputData + '" class="btn btn-success" style="margin-bottom:10px;">Download Raw Input Data</a>');
+		 $('#OutputRawData').html('<a href="' + outputData + '" class="btn btn-success">Download Raw Output Data</a>');
 
 	} else {
 		// TODO: Shaun Make excel download button here
 		outputData = jsonData[0];
-		$('#' + key).html('<a href="'+ inputData + '" class="btn btn-primary" style="margin-bottom:10px;">Download Excel</a>');
+		$('#' + key).html('<a href="'+ inputData + '" class="btn btn-success" style="margin-bottom:10px;">Download Excel</a>');
 
 	}
 	
