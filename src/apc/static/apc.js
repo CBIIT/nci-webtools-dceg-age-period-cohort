@@ -65,15 +65,19 @@ $(document).ready(function() {
         	$("#WT").css("display","none");
         	$(".rates").css("display","none");
 
-        	// for (var x=8; x < 18; x++) {
-        	// 	$("#tab-4458-"+x).html("");
-        	// }
+        	for (var x=8; x < 18; x++) {
+        		items = $.merge($("#tab-4458-"+x).find("table"),$("#tab-4458-"+x).find("div").not("[class='rates']").not("[class='dataTables_wrapper']"))
+        		for (var z=0; z < items.length; z++)
+	        		{
+	        			$("#"+items[z].id).html("")
+	        		}
+        	}
 
-        	tabTablesDivs = ['AgeDeviationsGraph','AgeDeviations','AgeDeviationsDownloadResultLink','PerDeviationsGraph','PerDeviations','CohDeviationsGraph','CohDeviations','LongAgeGraph','LongAge','CrossAgeGraph','CrossAge','Long2CrossRRGraph','Long2CrossRR','FittedTemporalTrendsGraph','FittedTemporalTrends','PeriodRRGraph','PeriodRR','CohortRRGraph','CohortRR','LocalDriftsGraph','LocalDrifts']
-        	for (var x=0; x<tabTablesDivs.length;x++)
-	        	{
-	        		$("#"+tabTablesDivs[x]).html("");
-	        	}
+        	// tabTablesDivs = ['AgeDeviationsGraph','AgeDeviations','AgeDeviationsDownloadResultLink','PerDeviationsGraph','PerDeviations','CohDeviationsGraph','CohDeviations','LongAgeGraph','LongAge','CrossAgeGraph','CrossAge','Long2CrossRRGraph','Long2CrossRR','FittedTemporalTrendsGraph','FittedTemporalTrends','PeriodRRGraph','PeriodRR','CohortRRGraph','CohortRR','LocalDriftsGraph','LocalDrifts']
+        	// for (var x=0; x<tabTablesDivs.length;x++)
+	        // 	{
+	        // 		$("#"+tabTablesDivs[x]).html("");
+	        // 	}
 
 			line_array = null;
 
