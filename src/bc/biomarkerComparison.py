@@ -54,7 +54,9 @@ def callFunctionWithPrev(parsedString):
     print(sensArrayWithRef)
     prev=urllib.unquote(parsedString[8].replace('=','<-'))
     print(prev)
-    uniqueKey=urllib.unquote(parsedString[9].replace('=','<-'))
+    labels=urllib.unquote(parsedString[9].replace('=','<-'))
+    print(labels)
+    uniqueKey=urllib.unquote(parsedString[10].replace('=','<-'))
     print(uniqueKey)
     robjects.r(refSpec)
     robjects.r(refSens)
@@ -63,6 +65,7 @@ def callFunctionWithPrev(parsedString):
     robjects.r(sensArray)
     robjects.r(sensArrayWithRef)
     robjects.r(prev)
+    robjects.r(labels)
     robjects.r(uniqueKey)
     r_input_specref=robjects.globalenv[(refSpec.split("<-"))[0]]
     r_input_sensref=robjects.globalenv[(refSens.split("<-"))[0]]
@@ -71,6 +74,7 @@ def callFunctionWithPrev(parsedString):
     r_input_sens=robjects.globalenv[(sensArray.split("<-"))[0]]
     r_input_sensWithRef=robjects.globalenv[(sensArrayWithRef.split("<-"))[0]]
     r_input_prev=robjects.globalenv[(prev.split("<-"))[0]]
+    r_input_labels=robjects.globalenv[(labels.split("<-"))[0]]
     r_input_key=robjects.globalenv[(uniqueKey.split("<-"))[0]]
     # source all R functions places in the director r-code
     rSource = robjects.r('source')
@@ -84,7 +88,7 @@ def callFunctionWithPrev(parsedString):
 	if (rFunctionName == 'JsonWrapper'):
  	   jsonReturn = r_getname_function(r_input_sensWithRef, r_input_specWithRef, r_input_prev)
         elif (rFunctionName == 'DrawSensSpecLR'):
- 	   r_getname_function(r_input_key, r_input_sensref, r_input_specref, r_input_sens, r_input_spec)
+ 	   r_getname_function(r_input_key, r_input_sensref, r_input_specref, r_input_sens, r_input_spec, r_input_labels)
     return jsonReturn[0]
 
 def callFunction(parsedString):
@@ -100,7 +104,9 @@ def callFunction(parsedString):
     print(sensArray)
     sensArrayWithRef=urllib.unquote(parsedString[7].replace('=','<-'))
     print(sensArrayWithRef)
-    uniqueKey=urllib.unquote(parsedString[8].replace('=','<-'))
+    labels=urllib.unquote(parsedString[8].replace('=','<-'))
+    print(labels)
+    uniqueKey=urllib.unquote(parsedString[9].replace('=','<-'))
     print(uniqueKey)
     robjects.r(refSpec)
     robjects.r(refSens)
@@ -108,6 +114,7 @@ def callFunction(parsedString):
     robjects.r(specArrayWithRef)
     robjects.r(sensArray)
     robjects.r(sensArrayWithRef)
+    robjects.r(labels)
     robjects.r(uniqueKey)
     r_input_specref=robjects.globalenv[(refSpec.split("<-"))[0]]
     r_input_sensref=robjects.globalenv[(refSens.split("<-"))[0]]
@@ -115,6 +122,7 @@ def callFunction(parsedString):
     r_input_specWithRef=robjects.globalenv[(specArrayWithRef.split("<-"))[0]]
     r_input_sens=robjects.globalenv[(sensArray.split("<-"))[0]]
     r_input_sensWithRef=robjects.globalenv[(sensArrayWithRef.split("<-"))[0]]
+    r_input_labels=robjects.globalenv[(labels.split("<-"))[0]]
     r_input_key=robjects.globalenv[(uniqueKey.split("<-"))[0]]
     # source all R functions places in the director r-code
     rSource = robjects.r('source')
@@ -128,10 +136,10 @@ def callFunction(parsedString):
 	if (rFunctionName == 'JsonWrapperLR'):
  	   jsonReturn = r_getname_function(r_input_sensWithRef, r_input_specWithRef)
         elif (rFunctionName == 'DrawSensSpecLR'):
- 	   r_getname_function(r_input_key, r_input_sensref, r_input_specref, r_input_sens, r_input_spec)
+ 	   r_getname_function(r_input_key, r_input_sensref, r_input_specref, r_input_sens, r_input_spec, r_input_labels)
     return jsonReturn[0]
 
-@app.route('/BiomarkerComparison', methods = ['GET','POST'])
+@app.route('/BiomarkerComparison/cal', methods = ['GET','POST'])
 @jsonp
 def biomarkerComparison():
     print " biomarkerComparison >> " + request.query_string + "\n";

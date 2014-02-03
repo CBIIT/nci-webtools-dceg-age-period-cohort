@@ -167,6 +167,7 @@ function do_calculation()
     var prev = "c(";
     var sensArrayWithRef = "c(";
     var specArrayWithRef = "c(";
+    var labels = "c(";
 
     var prevalence = $("#prevalence").val();
     
@@ -198,16 +199,18 @@ function do_calculation()
     		specArrayWithRef += parseFloat($(this).find(".specificity").text()) + ",";
     		hasNoErrors &= isNumberBetweenZeroAndOne(parseFloat($(this).find(".sensitivity").text()));
     		hasNoErrors &= isNumberBetweenZeroAndOne(parseFloat($(this).find(".specificity").text()));
+    		labels = labels + (i+1)+",";
     	}
     	
     	
     });
-
     sensArray = sensArray.slice(0, -1) + ")";
     specArray = specArray.slice(0, -1) + ")";
     sensArrayWithRef = sensArrayWithRef.slice(0, -1) + ")";
     specArrayWithRef = specArrayWithRef.slice(0, -1) + ")";
     
+    labels = labels.slice(0, -1) + ")";
+
     if (!hasNoErrors) {
     	alert ("Error with input data.  Not all values are numbers between Zero and One");
     	return;
@@ -218,8 +221,8 @@ function do_calculation()
     if (validPrevValue)
     {
         $.ajax({
-            type: "POST",
-            url: "http://"+hostname+":9982/BiomarkerComparison",
+            type: "GET",
+            url: "http://"+hostname+"/BiomarkerComparison/cal",
             data:{numberOfValues: "8",
                   refSpec: refSpec,
                   refSens: refSens,
@@ -228,6 +231,7 @@ function do_calculation()
                   sensArray: sensArray,
                   sensArrayWithRef: sensArrayWithRef,
                   prev: prev,
+                  labels: labels,
                   unique_key: uniqueKey},
             dataType:"jsonp",
             success:set_data,
@@ -239,8 +243,8 @@ function do_calculation()
     else
     {
         $.ajax({
-            type: "POST",
-            url: "http://"+hostname+":9982/BiomarkerComparison",
+            type: "GET",
+            url: "http://"+hostname+"/BiomarkerComparison/cal",
             data:{numberOfValues: "7",
                   refSpec: refSpec,
                   refSens: refSens,
@@ -248,6 +252,7 @@ function do_calculation()
                   specArrayWithRef:specArrayWithRef,
                   sensArray: sensArray,
                   sensArrayWithRef: sensArrayWithRef,
+                  labels: labels,
                   unique_key: uniqueKey},
             dataType:"jsonp",
             success:set_data,
