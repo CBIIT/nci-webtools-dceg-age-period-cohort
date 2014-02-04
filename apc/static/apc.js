@@ -110,7 +110,7 @@ $(document).ready(function() {
     	var startYear = $("#startYear").val();
      	var startAge = $("#startAge").val();
      	var interval = $("#interval").val();
-     	var description = $("#description").val();
+     	var description = encodeURIComponent($("#description").val());
 
      	if (line_array == undefined || line_array == null || line_array.length == 0) {
     		alert(paste_instructions);
