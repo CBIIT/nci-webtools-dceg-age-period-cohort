@@ -24,6 +24,9 @@
 </head>
 
 <body>
+<!-- Uses JINJA2 templates. Please do all changes here. Then view the source of the rendered page on the web and copy changes to the root index.html -->
+
+
   <div id="wrapper">
 <div id="logos">
  <div id="left"><a href="http://www.cancer.gov" target="_blank"><img src="./static/images/nci.jpg" width="286" height="43" border="0" alt="National Cancer Institute" title="National Cancer Institute" /></a></div>
@@ -36,6 +39,8 @@
 </div>
 <div id="blockcontent">
 
+
+<!-- Uses JINJA2 templates. Please do all changes here. Then view the source of the rendered page on the web and copy changes to the root index.html -->
 
   <div class="row-fluid">
     <div class="span4">
@@ -76,7 +81,7 @@
 
       </table>     
 
-        <div><label for="browsebutton">Copy and paste into table on right or upload a csv</label></div><br />
+        <div><label for="browsebutton">Copy and paste into table on right or upload a csv with population and count information</label></div><br />
         <div class="fileupload"><input id="countPopulation" type="file" accept="text,text/plain"/></div>
             <form>
               <button type="submit" id="cancel" class="btn btn-primary" style="display:none;float: left;margin-right:20px;">Clear</button>
@@ -87,30 +92,38 @@
         <div id='Excel'></div>
         <div id='InputRawData'></div>
         <div id='OutputRawData'></div>
-        <hr class="style-two">
-            <div class="cOut Net"><b>Net Drift</b></div>
+
+        <div id="ND" style="display:none">
+            <hr class="style-two">
+                <div class="cOut Net"><b>Net Drift</b></div>
 
 
-        <div>
-            <div class="cOut"><b>Wald Tests</b></div>
-            <div id="tab-4458-18">
-              <table id="Waldtests" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
-              <!--<div id="WaldtestsDownloadResultLink"></div>-->
+            <table id="NetDrift" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+        </div>
+        
+
+        <div id="WT" style="display:none">
+
+            <div>
+                <div class="cOut"><b>Wald Tests</b></div>
+                <div id="tab-4458-18">
+                  <table id="Waldtests" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+                  <!--<div id="WaldtestsDownloadResultLink"></div>-->
+                </div>
+            </div>       
+        </div>        
+
+        <div id="CE" style="display:none">
+
+            <div>
+                <div class="cOut"><b>Coefficients</b></div>
+                  <div id="tab-4458-7">
+                    <table id="Coefficients" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+                    <!--<div id="CoefficientsDownloadResultLink"></div>-->
+                  </div>
             </div>
-        </div>     
-        
-        <table id="NetDrift" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
-        
-        <div>
-            <div class="cOut"><b>Coefficients</b></div>
-              <div id="tab-4458-7">
-                <table id="Coefficients" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
-                <!--<div id="CoefficientsDownloadResultLink"></div>-->
-              </div>
         </div>
 
-        
-  
 
             <div class="tabbable">
 
@@ -188,7 +201,7 @@
                 <td class='header border-bottom border-right'>Population</td>
               </tr>
               <tr id='age_1_row'>
-                <td id='row-title' rowspan='14' class='header vertical-text border-top border-bottom border-left'>Age at Diagnosis</td>
+                <td id='row-title' rowspan='14' class='header vertical-text border-top border-bottom border-left'>Age</td>
                 <td id='age_1_age' class='header border-left border-right'>&nbsp;
                   <textarea class='paste_area' rows='14' cols='58'></textarea>
                 </td>
@@ -346,7 +359,7 @@
               </tr>
             </table>
             <!-- End Larry's Code and Send Data to Shiny -->
-            <div id='please_wait'><p>Please Wait...<br/><img src='/static/images/working.gif' /></p></div>
+            <div id='please_wait'><p>Please Wait...<br/><img src='./static/images/working.gif' /></p></div>
             <div id='error_dialog'><p>There were errors in your request.</p></div>
             
           </div>
@@ -422,3 +435,4 @@
 </div>
 </body>
 </html>
+
