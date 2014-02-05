@@ -3,7 +3,7 @@
 
 #@app.route('/')
 #def root():
-#	return url_for('static', filename='index.html')
+#   return url_for('static', filename='index.html')
 
 
 from flask import Flask, render_template, Response, abort, request, make_response, url_for, jsonify
@@ -20,6 +20,9 @@ import numpy as np
 from pandas import DataFrame
 import pandas.rpy.common as com
 from socket import gethostname
+import urllib
+from jinja2 import Environment, FileSystemLoader
+
 
 #app = Flask(__name__)
 
@@ -34,16 +37,19 @@ app = Flask(__name__, static_folder='static', static_url_path='/static')
 def index():
     return render_template('index.html')
 
-@app.route('/glossary')
+@app.route('/glossary.html')
 def glossary():
     return render_template('glossary.html')
 
-@app.route('/help')
+@app.route('/help.html')
 def help():
     return render_template('help.html')
 
 @app.route('/index.html')
 def root():
+    return render_template('index.html')
+
+def root1():
     return render_template('index.html')
 
 def jsonp(func):
@@ -70,6 +76,20 @@ def createPanCanList():
     apcJsondata = r_getname_getApcData(request.stream.read())
     return apcJsondata[0]
 
+def createStaticFiles():
+    """ solves issue of copying templates to root index.html, help.html etc. Deleted 4 static files from github as there is no reason to check these files in."""
+    env = Environment(loader=FileSystemLoader('templates'))
+    files = os.listdir('./templates')
+    for x in files:
+        template = env.get_template(x)
+        renderedFile = template.render(**{})
+        f = open(x,'w')
+        f.write(renderedFile)
+        f.close()
+        
 if __name__ == '__main__':
     hostname = gethostname()
+    createStaticFiles()
     app.run(host='0.0.0.0', port=8888, debug = True)
+
+
