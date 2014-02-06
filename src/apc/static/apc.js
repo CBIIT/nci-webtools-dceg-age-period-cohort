@@ -97,8 +97,8 @@ $(document).ready(function() {
 	$( "#calculate" ).click(function() {
 
     	if ($("#title").val()=='') {
-    		var date = new Date();
-    		$("#title").val('APC Analysis - ' +date.getHours()+':' + date.getMinutes())
+    		var date = new Date().getTime();
+    		$("#title").val('APC Analysis - ' + date)
     		setTableTitle();
     	}
     	else {
