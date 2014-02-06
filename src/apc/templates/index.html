@@ -14,9 +14,9 @@
 
         <table>
         <tr> 
-          <td class='demographics'>Start Year</td>
-          <td class='demographics'>Start Age</td>
-          <td class='demographics'>Years</td>
+          <td class='demographics'> <label for="startYear">Start Year</label></td>
+          <td class='demographics'> <label for="startAge">Start Age</label></td>
+          <td class='demographics'> <label for="interval">Years</label></td>
         </tr>
         <tr>
         <td class='demographics'> <input style="width:58px;" id="startYear" type="number" value="" step="1"/> </td>
@@ -42,13 +42,14 @@
 
       </table>     
 
-        <div><label for="browsebutton">Copy and paste into table on right or upload a csv with population and count information</label></div><br />
+        <div><label for="countPopulation">Copy and paste into table on right or upload a csv with population and count information</label></div><br />
         <div class="fileupload"><input id="countPopulation" type="file" accept="text,text/plain"/></div>
         
 		<div><button type="submit" id="cancel" class="btn btn-primary" style="float: left;margin-right:20px;">Clear</button>
 		<button type="submit" id="calculate" class="btn btn-primary" style="float: left;margin-right:20px;">Calculate</button></div>
 		<br /><br /><br />
 		<div style="position:relative; float: left; margin-right:20px;">
+			<label for="download_selector">&nbsp;</label>
 			<select id='download_selector' style="float: right;margin-right:20px;">
 				<option id='raw_input_option'>Raw Input File (R-Studio Format)</option>
 				<option id='raw_output_option'>Raw Output File (R-Studio Format)</option>
@@ -170,7 +171,8 @@
                 		<div class='vertical-text'>Age</div>
                 </td>
                 <td id='age_1_age' class='header border-left border-right'>&nbsp;
-                  <textarea class='paste_area' rows='14' cols='58'></textarea>
+                  <label for='paste'>&nbsp;</label>
+                  <textarea id='paste' class='paste_area' rows='14' cols='58'></textarea>
                 </td>
                 <td id='age_1_year_1_count' class='data border-dotted-left'></td>
                 <td id='age_1_year_1_pop' class='data'></td>
