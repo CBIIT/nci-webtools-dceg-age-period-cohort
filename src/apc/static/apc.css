@@ -9,13 +9,6 @@ table.input {
 	width:97%;
 }
 
-.vertical-text {
-	 font-family: Arial, Helvetica, sans-serif;
-	 font-weight:bold;
-	 font-size: 10px;
-}
-
-
 /* coefficients.tfoot {
  	display:none;
  }*/
@@ -86,5 +79,24 @@ th.header {
 /* Used for jquery dialog to remove close botton */
 .no-titlebar .ui-dialog-titlebar {
 	display: none;
+}
+
+.row-header {
+	vertical-align:middle;
+	max-width:100px;
+}
+
+#download {
+	float: right;	
+}
+
+.vertical-text {
+	text-align:center;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg); 
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 }
 

@@ -90,6 +90,6 @@ def createStaticFiles():
 if __name__ == '__main__':
     hostname = gethostname()
     createStaticFiles()
-    app.run(host='0.0.0.0', port=8888, debug = True)
+    app.run(host='0.0.0.0', port=8788, debug = True)
 
 

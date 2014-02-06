@@ -87,7 +87,8 @@ $(document).ready(function() {
 			$("#error_dialog").dialog({
 			    autoOpen: false
 			});
-            $("#cancel").css("display","none");
+//            $("#cancel").css("display","none");
+			$("#download").prop("disabled", true);
 
 
 	    create_paste_binding($(".paste_area"));
@@ -207,7 +208,8 @@ $(document).ready(function() {
 	$( "#loadExampleData" ).click(function() {
 		// TODO: send data to Larry's code somehow
 	});
-        $('#countPopulation').change(function(){
+	
+    $('#countPopulation').change(function(){
                 if ( window.FileReader ) {
                         var file = this.files[0];
                         if ($("#title").val()=='') { $("#title").val(file.name);}
@@ -229,8 +231,13 @@ $(document).ready(function() {
                 }
                 $("#cancel").css("display","block");
         
-});
-
+    });
+    
+    $("#download").click(function() {
+    	var selected_file = $("#download_selector").val();
+    	window.open("./" + selected_file, 'download', '');
+//    	alert ("File is: " + selected_file);
+    });
 
 });
 function setTableTitle () {
@@ -297,19 +304,15 @@ function displayText(jsonData, key){
 		$('#OffsetCrossAge').text(jsonData[0]);
 		$('#OffsetFittedTemporalTrends').text(jsonData[0]);	
 	} else if (key.localeCompare("RawData") == 0) {
-		// TODO: Shaun Make R raw file download button here
-
-		inputData = jsonData[0];
-		outputData =  jsonData[1];
-
-		 $('#InputRawData').html('<a href="'+ inputData + '" class="btn btn-success" style="margin-bottom:10px;">Download Raw Input Data</a>');
-		 $('#OutputRawData').html('<a href="' + outputData + '" class="btn btn-success">Download Raw Output Data</a>');
-
+		$("#download").prop("disabled", false);
+		
+		$("#raw_input_option").attr("value", jsonData[0]);
+		$("#raw_output_option").attr("value", jsonData[1]);
+		$("#text_input_option").attr("value", jsonData[2]);
+		$("#text_output_option").attr("value", jsonData[3]);
+		
 	} else {
-		// TODO: Shaun Make excel download button here
-		outputData = jsonData[0];
-		$('#' + key).html('<a href="'+ inputData + '" class="btn btn-success" style="margin-bottom:10px;">Download Excel</a>');
-
+		$("#excel_output_option").attr("value", jsonData[0]);
 	}
 	
 }
@@ -325,7 +328,7 @@ function fillDataTable(jsonTableData, key){
 		"bInfo":false,
 		"bPaginate": false,
 		"bDestroy": true
-	});
+	});		
 }
 
 // function createResultDownloadLink (keyData, uniqueId){
@@ -343,7 +346,6 @@ function getColumnHeaderData(data2d, keyName) {
 		var tempObject = {};
 		tempObject["mDataProp"] = key;
 		tempObject["sTitle"] = key;
-		tempObject["sWidth"] = "25%";
 		columnHeaderData2d.push(tempObject);
 	}
 	return columnHeaderData2d;
@@ -563,33 +565,6 @@ function display_table(txt, delimiter) {
 
 	$("#main-table").empty();
 	
-//	var first_header_row = $("<tr></tr>");
-//	first_header_row.append("<th>&nbsp;</th>");
-//	first_header_row.append("<th>&nbsp;</th>");
-//	for (var x =0; x < cols; x++) {
-//		var cell = $("<th colspan='2' class='header border-top'><u>Calendar Period " + (x+1) + "</u></th>");
-//		// Add left and right borders as required
-//		if (x == 0) cell.addClass("border-left");
-//		else if (x == cols-1) cell.addClass("border-dotted-left").addClass("border-right");
-//		else cell.addClass("border-dotted-left");
-//		first_header_row.append(cell);			
-//	}
-//	$("#main-table").append(first_header_row);
-
-//	var second_header_row = $("<tr></tr>");
-//	second_header_row.append("<th></th>");
-//	second_header_row.append("<th class='header border-bottom'></th>");
-	
-//	for (var x =0; x < cols; x++) {
-//		var cell_left = $("<th class='header border-bottom'>Count</th>");
-//		if (x == 0) cell_left.addClass("border-left");
-//		else cell_left.addClass("border-dotted-left");
-//		second_header_row.append(cell_left);
-//		var cell_right = $("<th class='header border-bottom'>Population</th>");
-//		if (x == cols-1) cell_right.addClass("border-right");
-//		second_header_row.append(cell_right);
-//	}
-//	$("#main-table").append(second_header_row);
 	
 	var third_header_row = $("<tr></tr>");
 	third_header_row.append("<td >&nbsp;</td>");
@@ -642,8 +617,9 @@ function display_table(txt, delimiter) {
 	for (var y=0; y < rows; y++) {
 		var data_row = $("<tr></tr>");
 		// First Column is label, because of rowspan, only first row has it
-		if (y == 0) data_row.append("<td id='row-title' rowspan='" + rows + "' class='header vertical-text border-top border-bottom border-left'>" +
-				"Age<br/><i>(" + rows + " Age Groups)</i></td>")
+		if (y == 0) data_row.append("<td id='row-title' rowspan='" + rows + "' " +
+				"class='row-header border-top border-bottom border-left'>" +
+				"<div class='vertical-text'>Age<br/><i>(" + rows + "&nbsp;Age&nbsp;Groups)</i></div></td>")
 		
 		var age = compute_age(y);
 		if (isNaN(age)) age = "";
