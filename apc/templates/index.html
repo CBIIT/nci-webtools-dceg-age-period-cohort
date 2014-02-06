@@ -24,7 +24,7 @@
         <td class='demographics'> 
  
           <select style="width:90px;" id="interval">
-       <option value=""></option>
+       	     <option value=""></option>
              <option value="year1">1</option>
              <option value="year2">2</option>
              <option value="year3">3</option>
@@ -44,22 +44,32 @@
 
         <div><label for="browsebutton">Copy and paste into table on right or upload a csv with population and count information</label></div><br />
         <div class="fileupload"><input id="countPopulation" type="file" accept="text,text/plain"/></div>
-            <form>
-              <button type="submit" id="cancel" class="btn btn-primary" style="display:none;float: left;margin-right:20px;">Clear</button>
-
-              <button type="submit" id="calculate" class="btn btn-primary" style="float: left;">Calculate</button>
-            </form>
-
-        <div id='Excel'></div>
-        <div id='InputRawData'></div>
-        <div id='OutputRawData'></div>
-
+        
+		<div><button type="submit" id="cancel" class="btn btn-primary" style="float: left;margin-right:20px;">Clear</button>
+		<button type="submit" id="calculate" class="btn btn-primary" style="float: left;margin-right:20px;">Calculate</button></div>
+		<br /><br /><br />
+		<div style="position:relative; float: left; margin-right:20px;">
+			<select id='download_selector' style="float: right;margin-right:20px;">
+				<option id='raw_input_option'>Raw Input File (R-Studio Format)</option>
+				<option id='raw_output_option'>Raw Output File (R-Studio Format)</option>
+				<option id='text_input_option'>Text Input File </option>
+				<option id='text_output_option'>Text Output File </option>
+				<option id='excel_output_option'>Excel Output File </option>
+			</select>
+			<button type="submit" id="download" class="btn btn-primary" disabled> Download</button>
+		
+		</div>
+		&nbsp;
+		</form>
+		<br />
+        <hr class="style-two">
         <div id="ND" style="display:none">
-            <hr class="style-two">
-                <div class="cOut Net"><b>Net Drift</b></div>
+            <div class="cOut Net"><b>Net Drift</b></div>
 
 
-            <table id="NetDrift" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+            <table id="NetDrift" class="bordered-table zebra-striped">
+            <tr><th rowspan='4'> NetDrift </th></tr>
+            </table>
         </div>
         
 
@@ -68,7 +78,7 @@
             <div>
                 <div class="cOut"><b>Wald Tests</b></div>
                 <div id="tab-4458-18">
-                  <table id="Waldtests" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+                  <table id="Waldtests" class="bordered-table zebra-striped"></table>
                   <!--<div id="WaldtestsDownloadResultLink"></div>-->
                 </div>
             </div>       
@@ -79,19 +89,13 @@
             <div>
                 <div class="cOut"><b>Coefficients</b></div>
                   <div id="tab-4458-7">
-                    <table id="Coefficients" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+                    <table id="Coefficients"class="bordered-table zebra-striped"></table>
                     <!--<div id="CoefficientsDownloadResultLink"></div>-->
                   </div>
             </div>
         </div>
 
 
-            <div class="tabbable">
-
-
-        <!-- </div> -->
-      </form>
-    </div>
   </div>
   <div class="span8">
     <div class="tabbable">
@@ -162,7 +166,9 @@
                 <td class='header border-bottom border-right'>Population</td>
               </tr>
               <tr id='age_1_row'>
-                <td id='row-title' rowspan='14' class='header vertical-text border-top border-bottom border-left'>Age</td>
+                <td id='row-title' rowspan='14' class='row-header border-left border-bottom border-top'>
+                		<div class='vertical-text'>Age</div>
+                </td>
                 <td id='age_1_age' class='header border-left border-right'>&nbsp;
                   <textarea class='paste_area' rows='14' cols='58'></textarea>
                 </td>
@@ -327,51 +333,51 @@
         </div>
         <div class="tab-pane" id="tab-4458-8">
           <div id="AgeDeviationsGraph"></div>
-           <table id="AgeDeviations" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+           <table id="AgeDeviations" class="bordered-table zebra-striped"></table>
            <div id="AgeDeviationsDownloadResultLink"></div>
         </div>
         <div class="tab-pane" id="tab-4458-9">
           <div id="PerDeviationsGraph"></div>
-          <table id="PerDeviations" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+          <table id="PerDeviations" class="bordered-table zebra-striped"></table>
         </div>
         <div class="tab-pane" id="tab-4458-10">
           <div id="CohDeviationsGraph"></div>
-          <table id="CohDeviations" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+          <table id="CohDeviations" class="bordered-table zebra-striped"></table>
         </div>
         <div class="tab-pane" id="tab-4458-11">
           <div id="LongAgeGraph"></div>
           <div class="rates" style="display:none;">Rates Per <span id="OffsetLongAge"></span> Person-Years</div>
-          <table id="LongAge" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+          <table id="LongAge" class="bordered-table zebra-striped"></table>
         </div>
         <div class="tab-pane" id="tab-4458-12">
           <div id="CrossAgeGraph"></div>
           <div class="rates" style="display:none;">Rates Per <span id="OffsetCrossAge"></span> Person-Years</div>
-          <table id="CrossAge" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+          <table id="CrossAge" class="bordered-table zebra-striped"></table>
         </div>
         <div class="tab-pane" id="tab-4458-13">
           <div id="Long2CrossRRGraph"></div>
-          <table id="Long2CrossRR" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+          <table id="Long2CrossRR" class="bordered-table zebra-striped"></table>
         </div>
         <div class="tab-pane" id="tab-4458-14">
           <div id="FittedTemporalTrendsGraph"></div>
           <div class="rates" style="display:none;">Rates Per <span id="OffsetFittedTemporalTrends"></span> Person-Years</div>
-          <table id="FittedTemporalTrends" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+          <table id="FittedTemporalTrends" class="bordered-table zebra-striped"></table>
         </div>
         <div class="tab-pane" id="tab-4458-15">
           <div id="PeriodRRGraph"></div>
-          <table id="PeriodRR" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+          <table id="PeriodRR" class="bordered-table zebra-striped"></table>
         </div>
         <div class="tab-pane" id="tab-4458-16">
           <div id="CohortRRGraph"></div>
-          <table id="CohortRR" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+          <table id="CohortRR" class="bordered-table zebra-striped"></table>
         </div>
         <div class="tab-pane" id="tab-4458-17">
           <div id="LocalDriftsGraph"></div>
-          <table id="LocalDrifts" width="100%" cellpadding="0" cellspacing="0" border="0" class="bordered-table zebra-striped"></table>
+          <table id="LocalDrifts" class="bordered-table zebra-striped"></table>
         </div>
-      </div>
-    </div>
-  </div>
+      </div> <!--  tab-ontent -->
+    </div> <!-- tabbable -->
+  </div> <!-- Span 8  --> 
 </div>
 
 {% endblock %}
