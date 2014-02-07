@@ -4,7 +4,7 @@ library('xlsx');
 
 excelDirectory <- "static/xlsx/";
 
-writeResultsToExcel <- function (apcdata, uniqueId, imageDirectory) {
+writeResultsToExcel <- function (apcdata, uniqueId, title, imageDirectory) {
   outwb <- createWorkbook();
   
   ageDeviationsSheet  <- createSheet(outwb, sheetName = "AgeDeviations");
@@ -46,7 +46,10 @@ writeResultsToExcel <- function (apcdata, uniqueId, imageDirectory) {
   addPicture(paste(imageDirectory, "CohortRR",      uniqueId, ".png", sep = ''), cohortRRSheet, scale = .65, startRow = 1, startColumn = 6);
   addPicture(paste(imageDirectory, "LocalDrifts",   uniqueId, ".png", sep = ''), localDriftsSheet, scale = .65, startRow = 1, startColumn = 6);
   
-  fileName <- paste(excelDirectory, uniqueId, '.xlsx',sep='');
+  time <- gsub(":","",gsub("-","",gsub(" ","", Sys.time() , fixed=TRUE)));
+  title <- gsub(" ", "", gsub("[[:punct:]]", "", title));
+  
+  fileName <- paste(excelDirectory, title,"_",time,"_", 'Excel.xlsx',sep='');
   
   saveWorkbook(outwb, fileName);
   fileName;
