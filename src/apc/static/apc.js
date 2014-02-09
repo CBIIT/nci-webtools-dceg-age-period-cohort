@@ -13,7 +13,18 @@ var error_count = 0;
 $(document).ready(function() { 
 
 	var main_table = $("#inputData").html();
+	
+	$("#paste").css("width",  $("#main-table").width());
+	$("#paste").css("height",  $("#main-table").height() - 20);
+	
+	var off = $("#paste_here_image").position();
+//	alert (off.left + "," + off.top);
+	$("#paste_here_image").css("width",  $("#main-table").width() - 150);
+	$("#paste_here_image").css("height",  $("#main-table").height() - 150);
+	$("#paste_here_image").css("left",  off.left + 100);
+	$("#paste_here_image").css("top",  off.top + 100);
 
+	
 	$( "#R_upload_button" ).click(function() {
 		alert("Coming Soon");
 	});
@@ -63,6 +74,8 @@ $(document).ready(function() {
         	$("#CE").css("display","none");
         	$("#WT").css("display","none");
         	$(".rates").css("display","none");
+        	$("#paste_here_image").css("display","none");
+			$("#countPopulation").val("");
 
         	for (var x=8; x < 18; x++) {
         		items = $.merge($("#tab-4458-"+x).find("table"),$("#tab-4458-"+x).find("div").not("[class='rates']").not("[class='dataTables_wrapper']"))
@@ -88,18 +101,28 @@ $(document).ready(function() {
 			    autoOpen: false
 			});
 //            $("#cancel").css("display","none");
-			$("#download").prop("disabled", true);
+			$("#download_choice").hide();
 
 
 	    create_paste_binding($(".paste_area"));
+	    return false;
 	});
 	
 	
 	$( "#calculate" ).click(function() {
 
     	if ($("#title").val()=='') {
-    		var date = new Date().getTime();
-    		$("#title").val('APC Analysis - ' + date)
+    		
+//			var date_str = new Date().getTime();
+    		var d = new Date();
+			var date_str = "" 
+				+ d.getFullYear() + "_" 
+				+ (d.getMonth() + 1) + "_" // Why is january = 0?
+				+ d.getDate() + "_"
+				+ d.getHours() + "_"
+				+ d.getMinutes();
+    		
+    		$("#title").val('APC Analysis - ' + date_str)
     		setTableTitle();
     	}
     	else {
@@ -112,10 +135,13 @@ $(document).ready(function() {
      	var interval = $("#interval").val();
 
      	if ($("#description").val()=='') {
-     		var description = ' ';
-     	}
-     	
-     	else {
+     		var description = "Cohort Start Year: " 
+     			+ startYear + " at Age: " 
+     			+ startAge + " with Cohort Interval: " 
+     			+ getInterval() + " years";
+     			$("#description").val(description);
+     			setTableTitle();
+     	} else {
      		var description = encodeURIComponent($("#description").val());
      	}
 
@@ -157,6 +183,7 @@ $(document).ready(function() {
 		//-----
         $("#please_wait").dialog('open');
         $("#ND").css("display","block");
+        
         $("#CE").css("display","block");
         $("#WT").css("display","block");
         $(".rates").css("display","block");
@@ -212,17 +239,27 @@ $(document).ready(function() {
     $('#countPopulation').change(function(){
                 if ( window.FileReader ) {
                         var file = this.files[0];
-                        if ($("#title").val()=='') { $("#title").val(file.name);}
+                        if ($("#title").val()=='') {
+                        	var filename = file.name;
+                        	filename = filename.substr(filename.lastIndexOf('/')+1)
+                        	var new_title = filename.substr(0, filename.lastIndexOf('.'));
+                        	$("#title").val(new_title);
+                        }
                         var reader = new FileReader();
                         reader.onload = function(theFile) {
-                        var text =reader.result;
-                        display_table(text, ',');
+	                        var text =reader.result;
+	                        display_table(text, ',');
                         };
 
                         reader.readAsText(file);
                 }
                 else {
-                        if ($("#title").val()=='') { $("#title").val($("#countPopulation").val());}
+                        if ($("#title").val()=='') { 
+                        	var filename = $("#countPopulation").val();
+                        	filename = filename.substr(filename.lastIndexOf('/')+1)
+                        	var new_title = filename.substr(0, filename.lastIndexOf('.'));
+                        	$("#title").val(new_title);
+                        }
                         var filePath = $("#countPopulation").val();
                         var fso = new ActiveXObject("Scripting.FileSystemObject");
                         var textStream = fso.OpenTextFile(filePath);
@@ -230,13 +267,15 @@ $(document).ready(function() {
                         display_table(fileData,',');
                 }
                 $("#cancel").css("display","block");
+                $("#paste_here_image").hide();
         
     });
     
     $("#download").click(function() {
     	var selected_file = $("#download_selector").val();
-    	window.open("./" + selected_file, 'download', '');
+    	window.open("./" + selected_file, 'download');
 //    	alert ("File is: " + selected_file);
+    	return false;
     });
 
 });
@@ -293,6 +332,15 @@ function getAPCData(data, keyData, uniqueId){
 						error_count=0;
 					}
 				}
+				
+				if (keyData == "NetDrift") $("#NetDrift").find("thead").prepend(
+						"<tr><th colspan='4' style='text-align:center;'>Net Drift </th></tr>");
+				if (keyData == "Waldtests") $("#Waldtests").find("thead").prepend(
+					"<tr><th colspan='4' style='text-align:center;'>Wald Tests </th></tr>");
+				if (keyData == "Coefficients") $("#Coefficients").find("thead").prepend(
+					"<tr><th colspan='5' style='text-align:center;'>Coefficients </th></tr>");
+
+				
 			},
 			dataType: "json"
 			//dataType: "jsonp"
@@ -304,7 +352,7 @@ function displayText(jsonData, key){
 		$('#OffsetCrossAge').text(jsonData[0]);
 		$('#OffsetFittedTemporalTrends').text(jsonData[0]);	
 	} else if (key.localeCompare("RawData") == 0) {
-		$("#download").prop("disabled", false);
+		$("#download_choice").show();
 		
 		$("#raw_input_option").attr("value", jsonData[0]);
 		$("#raw_output_option").attr("value", jsonData[1]);
@@ -419,7 +467,8 @@ function create_paste_binding (element) {
             	$("#paste_area").val("Input Pasted");
             }
             else $("#paste_area").val("Input Failed \nneeds to be 14,9");
-        }, 0);          
+        }, 0); 
+        $("#paste_here_image").hide();
      });	 
 }
 
@@ -544,11 +593,58 @@ function numberOfRows () {
 // }
 
 function display_table(txt, delimiter) {
+	
+	
+	
 	var lines = txt.split("\n");
 	line_array = new Array(lines.length);
 	for (count = 0; count < lines.length;count++) {
 		//line_array[count] = lines[count].split("\t");
 		line_array[count] = lines[count].split(delimiter);
+	}
+
+	var test_another_row = true;
+	var title = null;
+	var description = null;
+	var start_year = null;
+	var start_age = null;
+	var year = null;
+	for (var i=0; test_another_row; i++) {
+		test_another_row = false;
+		if (line_array[i] == null) break;
+		var first_cell_in_row = "" + line_array[i][0];
+		if (first_cell_in_row.substring(0, 5) == "Title") {
+			title = first_cell_in_row.substring(7);  // Everything after Title:_
+			test_another_row = true;
+		} else if (first_cell_in_row.substring(0, 11) == "Description") {
+			description = first_cell_in_row.substring(13);  // Everything after Description:_
+			test_another_row = true;
+		} else if (first_cell_in_row.substring(0, 10) == "Start Year") {
+			start_year = first_cell_in_row.substring(12);  // Everything after Start Year:_
+			test_another_row = true;
+		} else if (first_cell_in_row.substring(0, 9) == "Start Age") {
+			start_age = first_cell_in_row.substring(11);  // Everything after Start Year:_
+			test_another_row = true;
+		} else if (first_cell_in_row.substring(0, 4) == "Year") {
+			year = first_cell_in_row.substring(6);  // Everything after Start Year:_
+			test_another_row = true;
+		} else if (first_cell_in_row == "" || isNaN(first_cell_in_row)) {
+			test_another_row = true; // Also remove blank lines			
+		}
+	}
+	var metadata_lines = i-1; // i will be 1 higher than the number of metadata lines
+	
+	if (metadata_lines > 0) {
+		for (count = metadata_lines; count < lines.length;count++) {
+			line_array[count - metadata_lines] = line_array[count];
+		}
+		line_array = line_array.splice(0, line_array.length-metadata_lines);
+
+		if (title != null) $("#title").val(title);
+		if (description != null)$("#description").val(description);
+		if (start_year != null)$("#startYear").val(start_year);	
+		if (start_age != null)$("#startAge").val(start_age);	
+		if (year != null)$("#interval").val("year" + year);	
 	}
 	
 	// Check for all conditions in which data size is wrong
@@ -557,7 +653,12 @@ function display_table(txt, delimiter) {
 		return false;
 	}
 	
-	var rows = lines.length - 1;
+	var rows;
+	
+	// Sometimes the data has a blank row at the end, do not iterate on it.
+	if (line_array[line_array.length -1][0] == "") rows = line_array.length;
+	else rows = line_array.length + 1;
+	
 	// Note each 'col' is actually 2 columns in the data and tables
 	var cols = Math.floor((line_array[0].length + 1) / 2);
 		
@@ -612,6 +713,13 @@ function display_table(txt, delimiter) {
 		if (x == cols - 1) cell_right.addClass("border-right");
 	}
 	$("#main-table").append(fifth_header_row);
+
+	// We have to recalculate the # of rows in case some were metadata and removed
+	if (line_array[line_array.length -1][0] == "") rows = line_array.length - 1 ;
+	else rows = line_array.length;
+
+	// Note each 'col' is actually 2 columns in the data and tables
+	cols = Math.floor((line_array[0].length + 1) / 2);
 
 	////  Main Data Element
 	for (var y=0; y < rows; y++) {
@@ -707,6 +815,14 @@ function validate_paste_input (line_array) {
 	var num_errors=0;
 	for (var y=0; y < rows-1; y++) {
 		for (var x=0; x<cols;x++) {
+
+			// Scrub the numbers in the array for any characters INCLUDING commas
+			var before_clean;
+			before_clean = line_array[y][2*x];
+			line_array[y][2*x] = before_clean.replace(/[^\d\.\-\ ]/g, '');
+			before_clean = line_array[y][2*x+1];
+			line_array[y][2*x+1] = before_clean.replace(/[^\d\.\-\ ]/g, '');
+			
 			var count_value = line_array[y][2*x];
 			var population_value = line_array[y][2*x+1];
 			
