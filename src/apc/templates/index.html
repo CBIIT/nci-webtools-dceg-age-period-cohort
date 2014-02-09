@@ -41,23 +41,22 @@
       </tr>
 
       </table>     
-
         <div><label for="countPopulation">Copy and paste into table on right or upload a csv with population and count information</label></div><br />
-        <div class="fileupload"><input id="countPopulation" type="file" accept="text,text/plain"/></div>
+        <div class="fileupload"><input id="countPopulation" type="file" accept=".csv"/></div>
         
 		<div><button type="submit" id="cancel" class="btn btn-primary" style="float: left;margin-right:20px;">Clear</button>
 		<button type="submit" id="calculate" class="btn btn-primary" style="float: left;margin-right:20px;">Calculate</button></div>
 		<br /><br /><br />
-		<div style="position:relative; float: left; margin-right:20px;">
+		<div id='download_choice' style='display:none'>
 			<label for="download_selector">&nbsp;</label>
-			<select id='download_selector' style="float: right;margin-right:20px;">
-				<option id='raw_input_option'>Raw Input File (R-Studio Format)</option>
-				<option id='raw_output_option'>Raw Output File (R-Studio Format)</option>
-				<option id='text_input_option'>Text Input File </option>
-				<option id='text_output_option'>Text Output File </option>
-				<option id='excel_output_option'>Excel Output File </option>
+			<select id='download_selector' style='width:auto; margin-bottom:0px; float:left;'>
+				<option id='raw_input_option'>R-Studio Input </option>
+				<option id='raw_output_option'>R-Studio Output </option>
+				<option id='text_input_option'>Text Input </option>
+				<option id='text_output_option'>Text Output </option>
+				<option id='excel_output_option'>Excel Output </option>
 			</select>
-			<button type="submit" id="download" class="btn btn-primary" disabled> Download</button>
+			<button type="submit" id="download" class="btn btn-primary"> Download</button>
 		
 		</div>
 		&nbsp;
@@ -65,19 +64,12 @@
 		<br />
         <hr class="style-two">
         <div id="ND" style="display:none">
-            <div class="cOut Net"><b>Net Drift</b></div>
-
-
-            <table id="NetDrift" class="bordered-table zebra-striped">
-            <tr><th rowspan='4'> NetDrift </th></tr>
-            </table>
+            <table id="NetDrift" class="bordered-table zebra-striped"></table>
         </div>
         
 
         <div id="WT" style="display:none">
-
             <div>
-                <div class="cOut"><b>Wald Tests</b></div>
                 <div id="tab-4458-18">
                   <table id="Waldtests" class="bordered-table zebra-striped"></table>
                   <!--<div id="WaldtestsDownloadResultLink"></div>-->
@@ -86,9 +78,7 @@
         </div>        
 
         <div id="CE" style="display:none">
-
             <div>
-                <div class="cOut"><b>Coefficients</b></div>
                   <div id="tab-4458-7">
                     <table id="Coefficients"class="bordered-table zebra-striped"></table>
                     <!--<div id="CoefficientsDownloadResultLink"></div>-->
@@ -139,6 +129,11 @@
         <div class="tab-pane active" id="tab-4458-1">
           <div id="inputData">
             <!-- Larry's code here -->
+            <label for='paste' style='position:absolute;'>&nbsp;</label>
+            <img id='paste_here_image' alt='paste here image' src='./static/images/paste-here.gif' 
+            	style='position:absolute'/> 
+            <textarea id='paste' class='paste_area' rows='14' cols='58'></textarea>
+            
             <table id='main-table' class='input' style="margin: 5px;">
               <tr>
                 <td >&nbsp;</td>
@@ -171,8 +166,6 @@
                 		<div class='vertical-text'>Age</div>
                 </td>
                 <td id='age_1_age' class='header border-left border-right'>&nbsp;
-                  <label for='paste'>&nbsp;</label>
-                  <textarea id='paste' class='paste_area' rows='14' cols='58'></textarea>
                 </td>
                 <td id='age_1_year_1_count' class='data border-dotted-left'></td>
                 <td id='age_1_year_1_pop' class='data'></td>

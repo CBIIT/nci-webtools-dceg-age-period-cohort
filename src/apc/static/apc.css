@@ -66,6 +66,13 @@ th.header {
 	border: 1px dotted black;
 }
 
+#paste_here_image {
+	position:absolute;
+	filter: alpha(opacity = 50);
+	opacity:0.5;
+	overflow:auto;
+}
+
 .paste_area {
 	position:absolute;
 	background-size:200px 200px;
@@ -83,12 +90,10 @@ th.header {
 
 .row-header {
 	vertical-align:middle;
-	max-width:100px;
+	width:50px;
+	max-width:50px;
 }
 
-#download {
-	float: right;	
-}
 
 .vertical-text {
 	text-align:center;
