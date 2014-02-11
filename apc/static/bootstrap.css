@@ -140,7 +140,6 @@ table .header:after {
   float: right;
   margin-top: 7px;
   border-width: 0 4px 4px;
-  border-style: solid;
   border-color: #000 transparent;
   visibility: hidden;
 }

@@ -14,15 +14,11 @@ $(document).ready(function() {
 
 	var main_table = $("#inputData").html();
 	
-	$("#paste").css("width",  $("#main-table").width());
-	$("#paste").css("height",  $("#main-table").height() - 20);
+	$("#paste").css("width",  $("#main-table").innerWidth() - 10);
+	$("#paste").css("height",  $("#main-table").innerHeight() - 10);
 	
 	var off = $("#paste_here_image").position();
 //	alert (off.left + "," + off.top);
-	$("#paste_here_image").css("width",  $("#main-table").width() - 150);
-	$("#paste_here_image").css("height",  $("#main-table").height() - 150);
-	$("#paste_here_image").css("left",  off.left + 100);
-	$("#paste_here_image").css("top",  off.top + 100);
 
 	
 	$( "#R_upload_button" ).click(function() {
@@ -32,33 +28,24 @@ $(document).ready(function() {
 		alert("Coming Soon");
 	});
 
+//	$("#please_wait").dialog({
+//		dialogClass: "no-titlebar",
+//	    height: '140px',
+//	});
 	
 	$("#please_wait").dialog({
-		dialogClass: "no-titlebar",
+		dialogClass: 'no-close',
 		resizable: false,
-	    hide: 'highlight',
-	    show: 'highlight',
 	    width: '140px',
-	    autoOpen: false
+	    autoOpen: false,
+	    hide: { effect: "fade", duration: 200 }
 	});
-
-	$("#error_dialog").dialog({
-		dialogClass: "no-titlebar",
-		resizable: false,
-	    hide: 'highlight',
-	    show: 'highlight',
-	    width: '140px',
-	    autoOpen: false
-	});
-    $("#error_dialog").dialog("widget").position({
-        my: 'center',
-        at: 'center',
-        of: $(this)
-     });
 	
+
 	create_paste_binding($(".paste_area"));
 
 	$( "#cancel" ).click(function() { 
+/*
 			$(".data").empty();
 			$("#main-table").empty();
 			$("#inputData").html(main_table);
@@ -76,7 +63,9 @@ $(document).ready(function() {
         	$(".rates").css("display","none");
         	$("#paste_here_image").css("display","none");
 			$("#countPopulation").val("");
-
+            $("#paste_here_image").show();
+            set_paste_area_size();
+            
         	for (var x=8; x < 18; x++) {
         		items = $.merge($("#tab-4458-"+x).find("table"),$("#tab-4458-"+x).find("div").not("[class='rates']").not("[class='dataTables_wrapper']"))
         		for (var z=0; z < items.length; z++)
@@ -93,19 +82,13 @@ $(document).ready(function() {
 
 			line_array = null;
 
-			$("#please_wait").dialog({
-			    autoOpen: false
-			});
-
-			$("#error_dialog").dialog({
-			    autoOpen: false
-			});
 //            $("#cancel").css("display","none");
 			$("#download_choice").hide();
 
 
-	    create_paste_binding($(".paste_area"));
-	    return false;
+//	    create_paste_binding($(".paste_area"));
+*/
+		return true;
 	});
 	
 	
@@ -135,9 +118,9 @@ $(document).ready(function() {
      	var interval = $("#interval").val();
 
      	if ($("#description").val()=='') {
-     		var description = "Cohort Start Year: " 
+     		var description = "Start Year: " 
      			+ startYear + " at Age: " 
-     			+ startAge + " with Cohort Interval: " 
+     			+ startAge + " with Interval: " 
      			+ getInterval() + " years";
      			$("#description").val(description);
      			setTableTitle();
@@ -280,7 +263,7 @@ $(document).ready(function() {
 
 });
 function setTableTitle () {
-	$("#table-title").html($("#title").val()+ " <br/> " + $("#description").val());
+	$("#table-title").html($("#title").val()+ " <br/> <span style='color:blue'>" + $("#description").val() + "</span>");
 }
 
 function generateUID() {
@@ -333,12 +316,12 @@ function getAPCData(data, keyData, uniqueId){
 					}
 				}
 				
-				if (keyData == "NetDrift") $("#NetDrift").find("thead").prepend(
-						"<tr><th colspan='4' style='text-align:center;'>Net Drift </th></tr>");
-				if (keyData == "Waldtests") $("#Waldtests").find("thead").prepend(
-					"<tr><th colspan='4' style='text-align:center;'>Wald Tests </th></tr>");
-				if (keyData == "Coefficients") $("#Coefficients").find("thead").prepend(
-					"<tr><th colspan='5' style='text-align:center;'>Coefficients </th></tr>");
+				if (keyData == "NetDrift" && $("#netdrift_header").length == 0) $("#NetDrift").find("thead").prepend(
+					"<tr><th id='netdrift_header' colspan='4' style='text-align:center;'>Net Drift </th></tr>");
+				if (keyData == "Waldtests" && $("#waldtest_header").length == 0) $("#Waldtests").find("thead").prepend(
+					"<tr><th id='waldtest_header' colspan='4' style='text-align:center;'>Wald Tests </th></tr>");
+				if (keyData == "Coefficients" && $("#coefficients_header").length == 0) $("#Coefficients").find("thead").prepend(
+					"<tr><th id='coefficients_header' colspan='5' style='text-align:center;'>Coefficients </th></tr>");
 
 				
 			},
@@ -384,7 +367,8 @@ function fillDataTable(jsonTableData, key){
 // }
 
 function loadImage(keyData, uniqueId) {
-	$('#' + keyData + 'Graph').html("<img style='width: 75% ; height: 75%' class='center' src='./static/img/" + keyData + uniqueId + ".png'>");
+	$('#' + keyData + 'Graph').html("<img style='width: 600px ; height: 480px' class='center' alt='graph for " 
+			+ keyData + "' src='./static/img/" + keyData + uniqueId + ".png'>");
 }
 
 function getColumnHeaderData(data2d, keyName) {
@@ -670,7 +654,7 @@ function display_table(txt, delimiter) {
 	var third_header_row = $("<tr></tr>");
 	third_header_row.append("<td >&nbsp;</td>");
 	third_header_row.append("<td class='header border-left border-top'>&nbsp;</td>");
-	var table_title = $("<td id='table-title' colspan='" + (cols * 2) + "' class='header border-bottom border-right border-left  border-top'>" + $("#title").val() + "<br/>" + $("#description").val()  + "</td>");
+	var table_title = $("<td id='table-title' colspan='" + (cols * 2) + "' class='header border-bottom border-right border-left  border-top'>" + $("#title").val() + "<br/> <span style='color:blue'>" + $("#description").val()  + "</span></td>");
 
 	third_header_row.append(table_title);
 	
@@ -754,28 +738,28 @@ function display_table(txt, delimiter) {
 		$("#main-table").append(data_row);
 	}
 	
+	set_paste_area_size();
+//	create_paste_binding(paste_area_box);
+	
+	return true;
+}
+
+function set_paste_area_size() {
 	// Ok, now we built the whole table.  We need to find out exactly where and how big the data area is for the 
 	// Invisible paste-box
 
-	var total_width = $("#table-title").outerWidth();
-	var total_height = $("#row-title").outerHeight();
+	var total_width = $("#main-table").innerWidth();
+	if (total_width > 600) total_width = 600; // Can't be larger than window
+	var total_height = $("#main-table").innerHeight() - 20;
 		
-	var offset = $("#D_0_0_count").offset();
+	var offset = $("#main-table").offset();
 	
-	var paste_area_box = $("<textarea></textarea>");
-	paste_area_box.addClass("paste_area");
+	$("#paste")
+	var paste_area_box = $("#paste");
 	paste_area_box.css("height", total_height);
 	paste_area_box.css("width", total_width);
 	paste_area_box.css("left", offset.left);
-	paste_area_box.css("top", offset.top);
-	paste_area_box.css("filter", "alpha(opacity = 00)");
-	paste_area_box.css("opacity", "0.0");
-	
-	create_paste_binding(paste_area_box);
-	
-	$("#D_0_0_count").prepend(paste_area_box);
-	
-	return true;
+	paste_area_box.css("top", offset.top);	
 }
 
 function compute_age (num) {
