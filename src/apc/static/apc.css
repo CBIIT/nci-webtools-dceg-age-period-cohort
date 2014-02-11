@@ -27,6 +27,14 @@ td.header {
 	font-weight:bold;
 	font-size: 12px;
 	text-align:center;
+	background-color:#AAA;
+}
+
+.row-header {
+	vertical-align:middle;
+	width:50px;
+	max-width:50px;
+	background-color:#AAA;
 }
 
 th.header {
@@ -75,25 +83,19 @@ th.header {
 
 .paste_area {
 	position:absolute;
-	background-size:200px 200px;
-	background-repeat:no-repeat;
-	background-position:center; 
+	background-color:green;
+	overflow:hidden;
 	filter: alpha(opacity = 00);
 	opacity:0.0;
-	overflow:auto;
 }
 
 /* Used for jquery dialog to remove close botton */
-.no-titlebar .ui-dialog-titlebar {
-	display: none;
-}
+.no-close .ui-dialog-titlebar-close {display: none }
 
-.row-header {
-	vertical-align:middle;
-	width:50px;
-	max-width:50px;
-}
 
+#please-wait {
+	background:yellow;
+}
 
 .vertical-text {
 	text-align:center;
