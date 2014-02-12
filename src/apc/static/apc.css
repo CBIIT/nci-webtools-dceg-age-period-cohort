@@ -107,3 +107,11 @@ th.header {
   filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 }
 
+#sampledatatable #datavalues{
+   width:500px;
+}
+
+#sampledatatable.functions tr, th{
+  border-bottom:1px solid;
+}
+
