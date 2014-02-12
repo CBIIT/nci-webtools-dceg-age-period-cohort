@@ -40,6 +40,11 @@
 <div id="right"><img src="./static/images/apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" height="43"/></div>
 </div>
 <div id="blockcontent">
+
+
+<!-- Uses JINJA2 templates. Please do all changes here. Then view the source of the rendered page on the web and copy changes to the root index.html -->
+
+<div id="blockcontent">
 <h2> Age Period Cohort Analysis</h2>
 <p>Age-Period-Cohort analysis identifies patterns in cancer incidence or mortality rates from 
 population-based <b><i> Count </i></b> (numerator) and <b><i> Population </i></b> (denominator) data. Often the data come 
@@ -57,12 +62,12 @@ of the rate table represent birth cohorts.</p>
 
 <p> Visit the following sections to learn more about the APC web tool:</p>
 <ul>
-  <li><a href='#started'>Getting started</a> - Learn how to enter data into the tool, get answers to frequently 
-  asked questions, and where to go for technical support.</li>
-  <li><a href='#started'>Sample data</a> - Enter any of these sample datasets to see the tool in action. </li>
-  <li><a href='#started'>What it does</a> - Find out what outputs are produced </li>
-  <li><a href='#started'>Saving your results</a> - Find out how to save raw output as an Excel Workbook, R Workspace, or text file. </li>
-  <li><a href='#started'>Reference</a> - Suggested reference for the APC web tool.</li>
+	<li><a href='#started'>Getting started</a> - Learn how to enter data into the tool, get answers to frequently 
+	asked questions, and where to go for technical support.</li>
+	<li><a href='#started'>Sample data</a> - Enter any of these sample datasets to see the tool in action. </li>
+	<li><a href='#started'>What it does</a> - Find out what outputs are produced </li>
+	<li><a href='#started'>Saving your results</a> - Find out how to save raw output as an Excel Workbook, R Workspace, or text file. </li>
+	<li><a href='#started'>Reference</a> - Suggested reference for the APC web tool.</li>
 </ul>
 <a name='started'></a><h3>Getting started </h3>
 <p>Input data for the web tool consist of <B>Count and Population</B> data for particular age groups over calendar time, in the form of a matrix of rows with paired columns. Rows correspond to particular age groups and columns correspond to calendar time periods. The age and period intervals must all be equal, i.e. if 5-year age groups are used then 5-year calendar periods must also be used. 
@@ -70,25 +75,25 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 
 <p><B>To input from Excel</B>:</p>
 <ol>
-  <li>Copy the paired columns of data you want to analyze from your spreadsheet, 
-  right-click inside the empty matrix on the Input tab, and paste your selection.</li>
-  <li>Fill in the information (meta-data) on the left hand side of the Input page:
-  <ul>
-    <li><B>Title</B> - describe your data</li>
-    <li><B>Description</B> - add optional details </li>
-    <li><B>Start Year</B> - list the first calendar year of the first calendar period of your data, for example, use 1990 for the interval 1990 - 1994</li>
-    <li><B>Start Age</B> - list the first age of the first age group of your data, for example use 30 for the interval 30 - 34</li>
-    <li><B>Interval</B> - the width of the age and period intervals, for example use 1 for single-year data, 2 for two-year data, 5 for five-year data (e.g., 1990 - 1994), etc.</li>
-  </ul>
-  <li>Click the calculate button</li>
-  </li>
+	<li>Copy the paired columns of data you want to analyze from your spreadsheet, 
+	right-click inside the empty matrix on the Input tab, and paste your selection.</li>
+	<li>Fill in the information (meta-data) on the left hand side of the Input page:
+	<ul>
+		<li><B>Title</B> - describe your data</li>
+		<li><B>Description</B> - add optional details </li>
+		<li><B>Start Year</B> - list the first calendar year of the first calendar period of your data, for example, use 1990 for the interval 1990 - 1994</li>
+		<li><B>Start Age</B> - list the first age of the first age group of your data, for example use 30 for the interval 30 - 34</li>
+		<li><B>Interval</B> - the width of the age and period intervals, for example use 1 for single-year data, 2 for two-year data, 5 for five-year data (e.g., 1990 - 1994), etc.</li>
+	</ul>
+	<li>Click the calculate button</li>
+	</li>
 </ol>
 <p><B>To input data from a csv file</B>:</p>
 <p>The csv file can include only count and population data, or it can include information fields in header lines delimited by semicolons, followed by the count and population data. Click <a href="#example">here</a> to see an example.</p>
 <ol>
-  <li>Click the Browse button and select your file.</li>
-  <li>Add or modify the meta-data on the left hand side of the input page.</li>
-  <li>Click the Calculate button.</li>
+	<li>Click the Browse button and select your file.</li>
+	<li>Add or modify the meta-data on the left hand side of the input page.</li>
+	<li>Click the Calculate button.</li>
 </ol>
 
 <p><a name="example"></a><u>Sample data</u></p>
@@ -96,9 +101,9 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 <p>You can demo the web tool by cutting and pasting the example data into the web tool, then clicking the Calculate button.</p>
 
 <table id="sampledatatable" border="1px">
-  <tr>
-    <th colspan="2">Sample Data</th>
-  </tr>
+	<tr>
+		<th colspan="2">Sample Data</th>
+	</tr>
     <tr>
         <td><B>Title</B> Pancreas Cancer Incidence in Females</td>
         <td rowspan="5" id="datavalues">&lt;data values go here&gt;</td>
@@ -119,9 +124,9 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 
 
 <table id="sampledatatable" border="1px">
-  <tr>
-    <th colspan="2">Sample Data</th>
-  </tr> 
+	<tr>
+		<th colspan="2">Sample Data</th>
+	</tr>	
     <tr>
         <td><B>Title</B> Prostate Cancer Incidence in White Males 1994 - 2008</td>
         <td rowspan="5" id="datavalues">&lt;data values go here&gt;</td>
@@ -141,9 +146,9 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 </table>
 
 <table id="sampledatatable" border="1px">
-  <tr>
-    <th colspan="2">Sample Data</th>
-  </tr> 
+	<tr>
+		<th colspan="2">Sample Data</th>
+	</tr>	
     <tr>
         <td><B>Title</B> Oral Cancer Incidence at HPV-Related Sites in White Males</td>
         <td rowspan="5" id="datavalues">&lt;data values go here&gt;</td>
@@ -165,107 +170,107 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 <p>The web tool applies the APC Model to the data in order to estimate <i>parameters (trends and deviations)</i>. The <i>parameters</i> are combined to produce <i>functions</i> that describe relationships between the observed <b><i>Rate</i></b> of cancer and attained age, calendar period, and birth cohort. The web tool also calculates a number of <i>statistical hypothesis tests (Wald Tests)</i>, which address whether the <b><i>Rate</i></b> of cancer is statistically significantly variable according to age, period, and cohort factors.</p>
 <p>The most important functions calculated by the web tool are summarized in the <u>Table of Key Functions</u> using the following conventions: </p>
 <ul>
-  <li>The APC model is defined over <i>A</i> age groups and <i>P</i> calendar periods with equal intervals. </li>
-  <li>The central age group, calendar period, and birth cohort define standard <B>reference values</B> <i>a</i>, <i>p</i> and <i>c</i>, respectively. </li>
-  <li>When there is an even number of age, period, or cohort categories, the reference value is the lower of the two central values.  </li>
-  <li>All values labeled <B>CI Lo</B> are lower 95% confidence limits. All values labeled <B>CI Hi</B> are upper 95% confidence limits.</li>
+	<li>The APC model is defined over <i>A</i> age groups and <i>P</i> calendar periods with equal intervals. </li>
+	<li>The central age group, calendar period, and birth cohort define standard <B>reference values</B> <i>a</i>, <i>p</i> and <i>c</i>, respectively. </li>
+	<li>When there is an even number of age, period, or cohort categories, the reference value is the lower of the two central values.  </li>
+	<li>All values labeled <B>CI Lo</B> are lower 95% confidence limits. All values labeled <B>CI Hi</B> are upper 95% confidence limits.</li>
 </ul>
 <p>Table of Key Functions</p>
 <table id="sampledatatable" class="functions">
-  <tr>
-    <th>Nomenclature</th>
-    <th>Interpretation</th>
-  </tr>
-  <tr>
-    <td>Fitted Temporal Trend</td>
-    <td>Expected age-adjusted rates over time</td>
-  </tr>
-  <tr>
-    <td>Net Drift</td>
-    <td>Annual percentage change of the expected age-adjusted rates over time</td>
-  </tr>
-  <tr>
-    <td>Local Drifts</td>
-    <td>Annual percentage change of the expected age-specific rates over time</td>
-  </tr>
-  <tr>
-    <td>Cross-Sectional Age Curve (Cross Age)</td>
-    <td>Expected age-specific rates within a given calendar period</td>
-  </tr>
-  <tr>
-    <td>Longitudinal Age Curve (Long Age)</td>
-    <td>Expected age-specific rates for a given number of birth cohorts</td>
-  </tr>
-  <tr>
-    <td>Period Rate Ratios (PeriodRR)</td>
-    <td>Ratio of age-specific rates in period relative to reference period  
+	<tr>
+		<th>Nomenclature</th>
+		<th>Interpretation</th>
+	</tr>
+	<tr>
+		<td>Fitted Temporal Trend</td>
+		<td>Expected age-adjusted rates over time</td>
+	</tr>
+	<tr>
+		<td>Net Drift</td>
+		<td>Annual percentage change of the expected age-adjusted rates over time</td>
+	</tr>
+	<tr>
+		<td>Local Drifts</td>
+		<td>Annual percentage change of the expected age-specific rates over time</td>
+	</tr>
+	<tr>
+		<td>Cross-Sectional Age Curve (Cross Age)</td>
+		<td>Expected age-specific rates within a given calendar period</td>
+	</tr>
+	<tr>
+		<td>Longitudinal Age Curve (Long Age)</td>
+		<td>Expected age-specific rates for a given number of birth cohorts</td>
+	</tr>
+	<tr>
+		<td>Period Rate Ratios (PeriodRR)</td>
+		<td>Ratio of age-specific rates in period relative to reference period  
 </td>
-  </tr>
-  <tr>
-    <td>Cohort Rate Ratios (CohortRR)</td>
-    <td>Ratio of age-specific rates in cohort relative to reference cohort 
+	</tr>
+	<tr>
+		<td>Cohort Rate Ratios (CohortRR)</td>
+		<td>Ratio of age-specific rates in cohort relative to reference cohort 
 </td>
-  </tr>
+	</tr>
 </table>
 <ul>
-  <li>Other parameters and functions calculated by the web tool and not listed above are described in greater mathematical detail elsewhere (click <a href="">here</a> for a PowerPoint presentation).</li>
+	<li>Other parameters and functions calculated by the web tool and not listed above are described in greater mathematical detail elsewhere (click <a href="">here</a> for a PowerPoint presentation).</li>
 </ul>
 <p>Statistical hypothesis tests calculated by the web tool are summarized in the <u>Table of Hypothesis Tests.</u></p>
 <p>The <B>Wald Tests</B> follow a Chi-Square distribution when the <B>Null Hypothesis</B> is true.  The <b>df</b> (degrees of freedom) count the number of free parameters included in each test. The web tool reports P-values; values less than 0.05 are often considered 'statistically significant', meaning there is statistical evidence that the <B>Null Hypothesis</B> is unlikely to be correct.</p>
 
 <p>Table of Hypothesis Tests</p>
 <table id="sampledatatable" class="functions">
-  <tr>
-    <th>Null Hypothesis</th>
-    <th>Implications</th>
-    <th>Degrees of Freedom</th>
-  </tr>
-  <tr>
-    <td>Net drift = 0</td>
-    <td>Fitted temporal trends are stable (i.e., flat with no change) over time. <br />
+	<tr>
+		<th>Null Hypothesis</th>
+		<th>Implications</th>
+		<th>Degrees of Freedom</th>
+	</tr>
+	<tr>
+		<td>Net drift = 0</td>
+		<td>Fitted temporal trends are stable (i.e., flat with no change) over time. <br />
 Fitted longitudinal and cross-sectional age curves are equal.
-    </td>
-    <td>1
-    </td>
-  </tr>
-  <tr>
-    <td>All age deviations = 0</td>
-    <td>Fitted longitudinal and cross-sectional age curves are log-linear (i.e., log-additive).</td>
-    <td><i>A</i> - 2</td>
-  </tr>
-  <tr>
-    <td>All period deviations = 0</td>
-    <td>Fitted temporal trends and period rate ratios are log-linear (i.e., log-additive).</td>
-    <td><i>P</i> - 2</td>
-  </tr>
-  <tr>
-    <td>All cohort deviations = 0</td>
-    <td>Cohort rate ratios are log-linear; all local drifts equal the net drift.</td>
-    <td><i>C</i> - 2</td>
-  </tr>
-  <tr>
-    <td>All period rate ratios = 1</td>
-    <td>Net drift is 0 and fitted temporal trends are constant; <br />
+		</td>
+		<td>1
+		</td>
+	</tr>
+	<tr>
+		<td>All age deviations = 0</td>
+		<td>Fitted longitudinal and cross-sectional age curves are log-linear (i.e., log-additive).</td>
+		<td><i>A</i> - 2</td>
+	</tr>
+	<tr>
+		<td>All period deviations = 0</td>
+		<td>Fitted temporal trends and period rate ratios are log-linear (i.e., log-additive).</td>
+		<td><i>P</i> - 2</td>
+	</tr>
+	<tr>
+		<td>All cohort deviations = 0</td>
+		<td>Cohort rate ratios are log-linear; all local drifts equal the net drift.</td>
+		<td><i>C</i> - 2</td>
+	</tr>
+	<tr>
+		<td>All period rate ratios = 1</td>
+		<td>Net drift is 0 and fitted temporal trends are constant; <br />
 Cross-sectional age curve describes age incidence pattern in every period. 
 </td>
-    <td><i>P</i> - 1</td>
-  </tr>
-  <tr>
-    <td>All cohort rate ratios = 1</td>
-    <td>Net drift is 0 and all local drifts are 0; <br />
+		<td><i>P</i> - 1</td>
+	</tr>
+	<tr>
+		<td>All cohort rate ratios = 1</td>
+		<td>Net drift is 0 and all local drifts are 0; <br />
 Longitudinal age curve describes age incidence pattern in every cohort.
 </td>
-    <td><i>C</i> - 1</td>
-  </tr>
-  <tr>
-    <td>All local drifts = the net drift</td>
-    <td>Temporal patterns are the same in every age group.</td>
-    <td><i>A</i></td>
-  </tr>
+		<td><i>C</i> - 1</td>
+	</tr>
+	<tr>
+		<td>All local drifts = the net drift</td>
+		<td>Temporal patterns are the same in every age group.</td>
+		<td><i>A</i></td>
+	</tr>
 
 </table>
-<p>*For APC model defined over <i>A</i> age groups, <i>P</i> calendar periods, and <i>C = P + A -1</i> birth cohorts.</p>
-<p><u>Saving your results – </u></p>
+<p>*For APC model defined over <i>A</i> age groups, <i>P</i> calendar periods, and <i>C = P + A - 1</i> birth cohorts.</p>
+<p><u>Saving your results - </u></p>
 <p>You can save a complete record of the inputs and outputs using the Download button:</p>
 <p>'Text Input' - save the input rates in a separate tab in your web browser. This is a printed version of the inputs in R format.</p>
 <p>'Text Output' - save the model outputs in a separate tab in your web browser. This is a printed version of the outputs in R format.</p>
@@ -274,11 +279,11 @@ Longitudinal age curve describes age incidence pattern in every cohort.
 <p>'Excel Output' - save the model outputs in an Excel Workbook. </p>
 <p><u>Frequently Asked Questions:</u></p>
 <p><i>Can my counts include zeroes?</i> Yes. The program fills in the zero counts with a small positive value. However, the results may be unreliable or unstable if many counts are zero.</p>
-<p><i>Can my Populations include zeroes?</i> No, zero population counts will generate errors because the corresponding rates are undefined (you can’t divide by zero!)</p>
+<p><i>Can my Populations include zeroes?</i> No, zero population counts will generate errors because the corresponding rates are undefined (you can't divide by zero!)</p>
 <p><i>What algorithm do you use to estimate the parameters and functions?</i> We use the statistical method of weighted least squares and the assumption that the count data follow a Poisson distribution allowing for extra-Poisson variation. </p>
 <p><i>What software do you use?</i> Our calculations are carried out using the R environment for statistical computing and graphics.</p>
 <p><i>Are your R programs available?</i> Yes, our R programs are freely available. You can obtain a copy of our code <a href="">here</a>.</p>
-<p><i>How can I use the web tool to analyze data from SEER?</i> Click <a href="">here</a> for details.  </p>
+<p><i>How can I use the web tool to analyze data from SEER?</i> Click <a href="">here</a> for details.	</p>
 </div> <!-- blockcontent -->
 
 
