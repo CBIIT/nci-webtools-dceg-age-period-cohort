@@ -173,11 +173,11 @@
             <label for='paste' style='position:absolute;'>&nbsp;</label>
             <img id='paste_here_image' alt='paste here image' src='./static/images/paste-here.gif' 
             	style='position:absolute'/> 
-            <textarea id='paste' class='paste_area' rows='14' cols='58'></textarea>
+            <textarea id='paste' class='paste_area' ></textarea>
             
             <table id='main-table' class='input' style="margin: 5px;">
               <tr>
-                <td >&nbsp;</td>
+                <td>&nbsp;</td>
                 <td class='header border-left border-top'>&nbsp;</td>
                 <td id='table-title' colspan='8' class='header border-bottom border-right border-left border-top'></td>
               </tr>
@@ -362,8 +362,10 @@
               </tr>
             </table>
             <!-- End Larry's Code and Send Data to Shiny -->
-            <div id='please_wait'><p>Please Wait...<br/><img src='./static/images/working.gif' alt="Calculating" title="Calculating" /></p></div>
-            <div id='error_dialog'><p>There were errors in your request.</p></div>
+            <div id='please_wait' title='Please Wait...'>
+            	<img src='./static/images/working.gif' alt="Calculating" title="Calculating" />
+            </div>
+<!--  <div id='error_dialog'><p>There were errors in your request.</p></div> -->           
             
           </div>
         </div>
