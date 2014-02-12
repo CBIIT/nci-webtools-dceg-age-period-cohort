@@ -49,7 +49,13 @@ writeResultsToExcel <- function (apcdata, uniqueId, title, imageDirectory) {
   time <- gsub(":","",gsub("-","",gsub(" ","", Sys.time() , fixed=TRUE)));
   title <- gsub(" ", "", gsub("[[:punct:]]", "", title));
   
-  fileName <- paste(excelDirectory, title,"_",time,"_", 'Excel.xlsx',sep='');
+  defaultTitle<-pmatch("APCAnalysis", title, nomatch=0);
+  
+  if (defaultTitle > 0) {
+    fileName <- paste(excelDirectory, time,"_", 'Excel.xlsx',sep='');
+  } else {
+    fileName <- paste(excelDirectory, title,"_",time,"_", 'Excel.xlsx',sep='');
+  }
   
   saveWorkbook(outwb, fileName);
   fileName;
