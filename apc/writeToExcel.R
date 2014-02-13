@@ -52,7 +52,7 @@ writeResultsToExcel <- function (apcdata, uniqueId, title, imageDirectory) {
   defaultTitle<-pmatch("APCAnalysis", title, nomatch=0);
   
   if (defaultTitle > 0) {
-    fileName <- paste(excelDirectory, time,"_", 'Excel.xlsx',sep='');
+    fileName <- paste(excelDirectory, title,"_", 'Excel.xlsx',sep='');
   } else {
     fileName <- paste(excelDirectory, title,"_",time,"_", 'Excel.xlsx',sep='');
   }
