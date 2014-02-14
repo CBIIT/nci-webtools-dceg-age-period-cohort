@@ -2,12 +2,26 @@
 {% block content %}
 
 <!-- Uses JINJA2 templates. Please do all changes here. Then view the source of the rendered page on the web and copy changes to the root index.html -->
+<style>
+  li {
+		padding-bottom:5px;
+  	}
+  ul {
+      	padding-left:15px;
+     }
+  ol {
+		padding-left:15px;
+     }
+  h4,h5 {
+		padding-top:10px;
+  	}
+</style>
 
 <div id="blockcontent">
-<h2> Age Period Cohort Analysis</h2>
+<h3> Age Period Cohort Analysis</h3>
 <p>Age-Period-Cohort analysis identifies patterns in cancer incidence or mortality rates from 
 population-based <b><i> Count </i></b> (numerator) and <b><i> Population </i></b> (denominator) data. Often the data come 
-from a <B>Cancer Registry</B> (e.g., <a href='http://seer.cancer.gov/registries/' target='seer'> SEER </a>)in the form of a table showing the numbers of cancer cases or cancer deaths 
+from a <B>Cancer Registry</B> (e.g., <a href='http://seer.cancer.gov/registries/' target='seer'> SEER </a>) in the form of a table showing the numbers of cancer cases or cancer deaths 
 (counts) and corresponding person-years at risk (population) for particular age groups and 
 calendar time periods. In cancer research, the Age-Period-Cohort (APC) framework is a fundamental 
 model to analyze these data. The APC Model includes <i> parameters </i> that describe the mathematical 
@@ -23,16 +37,16 @@ of the rate table represent birth cohorts.</p>
 <ul>
 	<li><a href='#started'>Getting started</a> - Learn how to enter data into the tool, get answers to frequently 
 	asked questions, and where to go for technical support.</li>
-	<li><a href='#started'>Sample data</a> - Enter any of these sample datasets to see the tool in action. </li>
-	<li><a href='#started'>What it does</a> - Find out what outputs are produced </li>
-	<li><a href='#started'>Saving your results</a> - Find out how to save raw output as an Excel Workbook, R Workspace, or text file. </li>
-	<li><a href='#started'>Reference</a> - Suggested reference for the APC web tool.</li>
+	<li><a href='#example'>Sample data</a> - Enter any of these sample datasets to see the tool in action. </li>
+	<li><a href='#whatitdoes'>What it does</a> - Find out what outputs are produced </li>
+	<li><a href='#savingyourresults'>Saving your results</a> - Find out how to save raw output as an Excel Workbook, R Workspace, or text file. </li>
+        <li><a href='#faq'>FAQ</a> - Find out answers to some common questions about the APC tool.</li>
 </ul>
 <a name='started'></a><h3>Getting started </h3>
 <p>Input data for the web tool consist of <B>Count and Population</B> data for particular age groups over calendar time, in the form of a matrix of rows with paired columns. Rows correspond to particular age groups and columns correspond to calendar time periods. The age and period intervals must all be equal, i.e. if 5-year age groups are used then 5-year calendar periods must also be used. 
 The data can be input by copy-and-paste from an Excel worksheet or file upload of a comma-separated-values (csv) file. </p>
 
-<p><B>To input from Excel</B>:</p>
+<p><h5>To input from Excel:</h5></p>
 <ol>
 	<li>Copy the paired columns of data you want to analyze from your spreadsheet, 
 	right-click inside the empty matrix on the Input tab, and paste your selection.</li>
@@ -47,7 +61,7 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 	<li>Click the calculate button</li>
 	</li>
 </ol>
-<p><B>To input data from a csv file</B>:</p>
+<p><h5>To input data from a csv file:</h5></p>
 <p>The csv file can include only count and population data, or it can include information fields in header lines delimited by semicolons, followed by the count and population data. Click <a href="#example">here</a> to see an example.</p>
 <ol>
 	<li>Click the Browse button and select your file.</li>
@@ -55,7 +69,7 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 	<li>Click the Calculate button.</li>
 </ol>
 
-<p><a name="example"></a><u>Sample data</u></p>
+<p><a name="example"></a><h4>Sample data</h4></p>
 <p>Illustrative Examples</p>
 <p>You can demo the web tool by cutting and pasting the example data into the web tool, then clicking the Calculate button.</p>
 
@@ -125,16 +139,16 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
         <td><B>Interval</B> 5</td>
     </tr>
 </table>
-<p><u>What is does</u></p>
+<p><a name="whatitdoes"></a><h5>What it does</h5></p>
 <p>The web tool applies the APC Model to the data in order to estimate <i>parameters (trends and deviations)</i>. The <i>parameters</i> are combined to produce <i>functions</i> that describe relationships between the observed <b><i>Rate</i></b> of cancer and attained age, calendar period, and birth cohort. The web tool also calculates a number of <i>statistical hypothesis tests (Wald Tests)</i>, which address whether the <b><i>Rate</i></b> of cancer is statistically significantly variable according to age, period, and cohort factors.</p>
-<p>The most important functions calculated by the web tool are summarized in the <u>Table of Key Functions</u> using the following conventions: </p>
+<p>The most important functions calculated by the web tool are summarized in the <u><a href="#keyfunctions">Table of Key Functions</a></u> using the following conventions: </p>
 <ul>
 	<li>The APC model is defined over <i>A</i> age groups and <i>P</i> calendar periods with equal intervals. </li>
 	<li>The central age group, calendar period, and birth cohort define standard <B>reference values</B> <i>a</i>, <i>p</i> and <i>c</i>, respectively. </li>
 	<li>When there is an even number of age, period, or cohort categories, the reference value is the lower of the two central values.  </li>
 	<li>All values labeled <B>CI Lo</B> are lower 95% confidence limits. All values labeled <B>CI Hi</B> are upper 95% confidence limits.</li>
 </ul>
-<p>Table of Key Functions</p>
+<p><a name="keyfunctions"></a><h4>Table of Key Functions</h4></p>
 <table id="sampledatatable" class="functions">
 	<tr>
 		<th>Nomenclature</th>
@@ -174,10 +188,10 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 <ul>
 	<li>Other parameters and functions calculated by the web tool and not listed above are described in greater mathematical detail elsewhere (click <a href="">here</a> for a PowerPoint presentation).</li>
 </ul>
-<p>Statistical hypothesis tests calculated by the web tool are summarized in the <u>Table of Hypothesis Tests.</u></p>
+<p>Statistical hypothesis tests calculated by the web tool are summarized in the <u><a href="#hypothesistests">Table of Hypothesis Tests</a>.</u></p>
 <p>The <B>Wald Tests</B> follow a Chi-Square distribution when the <B>Null Hypothesis</B> is true.  The <b>df</b> (degrees of freedom) count the number of free parameters included in each test. The web tool reports P-values; values less than 0.05 are often considered 'statistically significant', meaning there is statistical evidence that the <B>Null Hypothesis</B> is unlikely to be correct.</p>
 
-<p>Table of Hypothesis Tests</p>
+<p><a name="hypothesistests"></a><h4>Table of Hypothesis Tests</h4></p>
 <table id="sampledatatable" class="functions">
 	<tr>
 		<th>Null Hypothesis</th>
@@ -229,20 +243,24 @@ Longitudinal age curve describes age incidence pattern in every cohort.
 
 </table>
 <p>*For APC model defined over <i>A</i> age groups, <i>P</i> calendar periods, and <i>C = P + A - 1</i> birth cohorts.</p>
-<p><u>Saving your results - </u></p>
+<h5><a name="savingyourresults"></a>Saving your results</h5>
 <p>You can save a complete record of the inputs and outputs using the Download button:</p>
-<p>'Text Input' - save the input rates in a separate tab in your web browser. This is a printed version of the inputs in R format.</p>
-<p>'Text Output' - save the model outputs in a separate tab in your web browser. This is a printed version of the outputs in R format.</p>
-<p>'R-Studio Input' - save the input data in an R Workspace. </p>
-<p>'R-Studio Output' - save the model outputs in an R Workspace.</p>
-<p>'Excel Output' - save the model outputs in an Excel Workbook. </p>
-<p><u>Frequently Asked Questions:</u></p>
-<p><i>Can my counts include zeroes?</i> Yes. The program fills in the zero counts with a small positive value. However, the results may be unreliable or unstable if many counts are zero.</p>
-<p><i>Can my Populations include zeroes?</i> No, zero population counts will generate errors because the corresponding rates are undefined (you can't divide by zero!)</p>
-<p><i>What algorithm do you use to estimate the parameters and functions?</i> We use the statistical method of weighted least squares and the assumption that the count data follow a Poisson distribution allowing for extra-Poisson variation. </p>
-<p><i>What software do you use?</i> Our calculations are carried out using the R environment for statistical computing and graphics.</p>
-<p><i>Are your R programs available?</i> Yes, our R programs are freely available. You can obtain a copy of our code <a href="">here</a>.</p>
-<p><i>How can I use the web tool to analyze data from SEER?</i> Click <a href="">here</a> for details.	</p>
+<ul>
+  <li>'Text Input' - save the input rates in a separate tab in your web browser. This is a printed version of the inputs in R format.</li>
+<li>'Text Output' - save the model outputs in a separate tab in your web browser. This is a printed version of the outputs in R format.</li>
+<li>'R-Studio Input' - save the input data in an R Workspace. </li>
+<li>'R-Studio Output' - save the model outputs in an R Workspace.</li>
+<li>'Excel Output' - save the model outputs in an Excel Workbook. </li>
+</ul>
+<p><a name="faq"></a><h3>Frequently Asked Questions:</h3></p>
+<ul>
+<li><i><b>Can my counts include zeroes?</b></i> Yes. The program fills in the zero counts with a small positive value. However, the results may be unreliable or unstable if many counts are zero.</li>
+<li><i><b>Can my Populations include zeroes?</b></i> No, zero population counts will generate errors because the corresponding rates are undefined (you can't divide by zero!)</li>
+<li><i><b>What algorithm do you use to estimate the parameters and functions?</b></i> We use the statistical method of weighted least squares and the assumption that the count data follow a Poisson distribution allowing for extra-Poisson variation. </li>
+<li><i><b>What software do you use?</b></i> Our calculations are carried out using the R environment for statistical computing and graphics.</li>
+<li><i><b>Are your R programs available?</b></i> Yes, our R programs are freely available. You can obtain a copy of our code <a href="">here</a>.</li>
+<li><i><b>How can I use the web tool to analyze data from SEER?</b></i> Click <a href="">here</a> for details.	</li>
+</ul>
 </div> <!-- blockcontent -->
 
 {% endblock %}
