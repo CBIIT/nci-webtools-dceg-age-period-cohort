@@ -2,7 +2,7 @@ Title: Pancreas Cancer in Females,,,,,,,
 "Description: ICD-O-3 Site Codes C250-259, SEER 9+13+17 Registries Databases, November 2011 Submission",,,,,,,
 Start Year: 1993,,,,,,,
 Start Age: 33,,,,,,,
-Year: 4,,,,,,,
+Interval (Years): 4,,,,,,,
 24,5241669,33,5093922,20,4808326,31,4702121
 34,4969935,48,5157733,55,4998516,49,4724585
 84,4464138,100,4852854,87,5060050,112,4907558
