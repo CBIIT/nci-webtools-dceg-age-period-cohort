@@ -2,7 +2,7 @@ Title: Oral Cancer at HPV-Related Sites in White Males,,,,,,,,,,,,,
 "Description: SEER 9 Registries Databases, November 2011 Submission. HPV-related sites are base of tongue, lingual tonsil, palatine tonsil, oropharynx, and Waldeyer's ring. ICD-O-3 Topography Codes C019, C024, C090-099, C100-109, and C142.",,,,,,,,,,,,,
 Start Year: 1975,,,,,,,,,,,,,
 Start Age: 40,,,,,,,,,,,,,
-Year: 5,,,,,,,,,,,,,
+Interval (Years): 5,,,,,,,,,,,,,
 38,2655844,61,2980012,97,3763370,141,4646871,125,5199589,171,5469588,176,5255913
 122,2688338,125,2573983,165,2944425,225,3692897,319,4529835,438,5063539,448,5372024
 222,2757647,229,2596258,208,2495095,259,2851472,388,3635290,585,4431466,711,4923580
