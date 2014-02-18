@@ -1,133 +1,193 @@
 <html>
- <head>
- <title>Biomarker Comparison Tool</title>
- <meta http-equiv="content-type" content="text/html; charset=utf-8" />
- <link rel="stylesheet" href="./css/style.css" type="text/css" />
- <link rel="stylesheet" href="./css/bc.css" type="text/css" />
- <link rel="stylesheet" href="./css/jquery-ui-1.10.3.custom.css" type="text/css"/>
- <script src="./js/jquery-1.9.1.js"></script>
- <script src="./js/jquery-ui-1.10.4.js"></script>
- <script src="./js/bc.js"></script>
+<head>
+<title>Biomarker Comparison Tool</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="./css/style.css" type="text/css" />
+<link rel="stylesheet" href="./css/bc.css" type="text/css" />
+<link rel="stylesheet" href="./css/jquery-ui-1.10.3.custom.css"
+	type="text/css" />
+<script src="./js/jquery-1.9.1.js"></script>
+<script src="./js/jquery-ui-1.10.4.js"></script>
+<script src="./js/bc.js"></script>
 </head>
 
 <body>
-<div style='width:1000px;margin-left:auto;margin-right:auto;'> <!-- blockcontent was here -->
-<div id="wrapper"'>
-	<div id="logos">
-	 <div id="left"><a href="http://www.cancer.gov" target="_blank"><img src="images/nci.jpg" width="286" height="43" border="0" alt="National Cancer Institute" title="National Cancer Institute" /></a></div>
-	 <div id="right"><a href="http://www.cancer.gov" target="_blank"><img src="images/nih.jpg" width="322" height="43" border="0" alt="at the National Institutes of Health" title="at the National Institutes of Health" /></a></div>
+	<div style='width: 1000px; margin-left: auto; margin-right: auto;'>
+		<!-- blockcontent was here -->
+		<div id="wrapper">
+			<div id="logos">
+				<div id="left">
+					<a href="http://www.cancer.gov" target="_blank"><img
+						src="images/nci.jpg" width="286" height="43" border="0"
+						alt="National Cancer Institute" title="National Cancer Institute" /></a>
+				</div>
+				<div id="right">
+					<a href="http://www.cancer.gov" target="_blank"><img
+						src="images/nih.jpg" width="322" height="43" border="0"
+						alt="at the National Institutes of Health"
+						title="at the National Institutes of Health" /></a>
+				</div>
+			</div>
+		</div>
+		<br>
+
+		<div id="banners">
+			<div id="left">
+				<img src="images/DCEGBB.png"
+					alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch"
+					height="43" />
+			</div>
+		</div>
+
+		<div id='main'>
+			<br>
+			<h2 align="center">Biomarker Comparison Tool</h2>
+			<p>This tool plots contours of likelihood ratio positive (LR+)
+				and likelihood ratio negative (LR-) for a reference test with
+				indicated sensitivity and specificity pairs (see the example plot
+				below). The likelihood ratio contours define four areas:
+			<ul id="ulForLRAreas">
+				<img src="images/exampleLRPlot.jpg" alt="sample LR plot"
+					height="350" style="float: left; padding-right: 5px" />
+				<li class="liForLRArea">Area A shows combinations of sensitivity and specificity
+					with higher LR+ and LR- than the reference test. This corresponds
+					to a higher positive predictive value (PPV) and lower complement of
+					the negative predictive value (cNPV)</li>
+				<li class="liForLRArea">Area B shows combinations of sensitivity and specificity
+					with higher LR+ and lower LR- than the reference test. This
+					corresponds to a higher positive predictive value (PPV) and higher
+					complement of the negative predictive value (cNPV).</li>
+				<li class="liForLRArea">Area C shows combinations of sensitivity and specificity
+					with lower LR+ and higher LR- compared to the reference test. This
+					corresponds to a lower positive predictive value (PPV) and lower
+					complement of the negative predictive value (cNPV).</li>
+				<li class="liForLRArea">Area D shows combinations of sensitivity and specificity
+					with lower LR+ and lower LR- compared to the reference test. This
+					corresponds to a lower positive predictive value (PPV) and higher
+					complement of the negative predictive value (cNPV)</li>
+			</ul>
+			<p>
+				LR+ and LR- measures provide test-specific characteristics of risk
+				stratification that yield estimates of absolute risk (PPV and NPV)
+				when multiplied with the specific disease prevalence. LR+ and LR-
+				estimated in one population will be the same in another population,
+				whenever sensitivities and specificities are the same in the 2
+				populations, even when disease prevalences are much different. To
+				calculate PPV and cNPV, provide a prevalence value. <br> <br>
+				<br>
+			<div style='width: 550px; float: left;'>
+				<!-- Left Side -->
+				<br />
+
+
+				<table id="inputdata">
+					<thead>
+						<tr class='non-data-row'>
+							<th colspan='5' class='top-header'>Input Information</th>
+						</tr>
+						<tr class='non-data-row'>
+							<th class='header'>#</th>
+							<th class='header'>Reference</th>
+							<th class='header'>Sensitivity</th>
+							<th class='header'>Specificity</th>
+							<th class='header'>&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr row='0' class='reference_row'>
+							<th class=''>1</th>
+							<td class="reference" row='0' col='reference'><img
+								src='./images/checkbox.png' height='18' width='18' alt='check' /></td>
+							<td class="input sensitivity" row='0' col='sensitivity'>0.8</td>
+							<td class="input specificity" row='0' col='specificity'>0.7</td>
+							<td class=''>&nbsp;</td>
+						</tr>
+						<tr row='1'>
+							<th class=''>2</th>
+							<td class="reference" row='1' col='reference'><img
+								src='./images/uncheckbox.png' height='18' width='18'
+								alt='uncheck' /></td>
+							<td class="input sensitivity" row='1' col='sensitivity'>0.85</td>
+							<td class="input specificity" row='1' col='specificity'>0.68</td>
+							<td><BUTTON class='remove_row_button'>Remove</BUTTON></td>
+						</tr>
+						<tr row='2'>
+							<th class=''>3</th>
+							<td class="reference" row='2' col='reference'><img
+								src='./images/uncheckbox.png' height='18' width='18'
+								alt='uncheck' /></td>
+							<td class="input sensitivity" row='2' col='sensitivity'>0.9</td>
+							<td class="input specificity" row='2' col='specificity'>0.5</td>
+							<td><BUTTON class='remove_row_button'>Remove</BUTTON></td>
+						</tr>
+						<tr class='non-data-row'>
+							<th class=''>&nbsp;</th>
+							<td class="">&nbsp;</td>
+							<td class="">&nbsp;</td>
+							<td class="">&nbsp;</td>
+							<td class=''><BUTTON id='new_row_button'>New Row</BUTTON></td>
+						</tr>
+					</tbody>
+				</table>
+				<br />
+				<table>
+					<tr>
+						<td class='prevalence_label'>Prevalence</td>
+						<td><label for="prevalence"><input type="text"
+								id="prevalence"></label></td>
+					</tr>
+				</table>
+				<br />
+				<button id="calculate_button">Calculate</button>
+				<br /> <br /> <br />
+				<table id='output'>
+				</table>
+
+			</div>
+			<!-- Left Side -->
+			<div style='float: left;'>
+				<!-- Right Side -->
+				<img src="./images/initial.jpg" id="graph" alt="graph" border="1"
+					align="top" height='400' width='400'>
+			</div>
+			<div class='bibliography'>
+				<p>
+					<b>References:</b>
+				</p>
+				<p>
+					Marina V. Kondratovich, (2007), <i>Comparing Two Medical Tests
+						When Results of Reference Standard Are Unavailable for Those
+						Negative via Both Tests,</i> Journal of Biopharmaceutical Statistics,
+					18:1, 145-166, <a target='_blank'
+						href=http://www.tandfonline.com/doi/abs/10.1080/10543400701668308#.UubT8LQo670>
+						DOI: 10.1080/10543400701668308 </a>
+				</p>
+			</div>
+
+		</div>
+		<!-- columns float END -->
 	</div>
-</div>
-<br>
+	<!-- main -->
 
-<div id="banners"> 
-	<div id="left">
-		<img src="images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="43"/>
+	<div id="portal-footer">
+		<div class="footerLinks">
+			<a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="mailto:NCIMeansToRiskWebAdmin@mail.nih.gov." title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/global/web/policies/accessibility"
+				title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://cancer.gov/global/viewing-files" target="_blank"
+				title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br />
+			<br /> <a href="http://www.dhhs.gov/">Department of Health and
+				Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+				href="http://www.usa.gov/">USA.gov</a>
+		</div>
+		<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
 	</div>
-</div>
+	</div>
 
-<div id='main'>
-
-<br>
-<h2 align="center"> Biomarker Comparison Tool </h2></p>
-<p> Click on the sensitivity and specificity values to change the default pairs, and choose one as the reference pair.  To calculate PPV and cNPV, provide a prevalence value.<br>
-
-<br>
-<br>
-
-
-<div style='width:550px;float:left;'> <!-- Left Side -->
-<br />
-
-
-<table id="inputdata" >
-	<thead>
-		<tr class='non-data-row'>
-			<th colspan='5' class='top-header'>Input Information</th>
-		</tr>
-		<tr class='non-data-row'>
-			<th class='header'>#</th>
-			<th class='header'>Reference</th>
-			<th class='header'>Sensitivity</th>
-			<th class='header'>Specificity</th>
-			<th class='header'>&nbsp;</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr row='0' class='reference_row'>
-			<th class=''>1</th>
-			<td class="reference" row='0' col='reference'><img src='./images/checkbox.png' height='18' width='18' alt='check'/></td>
-			<td class="input sensitivity" row='0' col='sensitivity'>0.8</td>
-			<td class="input specificity" row='0' col='specificity'>0.7</td>
-			<td class=''>&nbsp;</td>
-		</tr>
-		<tr row='1'>
-			<th class=''>2</th>
-			<td class="reference" row='1' col='reference'><img src='./images/uncheckbox.png' height='18' width='18' alt='uncheck'/></td>
-			<td class="input sensitivity" row='1' col='sensitivity'>0.85</td>
-			<td class="input specificity" row='1' col='specificity'>0.68</td>
-			<td><BUTTON class='remove_row_button'>Remove</BUTTON></td>
-		</tr>
-		<tr row='2'>
-			<th class=''>3</th>
-			<td class="reference" row='2' col='reference'><img src='./images/uncheckbox.png' height='18' width='18' alt='uncheck'/></td>
-			<td class="input sensitivity" row='2' col='sensitivity'>0.9</td>
-			<td class="input specificity" row='2' col='specificity'>0.5</td>
-			<td><BUTTON class='remove_row_button'>Remove</BUTTON></td>
-		</tr>
-		<tr class='non-data-row'>
-			<th class=''>&nbsp;</th>
-			<td class="">&nbsp;</td>
-			<td class="">&nbsp;</td>
-			<td class="">&nbsp;</td>
-			<td class=''><BUTTON id='new_row_button'>New Row</BUTTON></td>
-		</tr>
-	</tbody>
-</table>
-<br />
-<table>
-<tr>
-<td class='prevalence_label'>Prevalence</td>
-<td><input type="text" id="prevalence"></td>
-</tr>
-</table>
-<br />
-<button id="calculate_button" >Calculate</button>
-<br /><br /><br />
-<table id='output'> </table>
-
-</div> <!-- Left Side -->
-<div style='float:left;width=450px;'> <!-- Right Side -->
-<img src="./images/initial.jpg" id="graph" alt="graph" border="1" align="top" height='400' width='400' > 
-</div>
-<div class='bibliography'>
-<p><b>References:</b></p>
-<p>
-Marina V. Kondratovich, (2007), <i>Comparing Two Medical Tests When Results of Reference Standard Are 
-Unavailable for Those Negative via Both Tests,</i> Journal of Biopharmaceutical Statistics, 18:1, 145-166,
-<a target='_blank' href=http://www.tandfonline.com/doi/abs/10.1080/10543400701668308#.UubT8LQo670>
-	DOI: 10.1080/10543400701668308
-</a>
-</p>
-</div>
-
-</div> <!-- columns float END -->
-</div> <!-- main -->
-
-<div id="portal-footer">
- <div class="footerLinks">
- <a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
- <a href="mailto:ncicbiit@mail.nih.gov." title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
- <a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
- <a href="http://www.cancer.gov/global/web/policies/accessibility" title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp;
- <a href="http://cancer.gov/global/viewing-files" target="_blank" title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp;
- <a href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br /><br />
- <a href="http://www.dhhs.gov/">Department of Health and Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp;
- <a href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
- <a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://www.usa.gov/">USA.gov</a>
- </div><br /><br />
- NIH...Turning Discovery Into Health<sup>&reg;</sup>
- </div>
-</div>
-
-</body></html>
+</body>
+</html>
