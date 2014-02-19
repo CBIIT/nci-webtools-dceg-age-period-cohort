@@ -1,11 +1,13 @@
-#ulForLRAreas {
-	list-style-position: inside;
-	margin-left: 15px;
+.example-image {
+	float:left;
 }
 
-.liForLRArea {
-	text-indent: -18px;
+.explanation {
+	float:left;
+	padding-left:15px;
+	width:600px;
 }
+
 .reference_row {
 	background-color: yellow;
 }
