@@ -435,8 +435,9 @@ function upload_file() {
 }
 
 function parse_file(blob) {
-	var text = blob.replace(/,/g,'\t');	
-	display_table(text, '\t');
+//	var text = blob.replace(/,/g,'\t');	
+//	display_table(text, '\t');
+	display_table(text, ",");
 }
 
 function create_paste_binding (element) {
@@ -603,14 +604,17 @@ function display_table(txt, delimiter) {
 		} else if (first_cell_in_row.substring(0, 11) == "Description") {
 			description = first_cell_in_row.substring(13);  // Everything after Description:_
 			test_another_row = true;
+		} else if (first_cell_in_row.substring(0, 12) == "\"Description") {
+			description = first_cell_in_row.substring(14);  // Everything after Description:_
+			test_another_row = true;
 		} else if (first_cell_in_row.substring(0, 10) == "Start Year") {
 			start_year = first_cell_in_row.substring(12);  // Everything after Start Year:_
 			test_another_row = true;
 		} else if (first_cell_in_row.substring(0, 9) == "Start Age") {
-			start_age = first_cell_in_row.substring(11);  // Everything after Start Year:_
+			start_age = first_cell_in_row.substring(11);  // Everything after Start Age:_
 			test_another_row = true;
-		} else if (first_cell_in_row.substring(0, 4) == "Year") {
-			year = first_cell_in_row.substring(6);  // Everything after Start Year:_
+		} else if (first_cell_in_row.substring(0, 16) == "Interval (Years)") {
+			year = first_cell_in_row.substring(18);  // Everything after Interval (Year):_
 			test_another_row = true;
 		} else if (first_cell_in_row == "" || isNaN(first_cell_in_row)) {
 			test_another_row = true; // Also remove blank lines			
