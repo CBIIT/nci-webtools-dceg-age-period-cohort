@@ -88,6 +88,7 @@ $(document).ready(function() {
 
 //	    create_paste_binding($(".paste_area"));
 */
+		window.location.reload(true);
 		return true;
 	});
 	
