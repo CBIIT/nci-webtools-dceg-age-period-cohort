@@ -118,16 +118,6 @@ $(document).ready(function() {
      	var startAge = $("#startAge").val();
      	var interval = $("#interval").val();
 
-     	if ($("#description").val()=='') {
-     		var description = "Start Year: " 
-     			+ startYear + " at Age: " 
-     			+ startAge + " with Interval: " 
-     			+ getInterval() + " years";
-     			$("#description").val(description);
-     			setTableTitle();
-     	} else {
-     		var description = encodeURIComponent($("#description").val());
-     	}
 
      	if (line_array == undefined || line_array == null || line_array.length == 0) {
     		alert(paste_instructions);
@@ -151,6 +141,18 @@ $(document).ready(function() {
     		alert("Interval must be 1,2,3,4,5,6,7,8,9 or 10 years, it is: [" + interval + "]");
     		return false;
     	}
+    	// Moved below checks because if there is no year we should not try and set the default description
+     	if ($("#description").val()=='') {
+     		var description = "Start Year: " 
+     			+ startYear + " at Age: " 
+     			+ startAge + " with Interval: " 
+     			+ getInterval() + " years";
+     			$("#description").val(description);
+     			setTableTitle();
+     	} else {
+     		var description = encodeURIComponent($("#description").val());
+     	}
+
     	
       	var periodCount= numberOfPeriods();
      	var rowCount = numberOfRows();
@@ -438,6 +440,9 @@ function upload_file() {
 function parse_file(blob) {
 //	var text = blob.replace(/,/g,'\t');	
 //	display_table(text, '\t');
+	re = 	/\"(\d+),(\d+),(\d+)\"/;
+	
+	var intermediate_text = text.replace(re, "$0$1$2");
 	display_table(text, ",");
 }
 
@@ -580,7 +585,11 @@ function numberOfRows () {
 
 function display_table(txt, delimiter) {
 	
-	
+	var re3 = /\"(\d+),(\d+),(\d+)\"/g;
+	var i_text = txt.replace(re3, "$1$2$3");
+	var re2 = /\"(\d+),(\d+)\"/g;
+	i_text = i_text.replace(re2, "$1$2");
+	txt = i_text;
 	
 	var lines = txt.split("\n");
 	line_array = new Array(lines.length);
@@ -606,7 +615,10 @@ function display_table(txt, delimiter) {
 			description = first_cell_in_row.substring(13);  // Everything after Description:_
 			test_another_row = true;
 		} else if (first_cell_in_row.substring(0, 12) == "\"Description") {
-			description = first_cell_in_row.substring(14);  // Everything after Description:_
+			// When there is a comma in the description field, the csv file will quote the first field
+			// We have to dig into the original line to find the whole description
+			description = lines[i].substring(14, lines[i].lastIndexOf("\""));
+//			description = first_cell_in_row.substring(14);  // Everything after Description:_
 			test_another_row = true;
 		} else if (first_cell_in_row.substring(0, 10) == "Start Year") {
 			start_year = first_cell_in_row.substring(12);  // Everything after Start Year:_
@@ -616,6 +628,12 @@ function display_table(txt, delimiter) {
 			test_another_row = true;
 		} else if (first_cell_in_row.substring(0, 16) == "Interval (Years)") {
 			year = first_cell_in_row.substring(18);  // Everything after Interval (Year):_
+			test_another_row = true;
+		} else if (first_cell_in_row.substring(0, 5) == "Years") {
+			year = first_cell_in_row.substring(7);  // Everything after Year:_
+			test_another_row = true;
+		} else if (first_cell_in_row.substring(0, 8) == "Interval") {
+			year = first_cell_in_row.substring(10);  // Everything after Interval:_
 			test_another_row = true;
 		} else if (first_cell_in_row == "" || isNaN(first_cell_in_row)) {
 			test_another_row = true; // Also remove blank lines			
