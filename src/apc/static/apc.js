@@ -361,7 +361,8 @@ function fillDataTable(jsonTableData, key){
 		"bSearchable":false,
 		"bInfo":false,
 		"bPaginate": false,
-		"bDestroy": true
+		"bDestroy": true,
+		"aaSorting": []
 	});		
 }
 
