@@ -37,9 +37,9 @@ app = Flask(__name__, static_folder='static', static_url_path='/static')
 def index():
     return render_template('index.html')
 
-@app.route('/glossary.html')
-def glossary():
-    return render_template('glossary.html')
+@app.route('/check.html')
+def check():
+    return render_template('check.html')
 
 @app.route('/help.html')
 def help():
