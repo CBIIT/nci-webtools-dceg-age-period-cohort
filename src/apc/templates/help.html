@@ -21,7 +21,7 @@
 <h3> Age Period Cohort Analysis</h3>
 <p>Age-Period-Cohort analysis identifies patterns in cancer incidence or mortality rates from 
 population-based <b><i> Count </i></b> (numerator) and <b><i> Population </i></b> (denominator) data. Often the data come 
-from a <B>Cancer Registry</B> (e.g., <a href='http://seer.cancer.gov/registries/' target='seer'> SEER </a>) in the form of a table showing the numbers of cancer cases or cancer deaths 
+from a <B>Cancer Registry</B> (e.g., <a href='http://seer.cancer.gov/registries/' target='seer'> SEER</a>) in the form of a table showing the numbers of cancer cases or cancer deaths 
 (counts) and corresponding person-years at risk (population) for particular age groups and 
 calendar time periods. In cancer research, the Age-Period-Cohort (APC) framework is a fundamental 
 model to analyze these data. The APC Model includes <i> parameters </i> that describe the mathematical 
@@ -56,13 +56,13 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 		<li><B>Description</B> - add optional details </li>
 		<li><B>Start Year</B> - list the first calendar year of the first calendar period of your data, for example, use 1990 for the interval 1990 - 1994</li>
 		<li><B>Start Age</B> - list the first age of the first age group of your data, for example use 30 for the interval 30 - 34</li>
-		<li><B>Interval</B> - the width of the age and period intervals, for example use 1 for single-year data, 2 for two-year data, 5 for five-year data (e.g., 1990 - 1994), etc.</li>
+		<li><B>Interval (Years)</B> - the width of the age and period intervals, for example use 1 for single-year data, 2 for two-year data, 5 for five-year data (e.g., 1990 - 1994), etc.</li>
 	</ul>
 	<li>Click the calculate button</li>
 	</li>
 </ol>
 <p><h5>To input data from a csv file:</h5></p>
-<p>The csv file can include only count and population data, or it can include information fields in header lines delimited by semicolons, followed by the count and population data. Click <a href="#example">here</a> to see an example.</p>
+<p>The csv file can include only count and population data, or it can include information fields in header lines delimited by semicolons, followed by the count and population data. Click <a style='color:#228;' href='./exampleDataFiles/PanCan.csv' target='_blank'>here</a> to see an example.</p>
 <ol>
 	<li>Click the Browse button and select your file.</li>
 	<li>Add or modify the meta-data on the left hand side of the input page.</li>
@@ -261,7 +261,7 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 	</tr>
 </table>
 <ul>
-	<li>Other parameters and functions calculated by the web tool and not listed above are described in greater mathematical detail elsewhere (click <a href="">here</a> for a PowerPoint presentation).</li>
+	<li>Other parameters and functions calculated by the web tool and not listed above are described in greater mathematical detail elsewhere (click <a href="check.html" target="checkLater">here</a> for a PowerPoint presentation).</li>
 </ul>
 <p>Statistical hypothesis tests calculated by the web tool are summarized in the <u><a href="#hypothesistests">Table of Hypothesis Tests</a>.</u></p>
 <p>The <B>Wald Tests</B> follow a Chi-Square distribution when the <B>Null Hypothesis</B> is true.  The <b>df</b> (degrees of freedom) count the number of free parameters included in each test. The web tool reports P-values; values less than 0.05 are often considered 'statistically significant', meaning there is statistical evidence that the <B>Null Hypothesis</B> is unlikely to be correct.</p>
@@ -333,8 +333,8 @@ Longitudinal age curve describes age incidence pattern in every cohort.
 <li><i><b>Can my Populations include zeroes?</b></i> No, zero population counts will generate errors because the corresponding rates are undefined (you can't divide by zero!)</li>
 <li><i><b>What algorithm do you use to estimate the parameters and functions?</b></i> We use the statistical method of weighted least squares and the assumption that the count data follow a Poisson distribution allowing for extra-Poisson variation. </li>
 <li><i><b>What software do you use?</b></i> Our calculations are carried out using the R environment for statistical computing and graphics.</li>
-<li><i><b>Are your R programs available?</b></i> Yes, our R programs are freely available. You can obtain a copy of our code <a href="">here</a>.</li>
-<li><i><b>How can I use the web tool to analyze data from SEER?</b></i> Click <a href="">here</a> for details.	</li>
+<li><i><b>Are your R programs available?</b></i> Yes, our R programs are freely available. You can obtain a copy of our code <a href="https://github.com/NCIP/nci-analysis-tools-web-presence/blob/master/src/apc/apcLatest.R" target="code">here</a>.</li>
+<li><i><b>How can I use the web tool to analyze data from SEER?</b></i> Click <a href="check.html" target="checkLater">here</a> for details.	</li>
 </ul>
 </div> <!-- blockcontent -->
 
