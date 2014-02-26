@@ -13,7 +13,7 @@ table.input {
 }
 
 .example-data-table {
-	font-size: 8px;
+	font-size: 10px;
 }
 
 /* coefficients.tfoot {
@@ -115,7 +115,7 @@ th.header {
 }
 
 #sampledatatable #datavalues{
-   width:600px;
+   width:650px;
 }
 
 #sampledatatable.functions tr, th{
