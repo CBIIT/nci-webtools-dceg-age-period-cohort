@@ -32,14 +32,14 @@ td.header {
 	font-weight:bold;
 	font-size: 12px;
 	text-align:center;
-	background-color:#EEE;
+	background-color:#DDD;
 }
 
 .row-header {
 	vertical-align:middle;
 	width:50px;
 	max-width:50px;
-	background-color:#EEE;
+	background-color:#DDD;
 }
 
 th.header {
@@ -49,35 +49,35 @@ th.header {
 }
 
 .border-top {
-	border-top: 1px solid #DDD;
+	border-top: 1px solid #CCC;
 }
 
 .border-left {
-	border-left: 1px solid #DDD;
+	border-left: 1px solid #CCC;
 
 }
 
 .border-right {
-	border-right: 1px solid #DDD;
+	border-right: 1px solid #CCC;
 }
 
 .border-dotted-left {
-	border-left: 1px dotted #DDD;
+	border-left: 1px dotted #CCC;
 }
 
 .border-dotted-right {
-	border-right: 1px dotted #DDD;
+	border-right: 1px dotted #CCC;
 }
 
 .border-bottom {
-	border-bottom: 1px solid #DDD;
+	border-bottom: 1px solid #CCC;
 }
 .border-dotted-bottom {
-	border-bottom: 1px dotted #DDD;
+	border-bottom: 1px dotted #CCC;
 }
 
 .dotted {
-	border: 1px dotted #DDD;
+	border: 1px dotted #CCC;
 }
 
 #paste_here_image {
