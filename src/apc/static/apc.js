@@ -45,54 +45,11 @@ $(document).ready(function() {
 	create_paste_binding($(".paste_area"));
 
 	$( "#cancel" ).click(function() { 
-/*
-			$(".data").empty();
-			$("#main-table").empty();
-			$("#inputData").html(main_table);
-			$("#startYear").val("");
-			$("#startAge").val("");
-			$("#description").val("");
-			$("#interval").val("");
-			$("#title").val("");
-			$("#Excel").html("");
-			$("#InputRawData").html("");
-			$("#OutputRawData").html("");
-			$("#ND").css("display","none");
-        	$("#CE").css("display","none");
-        	$("#WT").css("display","none");
-        	$(".rates").css("display","none");
-        	$("#paste_here_image").css("display","none");
-			$("#countPopulation").val("");
-            $("#paste_here_image").show();
-            set_paste_area_size();
-            
-        	for (var x=8; x < 18; x++) {
-        		items = $.merge($("#tab-4458-"+x).find("table"),$("#tab-4458-"+x).find("div").not("[class='rates']").not("[class='dataTables_wrapper']"))
-        		for (var z=0; z < items.length; z++)
-	        		{
-	        			$("#"+items[z].id).html("")
-	        		}
-        	}
-
-        	// tabTablesDivs = ['AgeDeviationsGraph','AgeDeviations','AgeDeviationsDownloadResultLink','PerDeviationsGraph','PerDeviations','CohDeviationsGraph','CohDeviations','LongAgeGraph','LongAge','CrossAgeGraph','CrossAge','Long2CrossRRGraph','Long2CrossRR','FittedTemporalTrendsGraph','FittedTemporalTrends','PeriodRRGraph','PeriodRR','CohortRRGraph','CohortRR','LocalDriftsGraph','LocalDrifts']
-        	// for (var x=0; x<tabTablesDivs.length;x++)
-	        // 	{
-	        // 		$("#"+tabTablesDivs[x]).html("");
-	        // 	}
-
-			line_array = null;
-
-//            $("#cancel").css("display","none");
-			$("#download_choice").hide();
-
-
-//	    create_paste_binding($(".paste_area"));
-*/
 		window.location.reload(true);
-		return true;
+		return false;
 	});
-	
-	
+
+
 	$( "#calculate" ).click(function() {
 
     	if ($("#title").val()=='') {
@@ -195,24 +152,49 @@ $(document).ready(function() {
 
 	});
     
-	$( "#startAge" ).change(function() {
-		on_change_starting_age();		
+	$( "#title" ).blur(function() {
+		//display_table(text);
+		setTableTitle();
 	});
-
-	$( "#title" ).change(function() {
+	
+	$("#title").on('keypress', function(e){
+		if(e.which == 13) {
+			$("#title").blur();
+		}
+	});
+	
+	$( "#description" ).blur(function() {
 		//display_table(text);
 		setTableTitle();
 	});
 
-	$( "#description" ).change(function() {
-		//display_table(text);
-		setTableTitle();
+	$("#description").on('keypress', function(e){
+		if(e.which == 13) {
+			$("#description").blur();
+		}
 	});
-
-	$( "#startYear" ).change(function() {
+	
+	$( "#startYear" ).blur(function() {
 		on_change_start_year();
 	});
 
+	$("#startYear").on('keypress', function(e){
+		if(e.which == 13) {
+			$("#startYear").blur();
+		}
+	});
+
+	$( "#startAge" ).blur(function() {
+		on_change_starting_age();		
+	});
+
+	$("#startAge").on('keypress', function(e){
+		if(e.which == 13) {
+			$("#startAge").blur();
+		}
+	});
+	
+	
 	$( "#interval" ).change(function() {
 		on_change_starting_age();
 		on_change_start_year();
@@ -256,7 +238,8 @@ $(document).ready(function() {
                 $("#paste_here_image").hide();
         
     });
-    
+
+
     $("#download").click(function() {
     	var selected_file = $("#download_selector").val();
     	window.open("./" + selected_file, 'download');
