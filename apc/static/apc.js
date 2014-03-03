@@ -612,6 +612,9 @@ function display_table(txt, delimiter) {
 		if (first_cell_in_row.substring(0, 5) == "Title") {
 			title = first_cell_in_row.substring(7);  // Everything after Title:_
 			test_another_row = true;
+		} else if (first_cell_in_row.substring(0, 6) == "\"Title") {
+			title = lines[i].substring(8, lines[i].lastIndexOf("\""));
+			test_another_row = true;
 		} else if (first_cell_in_row.substring(0, 11) == "Description") {
 			description = first_cell_in_row.substring(13);  // Everything after Description:_
 			test_another_row = true;
