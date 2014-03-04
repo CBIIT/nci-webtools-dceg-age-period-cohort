@@ -27,11 +27,11 @@ from jinja2 import Environment, FileSystemLoader
 #app = Flask(__name__)
 
 # --- Brent Added...
-app = Flask(__name__, static_folder='static', static_url_path='/static')
+app = Flask(__name__, static_folder='web', static_url_path='/web')
 
 #@app.route('/')
 #def root():
-#    return url_for('static', filename='index.html')
+#    return url_for('web', filename='index.html')
 
 @app.route('/')
 def index():
@@ -87,9 +87,14 @@ def createStaticFiles():
         f.write(renderedFile)
         f.close()
         
+import argparse
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", dest="port_number", default="8888", help="Sets the Port") 
+    # Default port is production value; prod,stage,dev = 8888, sandbox=8788
+    args = parser.parse_args()
+    port_num = int(args.port_number);
+
     hostname = gethostname()
     createStaticFiles()
-    app.run(host='0.0.0.0', port=8788, debug = True)
-
-
+    app.run(host='0.0.0.0', port=port_num, debug = True)

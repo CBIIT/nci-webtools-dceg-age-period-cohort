@@ -18,20 +18,6 @@ $(document).ready(function() {
 	$("#paste").css("height",  $("#main-table").innerHeight() - 10);
 	
 	var off = $("#paste_here_image").position();
-//	alert (off.left + "," + off.top);
-
-	
-	$( "#R_upload_button" ).click(function() {
-		alert("Coming Soon");
-	});
-	$( "#csv_upload_button" ).click(function() {
-		alert("Coming Soon");
-	});
-
-//	$("#please_wait").dialog({
-//		dialogClass: "no-titlebar",
-//	    height: '140px',
-//	});
 	
 	$("#please_wait").dialog({
 		dialogClass: 'no-close',
@@ -45,59 +31,15 @@ $(document).ready(function() {
 	create_paste_binding($(".paste_area"));
 
 	$( "#cancel" ).click(function() { 
-/*
-			$(".data").empty();
-			$("#main-table").empty();
-			$("#inputData").html(main_table);
-			$("#startYear").val("");
-			$("#startAge").val("");
-			$("#description").val("");
-			$("#interval").val("");
-			$("#title").val("");
-			$("#Excel").html("");
-			$("#InputRawData").html("");
-			$("#OutputRawData").html("");
-			$("#ND").css("display","none");
-        	$("#CE").css("display","none");
-        	$("#WT").css("display","none");
-        	$(".rates").css("display","none");
-        	$("#paste_here_image").css("display","none");
-			$("#countPopulation").val("");
-            $("#paste_here_image").show();
-            set_paste_area_size();
-            
-        	for (var x=8; x < 18; x++) {
-        		items = $.merge($("#tab-4458-"+x).find("table"),$("#tab-4458-"+x).find("div").not("[class='rates']").not("[class='dataTables_wrapper']"))
-        		for (var z=0; z < items.length; z++)
-	        		{
-	        			$("#"+items[z].id).html("")
-	        		}
-        	}
-
-        	// tabTablesDivs = ['AgeDeviationsGraph','AgeDeviations','AgeDeviationsDownloadResultLink','PerDeviationsGraph','PerDeviations','CohDeviationsGraph','CohDeviations','LongAgeGraph','LongAge','CrossAgeGraph','CrossAge','Long2CrossRRGraph','Long2CrossRR','FittedTemporalTrendsGraph','FittedTemporalTrends','PeriodRRGraph','PeriodRR','CohortRRGraph','CohortRR','LocalDriftsGraph','LocalDrifts']
-        	// for (var x=0; x<tabTablesDivs.length;x++)
-	        // 	{
-	        // 		$("#"+tabTablesDivs[x]).html("");
-	        // 	}
-
-			line_array = null;
-
-//            $("#cancel").css("display","none");
-			$("#download_choice").hide();
-
-
-//	    create_paste_binding($(".paste_area"));
-*/
 		window.location.reload(true);
-		return true;
+		return false;
 	});
-	
-	
+
+
 	$( "#calculate" ).click(function() {
 
     	if ($("#title").val()=='') {
     		
-//			var date_str = new Date().getTime();
     		var d = new Date();
 			var date_str = "" 
 				+ d.getFullYear() + "_" 
@@ -195,31 +137,32 @@ $(document).ready(function() {
 
 	});
     
-	$( "#startAge" ).change(function() {
-		on_change_starting_age();		
+	// IE10 does not support the onchange event correctly, so instead we check for blur
+	// and force a blur when user hits the enter key on a field 
+	$("#title").blur(function() { setTableTitle(); });
+	$("#title").on('keypress', function(e){
+		if(e.which == 13) { $("#title").blur(); }
+	});
+	
+	$("#description").blur(function() { setTableTitle(); });
+	$("#description").on('keypress', function(e){
+		if(e.which == 13) { $("#description").blur(); }
+	});
+	
+	$("#startYear").blur(function() { on_change_start_year(); });
+	$("#startYear").on('keypress', function(e){
+		if(e.which == 13) { $("#startYear").blur(); }
 	});
 
-	$( "#title" ).change(function() {
-		//display_table(text);
-		setTableTitle();
+	$("#startAge").blur(function() { on_change_starting_age(); });
+	$("#startAge").on('keypress', function(e){
+		if(e.which == 13) { $("#startAge").blur(); }
 	});
-
-	$( "#description" ).change(function() {
-		//display_table(text);
-		setTableTitle();
-	});
-
-	$( "#startYear" ).change(function() {
-		on_change_start_year();
-	});
-
+	
+	
 	$( "#interval" ).change(function() {
 		on_change_starting_age();
 		on_change_start_year();
-	});
-
-	$( "#loadExampleData" ).click(function() {
-		// TODO: send data to Larry's code somehow
 	});
 	
     $('#countPopulation').change(function(){
@@ -256,7 +199,8 @@ $(document).ready(function() {
                 $("#paste_here_image").hide();
         
     });
-    
+
+
     $("#download").click(function() {
     	var selected_file = $("#download_selector").val();
     	window.open("./" + selected_file, 'download');
@@ -611,6 +555,9 @@ function display_table(txt, delimiter) {
 		var first_cell_in_row = "" + line_array[i][0];
 		if (first_cell_in_row.substring(0, 5) == "Title") {
 			title = first_cell_in_row.substring(7);  // Everything after Title:_
+			test_another_row = true;
+		} else if (first_cell_in_row.substring(0, 6) == "\"Title") {
+			title = lines[i].substring(8, lines[i].lastIndexOf("\""));
 			test_another_row = true;
 		} else if (first_cell_in_row.substring(0, 11) == "Description") {
 			description = first_cell_in_row.substring(13);  // Everything after Description:_
