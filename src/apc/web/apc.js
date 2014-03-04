@@ -137,6 +137,7 @@ $(document).ready(function() {
 
 	});
     
+<<<<<<< HEAD:src/apc/web/apc.js
 	// IE10 does not support the onchange event correctly, so instead we check for blur
 	// and force a blur when user hits the enter key on a field 
 	$("#title").blur(function() { setTableTitle(); });
@@ -158,6 +159,49 @@ $(document).ready(function() {
 	$("#startAge").on('keypress', function(e){
 		if(e.which == 13) { $("#startAge").blur(); }
 	});
+=======
+	$( "#title" ).blur(function() {
+		//display_table(text);
+		setTableTitle();
+	});
+	
+	$("#title").on('keypress', function(e){
+		if(e.which == 13) {
+			$("#title").blur();
+		}
+	});
+	
+	$( "#description" ).blur(function() {
+		//display_table(text);
+		setTableTitle();
+	});
+
+	$("#description").on('keypress', function(e){
+		if(e.which == 13) {
+			$("#description").blur();
+		}
+	});
+	
+	$( "#startYear" ).blur(function() {
+		on_change_start_year();
+	});
+
+	$("#startYear").on('keypress', function(e){
+		if(e.which == 13) {
+			$("#startYear").blur();
+		}
+	});
+
+	$( "#startAge" ).blur(function() {
+		on_change_starting_age();		
+	});
+
+	$("#startAge").on('keypress', function(e){
+		if(e.which == 13) {
+			$("#startAge").blur();
+		}
+	});
+>>>>>>> eadf32d5d504e44d461084d8ee27a8c0eade5349:src/apc/static/apc.js
 	
 	
 	$( "#interval" ).change(function() {
