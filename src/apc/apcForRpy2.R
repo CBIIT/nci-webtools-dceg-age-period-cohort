@@ -13,8 +13,8 @@ source ('writeToExcel.R')
 #rawDirectory <- "/home/brent/myproject/nci-analysis-tools-web-presence/src/apc/static/raw/";
 
 # Use these directories in production
-imageDirectory <- "static/img/";
-rawDirectory <- "static/raw/";
+imageDirectory <- "tmp/";
+rawDirectory <- "tmp/";
 
 moveRowLabelsToData <- function (matrixWithNamedRows, key) {
   
