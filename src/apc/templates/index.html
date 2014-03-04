@@ -5,7 +5,7 @@
 
   <div class="row-fluid">
     <div class="span4">
-      <form id="inputDataForm" class="well">
+      <div id="inputDataForm" class="well">
           <label for="title">Title</label><a class="help" href="#" onclick="openHelpWindow('help.html')">Help</a>
           <input id="title" type="text" value=""/>
 
@@ -44,9 +44,10 @@
         <div><label for="countPopulation">Copy and paste into table on right or upload a csv with population and count information</label></div><br />
         <div class="fileupload"><input id="countPopulation" type="file" accept=".csv"/></div>
         
-		<div><button type="submit" id="cancel" class="btn btn-primary" style="float: left;margin-right:20px;">Clear</button>
-		<button type="submit" id="calculate" class="btn btn-primary" style="float: left;margin-right:20px;">Calculate</button></div>
+		<div><button type="button" id="cancel" class="btn btn-primary" style="float: left;margin-right:20px;">Clear</button>
+		<button type="button" id="calculate" class="btn btn-primary" style="float: left;margin-right:20px;">Calculate</button></div>
 		<br /><br /><br />
+
 		<div id='download_choice' style='display:none'>
 			<label for="download_selector">&nbsp;</label>
 			<select id='download_selector' style='width:auto; margin-bottom:0px; float:left;'>
@@ -60,7 +61,7 @@
 		
 		</div>
 		&nbsp;
-		</form>
+		</div>
 		<br />
         <hr class="style-two">
         <div id="ND" style="display:none">
@@ -130,7 +131,7 @@
           <div id="inputData">
             <!-- Larry's code here -->
             <label for='paste' style='position:absolute;'>&nbsp;</label>
-            <img id='paste_here_image' alt='paste here image' src='./static/images/paste-here.gif' 
+            <img id='paste_here_image' alt='paste here image' src='./web/images/paste-here.gif' 
             	style='position:absolute'/> 
             <textarea id='paste' class='paste_area' ></textarea>
             
@@ -322,7 +323,7 @@
             </table>
             <!-- End Larry's Code and Send Data to Shiny -->
             <div id='please_wait' title='Please Wait...'>
-            	<img src='./static/images/working.gif' alt="Calculating" title="Calculating" />
+            	<img src='./web/images/working.gif' alt="Calculating" title="Calculating" />
             </div>
 <!--  <div id='error_dialog'><p>There were errors in your request.</p></div> -->           
             

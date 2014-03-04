@@ -1,5 +1,5 @@
 DrawSensSpecLR <- function(uniquekey, sensref, specref,sensitivity,specificity, names) {
-  file<-paste("./img/", uniquekey, "SensSpecLR.jpg")
+  file<-paste("./tmp/", uniquekey, "SensSpecLR.jpg")
   graphfile<-gsub("\\s", "", file)
   png(graphfile)
   Specificity <- seq(from=0,to=1,by=0.00001)
