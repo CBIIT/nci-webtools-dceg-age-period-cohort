@@ -201,8 +201,6 @@ $(document).ready(function() {
 			$("#startAge").blur();
 		}
 	});
->>>>>>> eadf32d5d504e44d461084d8ee27a8c0eade5349:src/apc/static/apc.js
-	
 	
 	$( "#interval" ).change(function() {
 		on_change_starting_age();
@@ -360,7 +358,7 @@ function fillDataTable(jsonTableData, key){
 
 function loadImage(keyData, uniqueId) {
 	$('#' + keyData + 'Graph').html("<img style='width: 600px ; height: 480px' class='center' alt='graph for " 
-			+ keyData + "' src='./static/img/" + keyData + uniqueId + ".png'>");
+			+ keyData + "' src='./tmp/" + keyData + uniqueId + ".png'>");
 }
 
 function getColumnHeaderData(data2d, keyName) {
@@ -557,20 +555,7 @@ function numberOfPeriods () {
 function numberOfRows () {
 	return line_array.length - 1;
 }
-// function determine_combined_array() {
 
-// 	var num_periods = Math.floor((line_array[0].length + 1) / 2);
-// 	var num_ages = line_array.length - 1;
-	
-// 	var combo_str = ""; // Must set this to empty otherwise it will add "udefined" to [0][0] cell
-// 	for (var x=0;x<num_periods;x++) {
-// 		for (var y=0;y<num_ages;y++) {
-// 			combo_str += line_array[(y*2)][x] + "," + line_array[(y*2)+1][x];
-// 		}
-// 		combo_str +="\n";
-// 	}
-// 	return combo_str;	
-// }
 
 function display_table(txt, delimiter) {
 	
