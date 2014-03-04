@@ -137,7 +137,6 @@ $(document).ready(function() {
 
 	});
     
-<<<<<<< HEAD:src/apc/web/apc.js
 	// IE10 does not support the onchange event correctly, so instead we check for blur
 	// and force a blur when user hits the enter key on a field 
 	$("#title").blur(function() { setTableTitle(); });
@@ -159,7 +158,8 @@ $(document).ready(function() {
 	$("#startAge").on('keypress', function(e){
 		if(e.which == 13) { $("#startAge").blur(); }
 	});
-=======
+
+	
 	$( "#title" ).blur(function() {
 		//display_table(text);
 		setTableTitle();
