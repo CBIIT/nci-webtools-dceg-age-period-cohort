@@ -1,3 +1,7 @@
+.label {
+	float:right;
+}
+
 .example-image {
 	float:left;
 }
@@ -47,6 +51,18 @@ h2 {
 	color: #444;
 	padding: 2px 25px 2px 25px;
 }
+
+.table-side {
+	float:left;
+	width:500;
+}
+
+.graphic-side {
+	float:right;
+	width:500;
+}
+
+
 
 .bibliography {
 	width: 950px;

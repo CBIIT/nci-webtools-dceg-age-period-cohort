@@ -4,7 +4,7 @@ source ('./r-code/PPVPrevSpec.R')
 source ('./r-code/DrawDeltaSpecPPV.R')
 source ("./r-code/DrawSensSpecPPV.R")
 
-imageDirectory <- "../img";
+imageDirectory <- "./img/";
 
 getDataJSON <-function(urlEncodedString)
 {

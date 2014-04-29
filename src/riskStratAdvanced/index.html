@@ -11,6 +11,7 @@
 <link rel="stylesheet" type="text/css" href="/lib/jquery/jquery-ui-1.10.3.css" />
 <link rel="stylesheet" type="text/css" href="./style.css" type="text/css" />
 <link rel="stylesheet" type="text/css" href="./ppvAdv.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="./dataTables.css" type="text/css" />
 
 </head>
 
@@ -46,13 +47,10 @@
 			<br>
 			<h2 align="center">Risk Stratification Advanced Analysis Options</h2>
 			<p></p>
-			<div class='table-and-graph'>
 			<div style='width: 550px; float: left; clear:left;'>
-				<!-- Left Side -->
-				<br />
 				<table>
 					<tr>
-						<td class='independent_label'>Independant Variable</td>
+						<td class='label'>Independant Variable</td>
 						<td><select name="independent_dropdown">
 							<option value="specificity">specificity</option>
 						</select>
@@ -61,7 +59,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td class='contour_label'>Contour</td>
+						<td class='label'>Contour</td>
 						<td><select name="contour_dropdown">
 							<option value="ppv">ppv</option>
 							<option value="prevalence">prevalence</option>
@@ -70,8 +68,8 @@
 								id="contour"></label></td>
 					</tr>
 					<tr>
-						<td class='fixed_label'>Fixed Values</td>
-						<td><select name="fixed_dropdown">
+						<td class='label'>Fixed Values</td>
+						<td><select name="fixed_dropdown" id='fixed_dropdown'>
 							<option value="prevalence">prevalence</option>
 							<option value="delta">delta</option>
 						</select>
@@ -79,80 +77,36 @@
 								id="fixed"></label></td>
 					</tr>
 				</table>
-				<br />
-            <div id='please_wait'><p>Please Wait...<br/><img src='images/working.gif' /></p></div>
-            <div id='error_dialog'><p>There were errors in your request.</p></div>
-
-            <form>
-              <button type="submit" id="calculate" class="btn btn-primary" style="float: left;">Calculate</button>
+              <button type="submit" id="calculate" class="btn btn-primary">Calculate</button>
             </form>
-				<br />
-				<br />
-				<br />
+<br /><br />
 
+<div id='output'> 
+</div>
+<!-- 
 
 <div id="tabs" style="height:600;width:1000">
   <ul>
-    <li><a href="#fixed-1"><span>Prevalence &nbsp  &nbsp &nbsp &nbsp &nbsp</span></a></li>
-    <li><a href="#fixed-2"><span>Prevalence &nbsp  &nbsp &nbsp &nbsp &nbsp</span></a></li>
-    <li><a href="#fixed-3"><span>Prevalence &nbsp  &nbsp &nbsp &nbsp &nbsp</span></a></li>
-    <li><a href="#fixed-4"><span>Prevalence &nbsp  &nbsp &nbsp &nbsp &nbsp</span></a></li>
-    <li><a href="#fixed-5"><span>Prevalence &nbsp  &nbsp &nbsp &nbsp &nbsp</span></a></li>
+    <li><a href="#fixed-1">Prevalence</a></li>
+    <li><a href="#fixed-2">Prevalence</a></li>
+    <li><a href="#fixed-3">Prevalence</a></li>
+    <li><a href="#fixed-4">Prevalence</a></li>
+    <li><a href="#fixed-5">Prevalence</a></li>
   </ul>
-  <div id="fixed-1">
-				<!-- Right Side -->
-        <table id='output1' width="100%" cellpadding="0" cellspacing="0" border="0" > </table>
-	<img src="./images/initial.jpg" id="graph1" alt="graph1" border="1" height='400' width='400'>
+  <div id="fixed-1">test
   </div>
   <div id="fixed-2">
-				<!-- Right Side -->
-    <img src="./images/initial.jpg" id="graph2" alt="graph2" height="400" width="400" border="1">
-    <table id='output2' width="100%" cellpadding="0" cellspacing="0" border="0" > </table>
   </div>
   <div id="fixed-3">
-				<!-- Right Side -->
-    <img src="./images/initial.jpg" id="graph3" alt="graph3" height="400" width="400" border="1">
-    <table id='output3' width="100%" cellpadding="0" cellspacing="0" border="0" > </table>
   </div>
   <div id="fixed-4">
-    <img src="./images/initial.jpg" id="graph4" alt="graph4" height="400" width="400" border="1">
-    <table id='output4' width="100%" cellpadding="0" cellspacing="0" border="0" > </table>
   </div>
   <div id="fixed-5">
-    <table id='output5' width="100%" cellpadding="0" cellspacing="0" border="0" > </table>
-    <img src="./images/initial.jpg" id="graph5" alt="graph5" height="400" width="400" border="1">
   </div>
 </div>
-<script>
-$( "#tabs" ).tabs();
-$( "#tabs" ).on( "tabsactivate", function( event, ui ) {
-    if(this !== event.target)
-    {
-        return false;
-    }
+ -->
 
-} );
-</script>
-
-
-
-				<br />
-				<br /> <br /> <br />
-				<table id='output'>
-				</table>
-
-			</div>
-			</div> <!-- table-and-graph -->
-			<!-- Left Side -->
-			<div class='bibliography'>
-				<p>
-					<b></b>
-				</p>
-			</div>
-
-		</div>
-		<!-- columns float END -->
-	</div>
+</div>
 	<!-- main -->
 
 	<div id="portal-footer">
