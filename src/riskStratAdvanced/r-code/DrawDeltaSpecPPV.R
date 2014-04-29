@@ -1,5 +1,5 @@
 DrawDeltaSpecPPV <- function(specmin, specmax, prevalence, PPV) {
-  jpeg('DeltaSpecPPV.jpg')
+  #jpeg('DeltaSpecPPV.jpg')
   Specificity <- seq(from=specmin,to=specmax,by=0.00001)
   
   Iterations <- 1:length(PPV)
@@ -16,5 +16,5 @@ DrawDeltaSpecPPV <- function(specmin, specmax, prevalence, PPV) {
   }
   
   legend(lty=LTY,legend=PPV,"bottomright",cex=1.15,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="PPV") 
-  dev.off()
+  #dev.off()
 }

@@ -1,5 +1,5 @@
 DrawSensSpecPPV <- function(specmin,specmax,prevalence, PPV) {
-  jpeg('SensSpecPPV.jpg')
+  #jpeg('SensSpecPPV.jpg')
   Val <- prevalence/(1-prevalence)
   Specificity <- seq(from=specmin,to=specmax,by=0.00001)
   
@@ -17,6 +17,6 @@ DrawSensSpecPPV <- function(specmin,specmax,prevalence, PPV) {
   }
   
   legend(lty=LTY,legend=PPV,"bottomright",cex=1.15,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="PPV")
-  dev.off()
+  #dev.off()
   
 }

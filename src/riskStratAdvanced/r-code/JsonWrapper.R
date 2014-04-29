@@ -28,10 +28,10 @@ getDataJSON <-function(urlEncodedString)
 
   if (key == "Sensitivity_required_to_achieve_specified_PPV_given_prevalence_and_specificity"){
     jsonString=toJSON(data$"Sensitivity_required_to_achieve_specified_PPV_given_prevalence_and_specificity"[,,as.numeric(tab)], method="C");
-    #getDeltaSpecGraph(as.numeric(specmin), as.numeric(specmax), as.numeric(tabvalue), ppv, keyGraphName, uniqueId);
+    getSensSpecGraph(as.numeric(specmin), as.numeric(specmax), as.numeric(tabvalue), dppv, keyGraphName, uniqueId);
   } else if (key == "Delta_required_to_achieve_specified_PPV_given_prevalence_and_specificity") {
     jsonString=toJSON(data$"Delta_required_to_achieve_specified_PPV_given_prevalence_and_specificity"[,,as.numeric(tab)], method="C");
-    #getSensSpecGraph(as.numeric(specmin), as.numeric(specmax), as.numeric(tabvalue), ppv, keyGraphName, uniqueId);
+    getDeltaSpecGraph(as.numeric(specmin), as.numeric(specmax), as.numeric(tabvalue), dppv, keyGraphName, uniqueId);
   } else if (key == "Prevalence_Odds_Length") {
     jsonString=toJSON(length(data$"Prevalence_Odds"), method="C");
   }
