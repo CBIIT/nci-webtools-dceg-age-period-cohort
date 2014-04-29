@@ -1,0 +1,93 @@
+.example-image {
+	float:left;
+}
+
+.explanation {
+	float:left;
+	padding-left:15px;
+	width:600px;
+}
+
+.reference_row {
+	background-color: yellow;
+}
+
+td {
+	text-align: center;
+}
+
+.top-header {
+	text-align: center;
+	background-color: #444;
+	color: #FFF;
+}
+
+.header {
+	background-color: #AAA;
+	color: #444;
+}
+
+#output {
+	width: 500px;
+}
+
+#inputdata {
+	width: 500px;
+}
+
+h2 {
+	background-color: #AAA;
+	color: #444;
+	padding: 5px;
+}
+
+.prevalence_label {
+	font-weight: bold;
+	background-color: #AAA;
+	color: #444;
+	padding: 2px 25px 2px 25px;
+}
+
+.bibliography {
+	width: 950px;
+	clear: both;
+	float: left;
+	margin: 50px;
+}
+
+.bib-author {
+	float: left;
+}
+
+.bib-year {
+	float: left;
+}
+
+.bib-title {
+	float: left;
+	font-style: italic;
+}
+
+.bib-journal {
+	float: left;
+}
+
+.bib-ref {
+	float: left;
+}
+
+.bib-pages {
+	float: left;
+}
+
+.bib-doi {
+	float: left;
+}
+
+.bibliography_entry {
+	width: 300px;
+}
+
+.bibliography_link {
+	width: 50px;
+}

@@ -1,0 +1,95 @@
+library('RJSONIO')
+library('stringr')
+source ('./r-code/PPVPrevSpec')
+source ('./r-code/DrawDeltaSpecPPV.R')
+source ('./r-code/DrawSensSpecPPV.R')
+
+imageDirectory <- "../img/";
+
+getDataJSON <-function(urlEncodedString)
+{
+  inputList <- parseURLEncodedString(urlEncodedString);
+  dppv<-getContour(inputList);
+  prev<-getFixedValue(inputList);
+  spec<-getDependent(inputList);
+  key<-getKey(inputList);
+  key<-getKey(inputList);
+  specmin<-getSpecMin(inputList);
+  specmax<-getSpecMax(inputList);
+  uniqueId <- getUniqueId(inputList);
+  data<- PPVPrevSpec(dppv,prev,spec);
+  jsonString = "";
+
+  if (key == "Sensitivity required to achieve specified PPV given prevalence and specificity"){
+    jsonString=toJSON(round(data$"Sensitivity required to achieve specified PPV given prevalence and specificity"[,,prev],3), method="C");
+    getGraph(data, key, uniqueId);
+  } else if (key == "Delta required to achieve specified PPV given prevalence and specificity") {
+    jsonString=toJSON(round(data$"Delta required to achieve specified PPV given prevalence and specificity"[,,prev],3), method="C");
+    getGraph(data, key, uniqueId);
+  }
+  str_replace_all(jsonString, "[\n]","");
+}
+
+getDeltaSpecGraph <- function (specmin, specmax, prev, keyGraphName, uniqueId) {
+  imageFileName = paste(imageDirectory, keyGraphName, uniqueId, ".png", sep = '');
+  png(file = imageFileName , units="in", width=10, height=8, res=150);
+  DrawDeltaSDpecPPV(specmin, specmax, prev);
+  dev.off();
+  imageFileName;
+}
+
+getSensSpecGraph <- function (specmin, specmax, prev, ppv, keyGraphName, uniqueId) {
+  imageFileName = paste(imageDirectory, keyGraphName, uniqueId, ".png", sep = '');
+  png(file = imageFileName , units="in", width=10, height=8, res=150);
+  DrawSensSpecPPV(specmin,specmax,prev, ppv);
+  dev.off();
+  imageFileName;
+}
+
+getKey <- function (inputList) {
+  inputList[[1]][[1]];
+}
+
+getContour <- function (inputList) {
+  inputList[[2]][[1]];
+}
+
+getFixedValue <- function (inputList) {
+  inputList[[3]][[1]];
+}
+
+getDependent <- function (inputList) {
+  inputList[[4]][[1]];
+}
+
+getSpecMin <- function (inputList) {
+  inputList[[5]][[1]];
+}
+
+getSpecMax <- function (inputList) {
+  inputList[[6]][[1]];
+}
+
+getUniqueId <- function (inputList) {
+  inputList[[7]][[1]];
+}
+
+JsonWrapper <- function(dppv,prev,spec)
+{
+  data<- PPVPrevSpec(dppv,prev,spec);
+  jsonString = "";
+  jsonString=toJSON(round(data,3), method="C");
+  str_replace_all(jsonString, "[\n]","");
+}
+
+parseURLEncodedString <- function (urlEncodedString) {
+  #print (urlEncodedString);
+  string <- URLdecode(urlEncodedString);
+  inputList <- lapply(strsplit(string, "&")[[1]], function(x){
+    tmp <- strsplit(x, "=")
+    val <- tmp[[1]][[2]]
+    names(val) <- tmp[[1]][[1]]
+    as.list(val)
+  });
+}
+

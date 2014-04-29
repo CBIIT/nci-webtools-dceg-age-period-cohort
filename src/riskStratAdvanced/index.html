@@ -1,0 +1,179 @@
+<html>
+<head>
+<title>Advanced PPV Tool</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<script src="/lib/jquery/jquery-1.9.1.js"></script>
+<script src="/lib/jquery/jquery-ui-1.10.3.js"></script>
+<script src="./ppvAdv.js"></script>
+<script src="/lib/jquery/jquery.dataTables.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/lib/jquery/jquery-ui-1.10.3.css" />
+<link rel="stylesheet" type="text/css" href="./style.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="./ppvAdv.css" type="text/css" />
+
+</head>
+
+<body>
+	<div style='width: 1000px; margin-left: auto; margin-right: auto;'>
+		<!-- blockcontent was here -->
+		<div id="wrapper">
+			<div id="logos">
+				<div id="left">
+					<a href="http://www.cancer.gov" target="_blank"><img
+						src="images/nci.jpg" width="286" height="40" border="0"
+						alt="National Cancer Institute" title="National Cancer Institute" /></a>
+				</div>
+				<div id="right">
+					<a href="http://www.cancer.gov" target="_blank"><img
+						src="images/nih.jpg" width="322" height="40" border="0"
+						alt="at the National Institutes of Health"
+						title="at the National Institutes of Health" /></a>
+				</div>
+			</div>
+		</div>
+		<br>
+
+		<div id="banners">
+			<div id="left">
+				<img src="images/DCEGBB.png"
+					alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch"
+					height="43" />
+			</div>
+		</div>
+
+		<div id='main'>
+			<br>
+			<h2 align="center">Risk Stratification Advanced Analysis Options</h2>
+			<p></p>
+			<div class='table-and-graph'>
+			<div style='width: 550px; float: left; clear:left;'>
+				<!-- Left Side -->
+				<br />
+				<table>
+					<tr>
+						<td class='independent_label'>Independant Variable</td>
+						<td><select name="independent_dropdown">
+							<option value="specificity">specificity</option>
+						</select>
+						<td><label for="independent"><input type="text" value="0.8, 0.85,0.9, 0.95, 0.995" size="30"
+								id="independent"></label></td>
+						</td>
+					</tr>
+					<tr>
+						<td class='contour_label'>Contour</td>
+						<td><select name="contour_dropdown">
+							<option value="ppv">ppv</option>
+							<option value="prevalence">prevalence</option>
+						</select>
+						<td><label for="contour"><input type="text" value="0.3,0.4,0.5,0.6,0.7" size="30"
+								id="contour"></label></td>
+					</tr>
+					<tr>
+						<td class='fixed_label'>Fixed Values</td>
+						<td><select name="fixed_dropdown">
+							<option value="prevalence">prevalence</option>
+							<option value="delta">delta</option>
+						</select>
+						<td><label for="fixed"><input type="text" value="0.1, 0.2, 0.3, 0.4, 0.5" size="30"
+								id="fixed"></label></td>
+					</tr>
+				</table>
+				<br />
+            <div id='please_wait'><p>Please Wait...<br/><img src='images/working.gif' /></p></div>
+            <div id='error_dialog'><p>There were errors in your request.</p></div>
+
+            <form>
+              <button type="submit" id="calculate" class="btn btn-primary" style="float: left;">Calculate</button>
+            </form>
+				<br />
+				<br />
+				<br />
+
+
+<div id="tabs" style="height:600;width:1000">
+  <ul>
+    <li><a href="#fixed-1"><span>Prevalence &nbsp  &nbsp &nbsp &nbsp &nbsp</span></a></li>
+    <li><a href="#fixed-2"><span>Prevalence &nbsp  &nbsp &nbsp &nbsp &nbsp</span></a></li>
+    <li><a href="#fixed-3"><span>Prevalence &nbsp  &nbsp &nbsp &nbsp &nbsp</span></a></li>
+    <li><a href="#fixed-4"><span>Prevalence &nbsp  &nbsp &nbsp &nbsp &nbsp</span></a></li>
+    <li><a href="#fixed-5"><span>Prevalence &nbsp  &nbsp &nbsp &nbsp &nbsp</span></a></li>
+  </ul>
+  <div id="fixed-1">
+				<!-- Right Side -->
+        <table id='output1' width="100%" cellpadding="0" cellspacing="0" border="0" > </table>
+	<img src="./images/initial.jpg" id="graph1" alt="graph1" border="1" height='400' width='400'>
+  </div>
+  <div id="fixed-2">
+				<!-- Right Side -->
+    <img src="./images/initial.jpg" id="graph2" alt="graph2" height="400" width="400" border="1">
+    <table id='output2' width="100%" cellpadding="0" cellspacing="0" border="0" > </table>
+  </div>
+  <div id="fixed-3">
+				<!-- Right Side -->
+    <img src="./images/initial.jpg" id="graph3" alt="graph3" height="400" width="400" border="1">
+    <table id='output3' width="100%" cellpadding="0" cellspacing="0" border="0" > </table>
+  </div>
+  <div id="fixed-4">
+    <img src="./images/initial.jpg" id="graph4" alt="graph4" height="400" width="400" border="1">
+    <table id='output4' width="100%" cellpadding="0" cellspacing="0" border="0" > </table>
+  </div>
+  <div id="fixed-5">
+    <table id='output5' width="100%" cellpadding="0" cellspacing="0" border="0" > </table>
+    <img src="./images/initial.jpg" id="graph5" alt="graph5" height="400" width="400" border="1">
+  </div>
+</div>
+<script>
+$( "#tabs" ).tabs();
+$( "#tabs" ).on( "tabsactivate", function( event, ui ) {
+    if(this !== event.target)
+    {
+        return false;
+    }
+
+} );
+</script>
+
+
+
+				<br />
+				<br /> <br /> <br />
+				<table id='output'>
+				</table>
+
+			</div>
+			</div> <!-- table-and-graph -->
+			<!-- Left Side -->
+			<div class='bibliography'>
+				<p>
+					<b></b>
+				</p>
+			</div>
+
+		</div>
+		<!-- columns float END -->
+	</div>
+	<!-- main -->
+
+	<div id="portal-footer">
+		<div class="footerLinks">
+			<a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="mailto:NCIMeansToRiskWebAdmin@mail.nih.gov" title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/global/web/policies/accessibility"
+				title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://cancer.gov/global/viewing-files" target="_blank"
+				title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br />
+			<br /> <a href="http://www.dhhs.gov/">Department of Health and
+				Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+				href="http://www.usa.gov/">USA.gov</a>
+		</div>
+		<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
+	</div>
+	</div>
+
+</body>
+</html>
