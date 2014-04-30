@@ -1,0 +1,1 @@
+create img directory in GIT

@@ -48,7 +48,7 @@ getVector <- function (vectorstring) {
 }
 
 getDeltaSpecGraph <- function (specmin, specmax, prev, ppv, keyGraphName, uniqueId) {
-  imageFileName = paste(imageDirectory, keyGraphName, uniqueId, ".png", sep = '');
+  imageFileName = paste(imageDirectory, keyGraphName, uniqueId, "-", prev, ".png", sep = '');
   png(file = imageFileName , units="in", width=10, height=8, res=150);
   DrawDeltaSpecPPV(specmin, specmax, prev, ppv);
   dev.off();
@@ -56,7 +56,7 @@ getDeltaSpecGraph <- function (specmin, specmax, prev, ppv, keyGraphName, unique
 }
 
 getSensSpecGraph <- function (specmin, specmax, prev, ppv, keyGraphName, uniqueId) {
-  imageFileName = paste(imageDirectory, keyGraphName, uniqueId, ".png", sep = '');
+  imageFileName = paste(imageDirectory, keyGraphName, uniqueId, "-", prev, ".png", sep = '');
   png(file = imageFileName , units="in", width=10, height=8, res=150);
   DrawSensSpecPPV(specmin,specmax,prev, ppv);
   dev.off();
