@@ -124,7 +124,7 @@ function handleError(error, status, request){
 }
 
 function fillTable(jsonTableData, columnHeadings, tabnumber){
-        console.log("JSON("+tabnumber+"): " + JSON.stringify(jsonTableData));
+//        console.log("JSON("+tabnumber+"): " + JSON.stringify(jsonTableData));
 
 //        console.log(columnHeadings);
 
@@ -156,7 +156,7 @@ function fillTable(jsonTableData, columnHeadings, tabnumber){
         		sTitle: columnHeadings[i]
             });
          }
-        console.log("COL_HEAD: " + JSON.stringify(headings));
+//        console.log("COL_HEAD: " + JSON.stringify(headings));
         
         
       var table = $("<table cellpadding='0' cellspacing='0' border='0' class='display' id='example'></table>");
