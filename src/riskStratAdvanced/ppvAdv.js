@@ -26,7 +26,7 @@ $(document).ready(function() {
         var contourArray = $("#contour").val();
         var columnHeadings = contourArray.split(",");
         var fixedArray = $("#fixed").val();
-        fixedArraySplit = fixedArray.split(",");
+        var fixedArraySplit = fixedArray.split(",");
         var fixedArraySize = fixedArraySplit.length;
     
         var fixed_dropdown = $("#fixed_dropdown").val();
@@ -81,7 +81,7 @@ $(document).ready(function() {
 					tab:tabindex,
 					tabvalue:fixedArraySplit[fixedValue],
 					abreviatedkey:abbreviatedkeys[keyIndex]
-				}, keys[keyIndex], tabindex, fixedArray[fixedValue], uniqueKey, abbreviatedkeys[keyIndex], columnHeadings);
+				}, keys[keyIndex], tabindex, fixedArraySplit[fixedValue], uniqueKey, abbreviatedkeys[keyIndex], columnHeadings);
 			}
 		}
      }); // calculate   
@@ -111,7 +111,7 @@ function getData(data, tableTitle, tabnumber, tabValue, uniqueKey, graphNamePreF
                   error_count=0;
                }
             }
-            loadImage(tabnumber, tabValue, uniqueKey, graphNamePreFix);
+            loadImage(tabnumber, tabValue.trim(), uniqueKey, graphNamePreFix);
         }
     });    
 }
@@ -201,7 +201,7 @@ function getColumnHeaderData(columnHeadings) {
 
 
 function loadImage(tabNumber, tabValue, uniqueId, graphNamePreFix) {
-        $('#graphic-' + tabNumber).append("<img style='width: 450px ; height: 300px;' class='center' src='./img/" + graphNamePreFix + uniqueId + ".png'>");
+        $('#graphic-' + tabNumber).append("<img style='width: 450px ; height: 300px;' class='center' src='./img/" + graphNamePreFix + uniqueId + "-" + tabValue + ".png'>");
 }
 
 
