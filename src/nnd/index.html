@@ -1,0 +1,192 @@
+<html>
+<head>
+<title>Positive Predictive Value using a Non-Normalized Distribution</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<script src="/lib/jquery/jquery-1.9.1.js"></script>
+<script src="/lib/jquery/jquery-ui-1.10.3.js"></script>
+<script src="./nnd.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/lib/jquery/jquery-ui-1.10.3.css" />
+<link rel="stylesheet" type="text/css" href="./style.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="./nnd.css" type="text/css" />
+
+</head>
+
+<body>
+	<div style='margin-left: auto; margin-right: auto;'>
+		<!-- blockcontent was here -->
+		<div id="wrapper">
+			<div id="logos">
+				<div id="left">
+					<a href="http://www.cancer.gov" target="_blank"><img
+						src="images/nci.jpg" width="286" height="40" border="0"
+						alt="National Cancer Institute" title="National Cancer Institute" /></a>
+				</div>
+				<div id="right">
+					<a href="http://www.cancer.gov" target="_blank"><img
+						src="images/nih.jpg" width="322" height="40" border="0"
+						alt="at the National Institutes of Health"
+						title="at the National Institutes of Health" /></a>
+				</div>
+			</div>
+		</div>
+		<br>
+
+		<div id="banners">
+			<div id="dceg_logo">
+				<img src="images/DCEGBB.png" style="float:right;"
+					alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch"
+					height="43" />
+			</div>
+		</div>
+
+		<div class='main_area'>
+			<h2 class='title' align="center">Positive Predictive Value using a Non-Normalized Distribution</h2>
+			<div class='top_section'>
+				
+				<div class='input_panel'>
+
+	<div style='font-weight:bold;'> Enter data using a normal distribution </div>
+		<TABLE class='table_data' style='float:right;margin:20px;'>
+			<TR class='table_data header'>
+				<TH class='table_data header'> </TH>
+				<TH class='table_data header'> Cases </TH>
+				<TH class='table_data header'> Controls </TH>
+			</TR>
+			<TR class='table_data'>
+				<TH class='table_data col1'>  Mean </TH>
+				<TD class='table_data' > <label for='mean_cases_input'>&nbsp;</label><INPUT id='mean_cases_input' type='text' value='4' size=4 /> </TD>
+				<TD class='table_data' > <label for='mean_controls_input'>&nbsp;</label><INPUT id='mean_controls_input' type='text' value='1' size=4 /> </TD>
+
+ 			</TR>`
+			</TR>
+			<TR class='table_data'>
+				<TH class='table_data col1'> Standard Error </TH>
+				<TD class='table_data' > <label for='stderr_cases_input'>&nbsp;</label><INPUT id='stderr_cases_input' type='text' value='0.1' size=4 /> </TD>
+				<TD class='table_data' > <label for='stderr_controls_input'>&nbsp;</label><INPUT id='stderr_controls_input' type='text' value='0.1' size=4 /> </TD>
+			</TR>
+			<TR class='table_data'>
+				<TH class='table_data col1'> N </TH>
+				<TD class='table_data' > <label for='N_cases_input'>&nbsp;</label><INPUT id='N_cases_input' type='text' value='100' size=4 /> </TD>
+				<TD class='table_data' > <label for='N_controls_input'>&nbsp;</label><INPUT id='N_controls_input' type='text' value='200' size=4 />  </TD>
+			</TR>
+		</TABLE>
+		<INPUT type='button' value='Calculate' />
+		<br /><br />
+		<div style='font-weight:bold;'> Or Upload a Distribution </div>
+		<INPUT type='file' value='Upload' />
+		<INPUT type='button' value='Upload' />
+
+				</div>
+				<div class='table_panel'>
+		
+<TABLE class='table_data' id='inputs_card'>
+	<TR class='table_data header'>
+		<TH class='table_data header'> </TH>
+		<TH class='table_data header'> Cases </TH>
+		<TH class='table_data header'> Controls </TH>
+		<TH class='table_data header'> Overall </TH>
+		<TH class='table_data header'> Difference </TH>
+		<TH class='table_data header'>  </TH>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> Mean </TH>
+		<TD class='table_data' id='mean_cases'> 4 </TD>
+		<TD class='table_data' id='mean_controls'> 1 </TD>
+		<TD class='table_data' id='mean_overall'> 2.00 </TD>
+		<TD class='table_data' id='mean_difference'> 3 </TD>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> Standard Error </TH>
+		<TD class='table_data' id='stderr_cases'> 0.1 </TD>
+		<TD class='table_data' id='stderr_controls'> 0.1 </TD>
+		<TD class='table_data' id='stderr_overall'>  </TD>
+		<TD class='table_data' id='stderr_difference'>  </TD>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> N </TH>
+		<TD class='table_data' id='N_cases'> 100 </TD>
+		<TD class='table_data' id='N_controls'> 200 </TD>
+		<TD class='table_data' id='N_overall'> 300 </TD>
+		<TD class='table_data' id='N_difference'>  </TD>
+	</TR>
+
+
+	<TR class='table_data line-above'>
+		<TH class='table_data col1'> Standard Deviation </TH>
+		<TD class='table_data' id='deviation_cases'> 1 </TD>
+		<TD class='table_data' id='deviation_controls'> 1.41 </TD>
+		<TD class='table_data' id='deviation_overall'>  </TD>
+		<TD class='table_data' id='deviation_difference'>  </TD>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> Variance </TH>
+		<TD class='table_data' id='variance_cases'> 1 </TD>
+		<TD class='table_data' id='variance_controls'> 2 </TD>
+		<TD class='table_data' id='variance_overall'> 1.67 </TD>
+		<TD class='table_data' id='variance_difference'>  </TD>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> Coefficent of Variance (CV) </TH>
+		<TD class='table_data' id='cv_cases'> 0.25 </TD>
+		<TD class='table_data' id='cv_controls'> 1.41 </TD>
+		<TD class='table_data' id='cv_overall'> 0.65 </TD>
+		<TD class='table_data' id='cv_difference'>  </TD>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> Difference in Mean </TH>
+		<TD class='table_data' id='diff_cases'> </TD>
+		<TD class='table_data' id='diff_controls'>  </TD>
+		<TD class='table_data' id='diff_overall'> 3 </TD>
+		<TD class='table_data' id='diff_difference'>  </TD>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> Delta </TH>
+		<TD class='table_data' id='delta_cases'>  </TD>
+		<TD class='table_data' id='delta_controls'>  </TD>
+		<TD class='table_data' id='delta_overall'> 2.32 </TD>
+		<TD class='table_data' id='delta_difference'> 
+		</TD>
+	</TR>
+	
+</TABLE>
+		
+		
+				</div>
+				<div class='graph_panel'>
+				Graph Panel Here
+				</div>
+			</div>
+			<div class='bottom_section'>
+				<div class='key_output_panel'>
+				Key Output Here
+				</div>
+				<div class='tabbed_output_panel'>
+				Tabbed Output Here
+				</div>
+			</div>
+		</div>
+
+	<div id="portal-footer">
+		<div class="footerLinks">
+			<a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="mailto:NCIMeansToRiskWebAdmin@mail.nih.gov" title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/global/web/policies/accessibility"
+				title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://cancer.gov/global/viewing-files" target="_blank"
+				title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br />
+			<br /> <a href="http://www.dhhs.gov/">Department of Health and
+				Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+				href="http://www.usa.gov/">USA.gov</a>
+		</div>
+		<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
+	</div>
+	</div>
+
+</body>
+</html>
