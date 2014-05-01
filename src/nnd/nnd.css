@@ -1,0 +1,61 @@
+.main_area {
+	width:100%;
+}
+
+.top_section {
+	background-color:#faa;
+	border: 2px solid black;
+	height: 300px;
+}
+
+.bottom_section {
+	clear:left;
+	background-color:#aaf;
+	border: 2px solid black;
+	height:400px;
+}
+
+.input_panel {
+	position:relative;
+	float:left;
+	width:300px;
+	height:99%;
+	background-color:#afa;
+	border: 2px solid black;
+}
+
+.table_panel {
+	float:left;
+	width:300px;
+	height:99%;
+	background-color:#aff;
+	border: 2px solid black;
+}
+
+.table_data {
+	font-size:10pt;
+}
+
+.graph_panel {
+	background-color:#ffa;
+	height:99%;
+	border: 2px solid black;
+}
+
+.key_output_panel {
+	float:left;
+	width:300px;
+	background-color:#faf;
+	height:99%;
+	border: 2px solid black;
+}
+
+.tabbed_output_panel {
+	background-color:#a8a;
+	height:99%;
+	border: 2px solid black;
+}
+
+.title {
+	background-color:#aaa;
+}
