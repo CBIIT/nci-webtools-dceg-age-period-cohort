@@ -10,8 +10,15 @@ var editing = false;
 var row;
 var col;
 var validPrevValue = false;
+var tableFirstColLabel;
 
 $(document).ready(function() {
+    
+    if(typeof String.prototype.trim !== 'function') {
+      String.prototype.trim = function() {
+        return this.replace(/^\s+|\s+$/g, ''); 
+      };
+    }
 
     $("#calculate").click(function()
     {
@@ -34,12 +41,22 @@ $(document).ready(function() {
         uniqueKey = (new Date()).getTime();
     
         var tabkey = ["Prevalence_Odds_Length"];
-        var keys = ["Sensitivity_required_to_achieve_specified_PPV_given_prevalence_and_specificity"]; 
-                   // "Delta_required_to_achieve_specified_PPV_given_prevalence_and_specificity"];
+        var keys = ["Sensitivity_required_to_achieve_specified_PPV_given_prevalence_and_specificity",
+                    "Delta_required_to_achieve_specified_PPV_given_prevalence_and_specificity"];
+        var titlekeys = ["Sensitivity required to achieve specified PPV given prevalence and specificity",
+                    "Delta required to achieve specified PPV given prevalence and specificity"];
 
         var abbreviatedkeys = ["Sensitivity", 
                                "Delta"];
 
+
+        var eIndependent = document.getElementById("independent_dropdown");
+        var selectedIndependentValue  = eIndependent.options[eIndependent.selectedIndex].text;
+
+        var eContour = document.getElementById("contour_dropdown");
+        var selectedContourValue = eContour.options[eContour.selectedIndex].text;
+
+	tableFsrstColLabel = selectedIndependentValue + "\\" + selectedContourValue;
 		open_threads = keys.length;
 		error_count = 0;
 
@@ -52,17 +69,25 @@ $(document).ready(function() {
 		$("#output").append(tabs);
 		tab_names = $("<UL> </UL>");
 		tabs.append(tab_names);
+      var spacing = "<p></p><p></p><p></p>";
 		
 		for (var i=0; i < fixedArraySplit.length; i++) {
 			tab_names.append("<LI><a  style='padding:3px;' href='#fixed-" + (i+1) + "'>" + fixed_dropdown + ": "+ fixedArraySplit[i] + "</a></LI>");
-			tab_pane = $("<DIV style='width:1000px;height:300px;' id='fixed-" + (i+1) + "' >  </div>")
+			tab_pane = $("<DIV style='width:1000px;height:700px;' id='fixed-" + (i+1) + "' >  </div>")
 			tabs.append(tab_pane);			
-
-			table_side = ("<div class='table-side' id='table-" + (i+1) + "'></div>");
-			tab_pane.append(table_side);
-			graphic_side = ("<div class='graphic-side' id='graphic-" + (i+1) + "'> </div>");
-			tab_pane.append(graphic_side);
+                        //tab_pane.append("<TABLE>");
+			//table_side = ("<TR><TD><div class='table-side' id='table-" + (i+1) + "'></div></TD>");
+		    for (var j=0; j < abbreviatedkeys.length; j++) {
+			table_graph_div = $("<div class='set-"+ abbreviatedkeys[j] + (i+1) + "' style='width: 1000px; float: left; clear:left;'><p></p></div>");
+			tab_pane.append(table_graph_div);
+			graphic_side = ("<div class='graphic-side' id='graphic-" + abbreviatedkeys[j] +  (i+1) + "'><div style='clear:left;padding-top:10px;'> </div></div>");
+			table_graph_div.append(graphic_side);
+			table_side = $("<div class='table-side' id='table-" + abbreviatedkeys[j] + (i+1) + "'><br><h6>&nbsp;&nbsp;"+titlekeys[j]+"</h6></div><br><br>");
+			table_graph_div.append(table_side);
+			//graphic_side = ("<TD><div class='graphic-side' id='graphic-" + (i+1) + "'> </div></TD></TR>");
+                   }
 		}
+                //tab_pane.append("</TABLE>");
 		tabs.tabs();
 
 		for (var fixedValue=0; fixedValue < fixedArraySplit.length; fixedValue++)
@@ -88,7 +113,7 @@ $(document).ready(function() {
 });  // ready
 
 
-function getData(data, tableTitle, tabnumber, tabValue, uniqueKey, graphNamePreFix, columnHeadings) {
+function getData(data, tableTitle, tabnumber, tabValue, uniqueKey, abbreviatedKey,  columnHeadings) {
     hostname = window.location.hostname;
     $.ajax({
         type: "POST",
@@ -96,13 +121,13 @@ function getData(data, tableTitle, tabnumber, tabValue, uniqueKey, graphNamePreF
         data:data,
         dataType:"json",
         success:function(data) {
-          fillTable(data, columnHeadings, tabnumber);
+          fillTable(data, columnHeadings, tabnumber, abbreviatedKey);
         },
         error: function (request, status, error) {
           handleError(error, status, request);  
         },
         complete: function(data) {
-            console.log("Completing: " + tableTitle);
+            //console.log("Completing: " + tableTitle);
             open_threads--;
             if (open_threads == 0) {
                //$("#please_wait").dialog('close');
@@ -111,7 +136,8 @@ function getData(data, tableTitle, tabnumber, tabValue, uniqueKey, graphNamePreF
                   error_count=0;
                }
             }
-            loadImage(tabnumber, tabValue.trim(), uniqueKey, graphNamePreFix);
+            loadImage(tabnumber, tabValue.trim(), uniqueKey, abbreviatedKey);
+            //fillTable(data, columnHeadings, tabnumber, abbreviatedKey);
         }
     });    
 }
@@ -123,8 +149,8 @@ function handleError(error, status, request){
         alert(" Error irequest is "+ request);
 }
 
-function fillTable(jsonTableData, columnHeadings, tabnumber){
-//        console.log("JSON("+tabnumber+"): " + JSON.stringify(jsonTableData));
+function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey){
+        //console.log("JSON("+tabnumber+"): " + JSON.stringify(jsonTableData));
 
 //        console.log(columnHeadings);
 
@@ -148,19 +174,22 @@ function fillTable(jsonTableData, columnHeadings, tabnumber){
         }        
 
         var headings = [];
+        //headings.push({
+    //		sTitle: "&nbsp;"
+     //   });
         headings.push({
-    		sTitle: "&nbsp;"
+    		sTitle: tableFsrstColLabel 
         });
         for (var i=0;i<columnHeadings.length;i++) {
         	headings.push({
         		sTitle: columnHeadings[i]
             });
          }
-//        console.log("COL_HEAD: " + JSON.stringify(headings));
+        //console.log("COL_HEAD: " + JSON.stringify(headings));
         
         
       var table = $("<table cellpadding='0' cellspacing='0' border='0' class='display' id='example'></table>");
-      $("#table-" + tabnumber).append(table);
+      $("#table-" + abbreviatedKey + tabnumber).append(table);
       table.dataTable( {
 		"aaData": arr,
 		"aoColumns": headings,
@@ -201,7 +230,7 @@ function getColumnHeaderData(columnHeadings) {
 
 
 function loadImage(tabNumber, tabValue, uniqueId, graphNamePreFix) {
-        $('#graphic-' + tabNumber).append("<img style='width: 450px ; height: 300px;' class='center' src='./img/" + graphNamePreFix + uniqueId + "-" + tabValue + ".png'>");
+        $('#graphic-' + graphNamePreFix + tabNumber).append("<img style='width: 450px ; height: 300px;' class='center' src='./img/" + graphNamePreFix + uniqueId + "-" + tabValue + ".png'>");
 }
 
 
