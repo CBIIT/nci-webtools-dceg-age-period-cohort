@@ -1,0 +1,182 @@
+.main_area {
+	width:100%;
+}
+
+.top_section {
+	background-color:#faa;
+	border: 2px solid black;
+	height: 400px;
+	width: 1200px;
+}
+
+.bottom_section {
+	clear:left;
+	background-color:#aaf;
+	border: 2px solid black;
+	height:400px;
+	width:1200px;
+}
+
+.input_panel {
+	position:relative;
+	float:left;
+	width:400px;
+	height:99%;
+	background-color:#afa;
+	border: 2px solid black;
+}
+
+.table_panel {
+	float:left;
+	width:400px;
+	height:99%;
+	background-color:#aff;
+	border: 2px solid black;
+}
+
+.table_data {
+	font-size:10pt;
+}
+
+.graph_panel {
+	background-color:#ffa;
+	height:99%;
+	border: 2px solid black;
+}
+
+.key_output_panel {
+	float:left;
+	width:300px;
+	background-color:#faf;
+	height:99%;
+	border: 2px solid black;
+}
+
+.tabbed_output_panel {
+	background-color:#a8a;
+	height:99%;
+	border: 2px solid black;
+}
+
+.title {
+	background-color:#aaa;
+}
+
+.indent {
+	font-size:small;
+	margin-left:30px;
+	margin-right:20px;
+	margin-top:10px;
+	margin-bottom:5px;
+}
+
+.highlight {
+	background-color:yellow;
+}
+
+.col1 {
+	text-align:right;
+}
+
+body {
+	font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+	font-size: 75%;
+}
+
+.maincard {
+	width:800px;
+	height:750px;
+	border:2px black solid;
+}
+
+.highlight {
+	background-color:yellow;
+}
+
+table.table_data {
+	background-color:white;
+	border-collapse:collapse;
+	border:2px black solid;
+	margin-left:20px;
+	margin-right:20px;
+	font-size:small;
+	float:left;
+}
+
+table.output_data {
+	background-color:white;
+	border-collapse:collapse;
+	border:2px black solid;
+	margin-left:20px;
+	margin-right:20px;
+	font-size:small;
+}
+
+td.table_data {
+	font-family:sans-serif;
+	padding:2px;
+	text-align:center;
+}
+
+th.table_data {
+	font-family:sans-serif;
+	padding:2px;
+}
+
+th.header {
+	border-bottom: 1px black solid;
+	background-color:lightgrey;	
+}
+
+th.col1 {
+	text-align:right;
+}
+
+tr.table_data_header {
+	border-bottom: 1px black solid;
+	background-color:#A0A0A0;
+}
+
+tr.line-above {
+	border-top: 1px black solid;
+	
+}
+
+.main-title {
+	text-align:center;
+}
+.PPV_stripe {
+	border-bottom: 1px black solid;
+	background-color:#B080FF;
+}
+
+.cNPV_stripe {
+	border-bottom: 1px black solid;
+	background-color:#8080FF;
+}
+
+.PPVcNPV_stripe {
+	border-bottom: 1px black solid;
+	background-color:#FFAA80;
+}
+
+.ProgramBased_stripe {
+	border-bottom: 1px black solid;
+	background-color:#FFB0D0;
+}
+
+.PPVBased_stripe {
+	border-bottom: 1px black solid;
+	background-color:#A0A0A0;
+}
+
+.SensitivityBased_stripe {
+	border-bottom: 1px black solid;
+	background-color:#808080;
+}
+
+.DominatedByRareDisease_stripe {
+	border-bottom: 1px black solid;
+	background-color:#F0F0F0;
+}
+
