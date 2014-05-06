@@ -1,8 +1,6 @@
 library('RJSONIO')
 library('stringr')
-source ('./r-code/PPVPrevSpec.R')
-source ('./r-code/DrawDeltaSpecPPV.R')
-source ("./r-code/DrawSensSpecPPV.R")
+source ('./r-code/RiskStratAnalysisOptions.R')
 
 imageDirectory <- "./img/";
 
