@@ -50,7 +50,7 @@
 			<div style='width: 550px; float: left; clear:left;'>
 				<table>
 					<tr>
-						<td class='label'>Independant Variable</td>
+						<td class='label'>Independent Variable</td>
 						<td><select id="independent_dropdown" name="independent_dropdown">
 							<option value="specificity">specificity</option>
 						</select>
@@ -62,7 +62,6 @@
 						<td class='label'>Contour</td>
 						<td><select id="contour_dropdown" name="contour_dropdown">
 							<option value="ppv">ppv</option>
-							<option value="prevalence">prevalence</option>
 						</select>
 						<td><label for="contour"><input type="text" value="0.3,0.4,0.5,0.6,0.7" size="30"
 								id="contour"></label></td>
@@ -71,12 +70,12 @@
 						<td class='label'>Fixed Values</td>
 						<td><select id="fixed_dropdown" name="fixed_dropdown" id='fixed_dropdown'>
 							<option value="prevalence">prevalence</option>
-							<option value="delta">delta</option>
 						</select>
 						<td><label for="fixed"><input type="text" value="0.1, 0.2, 0.3, 0.4, 0.5" size="30"
 								id="fixed"></label></td>
 					</tr>
 				</table>
+              <br /><br />
               <button type="submit" id="calculate" class="btn btn-primary">Calculate</button>
             </form>
 <br /><br />

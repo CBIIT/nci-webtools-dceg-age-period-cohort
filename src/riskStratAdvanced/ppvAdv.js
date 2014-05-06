@@ -65,22 +65,22 @@ $(document).ready(function() {
 		
 		// First make the right tabs
 		
-		tabs = $("<div id='tabs' style='width:1000px;'> </div>");
+		tabs = $("<div id='tabs' style='width:1100px;'> </div>");
 		$("#output").append(tabs);
 		tab_names = $("<UL> </UL>");
 		tabs.append(tab_names);
       var spacing = "<p></p><p></p><p></p>";
 		
 		for (var i=0; i < fixedArraySplit.length; i++) {
-			tab_names.append("<LI><a  style='padding:3px;' href='#fixed-" + (i+1) + "'>" + fixed_dropdown + ": "+ fixedArraySplit[i] + "</a></LI>");
-			tab_pane = $("<DIV style='width:1000px;height:700px;' id='fixed-" + (i+1) + "' >  </div>")
+			tab_names.append("<LI><a  style='padding:3px;' href='#fixed-" + (i+1) + "'>" + fixed_dropdown + "<br>&nbsp&nbsp&nbsp "+ fixedArraySplit[i] + "</a></LI>");
+			tab_pane = $("<DIV style='width:1100px;height:800px;' id='fixed-" + (i+1) + "' >  </div>")
 			tabs.append(tab_pane);			
                         //tab_pane.append("<TABLE>");
 			//table_side = ("<TR><TD><div class='table-side' id='table-" + (i+1) + "'></div></TD>");
 		    for (var j=0; j < abbreviatedkeys.length; j++) {
-			table_graph_div = $("<div class='set-"+ abbreviatedkeys[j] + (i+1) + "' style='width: 1000px; float: left; clear:left;'><p></p></div>");
+			table_graph_div = $("<div class='set-"+ abbreviatedkeys[j] + (i+1) + "' style='width: 1100px; float: left; clear:left;'><p></p></div>");
 			tab_pane.append(table_graph_div);
-			graphic_side = ("<div class='graphic-side' id='graphic-" + abbreviatedkeys[j] +  (i+1) + "'><div style='clear:left;padding-top:10px;'> </div></div>");
+			graphic_side = ("<div class='graphic-side' id='graphic-" + abbreviatedkeys[j] +  (i+1) + "'><div style='clear:right;padding-top:10px;'> </div></div>");
 			table_graph_div.append(graphic_side);
 			table_side = $("<div class='table-side' id='table-" + abbreviatedkeys[j] + (i+1) + "'><br><h6>&nbsp;&nbsp;"+titlekeys[j]+"</h6></div><br><br>");
 			table_graph_div.append(table_side);
@@ -230,7 +230,7 @@ function getColumnHeaderData(columnHeadings) {
 
 
 function loadImage(tabNumber, tabValue, uniqueId, graphNamePreFix) {
-        $('#graphic-' + graphNamePreFix + tabNumber).append("<img style='width: 450px ; height: 300px;' class='center' src='./img/" + graphNamePreFix + uniqueId + "-" + tabValue + ".png'>");
+        $('#graphic-' + graphNamePreFix + tabNumber).append("<img style='width: 650px ; height: 350px; text-align: right;' class='center' src='./img/" + graphNamePreFix + uniqueId + "-" + tabValue + ".png'>");
 }
 
 

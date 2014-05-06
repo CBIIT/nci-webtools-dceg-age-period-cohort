@@ -32,7 +32,7 @@ td {
 }
 
 #output {
-	width: 500px;
+	width: 600px;
 }
 
 #inputdata {
@@ -54,12 +54,12 @@ h2 {
 
 .table-side {
 	float:left;
-	width:500;
+	width:450;
 }
 
 .graphic-side {
 	float:right;
-	width:500;
+	width:600;
 }
 
 
