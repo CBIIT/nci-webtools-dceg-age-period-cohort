@@ -85,10 +85,10 @@ function get_inputs_for_standard_calculation () {
 	var N_controls = parseFloat($("#N_controls_input").val());
 
 	
-	cases_string="c(" +mean_cases+","+stderr_cases+","+N_cases+")"; 
-	controls_string="c(" +mean_controls+","+stderr_controls+","+N_controls+")"; 
-	specificity_string="c(" + $("#specificity").val() + ")"; 
-	prevalence_string="c(" + $("#prevalence").val() + ")"; 
+	cases_string="" +mean_cases+","+stderr_cases+","+N_cases+""; 
+	controls_string="" +mean_controls+","+stderr_controls+","+N_controls+""; 
+	specificity_string="" + $("#specificity").val() + ""; 
+	prevalence_string="" + $("#prevalence").val() + ""; 
 		
 //	alert(cases_string + "\n" + controls_string + "\n" + specificity_string + "\n" + prevalence_string);
 	set_standard_inputs(mean_cases,mean_controls,stderr_cases,stderr_controls,N_cases,N_controls);
@@ -144,21 +144,20 @@ function get_data_stream() {
 	//alert(cases_string + "\n" + controls_string + "\n" + specificity_string + "\n" + prevalence_string);
     uniqueKey = (new Date()).getTime();	
     hostname = window.location.hostname;
-    
+    url = "http://" + hostname +"/meanstoriskRest/"
     $.ajax({
-		type: "GET",
-		url: "http://analysistools-dev.nci.nih.gov/ppvRest",
+		type: "POST",
+		url: url,
 		data: {
+			option:2,
+			spec:specificity_string, 
+			prev: prevalence_string, 
 			cases: cases_string, 
 			controls: controls_string, 
-			specificity:specificity_string, 
-			prevalence: prevalence_string, 
-			delta: delta_string, 
-			spec_min: 0, 
-			spec_max: 1, 
-			unique_key: uniqueKey
+			unique_key: uniqueKey,
+			graphkey:'input'
 		},
-		dataType: "jsonp",
+		dataType: "json",
 		success: set_data,
 		error: ajax_error
 	});
@@ -170,34 +169,34 @@ function set_data(dt) {
 	draw_graph();
 }
 
-function ajax_error() {
+function ajax_error(dt) {
 	alert("There was some problem getting the data."); 	
 }
 
 function create_tabbed_table(dt) {
-	var jsonString;
-	for (property in dt) {
-  		jsonString = dt[property];
-	}	
-	var jsonObject = $.parseJSON(jsonString);
+//	var jsonString;
+//	for (property in dt) {
+//  		jsonString = dt[property];
+//	}	
+//	var jsonObject = $.parseJSON(jsonString);
 //	alert("DT:[" + jsonObject + "]" );
 	
 	make_tabs();
 	
 	set_matrix("#tab-1", 'PPV', 'Risk of Disease after a POSITIVE Test', 'Positive Predicted Value (PPV)', 
-			jsonObject.SensitivityGivenSpecificity, jsonObject.PPV);	
+			dt['Sensitivity Given Specificity'], dt['PPV']);	
 	set_matrix("#tab-2", 'cNPV', 'Risk of Disease after a NEGATIVE Test', 'Complement of the Negative Predictive Value (cNPV)', 
-			jsonObject.SensitivityGivenSpecificity, jsonObject.cNPV);	
+			dt['Sensitivity Given Specificity'], dt['cNPV']);	
 	set_matrix("#tab-3", 'PPVcNPV', 'Range of Risk after Test Results', 'PPV &minus; cNPV', 
-			jsonObject.SensitivityGivenSpecificity, jsonObject.PPVcNPV);	
+			dt['Sensitivity Given Specificity'], dt['PPV-cNPV']);	
 	set_matrix("#tab-4", 'ProgramBased', '# of Cases Detected per 1000 People Screened', 'Program &minus; Based', 
-			jsonObject.SensitivityGivenSpecificity, jsonObject.ProgramBased);	
+			dt['Sensitivity Given Specificity'], dt['Program-Based']);	
 	set_matrix("#tab-5", 'PPVBased', '# of Cases Detected per 1000 Who are Screen Positive', 'PPV &minus; Based', 
-			jsonObject.SensitivityGivenSpecificity, jsonObject.PPVBased);	
+			dt['Sensitivity Given Specificity'], dt['PPV-Based']);	
 	set_matrix("#tab-6", 'SensitivityBased', '# of Cases Detected per 1000 With Disease', 'Sensitivity &minus; Based', 
-			jsonObject.SensitivityGivenSpecificity, jsonObject.SensitivityBased);	
+			dt['Sensitivity Given Specificity'], dt['Sensitivity-Based']);	
 	set_matrix("#tab-7", 'DominatedByRareDisease', '# Per 1000 Screenees Who Screen Positive', 'Dominated by Specificity for Rare Disease', 
-			jsonObject.SensitivityGivenSpecificity, jsonObject.DominatedByRareDisease);	
+			dt['Sensitivity Given Specificity'], dt['Dominated by Specificity for a Rare Disease']);	
 	
 }
 
@@ -219,11 +218,14 @@ function make_tabs() {
 }
 
 function set_matrix(tab_id, type, table_name, table_second_name, sensitivity_matrix, matrix) {
-	var prevalence_count = matrix[0].length;
+	var prevalence_values = Object.keys(matrix[0])
+	var prevalence_count = prevalence_values.length;
 	var specificity_count = matrix.length;
 	
-	var general_table = $(tab_id);
-
+	
+	var general_table = $("<TABLE class='table_data' style='width:94%;'></TABLE>");
+	$(tab_id).empty().append(general_table);
+	
 	var first_header_row = $("<tr></tr>");	
 	first_header_row.append("<TH class='table_data header' colspan=" +  (prevalence_count + 4)
 		+ "style='background-color:#8080FF;'>" + table_name + "</TH>");
@@ -255,15 +257,23 @@ function set_matrix(tab_id, type, table_name, table_second_name, sensitivity_mat
 		var row = $("<tr></tr>");
 		// First do the specificity
 		row.attr('id', type + '_table_row_' + x);
-		row.append("<TD class='table_data col1'>" + format_number(sensitivity_matrix[y][0]) + "</TD>");
-		row.append("<TD class='table_data col1'>" + format_number(sensitivity_matrix[y][1]) + "</TD>");
-		row.append("<TD class='table_data col1'>" + format_number(sensitivity_matrix[y][2]) + "</TD>");
-		row.append("<TD class='table_data col1' style='border-right:1px solid black;'>" + 
-			format_number(sensitivity_matrix[y][3]) + "</TD>");
+//		row.append("<TD class='table_data col1'>0</TD>");
+//		row.append("<TD class='table_data col1'>1</TD>");
+//		row.append("<TD class='table_data col1'>2</TD>");
+//		row.append("<TD class='table_data col1' style='border-right:1px solid black;'>3</TD>");
 
+		row.append("<TD class='table_data col1'>" + format_number(sensitivity_matrix[y]['Specificity']) + "</TD>");
+		row.append("<TD class='table_data col1'>" + format_number(sensitivity_matrix[y]['Sensitivity']) + "</TD>");
+		row.append("<TD class='table_data col1'>" + format_number(sensitivity_matrix[y]['LR+']) + "</TD>");
+		row.append("<TD class='table_data col1' style='border-right:1px solid black;'>" + 
+			format_number(sensitivity_matrix[y]['LR-']) + "</TD>");
+		
+		
+		
 		// Then do prevalence
 		for (var x=0;x<prevalence_count;x++) {
-			row.append("<TD class='table_data col1'>" + format_number(matrix[y][x]) + "</TD>");			
+			var prevalence_value = prevalence_values[x];
+			row.append("<TD class='table_data col1'>" + format_number(matrix[y][prevalence_value]) + "</TD>");			
 		}
 		row.appendTo(general_table);
 	}	
@@ -271,7 +281,8 @@ function set_matrix(tab_id, type, table_name, table_second_name, sensitivity_mat
 
 
 function draw_graph() {
-     graph_file = "http://analysistools-dev.nci.nih.gov/ppv/tmp/"+uniqueKey+"rplot.png?";
+    url = "http://" + hostname +"/meanstoriskRest/"
+     graph_file = "./img/input"+uniqueKey+".png?";
 
      $(".graph_panel").empty().append("<IMG src='" + graph_file + "' width='390' height='390' />");
 }
