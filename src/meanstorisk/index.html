@@ -1,1 +1,194 @@
-<meta http-equiv="refresh" content="0; url=../ppv/index.html" />
+<html>
+<head>
+<title>Positive Predictive Value using a Non-Normalized Distribution</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<script src="/lib/jquery/jquery-1.9.1.js"></script>
+<script src="/lib/jquery/jquery-ui-1.10.3.js"></script>
+<script src="./meanstorisk.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/lib/jquery/jquery-ui-1.10.3.css" />
+<link rel="stylesheet" type="text/css" href="./style.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="./meanstorisk.css" type="text/css" />
+
+</head>
+
+<body>
+	<div style='margin-left: 50px; margin-right: 50px;'>
+		<!-- blockcontent was here -->
+		<div id="wrapper">
+			<div id="logos">
+				<div id="left">
+					<a href="http://www.cancer.gov" target="_blank"><img
+						src="images/nci.jpg" width="286" height="40" border="0"
+						alt="National Cancer Institute" title="National Cancer Institute" /></a>
+				</div>
+				<div id="right">
+					<a href="http://www.cancer.gov" target="_blank"><img
+						src="images/nih.jpg" width="322" height="40" border="0"
+						alt="at the National Institutes of Health"
+						title="at the National Institutes of Health" /></a>
+				</div>
+			</div>
+		</div>
+		<br>
+
+		<div id="banners">
+			<div id="dceg_logo">
+				<img src="images/DCEGBB.png" style="float:right;"
+					alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch"
+					height="43" />
+			</div>
+		</div>
+
+<div class='main_area'>
+	<h2 class='title' align="center">Positive Predictive Value using a Non-Normalized Distribution</h2>
+	<div class='top_section'>
+		<div class='input_panel'>
+
+	<div style='margin:5px;font-weight:bold;'> Choose how to enter the data </div>
+		<FORM>
+		<INPUT type='radio' name='data_entry_option' value='1' />Option 1
+		<p class='indent data_entry_by_file'>Upload a raw case and control biomarker data file in csv format <a href='#'> <i>(Example)</i> </a> </p>
+		<p class='indent'><INPUT type='file' class='data_entry_by_file'/> </p>
+		<INPUT type='radio' name='data_entry_option' value='2' />Option 2
+		<p class='indent data_entry_by_input'>Enter Mean, Standard Error, and N for Cases and Controls </p>
+
+		<TABLE class='table_data ' style='margin:5px;margin-left:90px;'>
+			<TR class='table_data header'>
+				<TH class='table_data header'> </TH>
+				<TH class='table_data header'> Cases </TH>
+				<TH class='table_data header'> Controls </TH>
+			</TR>
+			<TR class='table_data'>
+				<TH class='table_data col1'>  Mean </TH>
+				<TD class='table_data' > <label for='mean_cases_input'>&nbsp;</label><INPUT id='mean_cases_input' class='data_entry_by_input' type='text' value='4' size=4 /> </TD>
+				<TD class='table_data' > <label for='mean_controls_input'>&nbsp;</label><INPUT id='mean_controls_input' class='data_entry_by_input' type='text' value='1' size=4 /> </TD>
+
+ 			</TR>
+			<TR class='table_data'>
+				<TH class='table_data col1'> Standard Error </TH>
+				<TD class='table_data' > <label for='stderr_cases_input'>&nbsp;</label><INPUT id='stderr_cases_input' class='data_entry_by_input' type='text' value='0.1' size=4 /> </TD>
+				<TD class='table_data' > <label for='stderr_controls_input'>&nbsp;</label><INPUT id='stderr_controls_input' class='data_entry_by_input' type='text' value='0.1' size=4 /> </TD>
+			</TR>
+			<TR class='table_data'>
+				<TH class='table_data col1'> N </TH>
+				<TD class='table_data' > <label for='N_cases_input'>&nbsp;</label><INPUT id='N_cases_input' class='data_entry_by_input' type='text' value='100' size=4 /> </TD>
+				<TD class='table_data' > <label for='N_controls_input'>&nbsp;</label><INPUT id='N_controls_input' class='data_entry_by_input' type='text' value='200' size=4 />  </TD>
+			</TR>
+		</TABLE>
+		<TABLE class='table_data' style='margin-left:5px;'>
+			<TR><TD>Specificity:</TD><TD> <INPUT type='text' size='40' value='0.8, 0.9, 0.95, 0.99, 0.999' id='specificity' /></TD></TR>
+			<TR><TD>Prevalence:</TD><TD> <INPUT type='text' size='40' value='0.1, 0.05, 0.01, 0.005, 0.001' id='prevalence' /></TD></TR>
+		</TABLE>
+		<INPUT type='button' value='Calculate' id='calculate_button' style='margin:10px;float:right;' />
+		</FORM>
+				</div>
+				<div class='table_panel'>
+		
+<TABLE class='table_data' id='inputs_card'>
+	<TR class='table_data header'>
+		<TH class='table_data header'> </TH>
+		<TH class='table_data header'> Cases </TH>
+		<TH class='table_data header'> Controls </TH>
+		<TH class='table_data header'> Overall </TH>
+		<TH class='table_data header'> Difference </TH>
+		<TH class='table_data header'>  </TH>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> Mean </TH>
+		<TD class='table_data' id='mean_cases'>  </TD>
+		<TD class='table_data' id='mean_controls'>  </TD>
+		<TD class='table_data' id='mean_overall'> </TD>
+		<TD class='table_data' id='mean_difference'>  </TD>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> Standard Error </TH>
+		<TD class='table_data' id='stderr_cases'>  </TD>
+		<TD class='table_data' id='stderr_controls'> </TD>
+		<TD class='table_data' id='stderr_overall'>  </TD>
+		<TD class='table_data' id='stderr_difference'>  </TD>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> N </TH>
+		<TD class='table_data' id='N_cases'>  </TD>
+		<TD class='table_data' id='N_controls'>  </TD>
+		<TD class='table_data' id='N_overall'> </TD>
+		<TD class='table_data' id='N_difference'>  </TD>
+	</TR>
+
+
+	<TR class='table_data line-above'>
+		<TH class='table_data col1'> Standard Deviation </TH>
+		<TD class='table_data' id='deviation_cases'>  </TD>
+		<TD class='table_data' id='deviation_controls'>  </TD>
+		<TD class='table_data' id='deviation_overall'>  </TD>
+		<TD class='table_data' id='deviation_difference'>  </TD>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> Variance </TH>
+		<TD class='table_data' id='variance_cases'>  </TD>
+		<TD class='table_data' id='variance_controls'>  </TD>
+		<TD class='table_data' id='variance_overall'>  </TD>
+		<TD class='table_data' id='variance_difference'>  </TD>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> Coefficent of Variance (CV) </TH>
+		<TD class='table_data' id='cv_cases'>  </TD>
+		<TD class='table_data' id='cv_controls'> </TD>
+		<TD class='table_data' id='cv_overall'>  </TD>
+		<TD class='table_data' id='cv_difference'>  </TD>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> Difference in Mean </TH>
+		<TD class='table_data' id='diff_cases'> </TD>
+		<TD class='table_data' id='diff_controls'>  </TD>
+		<TD class='table_data' id='diff_overall'>  </TD>
+		<TD class='table_data' id='diff_difference'>  </TD>
+	</TR>
+	<TR class='table_data'>
+		<TH class='table_data col1'> Delta </TH>
+		<TD class='table_data' id='delta_cases'>  </TD>
+		<TD class='table_data' id='delta_controls'>  </TD>
+		<TD class='table_data' id='delta_overall'>  </TD>
+		<TD class='table_data' id='delta_difference'> 
+		</TD>
+	</TR>
+	
+</TABLE>
+		
+		
+				</div>
+				<div class='graph_panel'>
+				Graph Panel Here
+				</div>
+			</div>
+			<div class='bottom_section'>
+				<div class='tabbed_output_panel'>
+				Tabbed Output Here
+				</div>
+			</div>
+		</div>
+
+	<div id="portal-footer">
+		<div class="footerLinks">
+			<a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="mailto:NCIMeansToRiskWebAdmin@mail.nih.gov" title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/global/web/policies/accessibility"
+				title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://cancer.gov/global/viewing-files" target="_blank"
+				title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br />
+			<br /> <a href="http://www.dhhs.gov/">Department of Health and
+				Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+				href="http://www.usa.gov/">USA.gov</a>
+		</div>
+		<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
+	</div>
+	</div>
+
+</body>
+</html>
