@@ -44,7 +44,7 @@ DeltaSpeccNPV <- function(delta,spec,dcnpv) {
   
   T1<-as.table(prev)
   T2<-as.table(sens)
-  data<-list("Prevalence required to achieve specified cNPV given delta and specificity"=T1, "Sensitivity required to achieve specified cNPV given delta and specificity"=T2, "Delta"=delta,"Desired cNPV as odds"=dcnpvodds)
+  data<-list("Prevalence"=T1, "Sensitivity"=T2, "Delta"=delta,"Desired cNPV as odds"=dcnpvodds)
   data
   
 }
@@ -82,7 +82,7 @@ PPVSensSpec <- function(dppv,sens,spec) {
   
   T1<-as.table(prev)
   T2<-as.table(delta)
-  data<-list("Prevalence required to achieve specified PPV given specificity and sensitivity"=T1, "Delta required to achieve specified PPV given specificity and sensitivity"=T2, "Desired PPV as odds"=dppvodds)
+  data<-list("Prevalence"=T1, "Delta"=T2, "Desired PPV as odds"=dppvodds)
   data
   
 }
@@ -124,7 +124,7 @@ SensDeltaPrev <- function(sens,delta,prev) {
   T1<-as.table(ppv)
   T2<-as.table(cnpv)
   T3<-as.table(spec)
-  data<-list("Positive Predictive Value given sensitivity, prevalence, and delta"=T1,"Complement of the Negative Predictive Value given sensitivity, prevalence, and delta"=T2, "Specificity given delta and sensitivity"=T3, "Delta"=delta)
+  data<-list("PPV"=T1,"CNPV"=T2, "Specificity"=T3, "Delta"=delta)
   data
   
 }
@@ -188,7 +188,7 @@ SensPrevcNPV <- function(sens,prev,dcnpv) {
   
   T1<-as.table(delta)
   T2<-as.table(spec)
-  data<-list("Delta required to achieve specified cNPV given prevalence and sensitivity"=T1,"Specificity required to achieve specified cNPV given prevalence and sensitvity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired NPV"=vecdnpv,"Desired cNPV as odds"=vecdcnpv,"Ratio of desired cNPV and prevalence, odds scale"=dcnpvprev)
+  data<-list("Delta"=T1,"Specificity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired NPV"=vecdnpv,"Desired cNPV as odds"=vecdcnpv,"Ratio of desired cNPV and prevalence, odds scale"=dcnpvprev)
   data
 }
 
@@ -235,7 +235,7 @@ SensSpeccNPV <- function(sens,spec,dcnpv) {
   
   T1<-as.table(prev)
   T2<-as.table(delta)
-  data<-list("Prevalence required to achieve specified cNPV given specificity and sensitivity"=T1, "Delta given specificity and sensitivity"=T2, "Desired cNPV as odds"=dcnpvodds)
+  data<-list("Prevalence"=T1, "Delta"=T2, "Desired cNPV as odds"=dcnpvodds)
   data
   
 }
@@ -299,9 +299,10 @@ PrevSpeccNPV <- function(prev,spec,dcnpv) {
   
   T1<-as.table(delta)
   T2<-as.table(sens)
-  data<-list("Delta required to achieve specified cNPV given prevalence and specificity"=T1,"Sensitivity required to achieve specified cNPV given prevalence and specificity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired NPV"=vecdnpv,"Desired cNPV as odds"=vecdcnpv,"Ratio of desired cNPV and prevalence, odds scale"=dcnpvprev)
+  data<-list("Delta"=T1,"Sensitivity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired NPV"=vecdnpv,"Desired cNPV as odds"=vecdcnpv,"Ratio of desired cNPV and prevalence, odds scale"=dcnpvprev)
   data
 }
+
 PPVSensDelta <- function(dppv,sens,delta) {
   
   ##Delta, PPV, Sensitivity as input and Specificity as output
@@ -335,7 +336,7 @@ PPVSensDelta <- function(dppv,sens,delta) {
   
   T1<-as.table(prev)
   T2<-as.table(spec)
-  data<-list("Prevalence required to achieve specified PPV given delta and sensitivity"=T1, "Specificity required to achieve specified PPV given delta and sensitivity"=T2, "Delta"=delta,"Desired PPV as odds"=dppvodds)
+  data<-list("Prevalence"=T1, "Specificity"=T2, "Delta"=delta,"Desired PPV as odds"=dppvodds)
   data
   
 }
@@ -380,7 +381,7 @@ PPVPrevSpec <- function(dppv,prev,spec) {
   
   T1<-as.table(delta)
   T2<-as.table(sens)
-  data<-list("Delta required to achieve specified PPV given prevalence and specificity"=T1, "Sensitivity required to achieve specified PPV given prevalence and specificity"=T2, "Prevalence"=prev,"Prevalence Odds"=podds,"Desired PPV as odds"=dppvodds)
+  data<-list("Delta"=T1, "Sensitivity"=T2, "Prevalence"=prev,"Prevalence Odds"=podds,"Desired PPV as odds"=dppvodds)
   data
   
 }
@@ -425,7 +426,7 @@ PPVSensPrev <- function(dppv,sens,prev) {
   
   T1<-as.table(delta)
   T2<-as.table(spec)
-  data<-list("Delta required to achieve specified PPV given prevalence and sensitivity"=T1,"Specificity required to achieve specified PPV given prevalence and sensitivity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired PPV as odds"=dppvodds)
+  data<-list("Delta"=T1,"Specificity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired PPV as odds"=dppvodds)
   data
   
 }
@@ -473,7 +474,7 @@ SensDeltacNPV <- function(sens,delta,dcnpv) {
   
   T1<-as.table(prev)
   T2<-as.table(spec)
-  data<-list("Prevalence required to achieve specified cNPV given delta and sensitivity"=T1, "Specificity required to achieve specified cNPV given delta and sensitivity"=T2, "Delta"=delta,"Desired cNPV as odds"=dcnpvodds)
+  data<-list("Prevalence"=T1, "Specificity"=T2, "Delta"=delta,"Desired cNPV as odds"=dcnpvodds)
   data
   
 }
