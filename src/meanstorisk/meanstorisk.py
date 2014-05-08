@@ -42,7 +42,7 @@ def setRWorkingDirectory():
 @app.route('/meanstoriskRest/', methods = ['GET','POST'])
 @jsonp
 def callRFunction():
-    robjects.r('''source('./r-code/meanstoriskWrapper.R')''')
+    robjects.r('''source('./meanstoriskWrapper.R')''')
     r_getname_getApcData = robjects.globalenv['getDataJSON']
     jsondata = r_getname_getApcData(request.stream.read())
     print "json string >> "+str(jsondata[0]);

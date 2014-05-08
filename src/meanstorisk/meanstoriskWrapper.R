@@ -1,6 +1,6 @@
 library('RJSONIO')
 library('stringr')
-source ('./r-code/RiskFromROC.R')
+source ('./RiskFromROC.R')
 
 imageDirectory <- "./img/";
 
