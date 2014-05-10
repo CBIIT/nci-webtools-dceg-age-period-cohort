@@ -1,15 +1,8 @@
-var oTable;
-var outputTable;
-var giRedraw = false;
-var aData;
-var numberOfRows;
 var uniqueKey;
 
-var old_value;
-var editing = false;
-var row;
-var col;
-var validPrevValue = false;
+var valuesFromFile = [];
+var numberOfRows;
+var numberOfCols;
 
 
 var ppv_tabs = {
@@ -27,7 +20,42 @@ $(document).ready(function() {
 	bind_option_choices();
 });
 
+function prepare_upload (e){
+	files = e.target.files;
+	var fr = new FileReader();
+	fr.onload = function(e) {
+		var txt = e.target.result;
+//		alert ("Result: " +  txt);
+        var lines = txt.split("\n");
+        numberOfRows = lines.length;
+        if (numberOfRows > 0) numberOfCols = lines[0].split(",").length;
+        
+        for (count = 0; count < lines.length;count++) {
+        	
+        	var arr = lines[count].split(",");
+        	if (!isNaN(arr[0]) && !isNaN(arr[1]) ) {
+        		valuesFromFile = valuesFromFile.concat(arr);	
+        	}
+        }
+//		alert ("Values ("+ numberOfRows + "," + numberOfCols + "): " + valuesFromFile.join());
+	    // e.target.result should contain the text
+	};
+	fr.readAsText(files[0]);
+}
+
 function bind_option_choices() {
+	
+	$( "#accordion" ).accordion({ 
+		active: 1,
+		autoHeight: true,
+	    clearStyle: true
+	});	
+	$( "#input_file_upload" ).on('change', prepare_upload);
+
+	
+// Below is old code used when we had options instead of accordion	
+	
+/* Old way - Clicking on items within an option will set that option
 	// I did this backwards at first.  Instead of enabling based on their option choice, have it set
 	// the option if they click on one side or the other. 
 	$('input[name=data_entry_option]').val(['2']);
@@ -38,8 +66,9 @@ function bind_option_choices() {
 	$(".data_entry_by_input").click(function() {
 		$('input[name=data_entry_option]').val(['2']);
 	});
+*/
 	
-/* Old Way	
+/* Old Way - Options must be set to enable subfields.
 	$(".data_entry_by_input").prop('disabled', true);
 	$(".data_entry_by_file").prop('disabled', true);
 
@@ -60,8 +89,15 @@ function bind_option_choices() {
 
 function bind_calculate_button() {
 	$( "#calculate_button" ).click(function() {
-		get_inputs_for_standard_calculation();
-		get_data_stream();
+		if ($( "#accordion" ).accordion("option", "active" ) == 0	) {
+//			alert ("User Defined Normalization (" + numberOfRows + "," + numberOfCols + ")");
+			
+			get_inputs_for_user_defined_calculation();
+			make_ajax_call_user_defined_calculation();
+		} else {
+			get_inputs_for_standard_calculation();
+			make_ajax_call_standard_calculation();			
+		}
 	});
 }
 
@@ -74,6 +110,12 @@ function ajax_error(jqXHR, exception)
 
 /// -----------------------------------------------
 /// Computation Functions
+
+function get_inputs_for_user_defined_calculation () {
+	specificity_string="" + $("#specificity").val() + ""; 
+	prevalence_string="" + $("#prevalence").val() + ""; 
+	
+}
 
 function get_inputs_for_standard_calculation () {
 	
@@ -91,9 +133,11 @@ function get_inputs_for_standard_calculation () {
 	prevalence_string="" + $("#prevalence").val() + ""; 
 		
 //	alert(cases_string + "\n" + controls_string + "\n" + specificity_string + "\n" + prevalence_string);
-	set_standard_inputs(mean_cases,mean_controls,stderr_cases,stderr_controls,N_cases,N_controls);
+//	set_standard_inputs(mean_cases,mean_controls,stderr_cases,stderr_controls,N_cases,N_controls);
 }
 
+
+// The function below is no longer used.  We take the values from the output and no longer compute it going in.
 function set_standard_inputs(mean_cases,mean_controls,stderr_cases,stderr_controls,N_cases,N_controls) {
 
 	// First the input values
@@ -139,8 +183,30 @@ function set_standard_inputs(mean_cases,mean_controls,stderr_cases,stderr_contro
     delta_string = "c("+delta.toPrecision(4)+")";
 	
 }
-
-function get_data_stream() {
+function make_ajax_call_user_defined_calculation() {
+	//alert(cases_string + "\n" + controls_string + "\n" + specificity_string + "\n" + prevalence_string);
+    uniqueKey = (new Date()).getTime();	
+    hostname = window.location.hostname;
+    url = "http://" + hostname +"/meanstoriskRest/"
+    $.ajax({
+		type: "POST",
+		url: url,
+		data: {
+			option:1,
+			spec:specificity_string, 
+			prev: prevalence_string,
+			datarowcount: numberOfRows,
+			colcount: numberOfCols,
+			unique_key: uniqueKey,
+			graphkey:'CSV',
+			dataCSV: valuesFromFile.join()
+		},
+		dataType: "json",
+		success: set_data,
+		error: ajax_error
+	});
+}
+function make_ajax_call_standard_calculation() {
 	//alert(cases_string + "\n" + controls_string + "\n" + specificity_string + "\n" + prevalence_string);
     uniqueKey = (new Date()).getTime();	
     hostname = window.location.hostname;
@@ -165,12 +231,48 @@ function get_data_stream() {
 
 function set_data(dt) {
 //	alert ("Success");
+	set_values_table(dt);
 	create_tabbed_table(dt);
 	draw_graph();
 }
 
 function ajax_error(dt) {
 	alert("There was some problem getting the data."); 	
+}
+
+function set_values_table(dt) {
+
+	values = dt.Delta;
+	
+	// First the input values
+	if (values[0].Cases) set_value("#mean_cases",values[0].Cases.toPrecision(2)); else set_value("#mean_cases","");
+	if (values[0].Controls) set_value("#mean_controls",values[0].Controls.toPrecision(2));	else set_value("#mean_controls","");
+	if (values[0].Overall) set_value("#mean_overall",values[0].Overall.toPrecision(2) ); else set_value("#mean_overall","");
+
+	
+	if (values[1].Cases) set_value("#stderr_cases",values[1].Cases.toPrecision(4));	else set_value("#stderr_cases","");
+	if (values[1].Controls) set_value("#stderr_controls",values[1].Controls.toPrecision(4)); else set_value("#stderr_controls","");
+	if (values[1].Overall) set_value("#stderr_overall",values[1].Overall.toPrecision(4)); else set_value("#stderr_overall","");
+
+	if (values[2].Cases) set_value("#N_cases",values[2].Cases.toPrecision(4)); else set_value("#N_cases","");
+	if (values[2].Controls) set_value("#N_controls",values[2].Controls.toPrecision(4));	else set_value("#N_controls","");
+	if (values[2].Overall) set_value("#N_overall",values[2].Overall.toPrecision(4) ); else set_value("#N_overall","");
+	
+	if (values[3].Cases) set_value("#deviation_cases",values[3].Cases.toPrecision(4)); else set_value("#deviation_cases","");
+	if (values[3].Controls) set_value("#deviation_controls",values[3].Controls.toPrecision(4) ); else set_value("#deviation_controls","");
+	if (values[3].Overall) set_value("#deviation_overall",values[3].Overall.toPrecision(4) );else set_value("#deviation_overall","");
+
+	if (values[4].Cases) set_value("#variance_cases",values[4].Cases.toPrecision(4) ); else set_value("#variance_cases","");
+	if (values[4].Controls) set_value("#variance_controls",values[4].Controls.toPrecision(4)); else set_value("#variance_controls","");
+	if (values[4].Overall) set_value("#variance_overall",values[4].Overall.toPrecision(4) ); else set_value("#variance_overall","");
+	
+	if (values[5].Cases) set_value("#cv_cases",values[5].Cases.toPrecision(4) ); else set_value("#cv_cases","");
+	if (values[5].Controls) set_value("#cv_controls",values[5].Controls.toPrecision(4)); else set_value("#cv_controls","");
+	if (values[5].Overall) set_value("#cv_overall",values[5].Overall.toPrecision(4) ); else set_value("#cv_overall","");
+	
+	if (values[6].Overall) set_value("#diff_overall",values[6].Overall.toPrecision(4) ); else set_value("#diff_overall","");
+	
+	if (values[7].Overall) set_value("#delta_overall",values[7].Overall.toPrecision(4) ); else set_value("#delta_overall","");
 }
 
 function create_tabbed_table(dt) {
@@ -227,8 +329,8 @@ function set_matrix(tab_id, type, table_name, table_second_name, sensitivity_mat
 	$(tab_id).empty().append(general_table);
 	
 	var first_header_row = $("<tr></tr>");	
-	first_header_row.append("<TH class='table_data header' colspan=" +  (prevalence_count + 4)
-		+ "style='background-color:#8080FF;'>" + table_name + "</TH>");
+	first_header_row.append("<TH class='table_data header' colspan='" +  (prevalence_count + 4)
+		+ "'>" + table_name + "</TH>");
 	first_header_row.appendTo(general_table);
 
 	var second_header_row = $("<tr></tr>");	
@@ -282,9 +384,15 @@ function set_matrix(tab_id, type, table_name, table_second_name, sensitivity_mat
 
 function draw_graph() {
     url = "http://" + hostname +"/meanstoriskRest/"
-     graph_file = "./img/input"+uniqueKey+".png?";
 
-     $(".graph_panel").empty().append("<IMG src='" + graph_file + "' width='390' height='390' />");
+    if ($( "#accordion" ).accordion("option", "active" ) == 0) {
+    	graph_file = "./img/CSV"+uniqueKey+".png?";
+    } else {
+    	graph_file = "./img/input"+uniqueKey+".png?";
+   	
+    }
+
+    $(".graph_panel").empty().append("<IMG src='" + graph_file + "' width='390' height='390' />");
 }
 
 function set_value(field, value) {
@@ -302,4 +410,13 @@ function format_number(num) {
 //	else return intermediate.toExponential();
 	return num;
 }
+ //  Below is needed for IE 9 and below and compatibility mode as the older version does not support the Object.keys method
 
+Object.keys = Object.keys || function(o) { 
+    var result = []; 
+    for(var name in o) { 
+        if (o.hasOwnProperty(name)) 
+          result.push(name); 
+    } 
+    return result; 
+};

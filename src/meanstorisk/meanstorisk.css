@@ -3,16 +3,12 @@
 }
 
 .top_section {
-	background-color:#faa;
-	border: 2px solid black;
-	height: 400px;
+	height: 500px;
 	width: 1200px;
 }
 
 .bottom_section {
 	clear:left;
-	background-color:#aaf;
-	border: 2px solid black;
 	height:400px;
 	width:1200px;
 }
@@ -22,26 +18,27 @@
 	float:left;
 	width:400px;
 	height:99%;
-	background-color:#afa;
-	border: 2px solid black;
+}
+
+
+div.input_accordion {
+	background: #FFF url();
+}
+
+H3.input_accordion {
+	background-color:;
+	background: #DDD url();
 }
 
 .table_panel {
 	float:left;
 	width:400px;
 	height:99%;
-	background-color:#aff;
-	border: 2px solid black;
 }
 
-.table_data {
-	font-size:10pt;
-}
 
 .graph_panel {
-	background-color:#ffa;
 	height:99%;
-	border: 2px solid black;
 }
 
 .key_output_panel {
@@ -49,13 +46,10 @@
 	width:300px;
 	background-color:#faf;
 	height:99%;
-	border: 2px solid black;
 }
 
 .tabbed_output_panel {
-	background-color:#a8a;
 	height:99%;
-	border: 2px solid black;
 }
 
 .title {
@@ -63,7 +57,6 @@
 }
 
 .indent {
-	font-size:small;
 	margin-left:30px;
 	margin-right:20px;
 	margin-top:10px;
@@ -75,6 +68,7 @@
 }
 
 .col1 {
+	padding:6px;
 	text-align:right;
 }
 
@@ -93,13 +87,15 @@ body {
 	background-color:yellow;
 }
 
+
 table.table_data {
+	width:90%;
 	background-color:white;
 	border-collapse:collapse;
 	border:2px black solid;
 	margin-left:20px;
 	margin-right:20px;
-	font-size:small;
+	font-size:10pt;
 	float:left;
 }
 
@@ -114,9 +110,9 @@ table.output_data {
 
 td.table_data {
 	font-family:sans-serif;
-	padding:2px;
 	text-align:center;
 }
+
 
 th.table_data {
 	font-family:sans-serif;
@@ -180,3 +176,6 @@ tr.line-above {
 	background-color:#F0F0F0;
 }
 
+.ui-accordion {
+	overflow:hidden;
+}

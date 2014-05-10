@@ -33,50 +33,56 @@
 		</div>
 		<br>
 
+
+<div class='main_area'>
+	<div class='top_section'>
 		<div id="banners">
 			<div id="dceg_logo">
-				<img src="images/DCEGBB.png" style="float:right;"
+				<img src="images/DCEGBB.png" style="float:left;"
 					alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch"
 					height="43" />
 			</div>
 		</div>
-
-<div class='main_area'>
-	<h2 class='title' align="center">Positive Predictive Value using a Non-Normalized Distribution</h2>
-	<div class='top_section'>
-		<div class='input_panel'>
+	<h2 class='title' align="center">From Difference in Means to Risk Stratification: A Web Tool </h2>
+	<div class='input_panel'>
 
 	<div style='margin:5px;font-weight:bold;'> Choose how to enter the data </div>
 		<FORM>
-		<INPUT type='radio' name='data_entry_option' value='1' />Option 1
-		<p class='indent data_entry_by_file'>Upload a raw case and control biomarker data file in csv format <a href='#'> <i>(Example)</i> </a> </p>
-		<p class='indent'><INPUT type='file' class='data_entry_by_file'/> </p>
-		<INPUT type='radio' name='data_entry_option' value='2' />Option 2
-		<p class='indent data_entry_by_input'>Enter Mean, Standard Error, and N for Cases and Controls </p>
-
-		<TABLE class='table_data ' style='margin:5px;margin-left:90px;'>
-			<TR class='table_data header'>
-				<TH class='table_data header'> </TH>
-				<TH class='table_data header'> Cases </TH>
-				<TH class='table_data header'> Controls </TH>
-			</TR>
-			<TR class='table_data'>
-				<TH class='table_data col1'>  Mean </TH>
-				<TD class='table_data' > <label for='mean_cases_input'>&nbsp;</label><INPUT id='mean_cases_input' class='data_entry_by_input' type='text' value='4' size=4 /> </TD>
-				<TD class='table_data' > <label for='mean_controls_input'>&nbsp;</label><INPUT id='mean_controls_input' class='data_entry_by_input' type='text' value='1' size=4 /> </TD>
-
- 			</TR>
-			<TR class='table_data'>
-				<TH class='table_data col1'> Standard Error </TH>
-				<TD class='table_data' > <label for='stderr_cases_input'>&nbsp;</label><INPUT id='stderr_cases_input' class='data_entry_by_input' type='text' value='0.1' size=4 /> </TD>
-				<TD class='table_data' > <label for='stderr_controls_input'>&nbsp;</label><INPUT id='stderr_controls_input' class='data_entry_by_input' type='text' value='0.1' size=4 /> </TD>
-			</TR>
-			<TR class='table_data'>
-				<TH class='table_data col1'> N </TH>
-				<TD class='table_data' > <label for='N_cases_input'>&nbsp;</label><INPUT id='N_cases_input' class='data_entry_by_input' type='text' value='100' size=4 /> </TD>
-				<TD class='table_data' > <label for='N_controls_input'>&nbsp;</label><INPUT id='N_controls_input' class='data_entry_by_input' type='text' value='200' size=4 />  </TD>
-			</TR>
-		</TABLE>
+		<DIV id='accordion'>
+		<H3 class='input_accordion'> User Defined Normalization (from File)</H3>
+			<DIV class='input_accordion'>
+				<p class='indent data_entry_by_file'>Upload a raw case and control biomarker data file in csv format <a href='#'> <i>(Example)</i> </a> </p>
+				<p class='indent'><INPUT id='input_file_upload' type='file' class='data_entry_by_file'/> </p>
+			</DIV>	
+		<H3 class='input_accordion'> Normalized Distribution (Computed)</H3>
+			<DIV class='input_accordion'>
+				<p class='indent data_entry_by_input'>Enter Mean, Standard Error, and N for Cases and Controls </p>
+		
+				<TABLE class='table_data ' style='margin:5px;margin-left:20px;padding:2px;'>
+					<TR class='table_data header'>
+						<TH class='table_data header'> </TH>
+						<TH class='table_data header'> Cases </TH>
+						<TH class='table_data header'> Controls </TH>
+					</TR>
+					<TR class='table_data'>
+						<TH class='table_data col1'>  Mean </TH>
+						<TD class='table_data' > <label for='mean_cases_input'>&nbsp;</label><INPUT id='mean_cases_input' class='data_entry_by_input' type='text' value='4' size=4 /> </TD>
+						<TD class='table_data' > <label for='mean_controls_input'>&nbsp;</label><INPUT id='mean_controls_input' class='data_entry_by_input' type='text' value='1' size=4 /> </TD>
+		 			</TR>
+					<TR class='table_data'>
+						<TH class='table_data col1'> Standard Error </TH>
+						<TD class='table_data' > <label for='stderr_cases_input'>&nbsp;</label><INPUT id='stderr_cases_input' class='data_entry_by_input' type='text' value='0.1' size=4 /> </TD>
+						<TD class='table_data' > <label for='stderr_controls_input'>&nbsp;</label><INPUT id='stderr_controls_input' class='data_entry_by_input' type='text' value='0.1' size=4 /> </TD>
+					</TR>
+					<TR class='table_data'>
+						<TH class='table_data col1'> N </TH>
+						<TD class='table_data' > <label for='N_cases_input'>&nbsp;</label><INPUT id='N_cases_input' class='data_entry_by_input' type='text' value='100' size=4 /> </TD>
+						<TD class='table_data' > <label for='N_controls_input'>&nbsp;</label><INPUT id='N_controls_input' class='data_entry_by_input' type='text' value='200' size=4 />  </TD>
+					</TR>
+				</TABLE>
+			</DIV>	
+		</DIV>
+		<BR /><BR />
 		<TABLE class='table_data' style='margin-left:5px;'>
 			<TR><TD>Specificity:</TD><TD> <INPUT type='text' size='40' value='0.8, 0.9, 0.95, 0.99, 0.999' id='specificity' /></TD></TR>
 			<TR><TD>Prevalence:</TD><TD> <INPUT type='text' size='40' value='0.1, 0.05, 0.01, 0.005, 0.001' id='prevalence' /></TD></TR>
@@ -85,36 +91,31 @@
 		</FORM>
 				</div>
 				<div class='table_panel'>
-		
+		<br /><br />
 <TABLE class='table_data' id='inputs_card'>
 	<TR class='table_data header'>
 		<TH class='table_data header'> </TH>
-		<TH class='table_data header'> Cases </TH>
-		<TH class='table_data header'> Controls </TH>
-		<TH class='table_data header'> Overall </TH>
-		<TH class='table_data header'> Difference </TH>
-		<TH class='table_data header'>  </TH>
+		<TH class='table_data header'> &nbsp;Cases&nbsp; </TH>
+		<TH class='table_data header'> &nbsp;Controls&nbsp; </TH>
+		<TH class='table_data header'> &nbsp;Overall&nbsp; </TH>
 	</TR>
 	<TR class='table_data'>
 		<TH class='table_data col1'> Mean </TH>
 		<TD class='table_data' id='mean_cases'>  </TD>
 		<TD class='table_data' id='mean_controls'>  </TD>
 		<TD class='table_data' id='mean_overall'> </TD>
-		<TD class='table_data' id='mean_difference'>  </TD>
 	</TR>
 	<TR class='table_data'>
 		<TH class='table_data col1'> Standard Error </TH>
 		<TD class='table_data' id='stderr_cases'>  </TD>
 		<TD class='table_data' id='stderr_controls'> </TD>
 		<TD class='table_data' id='stderr_overall'>  </TD>
-		<TD class='table_data' id='stderr_difference'>  </TD>
 	</TR>
 	<TR class='table_data'>
 		<TH class='table_data col1'> N </TH>
 		<TD class='table_data' id='N_cases'>  </TD>
 		<TD class='table_data' id='N_controls'>  </TD>
 		<TD class='table_data' id='N_overall'> </TD>
-		<TD class='table_data' id='N_difference'>  </TD>
 	</TR>
 
 
@@ -123,35 +124,30 @@
 		<TD class='table_data' id='deviation_cases'>  </TD>
 		<TD class='table_data' id='deviation_controls'>  </TD>
 		<TD class='table_data' id='deviation_overall'>  </TD>
-		<TD class='table_data' id='deviation_difference'>  </TD>
 	</TR>
 	<TR class='table_data'>
 		<TH class='table_data col1'> Variance </TH>
 		<TD class='table_data' id='variance_cases'>  </TD>
 		<TD class='table_data' id='variance_controls'>  </TD>
 		<TD class='table_data' id='variance_overall'>  </TD>
-		<TD class='table_data' id='variance_difference'>  </TD>
 	</TR>
 	<TR class='table_data'>
 		<TH class='table_data col1'> Coefficent of Variance (CV) </TH>
 		<TD class='table_data' id='cv_cases'>  </TD>
 		<TD class='table_data' id='cv_controls'> </TD>
 		<TD class='table_data' id='cv_overall'>  </TD>
-		<TD class='table_data' id='cv_difference'>  </TD>
 	</TR>
 	<TR class='table_data'>
 		<TH class='table_data col1'> Difference in Mean </TH>
 		<TD class='table_data' id='diff_cases'> </TD>
 		<TD class='table_data' id='diff_controls'>  </TD>
 		<TD class='table_data' id='diff_overall'>  </TD>
-		<TD class='table_data' id='diff_difference'>  </TD>
 	</TR>
 	<TR class='table_data'>
 		<TH class='table_data col1'> Delta </TH>
 		<TD class='table_data' id='delta_cases'>  </TD>
 		<TD class='table_data' id='delta_controls'>  </TD>
 		<TD class='table_data' id='delta_overall'>  </TD>
-		<TD class='table_data' id='delta_difference'> 
 		</TD>
 	</TR>
 	
@@ -160,12 +156,10 @@
 		
 				</div>
 				<div class='graph_panel'>
-				Graph Panel Here
 				</div>
 			</div>
 			<div class='bottom_section'>
 				<div class='tabbed_output_panel'>
-				Tabbed Output Here
 				</div>
 			</div>
 		</div>
