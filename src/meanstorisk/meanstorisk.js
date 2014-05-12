@@ -46,7 +46,7 @@ function prepare_upload (e){
 function bind_option_choices() {
 	
 	$( "#accordion" ).accordion({ 
-		active: 1,
+		active: 0,
 		autoHeight: true,
 	    clearStyle: true
 	});	
@@ -392,7 +392,7 @@ function draw_graph() {
    	
     }
 
-    $(".graph_panel").empty().append("<IMG src='" + graph_file + "' width='390' height='390' />");
+    $(".graph_panel").empty().append("<IMG src='" + graph_file + "' width='490' height='390' />");
 }
 
 function set_value(field, value) {

@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Positive Predictive Value using a Non-Normalized Distribution</title>
+<title>Means to Risk Stratification: A Web Tool</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
 <script src="/lib/jquery/jquery-1.9.1.js"></script>
@@ -49,12 +49,12 @@
 	<div style='margin:5px;font-weight:bold;'> Choose how to enter the data </div>
 		<FORM>
 		<DIV id='accordion'>
-		<H3 class='input_accordion'> User Defined Normalization (from File)</H3>
+		<H3 class='input_accordion'> User Defined Distribution (from File)</H3>
 			<DIV class='input_accordion'>
-				<p class='indent data_entry_by_file'>Upload a raw case and control biomarker data file in csv format <a href='#'> <i>(Example)</i> </a> </p>
+				<p class='indent data_entry_by_file'>Upload a raw case and control biomarker data file in csv format <a href='p16-ELISA-sample-data.csv'> <i>(Example)</i> </a> </p>
 				<p class='indent'><INPUT id='input_file_upload' type='file' class='data_entry_by_file'/> </p>
 			</DIV>	
-		<H3 class='input_accordion'> Normalized Distribution (Computed)</H3>
+		<H3 class='input_accordion'> Normalized Distribution</H3>
 			<DIV class='input_accordion'>
 				<p class='indent data_entry_by_input'>Enter Mean, Standard Error, and N for Cases and Controls </p>
 		
@@ -84,14 +84,13 @@
 		</DIV>
 		<BR /><BR />
 		<TABLE class='table_data' style='margin-left:5px;'>
-			<TR><TD>Specificity:</TD><TD> <INPUT type='text' size='40' value='0.8, 0.9, 0.95, 0.99, 0.999' id='specificity' /></TD></TR>
-			<TR><TD>Prevalence:</TD><TD> <INPUT type='text' size='40' value='0.1, 0.05, 0.01, 0.005, 0.001' id='prevalence' /></TD></TR>
+			<TR><TH>Specificity:</TH><TD> <INPUT type='text' size='40' value='0.8, 0.9, 0.95, 0.99, 0.999' id='specificity' /></TD></TR>
+			<TR><TH>Prevalence:</TH><TD> <INPUT type='text' size='40' value='0.1, 0.05, 0.01, 0.005, 0.001' id='prevalence' /></TD></TR>
 		</TABLE>
 		<INPUT type='button' value='Calculate' id='calculate_button' style='margin:10px;float:right;' />
 		</FORM>
 				</div>
 				<div class='table_panel'>
-		<br /><br />
 <TABLE class='table_data' id='inputs_card'>
 	<TR class='table_data header'>
 		<TH class='table_data header'> </TH>
