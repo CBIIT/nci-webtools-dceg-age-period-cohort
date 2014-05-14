@@ -394,7 +394,7 @@ function draw_graph() {
    	
     }
 
-    $(".graph_panel").empty().append("<IMG src='" + graph_file + "' width='490' height='390' />");
+    $(".graph_panel").empty().append("<IMG alt='graph' src='" + graph_file + "' width='490' height='390' />");
 }
 
 function set_value(field, value) {
