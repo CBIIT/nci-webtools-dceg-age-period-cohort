@@ -6,6 +6,8 @@ imageDirectory <- "./img/";
 
 getDataJSON <-function(urlEncodedString)
 {
+  #create img directory if it is not there
+  dir.create(imageDirectory);
   inputList <- parseURLEncodedString(urlEncodedString);
   #data <- read.csv("p16-ELISA-sample-data.csv")
   option <- getOption(inputList);
