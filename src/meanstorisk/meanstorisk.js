@@ -21,27 +21,44 @@ $(document).ready(function() {
 });
 
 function prepare_upload (e){
-	files = e.target.files;
-	var fr = new FileReader();
-	fr.onload = function(e) {
-		var txt = e.target.result;
-//		alert ("Result: " +  txt);
-        var lines = txt.split("\n");
-        numberOfRows = lines.length;
-        if (numberOfRows > 0) numberOfCols = lines[0].split(",").length;
-        
-        for (count = 0; count < lines.length;count++) {
-        	
-        	var arr = lines[count].split(",");
-        	if (!isNaN(arr[0]) && !isNaN(arr[1]) ) {
-        		valuesFromFile = valuesFromFile.concat(arr);	
-        	}
+        files = e.target.files;
+        if ( window.FileReader ) {
+                var fr = new FileReader();
+                fr.onload = function(e) {
+                        var txt = e.target.result;
+                var lines = txt.split("\n");
+                numberOfRows = lines.length;
+                if (numberOfRows > 0) numberOfCols = lines[0].split(",").length;
+
+                for (count = 0; count < lines.length;count++) {
+
+                        var arr = lines[count].split(",");
+                        if (!isNaN(arr[0]) && !isNaN(arr[1]) ) {
+                                valuesFromFile = valuesFromFile.concat(arr);
+                        }
+                }
+                };
+                fr.readAsText(files[0]);
         }
-//		alert ("Values ("+ numberOfRows + "," + numberOfCols + "): " + valuesFromFile.join());
-	    // e.target.result should contain the text
-	};
-	fr.readAsText(files[0]);
+        else {
+                var filePath = $("#input_file_upload").val();
+                var fso = new ActiveXObject("Scripting.FileSystemObject");
+                var textStream = fso.OpenTextFile(filePath);
+                var fileData = textStream.ReadAll();
+                var lines = fileData.split("\n");
+                numberOfRows = lines.length;
+                if (numberOfRows > 0) numberOfCols = lines[0].split(",").length;
+
+                for (count = 0; count < lines.length;count++) {
+
+                        var arr = lines[count].split(",");
+                        if (!isNaN(arr[0]) && !isNaN(arr[1]) ) {
+                                valuesFromFile = valuesFromFile.concat(arr);
+                        }
+                }
+        }
 }
+
 
 function bind_option_choices() {
 	
