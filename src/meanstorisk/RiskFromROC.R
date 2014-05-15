@@ -14,10 +14,10 @@ RiskFromROC <- function(data, specificity, prevalence) {
   stdev <- c(NA,NA)
   stdev[1] <- sqrt(mean((x - contmean)^2))
   stdev[2] <- sqrt(mean((y - casmean)^2))
-  contstderr <- sqrt((stdev[1])^2/sum(x))
-  casstderr <- sqrt((stdev[2])^2/sum(y))
-  contn <- sum(x)
-  casn <- sum(y)
+  contstderr <- sqrt((stdev[1])^2/length(x))
+  casstderr <- sqrt((stdev[2])^2/length(y))
+  contn <- length(x)
+  casn <- length(y)
   
   a <- c(casmean,casstderr,casn)
   b <- c(contmean,contstderr,contn)
@@ -73,7 +73,7 @@ RiskFromROC <- function(data, specificity, prevalence) {
     lrminus[i]<-vecspec[i]/(1-sens[i])
   }
   
-  data2<-matrix(c(vecspec,sens,lrplus,lrminus),nrow=length(vecspec),ncol=4)  ##Sensitivity Specificity table
+  data2<-matrix(c(vecspec,sens,lrplus,lrminus),nrow=length(vecspec),ncol=4) ##Sensitivity Specificity table
   colnames(data2)<-c("Specificity", "Sensitivity","LR+","LR-")
   T2<-as.table(data2)
   
@@ -84,8 +84,8 @@ RiskFromROC <- function(data, specificity, prevalence) {
     cval[i]<-prev[i]/(1+prev[i])
   }
   
-  ab<-matrix(c(rep(NA,times=length(val)*length(lrplus))),nrow=length(lrplus),ncol=length(val))  ##PPV table
-  ca<-matrix(c(rep(NA,times=length(cval)*length(lrminus))),nrow=length(lrminus),ncol=length(cval))  ##cNPV table
+  ab<-matrix(c(rep(NA,times=length(val)*length(lrplus))),nrow=length(lrplus),ncol=length(val)) ##PPV table
+  ca<-matrix(c(rep(NA,times=length(cval)*length(lrminus))),nrow=length(lrminus),ncol=length(cval)) ##cNPV table
   for(i in 1:length(val)) {
     for(j in 1:length(lrplus)) {
       ab[j,i]<-lrplus[j]*val[i]/(1+lrplus[j]*val[i])
@@ -113,10 +113,10 @@ RiskFromROC <- function(data, specificity, prevalence) {
   colnames(data5)<-prevalence
   T5<-as.table(data5)
   
-  progba<-matrix(c(rep(NA,times=length(prev)*length(sens))),nrow=length(sens),ncol=length(prev))  ##Program-based table
-  pba<-matrix(c(rep(NA,times=length(prev)*length(lrplus))),nrow=length(lrplus),ncol=length(prev))  ##PPV-based table
+  progba<-matrix(c(rep(NA,times=length(prev)*length(sens))),nrow=length(sens),ncol=length(prev)) ##Program-based table
+  pba<-matrix(c(rep(NA,times=length(prev)*length(lrplus))),nrow=length(lrplus),ncol=length(prev)) ##PPV-based table
   for(i in 1:length(prev)) {
-    for(j in 1:length(sens)) {  
+    for(j in 1:length(sens)) {
       progba[j,i]<-1000*prev[i]*sens[j]
       pba[j,i]<-1000*ab[j,i]
     }
@@ -152,7 +152,7 @@ RiskFromROC <- function(data, specificity, prevalence) {
   T9<-as.table(data9)
   
   compdata<-list("Delta"=T1,"Sensitivity Given Specificity"=T2,"PPV"=T3,"cNPV"=T4,"PPV-cNPV"=T5,"Program-Based"=T6,"PPV-Based"=T7,"Sensitivity-Based"=T8,"Dominated by Specificity for a Rare Disease"=T9)
-  compdata  
+  compdata
 }
 
 DrawRawROC <- function(data) {
@@ -188,8 +188,10 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   
   delta<-abs(diff/sqrt(overallvar))
   
-  data1<-matrix(c(a[1],b[1],mean,a[2],b[2],NA,a[3],b[3],n,stdev[1],stdev[2],NA,var[1],var[2],overallvar,coefvar[1],coefvar[2],overallcoefvar,NA,NA,diff,NA,NA,delta),ncol=3,nrow=8,byrow=T)
-  rownames(data1)<-c("Mean","Standard Error","N","Standard Deviation","Variance","Coefficient of Variation (CV)","Difference in means","Delta")
+  auc<-AUCFromDelta(delta)
+  
+  data1<-matrix(c(a[1],b[1],mean,a[2],b[2],NA,a[3],b[3],n,stdev[1],stdev[2],NA,var[1],var[2],overallvar,coefvar[1],coefvar[2],overallcoefvar,NA,NA,diff,NA,NA,delta, NA, NA, auc),ncol=3,nrow=9,byrow=T)
+  rownames(data1)<-c("Mean","Standard Error","N","Standard Deviation","Variance","Coefficient of Variation (CV)","Difference in means","Delta", "AUC")
   colnames(data1)<-c("Cases","Controls","Overall")
   T1<-as.table(data1)
   
@@ -206,7 +208,7 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
     lrminus[i]<-vecspec[i]/(1-sens[i])
   }
   
-  data2<-matrix(c(vecspec,sens,lrplus,lrminus),nrow=length(vecspec),ncol=4)  ##Sensitivity Specificity table
+  data2<-matrix(c(vecspec,sens,lrplus,lrminus),nrow=length(vecspec),ncol=4) ##Sensitivity Specificity table
   colnames(data2)<-c("Specificity", "Sensitivity","LR+","LR-")
   T2<-as.table(data2)
   
@@ -217,8 +219,8 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
     cval[i]<-prev[i]/(1+prev[i])
   }
   
-  ab<-matrix(c(rep(NA,times=length(val)*length(lrplus))),nrow=length(lrplus),ncol=length(val))  ##PPV table
-  ca<-matrix(c(rep(NA,times=length(cval)*length(lrminus))),nrow=length(lrminus),ncol=length(cval))  ##cNPV table
+  ab<-matrix(c(rep(NA,times=length(val)*length(lrplus))),nrow=length(lrplus),ncol=length(val)) ##PPV table
+  ca<-matrix(c(rep(NA,times=length(cval)*length(lrminus))),nrow=length(lrminus),ncol=length(cval)) ##cNPV table
   for(i in 1:length(val)) {
     for(j in 1:length(lrplus)) {
       ab[j,i]<-lrplus[j]*val[i]/(1+lrplus[j]*val[i])
@@ -246,10 +248,10 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   colnames(data5)<-prevalence
   T5<-as.table(data5)
   
-  progba<-matrix(c(rep(NA,times=length(prev)*length(sens))),nrow=length(sens),ncol=length(prev))  ##Program-based table
-  pba<-matrix(c(rep(NA,times=length(prev)*length(lrplus))),nrow=length(lrplus),ncol=length(prev))  ##PPV-based table
+  progba<-matrix(c(rep(NA,times=length(prev)*length(sens))),nrow=length(sens),ncol=length(prev)) ##Program-based table
+  pba<-matrix(c(rep(NA,times=length(prev)*length(lrplus))),nrow=length(lrplus),ncol=length(prev)) ##PPV-based table
   for(i in 1:length(prev)) {
-    for(j in 1:length(sens)) {	
+    for(j in 1:length(sens)) {  
       progba[j,i]<-1000*prev[i]*sens[j]
       pba[j,i]<-1000*ab[j,i]
     }
@@ -303,4 +305,13 @@ DrawROC <- function(specmin, specmax, delta) {
   }
   
   legend(lty=LTY,legend=delta,"bottomright",cex=1.15,text.font=2,bty="o",title=expression(Delta))
+}
+
+AUCFromDelta <- function(delta) {
+  Specificity <- seq(from=0,to=1,by=0.0000001)
+  Sensitivity <- function(Specificity) {
+    1 - pnorm(qnorm(Specificity) - delta)
+  }
+  AUC <- integrate(Sensitivity,0,1)
+  AUC$value
 }
