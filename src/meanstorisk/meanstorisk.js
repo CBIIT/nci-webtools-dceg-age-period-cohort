@@ -27,14 +27,13 @@ function prepare_upload (e){
                 fr.onload = function(e) {
                         var txt = e.target.result;
                 var lines = txt.split("\n");
-                numberOfRows = lines.length;
-                if (numberOfRows > 0) numberOfCols = lines[0].split(",").length;
-
+                if (lines.length > 0) numberOfCols = lines[0].split(",").length;
+                numberOfRows = 0;
                 for (count = 0; count < lines.length;count++) {
-
                         var arr = lines[count].split(",");
                         if (!isNaN(arr[0]) && !isNaN(arr[1]) ) {
                                 valuesFromFile = valuesFromFile.concat(arr);
+				numberOfRows++;
                         }
                 }
                 };
