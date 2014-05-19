@@ -1,8 +1,13 @@
 library('RJSONIO')
 library('stringr')
 source ('./RiskFromROC.R')
+source ('./writeToExcel.R')
+
+#source('/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/RiskFromROC.R');
+#source ('/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/writeToExcel.R')
 
 imageDirectory <- "./img/";
+#imageDirectory <- "/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/img";
 
 getDataJSON <-function(urlEncodedString)
 {
@@ -24,7 +29,9 @@ getDataJSON <-function(urlEncodedString)
     jsonString=toJSON(risk1, method="C");
     uniqueId <- inputList[[6]][[1]];
     graphname <- inputList[[7]][[1]];
-    getRawROCGraph(data, uniqueId, graphname);
+    imageFileName <-getRawROCGraph(data, uniqueId, graphname);
+    
+    excelFileName <- writeResultsToExcel(risk1, imageFileName);
   }
   else if (as.numeric(option)==2)
   {
@@ -33,12 +40,15 @@ getDataJSON <-function(urlEncodedString)
     cases <- getVector(inputList[[4]][[1]]);
     controls <- getVector(inputList[[5]][[1]]);
     risk2<-deltaspecppv(cases, controls, spec, prev);
+    
     specmin<-min(spec);
     specmax<-max(spec);
     jsonString=toJSON(risk2, method="C");
     uniqueId <- inputList[[6]][[1]];
     graphname <- inputList[[7]][[1]];
-    getROCGraph(specmin, specmax, risk2$Delta[8,3], uniqueId, graphname);
+    imageFileName <- getROCGraph(specmin, specmax, risk2$Delta[8,3], uniqueId, graphname);
+    
+    excelFileName <- writeResultsToExcel(risk2, imageFileName);
   }
 
   str_replace_all(jsonString, "[\n]","");
@@ -47,10 +57,11 @@ getDataJSON <-function(urlEncodedString)
 getData <-function(urlEncodedString)
 {
   inputList <- parseURLEncodedString(urlEncodedString);
-  data <- read.csv("p16-ELISA-sample-data.csv")
+  data <- read.csv("/p16-ELISA-sample-data.csv");
+  #data <- read.csv("/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/p16-ELISA-sample-data.csv");
   spec<-c(0.8, 0.9, 0.95, 0.99, 0.995)
   prev<-c(0.5, 0.6, 0.7, 0.8, 0.9)
-  source("RiskFromROC.R")
+
   risk1<-RiskFromROC(data, spec, prev)
   DrawRawROC(data)
 }
@@ -115,8 +126,9 @@ getdata <- function (inputList) {
   inputList[[6]][[1]];
 }
 
+urlEncodedString <- "option=2&spec=0.8%2c0.9%2c0.95%2c0.99%2c0.995&prev=0.5%2c0.6%2c0.7%2c0.8%2c0.9&cases=4%2c0.1%2c100&controls=1%2c0.1%2c200&uniqueid=TEST&graphkey=input";
 
-urlEncodedString<- "option=1&spec=0.8%2c0.9%2c0.95%2c0.99%2c0.995&prev=0.5%2c0.6%2c0.7%2c0.8%2c0.9&cases=4%2c0.1%2c100&controls=1%2c0.1%2c200"
-urlEncodedString<- "option=2&spec=0&prev=0&datarowcount=9&colcount=2&dataCSV=p16_ELISA%2cHGCIN%2c0.00%2c0%2c0.00%2c0%2c0.00%2c0%2c6.06%2c0%2c6.16%2c0%2c6.3398%2c0%2c6.47%2c0%2c6.81%2c0"
-
-urlEncodedString<- "spec=0.8%2c0.9%2c0.95%2c0.99%2c0.995&prev=0.5%2c0.6%2c0.7%2c0.8%2c0.9&datarowcount=9&colcount=2&dataCSV=0.00%2c0%2c0.00%2c0%2c0.00%2c0%2c6.06%2c0%2c6.16%2c0%2c6.3398%2c0%2c6.47%2c0%2c6.81%2c0"
+#urlEncodedString<- "option=1&spec=0.8%2c0.9%2c0.95%2c0.99%2c0.995&prev=0.5%2c0.6%2c0.7%2c0.8%2c0.9&cases=4%2c0.1%2c100&controls=1%2c0.1%2c200"
+#urlEncodedString<- "option=2&spec=0&prev=0&datarowcount=9&colcount=2&dataCSV=p16_ELISA%2cHGCIN%2c0.00%2c0%2c0.00%2c0%2c0.00%2c0%2c6.06%2c0%2c6.16%2c0%2c6.3398%2c0%2c6.47%2c0%2c6.81%2c0"
+getDataJSON(urlEncodedString);
+#urlEncodedString<- "spec=0.8%2c0.9%2c0.95%2c0.99%2c0.995&prev=0.5%2c0.6%2c0.7%2c0.8%2c0.9&datarowcount=9&colcount=2&dataCSV=0.00%2c0%2c0.00%2c0%2c0.00%2c0%2c6.06%2c0%2c6.16%2c0%2c6.3398%2c0%2c6.47%2c0%2c6.81%2c0"
