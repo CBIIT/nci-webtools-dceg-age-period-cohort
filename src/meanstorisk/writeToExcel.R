@@ -1,8 +1,8 @@
 library('xlsx');
 
-excelDirectory <- "/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/xlsx/";
+#excelDirectory <- "/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/xlsx/";
 
-#excelDirectory <- "./xlsx/";
+excelDirectory <- "./xlsx/";
 
 writeResultsToExcel <- function (risk, graphName) {
   outwb <- createWorkbook();
@@ -41,26 +41,10 @@ writeResultsToExcel <- function (risk, graphName) {
   addDataFrame(x = as.data.frame.matrix(risk$`Dominated by Specificity for a Rare Disease`), sheet = dominatedSheet, row.names=FALSE, col.name=TRUE, startColumn=6);
   
   addPicture(graphName, deltaSheet, scale = .65, startRow = 1, startColumn = 6);
-#   addPicture(paste(imageDirectory, "PerDeviations", uniqueId, ".png", sep = ''), perDeviationsSheet, scale = .65, startRow = 1, startColumn = 6);
-#   addPicture(paste(imageDirectory, "CohDeviations", uniqueId, ".png", sep = ''), cohDeviationsSheet, scale = .65, startRow = 1, startColumn = 6);
-#   addPicture(paste(imageDirectory, "LongAge",       uniqueId, ".png", sep = ''), longAgeSheet, scale = .65, startRow = 1, startColumn = 6);
-#   addPicture(paste(imageDirectory, "CrossAge",      uniqueId, ".png", sep = ''), crossAgeSheet, scale = .65, startRow = 1, startColumn = 6);
-#   addPicture(paste(imageDirectory, "Long2CrossRR",  uniqueId, ".png", sep = ''), long2CrossRRSheet, scale = .65, startRow = 1, startColumn = 6);
-#   addPicture(paste(imageDirectory, "FittedTemporalTrends", uniqueId, ".png", sep = ''), fittedTemporalTrendsSheet, scale = .65, startRow = 1, startColumn = 6);
-#   addPicture(paste(imageDirectory, "PeriodRR",      uniqueId, ".png", sep = ''), periodRRSheet, scale = .65, startRow = 1, startColumn = 6);
-#   addPicture(paste(imageDirectory, "CohortRR",      uniqueId, ".png", sep = ''), cohortRRSheet, scale = .65, startRow = 1, startColumn = 6);
-#   addPicture(paste(imageDirectory, "LocalDrifts",   uniqueId, ".png", sep = ''), localDriftsSheet, scale = .65, startRow = 1, startColumn = 6);
-  
-#   time <- gsub(":","",gsub("-","",gsub(" ","", Sys.time() , fixed=TRUE)));
-#   title <- gsub(" ", "", gsub("[[:punct:]]", "", title));
-#   
-#   defaultTitle<-pmatch("APCAnalysis", title, nomatch=0);
-#   
-#   if (defaultTitle > 0) {
-    fileName <- paste(excelDirectory, "title","_", 'Excel.xlsx',sep='');
-#   } else {
-#     fileName <- paste(excelDirectory, title,"_",time,"_", 'Excel.xlsx',sep='');
-#   }
+
+   time <- gsub(":","",gsub("-","",gsub(" ","", Sys.time() , fixed=TRUE)));
+
+  fileName <- paste(excelDirectory, time,"_", 'Excel.xlsx',sep='');
   
   saveWorkbook(outwb, fileName);
   fileName;

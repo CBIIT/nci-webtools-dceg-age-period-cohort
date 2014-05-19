@@ -1,13 +1,13 @@
 library('RJSONIO')
 library('stringr')
-#source ('./RiskFromROC.R')
-#source ('./writeToExcel.R')
+source ('./RiskFromROC.R')
+source ('./writeToExcel.R')
 
-source('/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/RiskFromROC.R');
-source ('/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/writeToExcel.R')
+#source('/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/RiskFromROC.R');
+#source ('/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/writeToExcel.R')
 
-#imageDirectory <- "./img/";
-imageDirectory <- "/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/img";
+imageDirectory <- "./img/";
+#imageDirectory <- "/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/img";
 
 getDataJSON <-function(urlEncodedString)
 {
@@ -57,8 +57,8 @@ getDataJSON <-function(urlEncodedString)
 getData <-function(urlEncodedString)
 {
   inputList <- parseURLEncodedString(urlEncodedString);
- # data <- read.csv("p16-ELISA-sample-data.csv");
-  data <- read.csv("/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/p16-ELISA-sample-data.csv");
+  data <- read.csv("p16-ELISA-sample-data.csv");
+#  data <- read.csv("/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/p16-ELISA-sample-data.csv");
   spec<-c(0.8, 0.9, 0.95, 0.99, 0.995)
   prev<-c(0.5, 0.6, 0.7, 0.8, 0.9)
 
