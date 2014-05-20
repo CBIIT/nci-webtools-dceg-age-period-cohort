@@ -1,7 +1,50 @@
 ###
 ## Different analysis options for calculating independent based on dependent, contour and fixed values
 ###
-DeltaSpeccNPV <- function(delta,spec,dcnpv) {
+
+SpecPrevDelta <- function(spec,prev,delta) {
+  
+  vecdelta<-as.vector(delta)  
+  
+  vecprev<-as.vector(prev)
+  
+  vecspec<-as.vector(spec)
+  
+  
+  sens<-array(c(rep(NA,times=length(vecspec)*length(vecdelta))), dim = c(length(vecspec),length(vecdelta)), dimnames = list(vecspec,vecdelta))
+  for(i in 1:length(vecspec)) {
+    for(j in 1:length(vecdelta)) {
+      sens[i,j]<- 1- pnorm(qnorm(vecspec[i]) - vecdelta[j])
+    }
+  }
+  
+  ppv<-array(c(rep(NA,times=length(vecprev)*length(vecspec)*length(vecdelta))), dim = c(length(vecspec),length(vecprev),length(vecdelta)), dimnames = list(vecspec,vecprev,vecdelta))
+  for(i in 1:length(vecspec)) {
+    for(j in 1:length(vecprev)) {
+      for(k in 1:length(vecdelta)) {
+        ppv[i,j,k]<- vecprev[j]*(1- pnorm(qnorm(vecspec[i]) - vecdelta[k]))/(vecprev[j]*(1- pnorm(qnorm(vecspec[i]) - vecdelta[k]))+(1-vecspec[i])*(1-vecprev[j]))
+      }
+    }
+  }
+  
+  cnpv<-array(c(rep(NA,times=length(vecprev)*length(vecspec)*length(vecdelta))), dim = c(length(vecspec),length(vecprev),length(vecdelta)), dimnames = list(vecspec,vecprev,vecdelta))
+  for(i in 1:length(vecspec)) {
+    for(j in 1:length(vecprev)) {
+      for(k in 1:length(vecdelta)) {
+        cnpv[i,j,k]<- (vecprev[j]/(1+vecprev[j]))*(pnorm(qnorm(vecspec[i]) - vecdelta[k])/vecspec[i])/(1 + (vecprev[j]/(1+vecprev[j]))*(pnorm(qnorm(vecspec[i]) - vecdelta[k])/vecspec[i]))
+      }
+    }
+  }
+  
+  T1<-as.table(ppv)
+  T2<-as.table(cnpv)
+  T3<-as.table(sens)
+  data<-list("Positive Predictive Value given specificity, prevalence, and delta"=T1,"Complement of the Negative Predictive Value given specificity, prevalence, and delta"=T2, "Sensitivity given delta and specificity"=T3, "Delta"=delta)
+  data
+  
+}
+
+SpeccNPVDelta <- function(spec,dcnpv,delta) {
   
   ##Delta, cNPV, Specificity as input and Sensitivity as output  
   
@@ -44,12 +87,216 @@ DeltaSpeccNPV <- function(delta,spec,dcnpv) {
   
   T1<-as.table(prev)
   T2<-as.table(sens)
-  data<-list("Prevalence"=T1, "Sensitivity"=T2, "Delta"=delta,"Desired cNPV as odds"=dcnpvodds)
+  data<-list("Prevalence required to achieve specified cNPV given delta and specificity"=T1, "Sensitivity required to achieve specified cNPV given delta and specificity"=T2, "Delta"=delta,"Desired cNPV as odds"=dcnpvodds)
   data
   
 }
 
-PPVSensSpec <- function(dppv,sens,spec) {
+SpecPPVDelta <- function(spec,dppv,delta) {
+  
+  ##Prevalence, PPV, Sensitivity as input and Specificity as output
+  
+  vecdelta<-as.vector(delta)  ##prevalence values
+  
+  vecdppv<-as.vector(dppv)
+  
+  vecspec<-as.vector(spec)
+  
+  dppvodds<-as.vector(c(rep(NA,times=length(vecdppv))))
+  for(j in 1:length(vecdppv)) {
+    dppvodds[j]<-vecdppv[j]/(1-vecdppv[j])
+  }
+  
+  sens<-array(c(rep(NA,times=length(vecspec)*length(vecdelta))), dim = c(length(vecspec),length(vecdelta)), dimnames = list(vecspec,vecdelta))
+  for(i in 1:length(vecspec)) {
+    for(j in 1:length(vecdelta)) {
+      sens[i,j]<- 1- pnorm(qnorm(vecspec[i]) - vecdelta[j])
+    }
+  }
+  
+  prev<-array(c(rep(NA,times=length(vecdppv)*length(vecspec)*length(vecdelta))), dim = c(length(vecspec),length(vecdppv),length(vecdelta)), dimnames = list(vecspec,vecdppv,vecdelta))
+  for(i in 1:length(vecspec)) {
+    for(j in 1:length(vecdppv)) {
+      for(k in 1:length(vecdelta)) {
+        prev[i,j,k]<- vecdppv[j]*(1-vecspec[i])/((1- pnorm(qnorm(vecspec[i]) - vecdelta[k])) - vecdppv[j]*(1- pnorm(qnorm(vecspec[i]) - vecdelta[k]))+vecdppv[j] - vecdppv[j]*vecspec[i])      
+      }
+    }
+  }
+  
+  T1<-as.table(prev)
+  T2<-as.table(sens)
+  data<-list("Prevalence required to achieve specified PPV given delta and specificity"=T1, "Sensitivity required to achieve specified PPV given delta and specificity"=T2, "Delta"=delta,"Desired PPV as odds"=dppvodds)
+  data
+  
+}
+
+SpecPPVDelta <- function(spec,dppv,delta) {
+  
+  ##Prevalence, PPV, Sensitivity as input and Specificity as output
+  
+  vecdelta<-as.vector(delta)  ##prevalence values
+  
+  vecdppv<-as.vector(dppv)
+  
+  vecspec<-as.vector(spec)
+  
+  dppvodds<-as.vector(c(rep(NA,times=length(vecdppv))))
+  for(j in 1:length(vecdppv)) {
+    dppvodds[j]<-vecdppv[j]/(1-vecdppv[j])
+  }
+  
+  sens<-array(c(rep(NA,times=length(vecspec)*length(vecdelta))), dim = c(length(vecspec),length(vecdelta)), dimnames = list(vecspec,vecdelta))
+  for(i in 1:length(vecspec)) {
+    for(j in 1:length(vecdelta)) {
+      sens[i,j]<- 1- pnorm(qnorm(vecspec[i]) - vecdelta[j])
+    }
+  }
+  
+  prev<-array(c(rep(NA,times=length(vecdppv)*length(vecspec)*length(vecdelta))), dim = c(length(vecspec),length(vecdppv),length(vecdelta)), dimnames = list(vecspec,vecdppv,vecdelta))
+  for(i in 1:length(vecspec)) {
+    for(j in 1:length(vecdppv)) {
+      for(k in 1:length(vecdelta)) {
+        prev[i,j,k]<- vecdppv[j]*(1-vecspec[i])/((1- pnorm(qnorm(vecspec[i]) - vecdelta[k])) - vecdppv[j]*(1- pnorm(qnorm(vecspec[i]) - vecdelta[k]))+vecdppv[j] - vecdppv[j]*vecspec[i])      
+      }
+    }
+  }
+  
+  T1<-as.table(prev)
+  T2<-as.table(sens)
+  data<-list("Prevalence required to achieve specified PPV given delta and specificity"=T1, "Sensitivity required to achieve specified PPV given delta and specificity"=T2, "Delta"=delta,"Desired PPV as odds"=dppvodds)
+  data
+  
+}
+
+SpecPPVPrev <- function(spec,dppv,prev) {
+  
+  ##Prevalence, PPV, Sensitivity as input and Specificity as output
+  
+  p<-as.vector(prev)  ##prevalence values
+  
+  vecdppv<-as.vector(dppv)
+  
+  vecspec<-as.vector(spec)
+  
+  podds<-as.vector(c(rep(NA,times=length(p))))
+  for(k in 1:length(p)) {
+    podds[k]<-p[k]/(1-p[k])
+  }
+  
+  dppvodds<-as.vector(c(rep(NA,times=length(vecdppv))))
+  for(j in 1:length(vecdppv)) {
+    dppvodds[j]<-vecdppv[j]/(1-vecdppv[j])
+  }
+  
+  delta<-array(c(rep(NA,times=length(vecdppv)*length(vecspec)*length(podds))), dim = c(length(vecspec),length(vecdppv),length(podds)), dimnames = list(vecspec,vecdppv,podds))
+  for(i in 1:length(vecspec)) {
+    for(j in 1:length(vecdppv)) {
+      for(k in 1:length(podds)) {
+        delta[i,j,k]<- qnorm(vecspec[i]) - qnorm(1-dppvodds[j]/podds[k]*(1-vecspec[i]))
+      }
+    }
+  }
+  
+  sens<-array(c(rep(NA,times=length(vecdppv)*length(vecspec)*length(podds))), dim = c(length(vecspec),length(vecdppv),length(podds)), dimnames = list(vecspec,vecdppv,podds))
+  for(i in 1:length(vecspec)) {
+    for(j in 1:length(vecdppv)) {
+      for(k in 1:length(podds)) {
+        sens[i,j,k]<- dppvodds[j]/podds[k]*(1-vecspec[i])
+      }
+    }
+  }
+  
+  T1<-as.table(delta)
+  T2<-as.table(sens)
+  data<-list("Delta required to achieve specified PPV given prevalence and specificity"=T1, "Sensitivity required to achieve specified PPV given prevalence and specificity"=T2, "Prevalence"=prev,"Prevalence Odds"=podds,"Desired PPV as odds"=dppvodds)
+  data
+  
+}
+
+SensPPVDelta <- function(sens,dppv,delta) {
+  
+  ##Delta, PPV, Sensitivity as input and Specificity as output
+  
+  vecdelta<-as.vector(delta)  ##delta values
+  
+  vecdppv<-as.vector(dppv)
+  
+  vecsens<-as.vector(sens)
+  
+  dppvodds<-as.vector(c(rep(NA,times=length(vecdppv))))
+  for(j in 1:length(vecdppv)) {
+    dppvodds[j]<-vecdppv[j]/(1-vecdppv[j])
+  }
+  
+  spec<-array(c(rep(NA,times=length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecdelta)), dimnames = list(vecsens,vecdelta))
+  for(i in 1:length(vecsens)) {
+    for(j in 1:length(vecdelta)) {
+      spec[i,j]<- pnorm(qnorm(1-vecsens[i])+vecdelta[j])
+    }
+  }
+  
+  prev<-array(c(rep(NA,times=length(vecdppv)*length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecdppv),length(vecdelta)), dimnames = list(vecsens,vecdppv,vecdelta))
+  for(i in 1:length(vecsens)) {
+    for(j in 1:length(vecdppv)) {
+      for(k in 1:length(vecdelta)) {
+        prev[i,j,k]<- vecdppv[j]*(1-pnorm(qnorm(1-vecsens[i])+vecdelta[k]))/(vecsens[i] - vecdppv[j]*vecsens[i] + vecdppv[j] - vecdppv[j]*pnorm(qnorm(1-vecsens[i])+vecdelta[k]))      
+      }
+    }
+  }
+  
+  T1<-as.table(prev)
+  T2<-as.table(spec)
+  data<-list("Prevalence required to achieve specified PPV given delta and sensitivity"=T1, "Specificity required to achieve specified PPV given delta and sensitivity"=T2, "Delta"=delta,"Desired PPV as odds"=dppvodds)
+  data
+  
+}
+
+SensPPVPrev <- function(sens,dppv,prev) {
+  
+  ##Prevalence, PPV, Sensitivity as input and Specificity as output
+  
+  p<-as.vector(prev)  ##prevalence values
+  
+  vecdppv<-as.vector(dppv)
+  
+  vecsens<-as.vector(sens)
+  
+  podds<-as.vector(c(rep(NA,times=length(p))))
+  for(k in 1:length(p)) {
+    podds[k]<-p[k]/(1-p[k])
+  }
+  
+  dppvodds<-as.vector(c(rep(NA,times=length(vecdppv))))
+  for(j in 1:length(vecdppv)) {
+    dppvodds[j]<-vecdppv[j]/(1-vecdppv[j])
+  }
+  
+  delta<-array(c(rep(NA,times=length(vecdppv)*length(vecsens)*length(podds))), dim = c(length(vecsens),length(vecdppv),length(podds)), dimnames = list(vecsens,vecdppv,podds))
+  for(i in 1:length(vecsens)) {
+    for(j in 1:length(vecdppv)) {
+      for(k in 1:length(podds)) {
+        delta[i,j,k]<- qnorm(1-vecsens[i]*podds[k]/dppvodds[j])-qnorm(1-vecsens[i])
+      }
+    }
+  }
+  
+  spec<-array(c(rep(NA,times=length(vecdppv)*length(vecsens)*length(podds))), dim = c(length(vecsens),length(vecdppv),length(podds)), dimnames = list(vecsens,vecdppv,podds))
+  for(i in 1:length(vecsens)) {
+    for(j in 1:length(vecdppv)) {
+      for(k in 1:length(podds)) {
+        spec[i,j,k]<- 1-vecsens[i]*podds[k]/dppvodds[j]
+      }
+    }
+  }
+  
+  T1<-as.table(delta)
+  T2<-as.table(spec)
+  data<-list("Delta required to achieve specified PPV given prevalence and sensitivity"=T1,"Specificity required to achieve specified PPV given prevalence and sensitivity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired PPV as odds"=dppvodds)
+  data
+  
+}
+
+SensPPVSpec <- function(sens,dppv,spec) {
   
   ##Specificity, PPV, Sensitivity as input and Delta and Prevalence as output
   
@@ -82,165 +329,50 @@ PPVSensSpec <- function(dppv,sens,spec) {
   
   T1<-as.table(prev)
   T2<-as.table(delta)
-  data<-list("Prevalence"=T1, "Delta"=T2, "Desired PPV as odds"=dppvodds)
+  data<-list("Prevalence required to achieve specified PPV given specificity and sensitivity"=T1, "Delta required to achieve specified PPV given specificity and sensitivity"=T2, "Desired PPV as odds"=dppvodds)
   data
   
 }
 
-SensDeltaPrev <- function(sens,delta,prev) {
+SensPPVSpec <- function(sens,dppv,spec) {
   
-  vecdelta<-as.vector(delta)  ##prevalence values
+  ##Specificity, PPV, Sensitivity as input and Delta and Prevalence as output
   
-  vecprev<-as.vector(prev)
+  vecspec<-as.vector(spec)  ##specificity
+  
+  vecdppv<-as.vector(dppv)
   
   vecsens<-as.vector(sens)
   
-  
-  spec<-array(c(rep(NA,times=length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecdelta)), dimnames = list(vecsens,vecdelta))
-  for(i in 1:length(vecsens)) {
-    for(j in 1:length(vecdelta)) {
-      spec[i,j]<- pnorm(vecdelta[j]+qnorm(1-vecsens[i]))
-    }
+  dppvodds<-as.vector(c(rep(NA,times=length(vecdppv))))
+  for(j in 1:length(vecdppv)) {
+    dppvodds[j]<-vecdppv[j]/(1-vecdppv[j])
   }
   
-  ppv<-array(c(rep(NA,times=length(vecprev)*length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecprev),length(vecdelta)), dimnames = list(vecsens,vecprev,vecdelta))
-  for(i in 1:length(vecsens)) {
-    for(j in 1:length(vecprev)) {
-      for(k in 1:length(vecdelta)) {
-        ppv[i,j,k]<- vecprev[j]*(vecsens[i])/(vecprev[j]*(vecsens[i])+(1-pnorm(vecdelta[k]+qnorm(1-vecsens[i])))*(1-vecprev[j]))
-      }
-    }
-  }
-  
-  cnpv<-array(c(rep(NA,times=length(vecprev)*length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecprev),length(vecdelta)), dimnames = list(vecsens,vecprev,vecdelta))
-  for(i in 1:length(vecsens)) {
-    for(j in 1:length(vecprev)) {
-      for(k in 1:length(vecdelta)) {
-        cnpv[i,j,k]<- (vecprev[j]/(1+vecprev[j]))*((1-vecsens[i])/(pnorm(vecdelta[k]+qnorm(1-vecsens[i]))))/(1 + (vecprev[j]/(1+vecprev[j]))*((1-vecsens[i])/(pnorm(vecdelta[k]+qnorm(1-vecsens[i])))))
-      }
-    }
-  }
-  
-  T1<-as.table(ppv)
-  T2<-as.table(cnpv)
-  T3<-as.table(spec)
-  data<-list("PPV"=T1,"CNPV"=T2, "Specificity"=T3, "Delta"=delta)
-  data
-  
-}
-
-SensPrevcNPV <- function(sens,prev,dcnpv) {
-  
-  ##Prevalence, cNPV, Sensitivity as input and delta and Specificity as output  
-  
-  p<-as.vector(prev)  ##prevalence values
-  
-  vecsens<-as.vector(sens) ##desired cnpv
-  
-  vecdcnpv<-as.vector(dcnpv)  ##specificity values
-  
-  podds<-as.vector(c(rep(NA,times=length(p))))
-  for(k in 1:length(p)) {
-    podds[k]<-p[k]/(1+p[k])
-  }
-  
-  vecdnpv<-as.vector(c(rep(NA,times=length(vecdcnpv))))
-  for(j in 1:length(vecdcnpv)) {
-    vecdnpv[j]<-1-vecdcnpv[j]
-  }
-  
-  dcnpvodds<-as.vector(c(rep(NA,times=length(vecdcnpv))))
-  for(j in 1:length(vecdcnpv)) {
-    dcnpvodds[j]<-vecdcnpv[j]/(1-vecdcnpv[j])
-  }
-  
-  dnpvodds<-as.vector(c(rep(NA,times=length(vecdcnpv))))
-  for(j in 1:length(vecdnpv)) {
-    dnpvodds[j]<-(vecdnpv[j])/(1-(vecdnpv[j]))
-  }
-  
-  dcnpvprev<-array(c(rep(NA,times=length(dcnpvodds)*length(podds))),dim = c(length(dcnpvodds),length(podds)))
-  for(j in 1:length(dcnpvodds)) {
-    for(k in 1:length(podds)) {
-      dcnpvprev[j,k]<-dcnpvodds[j]/podds[k]
-    }
-  }
-  rownames(dcnpvprev)<-dcnpvodds
-  colnames(dcnpvprev)<-podds
-  
-  delta<-array(c(rep(NA,times=length(vecdcnpv)*length(vecsens)*length(podds))),dim = c(length(vecsens),length(vecdcnpv),length(podds)),dimnames = list(vecsens,vecdcnpv,podds))  ##full table
-  for(i in 1:length(vecsens)) {
-    for(j in 1:length(vecdcnpv)) {
-      for(k in 1:length(podds)) {
-        delta[i,j,k]<-qnorm(dcnpvprev[j,k]*(1-vecsens[i]))-qnorm(1-vecsens[i])
-      }
-    }
-  }
-  
-  spec<-array(c(rep(NA,times=length(vecdcnpv)*length(vecsens)*length(podds))),dim = c(length(vecsens),length(vecdcnpv),length(podds)),dimnames = list(vecsens,vecdcnpv,podds))  ##full table
-  for(i in 1:length(vecsens)) {
-    for(j in 1:length(vecdcnpv)) {
-      for(k in 1:length(podds)) {
-        spec[i,j,k]<-dcnpvprev[j,k]*(1-vecsens[i])
-      }
-    }
-  }
-  
-  T1<-as.table(delta)
-  T2<-as.table(spec)
-  data<-list("Delta"=T1,"Specificity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired NPV"=vecdnpv,"Desired cNPV as odds"=vecdcnpv,"Ratio of desired cNPV and prevalence, odds scale"=dcnpvprev)
-  data
-}
-
-SensSpeccNPV <- function(sens,spec,dcnpv) {
-  
-  ##Sensitivity, cNPV, Specificity as input and Delta and Prevalence as output  
-  
-  vecsens<-as.vector(sens) ##sensitivity
-  
-  vecdcnpv<-as.vector(dcnpv)  ##desired cnpv values
-  
-  vecspec<-as.vector(spec)  ##specificity values
-  
-  vecdnpv<-as.vector(c(rep(NA,times=length(vecdcnpv))))
-  for(j in 1:length(vecdcnpv)) {
-    vecdnpv[j]<-1-vecdcnpv[j]
-  }
-  
-  dcnpvodds<-as.vector(c(rep(NA,times=length(vecdcnpv))))
-  for(j in 1:length(vecdcnpv)) {
-    dcnpvodds[j]<-vecdcnpv[j]/(1-vecdcnpv[j])
-  }
-  
-  dnpvodds<-as.vector(c(rep(NA,times=length(vecdcnpv))))
-  for(j in 1:length(vecdnpv)) {
-    dnpvodds[j]<-(vecdnpv[j])/(1-(vecdnpv[j]))
-  }
-  
-  prev<-array(c(rep(NA,times=length(vecdcnpv)*length(vecsens)*length(vecspec))),dim = c(length(vecsens),length(vecdcnpv),length(vecspec)),dimnames = list(vecsens,vecdcnpv,vecspec))  ##full table
-  for(i in 1:length(vecsens)) {
-    for(j in 1:length(vecdcnpv)) {
-      for(k in 1:length(vecspec)) {
-        prev[i,j,k]<- (vecdcnpv[j]/(1-vecdcnpv[j]))*(vecspec[k]/(1-vecsens[i]))/(1-(vecdcnpv[j]/(1-vecdcnpv[j]))*(vecspec[k]/(1-vecsens[i])))
-      }
-    }
-  }
-  
-  delta<-array(c(rep(NA,times=length(vecsens)*length(vecspec))),dim = c(length(vecsens),length(vecspec)),dimnames = list(vecsens,vecspec))  ##full table
+  delta<-array(c(rep(NA,times=length(vecsens)*length(vecspec))), dim = c(length(vecsens),length(vecspec)), dimnames = list(vecsens,vecspec))
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecspec)) {
-      delta[i,j]<-qnorm(vecspec[j]) - qnorm(1-vecsens[i])
+      delta[i,j]<- qnorm(vecspec[j]) - qnorm(1-vecsens[i])
+    }
+  }
+  
+  prev<-array(c(rep(NA,times=length(vecdppv)*length(vecsens)*length(vecspec))), dim = c(length(vecsens),length(vecdppv),length(vecspec)), dimnames = list(vecsens,vecdppv,vecspec))
+  for(i in 1:length(vecsens)) {
+    for(j in 1:length(vecdppv)) {
+      for(k in 1:length(vecspec)) {
+        prev[i,j,k]<- vecdppv[j]*(1-vecspec[k])/(vecsens[i] - vecdppv[j]*vecsens[i]+vecdppv[j] - vecdppv[j]*vecspec[k])      
+      }
     }
   }
   
   T1<-as.table(prev)
   T2<-as.table(delta)
-  data<-list("Prevalence"=T1, "Delta"=T2, "Desired cNPV as odds"=dcnpvodds)
+  data<-list("Prevalence required to achieve specified PPV given specificity and sensitivity"=T1, "Delta required to achieve specified PPV given specificity and sensitivity"=T2, "Desired PPV as odds"=dppvodds)
   data
   
 }
 
-PrevSpeccNPV <- function(prev,spec,dcnpv) {
+SpeccNPVPrev <- function(spec,dcnpv,prev) {
   
   ##Prevalence, cNPV, Specificity as input and Sensitivity as output  
   
@@ -299,139 +431,11 @@ PrevSpeccNPV <- function(prev,spec,dcnpv) {
   
   T1<-as.table(delta)
   T2<-as.table(sens)
-  data<-list("Delta"=T1,"Sensitivity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired NPV"=vecdnpv,"Desired cNPV as odds"=vecdcnpv,"Ratio of desired cNPV and prevalence, odds scale"=dcnpvprev)
+  data<-list("Delta required to achieve specified cNPV given prevalence and specificity"=T1,"Sensitivity required to achieve specified cNPV given prevalence and specificity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired NPV"=vecdnpv,"Desired cNPV as odds"=vecdcnpv,"Ratio of desired cNPV and prevalence, odds scale"=dcnpvprev)
   data
 }
 
-PPVSensDelta <- function(dppv,sens,delta) {
-  
-  ##Delta, PPV, Sensitivity as input and Specificity as output
-  
-  vecdelta<-as.vector(delta)  ##delta values
-  
-  vecdppv<-as.vector(dppv)
-  
-  vecsens<-as.vector(sens)
-  
-  dppvodds<-as.vector(c(rep(NA,times=length(vecdppv))))
-  for(j in 1:length(vecdppv)) {
-    dppvodds[j]<-vecdppv[j]/(1-vecdppv[j])
-  }
-  
-  spec<-array(c(rep(NA,times=length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecdelta)), dimnames = list(vecsens,vecdelta))
-  for(i in 1:length(vecsens)) {
-    for(j in 1:length(vecdelta)) {
-      spec[i,j]<- pnorm(qnorm(1-vecsens[i])+vecdelta[j])
-    }
-  }
-  
-  prev<-array(c(rep(NA,times=length(vecdppv)*length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecdppv),length(vecdelta)), dimnames = list(vecsens,vecdppv,vecdelta))
-  for(i in 1:length(vecsens)) {
-    for(j in 1:length(vecdppv)) {
-      for(k in 1:length(vecdelta)) {
-        prev[i,j,k]<- vecdppv[j]*(1-pnorm(qnorm(1-vecsens[i])+vecdelta[k]))/(vecsens[i] - vecdppv[j]*vecsens[i] + vecdppv[j] - vecdppv[j]*pnorm(qnorm(1-vecsens[i])+vecdelta[k]))      
-      }
-    }
-  }
-  
-  T1<-as.table(prev)
-  T2<-as.table(spec)
-  data<-list("Prevalence"=T1, "Specificity"=T2, "Delta"=delta,"Desired PPV as odds"=dppvodds)
-  data
-  
-}
-
-PPVPrevSpec <- function(dppv,prev,spec) {
-  
-  ##Prevalence, PPV, Sensitivity as input and Specificity as output
-  
-  p<-as.vector(prev)  ##prevalence values
-  
-  vecdppv<-as.vector(dppv)
-  
-  vecspec<-as.vector(spec)
-  
-  podds<-as.vector(c(rep(NA,times=length(p))))
-  for(k in 1:length(p)) {
-    podds[k]<-p[k]/(1-p[k])
-  }
-  
-  dppvodds<-as.vector(c(rep(NA,times=length(vecdppv))))
-  for(j in 1:length(vecdppv)) {
-    dppvodds[j]<-vecdppv[j]/(1-vecdppv[j])
-  }
-  
-  delta<-array(c(rep(NA,times=length(vecdppv)*length(vecspec)*length(podds))), dim = c(length(vecspec),length(vecdppv),length(podds)), dimnames = list(vecspec,vecdppv,podds))
-  for(i in 1:length(vecspec)) {
-    for(j in 1:length(vecdppv)) {
-      for(k in 1:length(podds)) {
-        delta[i,j,k]<- qnorm(vecspec[i]) - qnorm(1-dppvodds[j]/podds[k]*(1-vecspec[i]))
-      }
-    }
-  }
-  
-  sens<-array(c(rep(NA,times=length(vecdppv)*length(vecspec)*length(podds))), dim = c(length(vecspec),length(vecdppv),length(podds)), dimnames = list(vecspec,vecdppv,podds))
-  for(i in 1:length(vecspec)) {
-    for(j in 1:length(vecdppv)) {
-      for(k in 1:length(podds)) {
-        sens[i,j,k]<- dppvodds[j]/podds[k]*(1-vecspec[i])
-      }
-    }
-  }
-  
-  T1<-as.table(delta)
-  T2<-as.table(sens)
-  data<-list("Delta"=T1, "Sensitivity"=T2, "Prevalence"=prev,"Prevalence Odds"=podds,"Desired PPV as odds"=dppvodds)
-  data
-  
-}
-
-PPVSensPrev <- function(dppv,sens,prev) {
-  
-  ##Prevalence, PPV, Sensitivity as input and Specificity as output
-  
-  p<-as.vector(prev)  ##prevalence values
-  
-  vecdppv<-as.vector(dppv)
-  
-  vecsens<-as.vector(sens)
-  
-  podds<-as.vector(c(rep(NA,times=length(p))))
-  for(k in 1:length(p)) {
-    podds[k]<-p[k]/(1-p[k])
-  }
-  
-  dppvodds<-as.vector(c(rep(NA,times=length(vecdppv))))
-  for(j in 1:length(vecdppv)) {
-    dppvodds[j]<-vecdppv[j]/(1-vecdppv[j])
-  }
-  
-  delta<-array(c(rep(NA,times=length(vecdppv)*length(vecsens)*length(podds))), dim = c(length(vecsens),length(vecdppv),length(podds)), dimnames = list(vecsens,vecdppv,podds))
-  for(i in 1:length(vecsens)) {
-    for(j in 1:length(vecdppv)) {
-      for(k in 1:length(podds)) {
-        delta[i,j,k]<- qnorm(1-vecsens[i]*podds[k]/dppvodds[j])-qnorm(1-vecsens[i])
-      }
-    }
-  }
-  
-  spec<-array(c(rep(NA,times=length(vecdppv)*length(vecsens)*length(podds))), dim = c(length(vecsens),length(vecdppv),length(podds)), dimnames = list(vecsens,vecdppv,podds))
-  for(i in 1:length(vecsens)) {
-    for(j in 1:length(vecdppv)) {
-      for(k in 1:length(podds)) {
-        spec[i,j,k]<- 1-vecsens[i]*podds[k]/dppvodds[j]
-      }
-    }
-  }
-  
-  T1<-as.table(delta)
-  T2<-as.table(spec)
-  data<-list("Delta"=T1,"Specificity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired PPV as odds"=dppvodds)
-  data
-  
-}
-
-SensDeltacNPV <- function(sens,delta,dcnpv) {
+SenscNPVDelta <- function(sens,dcnpv,delta) {
   
   ##Delta, cNPV, Specificity as input and Sensitivity as output  
   
@@ -474,58 +478,173 @@ SensDeltacNPV <- function(sens,delta,dcnpv) {
   
   T1<-as.table(prev)
   T2<-as.table(spec)
-  data<-list("Prevalence"=T1, "Specificity"=T2, "Delta"=delta,"Desired cNPV as odds"=dcnpvodds)
+  data<-list("Prevalence required to achieve specified cNPV given delta and sensitivity"=T1, "Specificity required to achieve specified cNPV given delta and sensitivity"=T2, "Delta"=delta,"Desired cNPV as odds"=dcnpvodds)
   data
   
 }
+
+SensPrevDelta <- function(sens,prev,delta) {
+  
+  vecdelta<-as.vector(delta)  ##prevalence values
+  
+  vecprev<-as.vector(prev)
+  
+  vecsens<-as.vector(sens)
+  
+  
+  spec<-array(c(rep(NA,times=length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecdelta)), dimnames = list(vecsens,vecdelta))
+  for(i in 1:length(vecsens)) {
+    for(j in 1:length(vecdelta)) {
+      spec[i,j]<- pnorm(vecdelta[j]+qnorm(1-vecsens[i]))
+    }
+  }
+  
+  ppv<-array(c(rep(NA,times=length(vecprev)*length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecprev),length(vecdelta)), dimnames = list(vecsens,vecprev,vecdelta))
+  for(i in 1:length(vecsens)) {
+    for(j in 1:length(vecprev)) {
+      for(k in 1:length(vecdelta)) {
+        ppv[i,j,k]<- vecprev[j]*(vecsens[i])/(vecprev[j]*(vecsens[i])+(1-pnorm(vecdelta[k]+qnorm(1-vecsens[i])))*(1-vecprev[j]))
+      }
+    }
+  }
+  
+  cnpv<-array(c(rep(NA,times=length(vecprev)*length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecprev),length(vecdelta)), dimnames = list(vecsens,vecprev,vecdelta))
+  for(i in 1:length(vecsens)) {
+    for(j in 1:length(vecprev)) {
+      for(k in 1:length(vecdelta)) {
+        cnpv[i,j,k]<- (vecprev[j]/(1+vecprev[j]))*((1-vecsens[i])/(pnorm(vecdelta[k]+qnorm(1-vecsens[i]))))/(1 + (vecprev[j]/(1+vecprev[j]))*((1-vecsens[i])/(pnorm(vecdelta[k]+qnorm(1-vecsens[i])))))
+      }
+    }
+  }
+  
+  T1<-as.table(ppv)
+  T2<-as.table(cnpv)
+  T3<-as.table(spec)
+  data<-list("Positive Predictive Value given sensitivity, prevalence, and delta"=T1,"Complement of the Negative Predictive Value given sensitivity, prevalence, and delta"=T2, "Specificity given delta and sensitivity"=T3, "Delta"=delta)
+  data
+  
+}
+
+SenscNPVPrev <- function(sens,dcnpv,prev) {
+  
+  ##Prevalence, cNPV, Sensitivity as input and delta and Specificity as output  
+  
+  p<-as.vector(prev)  ##prevalence values
+  
+  vecsens<-as.vector(sens) ##desired cnpv
+  
+  vecdcnpv<-as.vector(dcnpv)  ##specificity values
+  
+  podds<-as.vector(c(rep(NA,times=length(p))))
+  for(k in 1:length(p)) {
+    podds[k]<-p[k]/(1+p[k])
+  }
+  
+  vecdnpv<-as.vector(c(rep(NA,times=length(vecdcnpv))))
+  for(j in 1:length(vecdcnpv)) {
+    vecdnpv[j]<-1-vecdcnpv[j]
+  }
+  
+  dcnpvodds<-as.vector(c(rep(NA,times=length(vecdcnpv))))
+  for(j in 1:length(vecdcnpv)) {
+    dcnpvodds[j]<-vecdcnpv[j]/(1-vecdcnpv[j])
+  }
+  
+  dnpvodds<-as.vector(c(rep(NA,times=length(vecdcnpv))))
+  for(j in 1:length(vecdnpv)) {
+    dnpvodds[j]<-(vecdnpv[j])/(1-(vecdnpv[j]))
+  }
+  
+  dcnpvprev<-array(c(rep(NA,times=length(dcnpvodds)*length(podds))),dim = c(length(dcnpvodds),length(podds)))
+  for(j in 1:length(dcnpvodds)) {
+    for(k in 1:length(podds)) {
+      dcnpvprev[j,k]<-dcnpvodds[j]/podds[k]
+    }
+  }
+  rownames(dcnpvprev)<-dcnpvodds
+  colnames(dcnpvprev)<-podds
+  
+  delta<-array(c(rep(NA,times=length(vecdcnpv)*length(vecsens)*length(podds))),dim = c(length(vecsens),length(vecdcnpv),length(podds)),dimnames = list(vecsens,vecdcnpv,podds))  ##full table
+  for(i in 1:length(vecsens)) {
+    for(j in 1:length(vecdcnpv)) {
+      for(k in 1:length(podds)) {
+        delta[i,j,k]<-qnorm(dcnpvprev[j,k]*(1-vecsens[i]))-qnorm(1-vecsens[i])
+      }
+    }
+  }
+  
+  spec<-array(c(rep(NA,times=length(vecdcnpv)*length(vecsens)*length(podds))),dim = c(length(vecsens),length(vecdcnpv),length(podds)),dimnames = list(vecsens,vecdcnpv,podds))  ##full table
+  for(i in 1:length(vecsens)) {
+    for(j in 1:length(vecdcnpv)) {
+      for(k in 1:length(podds)) {
+        spec[i,j,k]<-dcnpvprev[j,k]*(1-vecsens[i])
+      }
+    }
+  }
+  
+  T1<-as.table(delta)
+  T2<-as.table(spec)
+  data<-list("Delta required to achieve specified cNPV given prevalence and sensitivity"=T1,"Specificity required to achieve specified cNPV given prevalence and sensitvity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired NPV"=vecdnpv,"Desired cNPV as odds"=vecdcnpv,"Ratio of desired cNPV and prevalence, odds scale"=dcnpvprev)
+  data
+}
+
+SenscNPVSpec <- function(sens,dcnpv,spec) {
+  
+  ##Sensitivity, cNPV, Specificity as input and Delta and Prevalence as output  
+  
+  vecsens<-as.vector(sens) ##sensitivity
+  
+  vecdcnpv<-as.vector(dcnpv)  ##desired cnpv values
+  
+  vecspec<-as.vector(spec)  ##specificity values
+  
+  vecdnpv<-as.vector(c(rep(NA,times=length(vecdcnpv))))
+  for(j in 1:length(vecdcnpv)) {
+    vecdnpv[j]<-1-vecdcnpv[j]
+  }
+  
+  dcnpvodds<-as.vector(c(rep(NA,times=length(vecdcnpv))))
+  for(j in 1:length(vecdcnpv)) {
+    dcnpvodds[j]<-vecdcnpv[j]/(1-vecdcnpv[j])
+  }
+  
+  dnpvodds<-as.vector(c(rep(NA,times=length(vecdcnpv))))
+  for(j in 1:length(vecdnpv)) {
+    dnpvodds[j]<-(vecdnpv[j])/(1-(vecdnpv[j]))
+  }
+  
+  prev<-array(c(rep(NA,times=length(vecdcnpv)*length(vecsens)*length(vecspec))),dim = c(length(vecsens),length(vecdcnpv),length(vecspec)),dimnames = list(vecsens,vecdcnpv,vecspec))  ##full table
+  for(i in 1:length(vecsens)) {
+    for(j in 1:length(vecdcnpv)) {
+      for(k in 1:length(vecspec)) {
+        prev[i,j,k]<- (vecdcnpv[j]/(1-vecdcnpv[j]))*(vecspec[k]/(1-vecsens[i]))/(1-(vecdcnpv[j]/(1-vecdcnpv[j]))*(vecspec[k]/(1-vecsens[i])))
+      }
+    }
+  }
+  
+  delta<-array(c(rep(NA,times=length(vecsens)*length(vecspec))),dim = c(length(vecsens),length(vecspec)),dimnames = list(vecsens,vecspec))  ##full table
+  for(i in 1:length(vecsens)) {
+    for(j in 1:length(vecspec)) {
+      delta[i,j]<-qnorm(vecspec[j]) - qnorm(1-vecsens[i])
+    }
+  }
+  
+  T1<-as.table(prev)
+  T2<-as.table(delta)
+  data<-list("Prevalence required to achieve specified cNPV given specificity and sensitivity"=T1, "Delta given specificity and sensitivity"=T2, "Desired cNPV as odds"=dcnpvodds)
+  data
+  
+}
+
 
 ###
 ## Different drawing functions for independent vs dependent with different contours
 ##
 
-DrawDeltaSpecPPV <- function(specmin, specmax, prevalence, PPV) {
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
-  
-  Iterations <- 1:length(PPV)
-  LTY <- Iterations
-  
-  for(i in Iterations){
-    Delta <- qnorm(Specificity) - qnorm(1-(PPV[i]/(1-PPV[i]))/(prevalence/(1-prevalence))*(1-Specificity))
-    if(i==1) {
-      par(mar=c(5.1, 4.1, 4.1, 9.5))
-      plot(Delta~Specificity,type="l",main=c("Delta vs. Specificity","Given Different Values of Positive Predictive Value",paste("Prevalence =",prevalence)),xlab="Specificity",ylab="Delta",ylim=c(min(Delta),5),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
-    }
-    else
-      lines(y=Delta, x=Specificity,lty=LTY[i])
-  }
-  
-  legend(lty=LTY,legend=PPV,"bottomright",cex=1.15,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="PPV") 
-}
-
-DrawSensSpecPPV <- function(specmin,specmax,prevalence, PPV) {
-  Val <- prevalence/(1-prevalence)
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
-  
-  Iterations <- 1:length(PPV)
-  LTY <- Iterations
-  
-  for(i in Iterations){
-    Sensitivity <- (PPV[i]/(1 - PPV[i]))/Val*(1 - Specificity)
-    if(i==1) {
-      par(mar=c(5.1, 4.1, 4.1, 9.5))
-      plot(Sensitivity~Specificity,type="l",main=c("Sensitivity vs. Specificity", "Given Different Values of Positive Predictive Value",paste("Prevalence =",prevalence)),xlab="Specificity",ylab="Sensitivity",ylim=c(0,max(Sensitivity)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
-    }
-    else
-      lines(y=Sensitivity, x=Specificity,lty=LTY[i])
-  }
-  
-  legend(lty=LTY,legend=PPV,"bottomright",cex=1.15,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="PPV")
-}
-
-DrawcNPVDeltaSpec <- function(deltamin, deltamax, prevalence, specificity) {
+DrawcNPVDeltaSpec <- function(delta, prevalence, specificity) {
   
   Val <- prevalence/(1+prevalence)
-  Delta<-seq(from=deltamin,to=deltamax,by=0.00001)
+  Delta<-seq(from=min(delta),to=max(delta),by=0.00001)
   
   Iterations <- 1:length(specificity)
   LTY <- Iterations
@@ -546,9 +665,9 @@ DrawcNPVDeltaSpec <- function(deltamin, deltamax, prevalence, specificity) {
   
 }
 
-DrawSpecDeltacNPV <- function(specmin, specmax, prevalence, cNPV) {
+DrawSpecDeltacNPV <- function(spec, prevalence, cNPV) {
   
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(cNPV)
   LTY <- Iterations
@@ -568,10 +687,10 @@ DrawSpecDeltacNPV <- function(specmin, specmax, prevalence, cNPV) {
   
 }
 
-DrawDeltacNPVSpec <- function(cnpvmin, cnpvmax, prevalence, specificity) {
+DrawDeltacNPVSpec <- function(cnpv, prevalence, specificity) {
   
   Val <- prevalence/(1+prevalence)
-  cNPV<-seq(from=cnpvmin,to=cnpvmax,by=0.00001)
+  cNPV<-seq(from=min(cnpv),to=max(cnpv),by=0.00001)
   
   Iterations <- 1:length(specificity)
   LTY <- Iterations
@@ -592,7 +711,7 @@ DrawDeltacNPVSpec <- function(cnpvmin, cnpvmax, prevalence, specificity) {
   
 }
 
-DrawSpeccNPVDelta <- function(specmin, specmax, prevalence, delta) {
+DrawSpeccNPVDelta <- function(spec, prevalence, delta) {
   
   Val <- prevalence/(1+prevalence)
   Delta<-as.vector(delta)
@@ -601,7 +720,7 @@ DrawSpeccNPVDelta <- function(specmin, specmax, prevalence, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+    Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
     Sensitivity <- 1-pnorm(qnorm(Specificity,0,1)-Delta[i],0,1,1)
     LRMinus <- Specificity/(1-Sensitivity)
     cNPV <- (Val/LRMinus)/(1+Val/LRMinus)
@@ -617,9 +736,9 @@ DrawSpeccNPVDelta <- function(specmin, specmax, prevalence, delta) {
   
 }
 
-DrawDeltaSpeccNPV <- function(specmin, specmax, prevalence, cNPV) {
+DrawDeltaSpeccNPV <- function(spec, prevalence, cNPV) {
   
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(cNPV)
   LTY <- Iterations
@@ -639,9 +758,9 @@ DrawDeltaSpeccNPV <- function(specmin, specmax, prevalence, cNPV) {
   
 }
 
-DrawDeltaPPVSpec <- function(ppvmin, ppvmax, prevalence, specificity) {
+DrawDeltaPPVSpec <- function(ppv, prevalence, specificity) {
   
-  PPV <- seq(from=ppvmin,to=ppvmax,by=0.00001)
+  PPV <- seq(from=min(ppv),to=max(ppv),by=0.00001)
   Val <- prevalence/(1-prevalence)
   
   Iterations <- 1:length(specificity)
@@ -661,7 +780,7 @@ DrawDeltaPPVSpec <- function(ppvmin, ppvmax, prevalence, specificity) {
   
 }
 
-DrawPPVSpecDelta <- function(specmin, specmax, prevalence, delta) {
+DrawPPVSpecDelta <- function(spec, prevalence, delta) {
   
   Val <- prevalence/(1-prevalence)
   Delta<-as.vector(delta)
@@ -670,7 +789,7 @@ DrawPPVSpecDelta <- function(specmin, specmax, prevalence, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+    Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
     Sensitivity <- 1-pnorm(qnorm(Specificity,0,1)-Delta[i],0,1,1)
     LRPlus <- Sensitivity/(1-Specificity)
     PPV <- LRPlus*Val/(1+LRPlus*Val)
@@ -686,9 +805,9 @@ DrawPPVSpecDelta <- function(specmin, specmax, prevalence, delta) {
   
 }
 
-DrawSpecDeltaPPV <- function(specmin, specmax, prevalence, PPV) {
+DrawSpecDeltaPPV <- function(spec, prevalence, PPV) {
   
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(PPV)
   LTY <- Iterations
@@ -707,11 +826,11 @@ DrawSpecDeltaPPV <- function(specmin, specmax, prevalence, PPV) {
   
 }
 
-DrawSpecPPVDelta <- function(specmin, specmax, prevalence, delta) {
+DrawSpecPPVDelta <- function(spec, prevalence, delta) {
   
   Val <- prevalence/(1-prevalence)
   Delta<-as.vector(delta)
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(Delta)
   LTY <- Iterations
@@ -732,9 +851,9 @@ DrawSpecPPVDelta <- function(specmin, specmax, prevalence, delta) {
   
 }
 
-DrawPPVDeltaSpec <- function(deltamin, deltamax, prevalence, specificity) {
+DrawPPVDeltaSpec <- function(delta, prevalence, specificity) {
   
-  Delta <- seq(from=deltamin,to=deltamax,by=0.00001)
+  Delta <- seq(from=min(delta),to=max(delta),by=0.00001)
   Val <- prevalence/(1-prevalence)
   
   Iterations <- 1:length(specificity)
@@ -754,9 +873,9 @@ DrawPPVDeltaSpec <- function(deltamin, deltamax, prevalence, specificity) {
   
 }
 
-DrawPPVPrevSpec <- function(prevmin, prevmax, delta, specificity) {
+DrawPPVPrevSpec <- function(prev, delta, specificity) {
   
-  Prevalence <- seq(from=prevmin,to=prevmax,by=0.00001)
+  Prevalence <- seq(from=min(prev),to=max(prev),by=0.00001)
   Val <- Prevalence/(1-Prevalence)
   Sensitivity <- 1 - pnorm(qnorm(specificity)-delta)
   LRPlus <- Sensitivity/(1-specificity)
@@ -778,10 +897,10 @@ DrawPPVPrevSpec <- function(prevmin, prevmax, delta, specificity) {
   
 }
 
-DrawPPVSpecPrev <- function(specmin, specmax, delta, prevalence) {
+DrawPPVSpecPrev <- function(spec, delta, prevalence) {
   
   Val <- prevalence/(1-prevalence)
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   Sensitivity <- 1-pnorm(qnorm(Specificity,0,1)-delta,0,1,1)
   LRPlus <- Sensitivity/(1-Specificity)
   
@@ -802,9 +921,9 @@ DrawPPVSpecPrev <- function(specmin, specmax, delta, prevalence) {
   
 }
 
-DrawSpecPrevPPV <- function(specmin, specmax, delta, PPV) {
+DrawSpecPrevPPV <- function(spec, delta, PPV) {
   
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(PPV)
   LTY <- Iterations
@@ -823,9 +942,9 @@ DrawSpecPrevPPV <- function(specmin, specmax, delta, PPV) {
   
 }
 
-DrawPrevPPVSpec <- function(ppvmin, ppvmax, delta, specificity) {
+DrawPrevPPVSpec <- function(ppv, delta, specificity) {
   
-  PPV <- seq(from=ppvmin,to=ppvmax,by=0.00001)
+  PPV <- seq(from=min(ppv),to=max(ppv),by=0.00001)
   
   Iterations <- 1:length(specificity)
   LTY <- Iterations
@@ -844,10 +963,10 @@ DrawPrevPPVSpec <- function(ppvmin, ppvmax, delta, specificity) {
   
 }
 
-DrawSpecPPVPrev <- function(specmin, specmax, delta, prevalence) {
+DrawSpecPPVPrev <- function(spec, delta, prevalence) {
   
   Val <- prevalence/(1-prevalence)
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   Sensitivity <- 1-pnorm(qnorm(Specificity,0,1)-delta,0,1,1)
   LRPlus <- Sensitivity/(1-Specificity)
   
@@ -868,9 +987,9 @@ DrawSpecPPVPrev <- function(specmin, specmax, delta, prevalence) {
   
 }
 
-DrawPrevSpecPPV <- function(specmin, specmax, delta, PPV) {
+DrawPrevSpecPPV <- function(spec, delta, PPV) {
   
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(PPV)
   LTY <- Iterations
@@ -889,9 +1008,9 @@ DrawPrevSpecPPV <- function(specmin, specmax, delta, PPV) {
   
 }
 
-DrawDeltaPPVSens <- function(ppvmin, ppvmax, prevalence, sensitivity) {
+DrawDeltaPPVSens <- function(ppv, prevalence, sensitivity) {
   
-  PPV <- seq(from=ppvmin,to=ppvmax,by=0.00001)
+  PPV <- seq(from=min(ppv),to=max(ppv),by=0.00001)
   Val <- prevalence/(1-prevalence)
   
   Iterations <- 1:length(sensitivity)
@@ -911,9 +1030,9 @@ DrawDeltaPPVSens <- function(ppvmin, ppvmax, prevalence, sensitivity) {
   
 }
 
-DrawDeltaSensPPV <- function(sensmin, sensmax, prevalence, PPV) {
+DrawDeltaSensPPV <- function(sens, prevalence, PPV) {
   
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(PPV)
   LTY <- Iterations
@@ -932,7 +1051,7 @@ DrawDeltaSensPPV <- function(sensmin, sensmax, prevalence, PPV) {
   
 }
 
-DrawPPVSensDelta <- function(sensmin, sensmax, prevalence, delta) {
+DrawPPVSensDelta <- function(sens, prevalence, delta) {
   
   Val <- prevalence/(1-prevalence)
   Delta<-as.vector(delta)
@@ -941,7 +1060,7 @@ DrawPPVSensDelta <- function(sensmin, sensmax, prevalence, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+    Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
     Specificity <- pnorm(qnorm(1-Sensitivity,0,1)+Delta[i],0,1,1)
     LRPlus <- Sensitivity/(1-Specificity)
     PPV <- LRPlus*Val/(1+LRPlus*Val)
@@ -957,7 +1076,7 @@ DrawPPVSensDelta <- function(sensmin, sensmax, prevalence, delta) {
   
 }
 
-DrawSensPPVDelta <- function(sensmin, sensmax, prevalence, delta) {
+DrawSensPPVDelta <- function(sens, prevalence, delta) {
   
   Val <- prevalence/(1-prevalence)
   Delta<-as.vector(delta)
@@ -966,7 +1085,7 @@ DrawSensPPVDelta <- function(sensmin, sensmax, prevalence, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+    Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
     Specificity <- pnorm(qnorm(1-Sensitivity,0,1)+Delta[i],0,1,1)
     LRPlus <- Sensitivity/(1-Specificity)
     PPV <- LRPlus*Val/(1+LRPlus*Val)
@@ -982,9 +1101,9 @@ DrawSensPPVDelta <- function(sensmin, sensmax, prevalence, delta) {
   
 }
 
-DrawPPVDeltaSens <- function(deltamin, deltamax, prevalence, sensitivity) {
+DrawPPVDeltaSens <- function(delta, prevalence, sensitivity) {
   
-  Delta <- seq(from=deltamin,to=deltamax,by=0.00001)
+  Delta <- seq(from=min(delta),to=max(delta),by=0.00001)
   
   Iterations <- 1:length(sensitivity)
   LTY <- Iterations
@@ -1003,9 +1122,9 @@ DrawPPVDeltaSens <- function(deltamin, deltamax, prevalence, sensitivity) {
   
 }
 
-DrawSensDeltaPPV <- function(sensmin, sensmax, prevalence, PPV) {
+DrawSensDeltaPPV <- function(sens, prevalence, PPV) {
   
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(PPV)
   LTY <- Iterations
@@ -1024,9 +1143,9 @@ DrawSensDeltaPPV <- function(sensmin, sensmax, prevalence, PPV) {
   
 }
 
-DrawPPVPrevSens <- function(prevmin, prevmax, delta, sensitivity) {
+DrawPPVPrevSens <- function(prev, delta, sensitivity) {
   
-  Prevalence <- seq(from=prevmin,to=prevmax,by=0.00001)
+  Prevalence <- seq(from=min(prev),to=max(prev),by=0.00001)
   Val <- Prevalence/(1-Prevalence)
   Specificity <- pnorm(qnorm(1-sensitivity,0,1)+delta,0,1,1)
   LRPlus <- sensitivity/(1-Specificity)
@@ -1048,9 +1167,9 @@ DrawPPVPrevSens <- function(prevmin, prevmax, delta, sensitivity) {
   
 }
 
-DrawPrevPPVSens <- function(ppvmin, ppvmax, delta, sensitivity) {
+DrawPrevPPVSens <- function(ppv, delta, sensitivity) {
   
-  PPV <- seq(from=ppvmin,to=ppvmax,by=0.00001)
+  PPV <- seq(from=min(ppv),to=max(ppv),by=0.00001)
   
   Iterations <- 1:length(sensitivity)
   LTY <- Iterations
@@ -1069,9 +1188,9 @@ DrawPrevPPVSens <- function(ppvmin, ppvmax, delta, sensitivity) {
   
 }
 
-DrawSensPrevPPV <- function(sensmin, sensmax, delta, PPV) {
+DrawSensPrevPPV <- function(sens, delta, PPV) {
   
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(PPV)
   LTY <- Iterations
@@ -1090,9 +1209,9 @@ DrawSensPrevPPV <- function(sensmin, sensmax, delta, PPV) {
   
 }
 
-DrawPrevSensPPV <- function(sensmin, sensmax, delta, PPV) {
+DrawPrevSensPPV <- function(sens, delta, PPV) {
   
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(PPV)
   LTY <- Iterations
@@ -1111,10 +1230,10 @@ DrawPrevSensPPV <- function(sensmin, sensmax, delta, PPV) {
   
 }
 
-DrawPPVSensPrev <- function(sensmin, sensmax, delta, prevalence) {
+DrawPPVSensPrev <- function(sens, delta, prevalence) {
   
   Val <- prevalence/(1-prevalence)
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   Specificity <- pnorm(qnorm(1-Sensitivity,0,1)+delta,0,1,1)
   LRPlus <- Sensitivity/(1-Specificity)
   
@@ -1135,10 +1254,10 @@ DrawPPVSensPrev <- function(sensmin, sensmax, delta, prevalence) {
   
 }
 
-DrawSensPPVPrev <- function(sensmin, sensmax, delta, prevalence) {
+DrawSensPPVPrev <- function(sens, delta, prevalence) {
   
   Val <- prevalence/(1-prevalence)
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   Specificity <- pnorm(qnorm(1-Sensitivity,0,1)+delta,0,1,1)
   LRPlus <- Sensitivity/(1-Specificity)
   
@@ -1159,9 +1278,9 @@ DrawSensPPVPrev <- function(sensmin, sensmax, delta, prevalence) {
   
 }
 
-DrawPPVSensSpec <- function(sensmin,sensmax,prevalence, specificity) {
+DrawPPVSensSpec <- function(sens,prevalence, specificity) {
   
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(specificity)
   LTY <- Iterations
@@ -1181,9 +1300,9 @@ DrawPPVSensSpec <- function(sensmin,sensmax,prevalence, specificity) {
   
 }
 
-DrawSensPPVSpec <- function(ppvmin,ppvmax,prevalence, specificity) {
+DrawSensPPVSpec <- function(ppv,prevalence, specificity) {
   
-  PPV <- seq(from=ppvmin,to=ppvmax,by=0.00001)
+  PPV <- seq(from=min(ppv),to=max(ppv),by=0.00001)
   Val <- prevalence/(1-prevalence)
   
   Iterations <- 1:length(specificity)
@@ -1204,10 +1323,10 @@ DrawSensPPVSpec <- function(ppvmin,ppvmax,prevalence, specificity) {
   
 }
 
-DrawSpecSensPPV <- function(sensmin,sensmax,prevalence, PPV) {
+DrawSpecSensPPV <- function(sens,prevalence, PPV) {
   
   Val <- prevalence/(1-prevalence)
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(PPV)
   LTY <- Iterations
@@ -1227,9 +1346,9 @@ DrawSpecSensPPV <- function(sensmin,sensmax,prevalence, PPV) {
   
 }
 
-DrawPPVSpecSens <- function(specmin,specmax,prevalence, sensitivity) {
+DrawPPVSpecSens <- function(spec,prevalence, sensitivity) {
   
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(sensitivity)
   LTY <- Iterations
@@ -1249,9 +1368,9 @@ DrawPPVSpecSens <- function(specmin,specmax,prevalence, sensitivity) {
   
 }
 
-DrawSpecPPVSens <- function(ppvmin,ppvmax,prevalence, sensitivity) {
+DrawSpecPPVSens <- function(ppv,prevalence, sensitivity) {
   
-  PPV <- seq(from=ppvmin,to=ppvmax,by=0.00001)
+  PPV <- seq(from=min(ppv),to=max(ppv),by=0.00001)
   Val <- prevalence/(1-prevalence)
   
   Iterations <- 1:length(sensitivity)
@@ -1272,9 +1391,9 @@ DrawSpecPPVSens <- function(ppvmin,ppvmax,prevalence, sensitivity) {
   
 }
 
-DrawcNPVPrevSpec <- function(prevmin, prevmax, delta, specificity) {
+DrawcNPVPrevSpec <- function(prev, delta, specificity) {
   
-  Prevalence <- seq(from=prevmin,to=prevmax,by=0.00001)
+  Prevalence <- seq(from=min(prev),to=max(prev),by=0.00001)
   Val <- Prevalence/(1+Prevalence)
   Sensitivity <- 1-pnorm(qnorm(specificity,0,1)-delta,0,1,1)
   LRMinus <- specificity/(1-Sensitivity)
@@ -1296,10 +1415,10 @@ DrawcNPVPrevSpec <- function(prevmin, prevmax, delta, specificity) {
   
 }
 
-DrawcNPVSpecPrev <- function(specmin, specmax, delta, prevalence) {
+DrawcNPVSpecPrev <- function(spec, delta, prevalence) {
   
   Val <- prevalence/(1+prevalence)
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   Sensitivity <- 1-pnorm(qnorm(Specificity,0,1)-delta,0,1,1)
   LRMinus <- Specificity/(1-Sensitivity)
   
@@ -1320,10 +1439,10 @@ DrawcNPVSpecPrev <- function(specmin, specmax, delta, prevalence) {
   
 }
 
-DrawSpeccNPVPrev <- function(specmin, specmax, delta, prevalence) {
+DrawSpeccNPVPrev <- function(spec, delta, prevalence) {
   
   Val <- prevalence/(1+prevalence)
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   Sensitivity <- 1-pnorm(qnorm(Specificity,0,1)-delta,0,1,1)
   LRMinus <- Specificity/(1-Sensitivity)
   
@@ -1344,9 +1463,9 @@ DrawSpeccNPVPrev <- function(specmin, specmax, delta, prevalence) {
   
 }
 
-DrawSpecPrevcNPV <- function(specmin, specmax, delta, cNPV) {
+DrawSpecPrevcNPV <- function(spec, delta, cNPV) {
   
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(cNPV)
   LTY <- Iterations
@@ -1365,9 +1484,9 @@ DrawSpecPrevcNPV <- function(specmin, specmax, delta, cNPV) {
   
 }
 
-DrawPrevcNPVSpec <- function(cnpvmin, cnpvmax, delta, specificity) {
+DrawPrevcNPVSpec <- function(cnpv, delta, specificity) {
   
-  cNPV <- seq(from=cnpvmin,to=cnpvmax,by=0.00001)
+  cNPV <- seq(from=min(cnpv),to=max(cnpv),by=0.00001)
   
   Iterations <- 1:length(specificity)
   LTY <- Iterations
@@ -1386,9 +1505,9 @@ DrawPrevcNPVSpec <- function(cnpvmin, cnpvmax, delta, specificity) {
   
 }
 
-DrawDeltaPrevSpeccNPV <- function(prevmin, prevmax, cNPV, spec) {
+DrawDeltaPrevSpeccNPV <- function(prev, cNPV, spec) {
   
-  Prevalence <- seq(from=prevmin,to=prevmax,by=0.00001)
+  Prevalence <- seq(from=min(prev),to=max(prev),by=0.00001)
   
   Iterations <- 1:length(spec)
   LTY <- Iterations
@@ -1407,9 +1526,9 @@ DrawDeltaPrevSpeccNPV <- function(prevmin, prevmax, cNPV, spec) {
   
 }
 
-DrawPrevDeltaSpeccNPV <- function(deltamin, deltamax, cnpv, spec) {
+DrawPrevDeltaSpeccNPV <- function(delta, cnpv, spec) {
   
-  Delta <- seq(from=deltamin,to=deltamax,by=0.00001)
+  Delta <- seq(from=min(delta),to=max(delta),by=0.00001)
   
   Iterations <- 1:length(spec)
   LTY <- Iterations
@@ -1428,9 +1547,9 @@ DrawPrevDeltaSpeccNPV <- function(deltamin, deltamax, cnpv, spec) {
   
 }
 
-DrawDeltaSpecPrevcNPV <- function(specmin, specmax, cNPV, prev) {
+DrawDeltaSpecPrevcNPV <- function(spec, cNPV, prev) {
   
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(prev)
   LTY <- Iterations
@@ -1449,9 +1568,9 @@ DrawDeltaSpecPrevcNPV <- function(specmin, specmax, cNPV, prev) {
   
 }
 
-DrawPrevSpecDeltacNPV <- function(specmin, specmax, cnpv, delta) {
+DrawPrevSpecDeltacNPV <- function(spec, cnpv, delta) {
   
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(delta)
   LTY <- Iterations
@@ -1470,9 +1589,9 @@ DrawPrevSpecDeltacNPV <- function(specmin, specmax, cnpv, delta) {
   
 }
 
-DrawPrevSpecDeltaPPV <- function(specmin, specmax, PPV, delta) {
+DrawPrevSpecDeltaPPV <- function(spec, PPV, delta) {
   
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(delta)
   LTY <- Iterations
@@ -1491,9 +1610,9 @@ DrawPrevSpecDeltaPPV <- function(specmin, specmax, PPV, delta) {
   
 }
 
-DrawDeltaPrevSpecPPV <- function(prevmin, prevmax, PPV, spec) {
+DrawDeltaPrevSpecPPV <- function(prev, PPV, spec) {
   
-  Prevalence <- seq(from=prevmin,to=prevmax,by=0.00001)
+  Prevalence <- seq(from=min(prev),to=max(prev),by=0.00001)
   
   Iterations <- 1:length(spec)
   LTY <- Iterations
@@ -1512,9 +1631,9 @@ DrawDeltaPrevSpecPPV <- function(prevmin, prevmax, PPV, spec) {
   
 }
 
-DrawPrevDeltaSpecPPV <- function(deltamin, deltamax, PPV, spec) {
+DrawPrevDeltaSpecPPV <- function(delta, PPV, spec) {
   
-  Delta <- seq(from=deltamin,to=deltamax,by=0.00001)
+  Delta <- seq(from=min(delta),to=max(delta),by=0.00001)
   
   Iterations <- 1:length(spec)
   LTY <- Iterations
@@ -1533,9 +1652,9 @@ DrawPrevDeltaSpecPPV <- function(deltamin, deltamax, PPV, spec) {
   
 }
 
-DrawDeltaSpecPrevPPV <- function(specmin, specmax, cNPV, prev) {
+DrawDeltaSpecPrevPPV <- function(spec, cNPV, prev) {
   
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(prev)
   LTY <- Iterations
@@ -1554,12 +1673,12 @@ DrawDeltaSpecPrevPPV <- function(specmin, specmax, cNPV, prev) {
   
 }
 
-DrawSensDeltacNPV <- function(sensmin, sensmax, prevalence, cNPV) {
+DrawSensDeltacNPV <- function(sens, prevalence, cNPV) {
   
   Val <- prevalence/(1+prevalence)
   cNPVOdds <- cNPV/(1-cNPV)
   cNPVPrev <- Val*cNPVOdds
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(cNPV)
   LTY <- Iterations
@@ -1578,7 +1697,7 @@ DrawSensDeltacNPV <- function(sensmin, sensmax, prevalence, cNPV) {
   
 }
 
-DrawcNPVDeltaSens <- function(deltamin, deltamax, prevalence, sensitivity) {
+DrawcNPVDeltaSens <- function(delta, prevalence, sensitivity) {
   
   
   Iterations <- 1:length(sensitivity)
@@ -1586,7 +1705,7 @@ DrawcNPVDeltaSens <- function(deltamin, deltamax, prevalence, sensitivity) {
   
   for(i in Iterations){
     Val <- prevalence/(1+prevalence)
-    Delta<-seq(from=deltamin,to=deltamax,by=0.00001)
+    Delta<-seq(from=min(delta),to=max(delta),by=0.00001)
     Specificity <- pnorm(qnorm(1-sensitivity[i],0,1)+Delta,0,1,1)
     LRMinus <- Specificity/(1-sensitivity[i])
     cNPV <- (Val/LRMinus)/(1+Val/LRMinus)
@@ -1602,7 +1721,7 @@ DrawcNPVDeltaSens <- function(deltamin, deltamax, prevalence, sensitivity) {
   
 }
 
-DrawSenscNPVDelta <- function(sensmin, sensmax, prevalence, delta) {
+DrawSenscNPVDelta <- function(sens, prevalence, delta) {
   
   Val <- prevalence/(1+prevalence)
   Delta<-as.vector(delta)
@@ -1611,7 +1730,7 @@ DrawSenscNPVDelta <- function(sensmin, sensmax, prevalence, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+    Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
     Specificity <- pnorm(qnorm(1-Sensitivity,0,1)+Delta[i],0,1,1)
     LRMinus <- Specificity/(1-Sensitivity)
     cNPV <- (Val/LRMinus)/(1+Val/LRMinus)
@@ -1627,7 +1746,7 @@ DrawSenscNPVDelta <- function(sensmin, sensmax, prevalence, delta) {
   
 }
 
-DrawcNPVSensDelta <- function(sensmin, sensmax, prevalence, delta) {
+DrawcNPVSensDelta <- function(sens, prevalence, delta) {
   
   Val <- prevalence/(1+prevalence)
   Delta<-as.vector(delta)
@@ -1636,7 +1755,7 @@ DrawcNPVSensDelta <- function(sensmin, sensmax, prevalence, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+    Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
     Specificity <- pnorm(qnorm(1-Sensitivity,0,1)+Delta[i],0,1,1)
     LRMinus <- Specificity/(1-Sensitivity)
     cNPV <- (Val/LRMinus)/(1+Val/LRMinus)
@@ -1652,12 +1771,12 @@ DrawcNPVSensDelta <- function(sensmin, sensmax, prevalence, delta) {
   
 }
 
-DrawDeltaSenscNPV <- function(sensmin, sensmax, prevalence, cNPV) {
+DrawDeltaSenscNPV <- function(sens, prevalence, cNPV) {
   
   Val <- prevalence/(1-prevalence)
   cNPVOdds <- cNPV/(1-cNPV)
   cNPVPrev <- Val*cNPVOdds
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(cNPV)
   LTY <- Iterations
@@ -1676,7 +1795,7 @@ DrawDeltaSenscNPV <- function(sensmin, sensmax, prevalence, cNPV) {
   
 }
 
-DrawDeltacNPVSens <- function(cnpvmin, cnpvmax, prevalence, sensitivity) {
+DrawDeltacNPVSens <- function(cnpv, prevalence, sensitivity) {
   
   
   Iterations <- 1:length(sensitivity)
@@ -1684,7 +1803,7 @@ DrawDeltacNPVSens <- function(cnpvmin, cnpvmax, prevalence, sensitivity) {
   
   for(i in Iterations){
     Val <- prevalence/(1+prevalence)
-    cNPV<-seq(from=cnpvmin,to=cnpvmax,by=0.00001)
+    cNPV<-seq(from=min(cnpv),to=max(cnpv),by=0.00001)
     Delta<- qnorm((1-sensitivity[i])*(cNPV/(1-cNPV))/Val)-qnorm(1-sensitivity[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
@@ -1698,9 +1817,9 @@ DrawDeltacNPVSens <- function(cnpvmin, cnpvmax, prevalence, sensitivity) {
   
 }
 
-DrawcNPVPrevSens <- function(prevmin, prevmax, delta, sensitivity) {
+DrawcNPVPrevSens <- function(prev, delta, sensitivity) {
   
-  Prevalence <- seq(from=prevmin,to=prevmax,by=0.00001)
+  Prevalence <- seq(from=min(prev),to=max(prev),by=0.00001)
   Val <- Prevalence/(1+Prevalence)
   Specificity <- pnorm(delta + qnorm(1-sensitivity))
   LRMinus <- Specificity/(1-sensitivity)
@@ -1722,10 +1841,10 @@ DrawcNPVPrevSens <- function(prevmin, prevmax, delta, sensitivity) {
   
 }
 
-DrawcNPVSensPrev <- function(sensmin, sensmax, delta, prevalence) {
+DrawcNPVSensPrev <- function(sens, delta, prevalence) {
   
   Val <- prevalence/(1+prevalence)
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   Specificity <- pnorm(qnorm(1-Sensitivity,0,1)+delta,0,1,1)
   LRMinus <- Specificity/(1-Sensitivity)
   
@@ -1746,9 +1865,9 @@ DrawcNPVSensPrev <- function(sensmin, sensmax, delta, prevalence) {
   
 }
 
-DrawSensPrevcNPV <- function(sensmin, sensmax, delta, cNPV) {
+DrawSensPrevcNPV <- function(sens, delta, cNPV) {
   
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(cNPV)
   LTY <- Iterations
@@ -1767,9 +1886,9 @@ DrawSensPrevcNPV <- function(sensmin, sensmax, delta, cNPV) {
   
 }
 
-DrawPrevcNPVSens <- function(cnpvmin, cnpvmax, delta, sensitivity) {
+DrawPrevcNPVSens <- function(cnpv, delta, sensitivity) {
   
-  cNPV <- seq(from=cnpvmin,to=cnpvmax,by=0.00001)
+  cNPV <- seq(from=min(cnpv),to=max(cnpv),by=0.00001)
   
   Iterations <- 1:length(sensitivity)
   LTY <- Iterations
@@ -1789,10 +1908,10 @@ DrawPrevcNPVSens <- function(cnpvmin, cnpvmax, delta, sensitivity) {
   
 }
 
-DrawSenscNPVPrev <- function(sensmin, sensmax, delta, prevalence) {
+DrawSenscNPVPrev <- function(sens, delta, prevalence) {
   
   Val <- prevalence/(1+prevalence)
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   Specificity <- pnorm(qnorm(1-Sensitivity,0,1)+delta,0,1,1)
   LRMinus <- Specificity/(1-Sensitivity)
   
@@ -1813,9 +1932,9 @@ DrawSenscNPVPrev <- function(sensmin, sensmax, delta, prevalence) {
   
 }
 
-DrawDeltaPrevSenscNPV <- function(prevmin, prevmax, cNPV, sens) {
+DrawDeltaPrevSenscNPV <- function(prev, cNPV, sens) {
   
-  Prevalence <- seq(from=prevmin,to=prevmax,by=0.00001)
+  Prevalence <- seq(from=min(prev),to=max(prev),by=0.00001)
   
   Iterations <- 1:length(sens)
   LTY <- Iterations
@@ -1834,9 +1953,9 @@ DrawDeltaPrevSenscNPV <- function(prevmin, prevmax, cNPV, sens) {
   
 }
 
-DrawDeltaSensPrevcNPV <- function(sensmin, sensmax, cNPV, prev) {
+DrawDeltaSensPrevcNPV <- function(sens, cNPV, prev) {
   
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(prev)
   LTY <- Iterations
@@ -1855,9 +1974,9 @@ DrawDeltaSensPrevcNPV <- function(sensmin, sensmax, cNPV, prev) {
   
 }
 
-DrawPrevDeltaSensPPV <- function(deltamin, deltamax, PPV, sens) {
+DrawPrevDeltaSensPPV <- function(delta, PPV, sens) {
   
-  Delta <- seq(from=deltamin,to=deltamax,by=0.00001)
+  Delta <- seq(from=min(delta),to=max(delta),by=0.00001)
   
   Iterations <- 1:length(sens)
   LTY <- Iterations
@@ -1876,9 +1995,9 @@ DrawPrevDeltaSensPPV <- function(deltamin, deltamax, PPV, sens) {
   
 }
 
-DrawPrevSensDeltacNPV <- function(sensmin, sensmax, cNPV, delta) {
+DrawPrevSensDeltacNPV <- function(sens, cNPV, delta) {
   
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(delta)
   LTY <- Iterations
@@ -1897,9 +2016,9 @@ DrawPrevSensDeltacNPV <- function(sensmin, sensmax, cNPV, delta) {
   
 }
 
-DrawPrevSensDeltaPPV <- function(sensmin, sensmax, PPV, delta) {
+DrawPrevSensDeltaPPV <- function(sens, PPV, delta) {
   
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(delta)
   LTY <- Iterations
@@ -1918,9 +2037,9 @@ DrawPrevSensDeltaPPV <- function(sensmin, sensmax, PPV, delta) {
   
 }
 
-DrawPrevDeltaSenscNPV <- function(deltamin, deltamax, cNPV, sens) {
+DrawPrevDeltaSenscNPV <- function(delta, cNPV, sens) {
   
-  Delta <- seq(from=deltamin,to=deltamax,by=0.00001)
+  Delta <- seq(from=min(delta),to=max(delta),by=0.00001)
   
   Iterations <- 1:length(sens)
   LTY <- Iterations
@@ -1939,9 +2058,9 @@ DrawPrevDeltaSenscNPV <- function(deltamin, deltamax, cNPV, sens) {
   
 }
 
-DrawDeltaPrevSensPPV <- function(prevmin, prevmax, PPV, sens) {
+DrawDeltaPrevSensPPV <- function(prev, PPV, sens) {
   
-  Prevalence <- seq(from=prevmin,to=prevmax,by=0.00001)
+  Prevalence <- seq(from=min(prev),to=max(prev),by=0.00001)
   
   Iterations <- 1:length(sens)
   LTY <- Iterations
@@ -1960,9 +2079,9 @@ DrawDeltaPrevSensPPV <- function(prevmin, prevmax, PPV, sens) {
   
 }
 
-DrawDeltaSensPrevPPV <- function(sensmin, sensmax, PPV, prev) {
+DrawDeltaSensPrevPPV <- function(sens, PPV, prev) {
   
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(prev)
   LTY <- Iterations
@@ -1981,9 +2100,9 @@ DrawDeltaSensPrevPPV <- function(sensmin, sensmax, PPV, prev) {
   
 }
 
-DrawSpecSensPrev <- function(sensmin, sensmax, cNPV, prev) {
+DrawSpecSensPrev <- function(sens, cNPV, prev) {
   
-  Sensitivity<- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity<- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(prev)
   LTY <- Iterations
@@ -2002,9 +2121,9 @@ DrawSpecSensPrev <- function(sensmin, sensmax, cNPV, prev) {
   
 }
 
-DrawSensSpecPrev <- function(specmin, specmax, cNPV, prev) {
+DrawSensSpecPrev <- function(spec, cNPV, prev) {
   
-  Specificity<- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity<- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(prev)
   LTY <- Iterations
@@ -2023,9 +2142,9 @@ DrawSensSpecPrev <- function(specmin, specmax, cNPV, prev) {
   
 }
 
-DrawcNPVSensSpec <- function(sensmin,sensmax,prevalence, specificity) {
+DrawcNPVSensSpec <- function(sens,prevalence, specificity) {
   
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(specificity)
   LTY <- Iterations
@@ -2045,9 +2164,9 @@ DrawcNPVSensSpec <- function(sensmin,sensmax,prevalence, specificity) {
   
 }
 
-DrawSenscNPVSpec <- function(cnpvmin,cnpvmax,prevalence, specificity) {
+DrawSenscNPVSpec <- function(cnpv,prevalence, specificity) {
   
-  cNPV <- seq(from=cnpvmin,to=cnpvmax,by=0.00001)
+  cNPV <- seq(from=min(cnpv),to=max(cnpv),by=0.00001)
   Val <- prevalence/(1+prevalence)
   cNPVPrev <- Val/(cNPV/(1-cNPV))
   
@@ -2069,9 +2188,9 @@ DrawSenscNPVSpec <- function(cnpvmin,cnpvmax,prevalence, specificity) {
   
 }
 
-DrawSpecSenscNPV <- function(sensmin,sensmax,prevalence, cNPV) {
+DrawSpecSenscNPV <- function(sens,prevalence, cNPV) {
   
-  Sensitivity <- seq(from=sensmin,to=sensmax,by=0.00001)
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   
   Iterations <- 1:length(cNPV)
   LTY <- Iterations
@@ -2091,9 +2210,9 @@ DrawSpecSenscNPV <- function(sensmin,sensmax,prevalence, cNPV) {
   
 }
 
-DrawSpeccNPVSens <- function(cnpvmin,cnpvmax,prevalence, sensitivity) {
+DrawSpeccNPVSens <- function(cnpv,prevalence, sensitivity) {
   
-  cNPV <- seq(from=cnpvmin,to=cnpvmax,by=0.00001)
+  cNPV <- seq(from=min(cnpv),to=max(cnpv),by=0.00001)
   
   Iterations <- 1:length(sensitivity)
   LTY <- Iterations
@@ -2113,9 +2232,9 @@ DrawSpeccNPVSens <- function(cnpvmin,cnpvmax,prevalence, sensitivity) {
   
 }
 
-DrawcNPVSpecSens <- function(specmin,specmax,prevalence, sensitivity) {
+DrawcNPVSpecSens <- function(spec,prevalence, sensitivity) {
   
-  Specificity <- seq(from=specmin,to=specmax,by=0.00001)
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
   Iterations <- 1:length(sensitivity)
   LTY <- Iterations
