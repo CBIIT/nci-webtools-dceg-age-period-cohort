@@ -1795,7 +1795,7 @@ DrawDeltaSenscNPVPrev <- function(sens, cNPV, prevalence) {
   
 }
 
-DrawDeltacNPVSensPrev <- function(cnpv, sensitivity, prevalence,) {
+DrawDeltacNPVSensPrev <- function(cnpv, sensitivity, prevalence) {
   
   
   Iterations <- 1:length(sensitivity)
