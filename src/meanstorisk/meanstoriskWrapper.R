@@ -49,6 +49,33 @@ getDataJSON <-function(urlEncodedString)
     imageFileName <- getROCGraph(specmin, specmax, risk2$Delta[8,3], uniqueId, graphname);
     
     #excelFileName <- writeResultsToExcel(risk2, imageFileName);
+  } else if (as.numeric(option) == 3) {
+  	 #data <- read.csv("p16-ELISA-sample-data.csv")
+    data =  matrix(c(as.numeric(strsplit(inputList[[8]][[1]],',')[[1]])), ncol = as.numeric(getcolcount(inputList)), nrow = as.numeric(getrowcount(inputList)), byrow=TRUE);
+    risk1<-RiskFromROC(data, spec, prev);
+    uniqueId <- inputList[[6]][[1]];
+    graphname <- inputList[[7]][[1]];
+    imageFileName <-getRawROCGraph(data, uniqueId, graphname);
+    
+    excelFileName <- writeResultsToExcel(risk1, imageFileName);
+    jsonString <- toJSON(excelFileName, method="C");
+ 
+  } else if (as.numeric(option) == 4) {
+   	#cases<-c(4, 0.1, 100)
+    #controls<-c(1, 0.1, 200)
+    cases <- getVector(inputList[[4]][[1]]);
+    controls <- getVector(inputList[[5]][[1]]);
+    risk2<-deltaspecppv(cases, controls, spec, prev);
+    
+    specmin<-min(spec);
+    specmax<-max(spec);
+    uniqueId <- inputList[[6]][[1]];
+    graphname <- inputList[[7]][[1]];
+    imageFileName <- getROCGraph(specmin, specmax, risk2$Delta[8,3], uniqueId, graphname);
+    
+    excelFileName <- writeResultsToExcel(risk2, imageFileName);
+    jsonString <- toJSON(excelFileName, method="C");
+ 
   }
 
   str_replace_all(jsonString, "[\n]","");

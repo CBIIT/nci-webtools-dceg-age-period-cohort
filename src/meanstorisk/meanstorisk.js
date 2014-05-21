@@ -17,7 +17,9 @@ var ppv_tabs = {
 
 $(document).ready(function() {
 	bind_calculate_button();
+	bind_download_button();
 	bind_option_choices();
+	$("#please_wait").dialog({ autoOpen: false, position: 'top', title: "Please Wait", height: 60 });
 });
 
 function prepare_upload (e){
@@ -105,14 +107,36 @@ function bind_option_choices() {
 
 function bind_calculate_button() {
 	$( "#calculate_button" ).click(function() {
-		if ($( "#accordion" ).accordion("option", "active" ) == 0	) {
-//			alert ("User Defined Normalization (" + numberOfRows + "," + numberOfCols + ")");
-			
-			get_inputs_for_user_defined_calculation();
-			make_ajax_call_user_defined_calculation();
+		if ($( "#accordion" ).accordion("option", "active" ) == 0	) {	
+			// Quick check to make sure there a file.
+			if (valuesFromFile.length == 0) {
+				alert ("Please Upload a file first");
+			} else {
+				get_inputs_for_user_defined_calculation();
+				make_ajax_call_user_defined_calculation();				
+			}
 		} else {
 			get_inputs_for_standard_calculation();
 			make_ajax_call_standard_calculation();			
+		}
+	});
+}
+
+function bind_download_button() {
+	$( "#download_button" ).click(function() {
+		if ($( "#accordion" ).accordion("option", "active" ) == 0	) {			
+			// Quick check to make sure there a file.
+			if (valuesFromFile.length == 0) {
+				alert ("Please Upload a file first");
+			} else {
+				$("#please_wait").dialog("open");
+				get_inputs_for_user_defined_calculation();
+				make_excel_call_user_defined_calculation();
+			}
+		} else {
+			$("#please_wait").dialog("open");
+			get_inputs_for_standard_calculation();
+			make_excel_call_standard_calculation();			
 		}
 	});
 }
@@ -199,6 +223,7 @@ function set_standard_inputs(mean_cases,mean_controls,stderr_cases,stderr_contro
     delta_string = "c("+delta.toPrecision(4)+")";
 	
 }
+
 function make_ajax_call_user_defined_calculation() {
 	//alert(cases_string + "\n" + controls_string + "\n" + specificity_string + "\n" + prevalence_string);
     uniqueKey = (new Date()).getTime();	
@@ -245,6 +270,53 @@ function make_ajax_call_standard_calculation() {
 	});
 }
 
+function make_excel_call_user_defined_calculation() {
+	//alert(cases_string + "\n" + controls_string + "\n" + specificity_string + "\n" + prevalence_string);
+    uniqueKey = (new Date()).getTime();	
+    hostname = window.location.hostname;
+    url = "http://" + hostname +"/meanstoriskRest/"
+    $.ajax({
+		type: "POST",
+		url: url,
+		data: {
+			option:3,
+			spec:specificity_string, 
+			prev: prevalence_string,
+			datarowcount: numberOfRows,
+			colcount: numberOfCols,
+			unique_key: uniqueKey,
+			graphkey:'CSV',
+			dataCSV: valuesFromFile.join()
+		},
+		dataType: "json",
+		success: set_excel,
+		error: ajax_error
+	});
+}
+
+function make_excel_call_standard_calculation() {
+	//alert(cases_string + "\n" + controls_string + "\n" + specificity_string + "\n" + prevalence_string);
+    uniqueKey = (new Date()).getTime();	
+    hostname = window.location.hostname;
+    url = "http://" + hostname +"/meanstoriskRest/"
+    $.ajax({
+		type: "POST",
+		url: url,
+		data: {
+			option:4,
+			spec:specificity_string, 
+			prev: prevalence_string, 
+			cases: cases_string, 
+			controls: controls_string, 
+			unique_key: uniqueKey,
+			graphkey:'input'
+		},
+		dataType: "json",
+		success: set_excel,
+		error: ajax_error
+	});
+}
+
 function set_data(dt) {
 //	alert ("Success");
 	set_values_table(dt);
@@ -252,8 +324,16 @@ function set_data(dt) {
 	draw_graph();
 }
 
+function set_excel(dt) {
+	$("#please_wait").dialog("close");
+
+//	alert ("Filename: " + dt);
+	window.open(dt);	
+//	$("#download_link").attr("href", dt);
+}
+
 function ajax_error(dt) {
-	alert("There was some problem getting the data."); 	
+	alert("There was some problem getting the data. " + JSON.stringify(dt) ); 	
 }
 
 function set_values_table(dt) {
@@ -270,9 +350,9 @@ function set_values_table(dt) {
 	if (values[1].Controls) set_value("#stderr_controls",values[1].Controls.toPrecision(4)); else set_value("#stderr_controls","");
 	if (values[1].Overall) set_value("#stderr_overall",values[1].Overall.toPrecision(4)); else set_value("#stderr_overall","");
 
-	if (values[2].Cases) set_value("#N_cases",values[2].Cases.toPrecision(4)); else set_value("#N_cases","");
-	if (values[2].Controls) set_value("#N_controls",values[2].Controls.toPrecision(4));	else set_value("#N_controls","");
-	if (values[2].Overall) set_value("#N_overall",values[2].Overall.toPrecision(4) ); else set_value("#N_overall","");
+	if (values[2].Cases) set_value("#N_cases",values[2].Cases); else set_value("#N_cases","");
+	if (values[2].Controls) set_value("#N_controls",values[2].Controls);	else set_value("#N_controls","");
+	if (values[2].Overall) set_value("#N_overall",values[2].Overall); else set_value("#N_overall","");
 	
 	if (values[3].Cases) set_value("#deviation_cases",values[3].Cases.toPrecision(4)); else set_value("#deviation_cases","");
 	if (values[3].Controls) set_value("#deviation_controls",values[3].Controls.toPrecision(4) ); else set_value("#deviation_controls","");

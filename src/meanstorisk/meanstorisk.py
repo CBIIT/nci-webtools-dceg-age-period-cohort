@@ -16,6 +16,7 @@ import numpy as np
 from pandas import DataFrame
 import pandas.rpy.common as com
 import urllib
+import time
 
 app = Flask(__name__)
 
@@ -42,10 +43,12 @@ def setRWorkingDirectory():
 @app.route('/meanstoriskRest/', methods = ['GET','POST'])
 @jsonp
 def callRFunction():
+    print "Data Start Time: " + str(time.time());
     robjects.r('''source('./meanstoriskWrapper.R')''')
     r_getname_getApcData = robjects.globalenv['getDataJSON']
-    jsondata = r_getname_getApcData(request.stream.read())
-    print "json string >> "+str(jsondata[0]);
+    stream = request.stream.read()
+    jsondata = r_getname_getApcData(stream)
+    print "After Data Calculation: " + str(time.time());
     return jsondata[0]
 
 

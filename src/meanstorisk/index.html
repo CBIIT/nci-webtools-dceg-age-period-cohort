@@ -55,7 +55,7 @@
 				<p class='indent data_entry_by_file'>Upload a raw case and control biomarker data file in csv format <a href='p16-ELISA-sample-data.csv'> <i>(Example)</i> </a> </p>
 				<p class='indent'><label for="input_file_upload"><INPUT id='input_file_upload' type='file' class='data_entry_by_file'/></label> </p>
 			</DIV>	
-		<H3 class='input_accordion'> Normalized Distribution</H3>
+		<H3 class='input_accordion'> Normal Distribution</H3>
 			<DIV class='input_accordion'>
 				<p class='indent data_entry_by_input'>Enter Mean, Standard Error, and N for Cases and Controls </p>
 		
@@ -88,7 +88,8 @@
 			<TR><TH>Specificity:</TH><TD> <label for='specificity'><INPUT type='text' size='40' value='0.8, 0.9, 0.95, 0.99, 0.999' id='specificity' /></label></TD></TR>
 			<TR><TH>Prevalence:</TH><TD> <label for='prevalence'><INPUT type='text' size='40' value='0.1, 0.05, 0.01, 0.005, 0.001' id='prevalence' /></label></TD></TR>
 		</TABLE>
-		<INPUT type='button' value='Calculate' id='calculate_button' style='margin:10px;float:right;' />
+		<INPUT type='button' value='Calculate' id='calculate_button' style='margin:10px;float:left;' />
+		<INPUT type='button' value='Download Excel File' id='download_button' style='margin:10px;float:right;' />
 		</FORM>
 				</div>
 				<div class='table_panel'>
@@ -190,6 +191,6 @@
 		<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
 	</div>
 	</div>
-
+<div id='please_wait'> Preparing file for download </div>
 </body>
 </html>
