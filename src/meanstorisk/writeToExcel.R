@@ -46,7 +46,7 @@ writeResultsToExcel <- function (risk, graphName) {
   
   cellStyleRightBorder  <-CellStyle(outwb) + rightBorder;
   
-  deltaSheet            <- createSheet(outwb, sheetName = "Delta");
+  deltaSheet            <- createSheet(outwb, sheetName = "Summary Statistics");
 
   ppvSheet              <- createSheet(outwb, sheetName = "PPV");
   cNpvSheet             <- createSheet(outwb, sheetName = "cNPV");
@@ -307,7 +307,7 @@ addDataFrame(x = as.data.frame.matrix(risk$`PPV-cNPV`), sheet = ppvCnpvSheet, st
 
    time <- gsub(":","",gsub("-","",gsub(" ","", Sys.time() , fixed=TRUE)));
 
-  fileName <- paste(excelDirectory, time,"_", 'Excel.xlsx',sep='');
+  fileName <- paste(excelDirectory, "means_to_risk_analysis_", time, '.xlsx',sep='');
   
   saveWorkbook(outwb, fileName);
   fileName;
