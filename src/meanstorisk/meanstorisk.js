@@ -19,7 +19,13 @@ $(document).ready(function() {
 	bind_calculate_button();
 	bind_download_button();
 	bind_option_choices();
-	$("#please_wait").dialog({ autoOpen: false, position: 'top', title: "Please Wait", height: 60 });
+	$("#please_wait_calculate").dialog({ autoOpen: false, position: 'top', title: "Please Wait", height: 60 });
+	$("#please_wait_download").dialog({ autoOpen: false, position: 'top', title: "Please Wait", height: 60 });
+	$("#download_button").hide();
+	$(".data_entry_by_input").on('click', function () {
+		$("#download_button").hide();
+	});
+	
 });
 
 function prepare_upload (e){
@@ -66,7 +72,8 @@ function bind_option_choices() {
 	$( "#accordion" ).accordion({ 
 		active: 0,
 		autoHeight: true,
-	    clearStyle: true
+	    clearStyle: true,
+        activate: function (event, ui) { $("#download_button").hide(); }
 	});	
 	$( "#input_file_upload" ).on('change', prepare_upload);
 
@@ -110,12 +117,14 @@ function bind_calculate_button() {
 		if ($( "#accordion" ).accordion("option", "active" ) == 0	) {	
 			// Quick check to make sure there a file.
 			if (valuesFromFile.length == 0) {
-				alert ("Please Upload a file first");
+				alert ("Please Upload a file or pick the normalized option and enter key data first");
 			} else {
+				$("#please_wait_calculate").dialog("open");
 				get_inputs_for_user_defined_calculation();
 				make_ajax_call_user_defined_calculation();				
 			}
 		} else {
+			$("#please_wait_calculate").dialog("open");
 			get_inputs_for_standard_calculation();
 			make_ajax_call_standard_calculation();			
 		}
@@ -127,14 +136,14 @@ function bind_download_button() {
 		if ($( "#accordion" ).accordion("option", "active" ) == 0	) {			
 			// Quick check to make sure there a file.
 			if (valuesFromFile.length == 0) {
-				alert ("Please Upload a file first");
+				alert ("Please Upload a file or pick the normalized option and enter key data first");
 			} else {
-				$("#please_wait").dialog("open");
+				$("#please_wait_download").dialog("open");
 				get_inputs_for_user_defined_calculation();
 				make_excel_call_user_defined_calculation();
 			}
 		} else {
-			$("#please_wait").dialog("open");
+			$("#please_wait_download").dialog("open");
 			get_inputs_for_standard_calculation();
 			make_excel_call_standard_calculation();			
 		}
@@ -319,13 +328,15 @@ function make_excel_call_standard_calculation() {
 
 function set_data(dt) {
 //	alert ("Success");
+	$("#please_wait_calculate").dialog("close");
+	$("#download_button").show();
 	set_values_table(dt);
 	create_tabbed_table(dt);
 	draw_graph();
 }
 
 function set_excel(dt) {
-	$("#please_wait").dialog("close");
+	$("#please_wait_download").dialog("close");
 
 //	alert ("Filename: " + dt);
 	window.open(dt);	
