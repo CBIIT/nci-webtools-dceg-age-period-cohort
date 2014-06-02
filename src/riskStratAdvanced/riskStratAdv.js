@@ -11,6 +11,47 @@ var row;
 var col;
 var validPrevValue = false;
 var tableFirstColLabel;
+var keysforfunctionnames = ["Sens", "Spec", "PPV", "cNPV", "Prev", "Delta"];
+var functionnames = ["sensitivity", "specificity", "ppv", "cnpv", "prevalence", "delta"];
+var keysforfunction = [{1:"Sens"}, {2:"Spec"}, {3:"PPV"}, {4:"cNPV"}, {5:"Prev"}, {6:"Delta"}];
+var keysforfunction = [{1:"sensitivity"}, {2:"specificity"}, {3:"ppv"}, {4:"cnpv"}, {5:"prevalence"}, {6:"delta"}];
+
+var rfunctions = ["SensPPVDelta", 
+                  "SensPPVPrev", 
+                  "SensPPVSpec",
+		  "SensPrevDelta",
+		  "SenscNPVDelta",
+		  "SenscNPVPrev",
+		  "SenscNPVSpec",
+                  "SpecPPVDelta",
+                  "SpecPPVPrev", 
+		  "SpecPrevDelta",
+		  "SpeccNPVDelta",
+                  "SpeccNPVPrev"]; 
+var keyShort = [{1:"Prevalence", 2:"Specificity"}, 
+            {1:'Delta', 2:'Specificity'}, 
+	    {1:'Prevalence', 2:'Delta'},
+	    {1:'PPV', 2:'cNPV'},
+	    {1:'Prevalence'},
+	    {1:'Delta', 2:'Specificity'},
+	    {1:'Prevalence', 2:'Delta'},
+            {1:'Prevalence', 2:'Sensitivity'},
+            {1:'Delta', 2:'Sensitivity'}, 
+	    {1:'PPV', 2:'cNPV'},
+            {1:'Prevalence'},
+            {1:'Delta', 2:'Sensitivity'}]; 
+var keyLong = [{1:"Prevalence required to achieve specified PPV given delta and sensitivity", 2:"Prevalence required to achieve specified PPV given delta and sensitivity"},
+{1:"Delta required to achieve specified PPV given prevalence and sensitivity", 2:"Specificity required to achieve specified PPV given prevalence and sensitivity"}, 
+{1:"Prevalence required to achieve specified PPV given specificity and sensitivity", 2:"Delta required to achieve specified PPV given specificity and sensitivity"},
+{1:"Delta required to achieve specified PPV given specificity and sensitivity", 2:"Complement of the Negative Predictive Value given sensitivity, prevalence, and delta", 3:"Specificity given delta and sensitivity"},
+{1:"(Prevalence required to achieve specified cNPV given delta and sensitivity", 2:"Specificity required to achieve specified cNPV given delta and sensitivity"},
+{1:"Delta required to achieve specified cNPV given prevalence and sensitivity", 2:"Specificity required to achieve specified cNPV given prevalence and sensitivity"},
+{1:"Prevalence required to achieve specified cNPV given specificity and sensitivity", 2:"Delta given specificity and sensitivity"},
+{1:"Prevalence required to achieve specified PPV given delta and specificity", 2:"Sensitivity required to achieve specified PPV given delta and specificity"},
+{1:"Delta required to achieve specified PPV given prevalence and specificity", 2:"Sensitivity required to achieve specified PPV given prevalence and specificity"},
+{1:"Positive Predictive Value given specificity, prevalence, and delta", 2:"Complement of the Negative Predictive Value given specificity, prevalence, and delta", 3:"Sensitivity given delta and specificity"},
+{1:"Prevalence required to achieve specified cNPV given delta and specificity", 2:"Sensitivity required to achieve specified cNPV given delta and specificity"},
+{1:"Delta required to achieve specified cNPV given prevalence and specificity", 2:"Sensitivity required to achieve specified cNPV given prevalence and specificity"}];
 
 $(document).ready(function() {
     
@@ -27,12 +68,15 @@ $(document).ready(function() {
         var independentArray = ""; //specificity
 
         var independentArray = $("#independent").val();
+        var independentval = $("#independent_dropdown").val();
         independentArraySplit = independentArray.split(",");
         var independentMin = Math.min.apply( Math, independentArraySplit )
         var independentMax = Math.max.apply( Math, independentArraySplit )
         var contourArray = $("#contour").val();
+        var contourval = $("#contour_dropdown").val();
         var columnHeadings = contourArray.split(",");
         var fixedArray = $("#fixed").val();
+        var fixedval = $("#fixed_dropdown").val();
         var fixedArraySplit = fixedArray.split(",");
         var fixedArraySize = fixedArraySplit.length;
     
@@ -41,23 +85,31 @@ $(document).ready(function() {
         uniqueKey = (new Date()).getTime();
     
         var tabkey = ["Prevalence_Odds_Length"];
-        var keys = ["Sensitivity",
-                    "Delta"];
+        //var keys = ["Sensitivity",
+        //            "Delta"];
         var titlekeys = ["Sensitivity required to achieve specified PPV given prevalence and specificity",
                     "Delta required to achieve specified PPV given prevalence and specificity"];
 
         var abbreviatedkeys = ["Sensitivity", 
                                "Delta"];
+        var numberOfKeysForCurrentFunction = 0;
 
+        var keyvalueIndex = getKeyValueIndex(independentval, fixedval, contourval);
+        if (keyvalueIndex >= 0)
+        {
+        	var keyvalueShort = keyShort[keyvalueIndex];
+        	var keyvalueLong  = keyLong[keyvalueIndex];   
+		for (var key in keyvalueShort) {
+			numberOfKeysForCurrentFunction++;
+		}		
+        	var eIndependent = document.getElementById("independent_dropdown");
+        	var selectedIndependentValue  = eIndependent.options[eIndependent.selectedIndex].text;
 
-        var eIndependent = document.getElementById("independent_dropdown");
-        var selectedIndependentValue  = eIndependent.options[eIndependent.selectedIndex].text;
+        	var eContour = document.getElementById("contour_dropdown");
+        	var selectedContourValue = eContour.options[eContour.selectedIndex].text;
 
-        var eContour = document.getElementById("contour_dropdown");
-        var selectedContourValue = eContour.options[eContour.selectedIndex].text;
-
-	tableFsrstColLabel = selectedIndependentValue + "\\" + selectedContourValue;
-		open_threads = keys.length;
+		tableFsrstColLabel = selectedIndependentValue + "\\" + selectedContourValue;
+		open_threads = numberOfKeysForCurrentFunction.length;
 		error_count = 0;
 
 		
@@ -69,7 +121,7 @@ $(document).ready(function() {
 		$("#output").append(tabs);
 		tab_names = $("<UL> </UL>");
 		tabs.append(tab_names);
-      var spacing = "<p></p><p></p><p></p>";
+      		var spacing = "<p></p><p></p><p></p>";
 		
 		for (var i=0; i < fixedArraySplit.length; i++) {
 			tab_names.append("<LI><a  style='padding:3px;' href='#fixed-" + (i+1) + "'>" + fixed_dropdown + "<br>&nbsp&nbsp&nbsp "+ fixedArraySplit[i] + "</a></LI>");
@@ -77,12 +129,14 @@ $(document).ready(function() {
 			tabs.append(tab_pane);			
                         //tab_pane.append("<TABLE>");
 			//table_side = ("<TR><TD><div class='table-side' id='table-" + (i+1) + "'></div></TD>");
-		    for (var j=0; j < abbreviatedkeys.length; j++) {
-			table_graph_div = $("<div class='set-"+ abbreviatedkeys[j] + (i+1) + "' style='width: 1100px; float: left; clear:left;'><p></p></div>");
+		    //for (var j=0; j < abbreviatedkeys.length; j++) {
+		    for (var key in keyvalueShort) {
+			//table_graph_div = $("<div class='set-"+ abbreviatedkeys[j] + (i+1) + "' style='width: 1100px; float: left; clear:left;'><p></p></div>");
+			table_graph_div = $("<div class='set-"+ keyvalueShort[key] + (i+1) + "' style='width: 1100px; float: left; clear:left;'><p></p></div>");
 			tab_pane.append(table_graph_div);
-			graphic_side = ("<div class='graphic-side' id='graphic-" + abbreviatedkeys[j] +  (i+1) + "'><div style='clear:right;padding-top:10px;'> </div></div>");
+			graphic_side = ("<div class='graphic-side' id='graphic-" + keyvalueShort[key] +  (i+1) + "'><div style='clear:right;padding-top:10px;'> </div></div>");
 			table_graph_div.append(graphic_side);
-			table_side = $("<div class='table-side' id='table-" + abbreviatedkeys[j] + (i+1) + "'><br><h6>&nbsp;&nbsp;"+titlekeys[j]+"</h6></div><br><br>");
+			table_side = $("<div class='table-side' id='table-" + keyvalueShort[key] + (i+1) + "'><br><h6>&nbsp;&nbsp;"+keyvalueLong[key]+"</h6></div><br><br>");
 			table_graph_div.append(table_side);
 			//graphic_side = ("<TD><div class='graphic-side' id='graphic-" + (i+1) + "'> </div></TD></TR>");
                    }
@@ -93,24 +147,63 @@ $(document).ready(function() {
 		for (var fixedValue=0; fixedValue < fixedArraySplit.length; fixedValue++)
 		{
 			tabindex = fixedValue+1;
-			for (var keyIndex=0; keyIndex < keys.length; keyIndex++)
+			//for (var keyIndex=0; keyIndex < keys.length; keyIndex++)
+			for (var shortkey in keyvalueShort)
 			{
 				getData({
-					key:keys[keyIndex],
-					Contour:contourArray,
-					reference:fixedArray,
+					key:keyvalueShort[shortkey],
+					keyindex:shortkey,
+					independentval:independentval,
+					fixedval:fixedval,
+					contourval:contourval,
 					independent:independentArray,
+					fixed:fixedArray,
+					Contour:contourArray,
 					Specmin:independentMin,
 					Specmax:independentMax,
 					uniqueId:uniqueKey,
 					tab:tabindex,
 					tabvalue:fixedArraySplit[fixedValue],
-					abreviatedkey:abbreviatedkeys[keyIndex]
-				}, keys[keyIndex], tabindex, fixedArraySplit[fixedValue], uniqueKey, abbreviatedkeys[keyIndex], columnHeadings);
+					abreviatedkey:keyvalueShort[shortkey]
+				}, keyvalueShort[shortkey], tabindex, fixedArraySplit[fixedValue], uniqueKey, keyvalueShort[shortkey], columnHeadings);
 			}
 		}
+	}; // if function mapping is available
      }); // calculate   
 });  // ready
+
+function getKeyValueIndex(independentvalue, fixedvalue, contourvalue) {
+
+  rfunctionname = getFunctionName(independentvalue, fixedvalue, contourvalue);
+  alert(rfunctionname);
+
+  for (var functions=0; functions < rfunctions.length; functions++)
+  {
+     if (rfunctions[functions] == rfunctionname)
+        return functions;
+  }
+  alert("no function mapping available");
+  return -1;
+}
+
+function getFunctionName(independent, fixed, contour) {
+  rFileName = "";
+  var inputnames = [];
+  inputnames[0] = independent;
+  inputnames[1] = fixed;
+  inputnames[2] = contour;
+  for (var name=0;  name < functionnames.length; name++)
+  {
+    for (var variablename=0; variablename<inputnames.length; variablename++)
+    {
+      if (functionnames[name] == inputnames[variablename])
+      {
+        rFileName = rFileName.concat(keysforfunctionnames[name]);
+      }
+    }
+  }
+  return(rFileName)
+}
 
 
 function getData(data, tableTitle, tabnumber, tabValue, uniqueKey, abbreviatedKey,  columnHeadings) {
