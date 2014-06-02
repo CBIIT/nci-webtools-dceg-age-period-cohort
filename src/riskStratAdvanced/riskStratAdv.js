@@ -28,7 +28,7 @@ var rfunctions = ["SensPPVDelta",
 		  "SpecPrevDelta",
 		  "SpeccNPVDelta",
                   "SpeccNPVPrev"]; 
-var keyShort = [{1:"Prevalence", 2:"Specificity"}, 
+var keyShort = [{1:"Prevalence"}, 
             {1:'Delta', 2:'Specificity'}, 
 	    {1:'Prevalence', 2:'Delta'},
 	    {1:'PPV', 2:'cNPV'},
@@ -175,7 +175,7 @@ $(document).ready(function() {
 function getKeyValueIndex(independentvalue, fixedvalue, contourvalue) {
 
   rfunctionname = getFunctionName(independentvalue, fixedvalue, contourvalue);
-  alert(rfunctionname);
+  //alert(rfunctionname);
 
   for (var functions=0; functions < rfunctions.length; functions++)
   {
