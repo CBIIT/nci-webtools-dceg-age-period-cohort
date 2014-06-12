@@ -176,7 +176,7 @@ drawGraph <-function(independent, fixed, contour, firstinputVector, secondinputV
   	drawfunction <- get(drawfunctionname, mode="function");
   	imageFileName = paste(imageDirectory, tableName, uniqueId, "-", as.numeric(tabvalue), ".png", sep = '');
   	#png(file = imageFileName , units="in", width=10, height=8, res=150);
-	png(file=imageFileName, width=500, height=350)
+	png(file=imageFileName, width=500, height=500)
   	returnvalue<- drawfunction(firstinputVector,secondinputVector,as.numeric(tabvalue));
   #DrawDeltaSpecPPV(specmin, specmax, prev, ppv);
   	dev.off();
