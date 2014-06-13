@@ -107,3 +107,25 @@ h2 {
 .bibliography_link {
 	width: 50px;
 }
+
+#status-bar {
+    background: #CCC;
+    display: block; 
+	border: none;
+	box-sizing: border-box;
+	font: 18px arial,sans-serif;
+	left: 0;
+	margin: 0;
+	outline: none;
+	padding: 0 8px;
+	top: 2px;
+	width: 100%;
+	visibility: hidden;
+	
+}
+.status-info {
+	color:black
+}
+.status-error {
+	color:red;
+}

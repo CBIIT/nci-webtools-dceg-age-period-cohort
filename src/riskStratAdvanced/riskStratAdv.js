@@ -11,8 +11,24 @@ var row;
 var col;
 var validPrevValue = false;
 var tableFirstColLabel;
-var keysforfunctionnames = ["Sens", "Spec", "PPV", "cNPV", "Prev", "Delta"];
-var functionnames = ["sensitivity", "specificity", "ppv", "cnpv", "prevalence", "delta"];
+var keysforfunctionnames = ["", "Sens", "Spec", "PPV", "cNPV", "Prev", "Delta"];
+//var updateTextArea = [true, true, true];
+
+var functionnames = ["", "sensitivity", "specificity", "ppv", "cnpv", "prevalence", "delta"];
+var invalidCombos =    ["delta-sensitivity-specificity",
+						"cnpv-delta-ppv",
+						"cnpv-ppv-prevalence",
+						"cnpv-ppv-sensitivity",
+						"cnpv-ppv-specificity"];
+var initialData = ["", 
+                   "0.8, 0.85,0.9, 0.95, 0.995", 
+                   "0.6,0.75,0.8,0.86,0.92",
+                    "0.6,0.7,0.8,0.9,0.95",
+                    "0.39,0.48,0.59,0.62,0.78",
+                    "0.1,0.2,0.3,0.4,0.5",
+                    "1,2,3,4,5"];
+var	activeSelectionChange = false;
+
 var keysforfunction = [{1:"Sens"}, {2:"Spec"}, {3:"PPV"}, {4:"cNPV"}, {5:"Prev"}, {6:"Delta"}];
 var keysforfunction = [{1:"sensitivity"}, {2:"specificity"}, {3:"ppv"}, {4:"cnpv"}, {5:"prevalence"}, {6:"delta"}];
 
@@ -54,6 +70,11 @@ var keyLong = [{1:"Prevalence required to achieve specified PPV given delta and 
 {1:"Delta required to achieve specified cNPV given prevalence and specificity", 2:"Sensitivity required to achieve specified cNPV given prevalence and specificity"}];
 
 $(document).ready(function() {
+
+	//makeSelectionsUnique(functionnames);
+	$( "select" ).change(function() {
+			makeSelectionsUnique(functionnames, this.id);
+	});
     
     if(typeof String.prototype.trim !== 'function') {
       String.prototype.trim = function() {
@@ -350,4 +371,155 @@ function ajax_error(jqXHR, exception)
 {	
    refreshGraph(1);
    alert("ajax problem");
+}
+
+function makeSelectionsUnique(originalOptions, elementId) {
+	
+	var selectedValues = [];
+	var disabledValues = [];
+
+	if(activeSelectionChange == true)
+		return;
+	
+	activeSelectionChange = true;
+	
+	//Get ids from select elements
+	var ids = $("select").map(function() {
+    	return this.id;
+	}).get();
+	
+	//Save currently selected values
+	$.each( ids, function( key, elementId ) {
+		selectedValues.push($('#'+ elementId+' option:selected').val());
+	});
+	
+	//Repopulate each dropdown with the original list and reselect.
+	for (var key = 0; key < ids.length; key++) {
+		disabledValues = [];
+		for(i = 0; i < selectedValues.length; i++) {
+			if(i != key  && selectedValues[i] != "") {
+				disabledValues.push(selectedValues[i]);
+			}
+		}
+		
+		dropdownBoxId = ids[key];
+		removeAllOptions(dropdownBoxId);
+		addAllOptions(dropdownBoxId, originalOptions, disabledValues);
+		
+		//Reselect User selection
+		$('#'+dropdownBoxId).val(selectedValues[key]).change();
+	}
+	//If sandbox populate with default values
+	if(window.location.hostname == "analysistools-sandbox.nci.nih.gov")
+		setInitialValue(elementId);
+	checkForInvalidVariableCombo(elementId);
+	activeSelectionChange = false;
+	
+}
+
+function removeAllOptions(eid) {
+	element = document.getElementById(eid);
+    var i;
+    for(i=element.options.length-1;i>=0;i--) {
+    	element.remove(i);
+    }
+}
+
+function addAllOptions(dropdownBoxId, originalOptions, disabledOptions) {
+	for( var optionKey = 0; optionKey < originalOptions.length; optionKey++) {
+		if($.inArray(originalOptions[optionKey], disabledOptions) > -1) {
+			attribute = 
+				$('#'+dropdownBoxId)
+	    			.append($("<option></option>")
+	        		.attr("value",originalOptions[optionKey])
+	        		.attr('disabled','disabled')
+	        		.text(originalOptions[optionKey])); 
+        } else {
+			attribute = 
+				$('#'+dropdownBoxId)
+	    			.append($("<option></option>")
+	        		.attr("value",originalOptions[optionKey])
+	        		.text(originalOptions[optionKey])); 
+        }
+	}
+}
+
+function checkForValidVariablesSelection() {
+	//console.log("chekForValidVariablesSelection()");
+	//alert("chekForValidVariablesSelection()");
+}
+
+function checkForValidRange() {
+	//alert("chekForValidRange()");
+	
+}
+
+function setInitialValue(textboxId) {
+	
+	selectedOption = $("#"+textboxId+" option:selected" ).val()
+	key = $.inArray(selectedOption, functionnames);
+	
+	eSelect = document.getElementById(textboxId);
+	//Get the parent row <tr> of this <select>
+	eSelect2 = $(eSelect).parent().parent()[0];
+
+	//This next command removes the selected attribute from options, 
+	//so we will reselect it later.
+	$(eSelect2).find(":input").val(initialData[key]);
+
+	//Reselect User selection
+	$('#'+textboxId).val(selectedOption).change();
+}
+
+function checkForInvalidVariableCombo() {
+	//Get array of variables
+
+	//Get ids from select elements
+	var selectedValues = [];
+	var ids = $("select").map(function() {
+    	return this.id;
+	}).get();
+	
+	//Save currently selected values
+	$.each( ids, function( key, elementId ) {
+		selectedValues.push($('#'+ elementId+' option:selected').val());
+	});
+	
+	//Make sure all three variables exists else return
+	blankCount = $.inArray("", selectedValues);
+	if($.inArray("", selectedValues) == -1) {
+		//All three variables are slected.  Check if it is valid.
+		selectedValuesSorted = selectedValues.sort(); 
+		selectedValuesSortedString = selectedValues.join("-");
+		
+		if($.inArray(selectedValuesSortedString, invalidCombos) >= 0) {
+			//INVALID COMBO FOUND
+			userSelectedVariables = selectedValues[0].toString() + ", " +
+								selectedValues[1].toString() + ",  and " +
+								selectedValues[2].toString();
+			message = "The variables " + userSelectedVariables + 
+					" do not form a valid variable combination for this calculation.  " + 
+					"Please select a vaild variable combination.";
+			$("#status-bar").css("visibility", "visible");
+			$("#status-bar").addClass("status-error");
+			$("#status-bar").removeClass("status-info");
+			$("#status-bar").text(message);
+			$( "#calculate" ).attr("disabled", "disabled");
+		} else {
+			//VALID COMBO FOUND
+			$("#status-bar").css("visibility", "hidden");
+			$("#status-bar").addClass("status-error");
+			$("#status-bar").removeClass("status-info");
+			$("#status-bar").text("VALID COMBO FOUND.");
+			$( "#calculate" ).removeAttr("disabled");
+		}
+	} else {
+		$("#status-bar").css("visibility", "hidden");
+		$("#status-bar").addClass("status-info");
+		$("#status-bar").removeClass("status-error");
+		$("#status-bar").text("You have unselected values.");
+		$( "#calculate" ).attr("disabled", "disabled");
+		return
+	}
+
 }
