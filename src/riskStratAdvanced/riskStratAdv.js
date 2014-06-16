@@ -12,7 +12,6 @@ var col;
 var validPrevValue = false;
 var tableFirstColLabel;
 var keysforfunctionnames = ["", "Sens", "Spec", "PPV", "cNPV", "Prev", "Delta"];
-//var updateTextArea = [true, true, true];
 
 var functionnames = ["", "sensitivity", "specificity", "ppv", "cnpv", "prevalence", "delta"];
 var invalidCombos =    ["delta-sensitivity-specificity",
@@ -21,12 +20,12 @@ var invalidCombos =    ["delta-sensitivity-specificity",
 						"cnpv-ppv-sensitivity",
 						"cnpv-ppv-specificity"];
 var initialData = ["", 
-                   "0.8, 0.85,0.9, 0.95, 0.995", 
-                   "0.6,0.75,0.8,0.86,0.92",
-                    "0.6,0.7,0.8,0.9,0.95",
-                    "0.39,0.48,0.59,0.62,0.78",
-                    "0.1,0.2,0.3,0.4,0.5",
-                    "1,2,3,4,5"];
+                   "e.g. 0.8, 0.85,0.9, 0.95, 0.995", 
+                   "e.g. 0.6,0.75,0.8,0.86,0.92",
+                    "e.g. 0.6,0.7,0.8,0.9,0.95",
+                    "e.g. 0.39,0.48,0.59,0.62,0.78",
+                    "e.g. 0.1,0.2,0.3,0.4,0.5",
+                    "e.g. 1,2,3,4,5"];
 var	activeSelectionChange = false;
 
 var keysforfunction = [{1:"Sens"}, {2:"Spec"}, {3:"PPV"}, {4:"cNPV"}, {5:"Prev"}, {6:"Delta"}];
@@ -81,6 +80,14 @@ $(document).ready(function() {
         return this.replace(/^\s+|\s+$/g, ''); 
       };
     }
+    $("#reset").click(function() {
+    	console.log("RESET EVERYTHING BABY");
+    	console.log("RESET blankout examples");
+		makeSelectionsUnique(functionnames, "independent_dropdown");
+    	$("span.variable-example").text("");
+    	$("option").removeAttr("disabled");
+    	console.log("RESET remove disabled from all select lists");
+    });
 
     $("#calculate").click(function()
     {
@@ -227,7 +234,7 @@ function getFunctionName(independent, fixed, contour) {
       }
     }
   }
-  return(rFileName)
+  return(rFileName);
 }
 
 
@@ -396,7 +403,7 @@ function makeSelectionsUnique(originalOptions, elementId) {
 	//Repopulate each dropdown with the original list and reselect.
 	for (var key = 0; key < ids.length; key++) {
 		disabledValues = [];
-		for(i = 0; i < selectedValues.length; i++) {
+		for(var i = 0; i < selectedValues.length; i++) {
 			if(i != key  && selectedValues[i] != "") {
 				disabledValues.push(selectedValues[i]);
 			}
@@ -410,8 +417,9 @@ function makeSelectionsUnique(originalOptions, elementId) {
 		$('#'+dropdownBoxId).val(selectedValues[key]).change();
 	}
 	//If sandbox populate with default values
-	if(window.location.hostname == "analysistools-sandbox.nci.nih.gov")
-		setInitialValue(elementId);
+	//if(window.location.hostname == "analysistools-sandbox.nci.nih.gov" ||
+	//		window.location.hostname == "localhost")
+	setInitialValue(elementId);
 	checkForInvalidVariableCombo(elementId);
 	activeSelectionChange = false;
 	
@@ -456,7 +464,7 @@ function checkForValidRange() {
 
 function setInitialValue(textboxId) {
 	
-	selectedOption = $("#"+textboxId+" option:selected" ).val()
+	selectedOption = $("#"+textboxId+" option:selected" ).val();
 	key = $.inArray(selectedOption, functionnames);
 	
 	eSelect = document.getElementById(textboxId);
@@ -465,7 +473,8 @@ function setInitialValue(textboxId) {
 
 	//This next command removes the selected attribute from options, 
 	//so we will reselect it later.
-	$(eSelect2).find(":input").val(initialData[key]);
+	$(eSelect2).find(":input").val("");
+	$(eSelect2).find("span").text(initialData[key]);
 
 	//Reselect User selection
 	$('#'+textboxId).val(selectedOption).change();

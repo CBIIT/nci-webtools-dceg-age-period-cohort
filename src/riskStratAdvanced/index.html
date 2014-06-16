@@ -9,9 +9,9 @@
 <script src="/lib/jquery/jquery.dataTables.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/lib/jquery/jquery-ui-1.10.3.css" />
-<link rel="stylesheet" type="text/css" href="./style.css" type="text/css" />
-<link rel="stylesheet" type="text/css" href="./riskStratAdv.css" type="text/css" />
-<link rel="stylesheet" type="text/css" href="./dataTables.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="./style.css" />
+<link rel="stylesheet" type="text/css" href="./riskStratAdv.css" />
+<link rel="stylesheet" type="text/css" href="./dataTables.css" />
 
 </head>
 
@@ -42,12 +42,13 @@
 					height="43" />
 			</div>
 		</div>
+		<form>
 
 		<div id='main'>
 			<br>
 			<h2 align="center">Risk Stratification Advanced Analysis Options</h2>
 			<p></p>
-			<div style='width: 550px; float: left; clear:left;'>
+			<div style='width: 750px; float: left; clear:left;'>
 				<table>
 					<tr>
 						<td class='label'>Independent Variable</td>
@@ -67,6 +68,9 @@
 								<input type="text" size="30" id="independent">
 							</label>
 						</td>
+						<td>
+							<span class="variable-example"></span>
+						</td>
 					</tr>
 					<tr>
 						<td class='label'>Contour</td>
@@ -83,6 +87,9 @@
 						</td>
 						<td>
 							<label for="contour"><input type="text" size="30" id="contour">
+						</td>
+						<td>
+							<span class="variable-example"></span>
 						</td>
 					</tr>
 					<tr>
@@ -103,12 +110,16 @@
 								<input type="text" size="30" id="fixed">
 							</label>
 						</td>
+						<td>
+							<span class="variable-example"></span>
+						</td>
 					</tr>
 				</table>
               <br />
               <div id="status-bar">Status Bar</div>
               <br />
               <button type="submit" id="calculate" class="btn btn-primary" disabled>Calculate</button>
+              <button type="reset" id="reset" class="btn ui-icon-refresh">Reset</button>
             </form>
 <br /><br />
 
