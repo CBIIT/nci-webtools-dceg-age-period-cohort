@@ -109,8 +109,8 @@ h2 {
 }
 
 #status-bar {
-    background: #CCC;
-    display: block; 
+	background: #CCC;
+	display: block; 
 	border: none;
 	box-sizing: border-box;
 	font: 18px arial,sans-serif;

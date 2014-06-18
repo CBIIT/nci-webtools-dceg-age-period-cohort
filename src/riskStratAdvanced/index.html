@@ -65,7 +65,7 @@
 						</td>
 						<td>
 							<label for="independent">
-								<input type="text" size="30" id="independent"  pattern="([0-9,.])+([0-9])$" title="An array of floating point numbers seperated by commas." title="An array of floating point numbers seperated by commas" required>
+								<input type="text" size="30" id="independent"  pattern="([0-9,.])+" title="An array of floating point numbers seperated by commas." title="An array of floating point numbers seperated by commas" required>
 							</label>
 						</td>
 						<td>
@@ -87,7 +87,7 @@
 						</td>
 						<td>
 							<label for="contour">
-								<input type="text" size="30" id="contour" pattern="([0-9,.])+([0-9])$" title="An array of floating point numbers seperated by commas." title="An array of floating point numbers seperated by commas" required>
+								<input type="text" size="30" id="contour" pattern="([0-9,.])+" title="An array of floating point numbers seperated by commas." title="An array of floating point numbers seperated by commas" required>
 							</label>
 						</td>
 						<td>
@@ -109,7 +109,7 @@
 						</td>
 						<td>
 							<label for="fixed">
-								<input type="text" size="30" id="fixed" pattern="([0-9,.])+([0-9])$" title="An array of floating point numbers seperated by commas" required>
+								<input type="text" size="30" id="fixed" pattern="([0-9,.])+" title="An array of floating point numbers seperated by commas" required>
 							</label>
 						</td>
 						<td>
@@ -131,15 +131,15 @@
 		<ul>
 			<li class="rule rule1">Specificity, Sensitivity, PPV, cNPV, and Prevalence can only be 0 to 1</li>
 			<li class="rule rule2" style="font-weight:bold;">Delta can be 0 to 5</li>
-			<li class="rule rule3">cNPV < PPV < PPV</li>
+			<li class="rule rule3">cNPV < Prevalence</li>
 				<ul>
-					<li class="rule rule3">For arrays: max(cNPV) < min(PPV)</li>
-				</ul> 
-			<li class="rule rule4">cNPV < Prevalence < PPV</li>
-				<ul>
-					<li class="rule rule4">For arrays: max(prev) < min(PPV)  and max(cNPV) < min(Prevalence)</li>
+					<li class="rule rule3">For arrays: max(cNPV) < min(Prevalence)</li>
 				</ul>
-			<li class="rule rule5">Sensivitity+Specificity-1 > 0</li>
+			<li class="rule rule4">Prevalence < PPV</li>
+				<ul>
+					<li class="rule rule4">For arrays: max(prev) < min(PPV)</li>
+				</ul>
+			<li class="rule rule5">Sensitivity+Specificity-1 > 0</li>
 		</ul>
 		<span style="font-weight:bold;">Do you wish to continue with calculation anyway?</span>
 	</p>
