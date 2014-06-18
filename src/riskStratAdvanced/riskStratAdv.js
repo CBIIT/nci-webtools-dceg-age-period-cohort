@@ -113,28 +113,45 @@ $(document).ready(function() {
     	$("option").removeAttr("disabled");
 		$("#status-bar").css("visibility", "hidden");
     });
+    
     $("input").keyup(function(){
-    	console.log("keyup detected");
-    	var selectedValues = [];
-    	//Get ids from select elements
-    	var ids = $("input").map(function() {
-        	return this.id;
-    	}).get();
-    	//Save currently selected values
-    	$.each( ids, function( key, elementId ) {
-    		selectedValues.push($('#'+ elementId).val().length);
-    	});
-    	console.log('selectedValues');
-    	console.dir(selectedValues);
-    	console.dir(validCombo);
-    	if($.inArray(0, selectedValues) == -1 && validCombo) {
-    		console.log("ENABLE BUTTON");
-    		$( "#calculate" ).button( "option", "disabled", false );
-    	} else {
-    		console.log("DISABLE BUTTON");
-    		$( "#calculate" ).button( "option", "disabled", true );
-    	}
+    	console.log("change detected");
+    	checkInputFields();
+	});
+    
+    $("input").change(function(){
+    	console.log("change detected");
+    	checkInputFields();
     });
+  
+    //Mouseup event needed for ie to determine if they hit clear. 
+    $("input").bind("mouseup", function(e){
+    	console.log("mouseup");
+		var $input = $(this);
+		var oldValue = $input.val();
+		
+		if (oldValue == "") return;
+		
+		// When this event is fired after clicking on the clear button
+		// the value is not cleared yet. We have to wait for it.
+		setTimeout(function() {
+			var newValue = $input.val();
+
+			if (newValue == "") {
+				// Gotcha
+				$input.trigger("cleared");
+		    	checkInputFields();
+				console.log("You hit the cleared button");
+			}
+		}, 1);
+    });
+    
+	$('input').blur(function(evt) {
+	    evt.target.checkValidity();
+	}).bind('invalid', function(event) {
+	   alert('Invalid input detected');
+	});
+    
     $("#calculate").button().click(function() {
     	if(checkRules() == "Fail") {
        		$( "#dialog-confirm" ).dialog("open");
@@ -211,6 +228,29 @@ function checkRule(ruleId, vars, values) {
 	}
 	
 	return status;
+}
+
+function checkInputFields() {
+	var selectedValues = [];
+	//Get ids from select elements
+	var ids = $("input").map(function() {
+    	return this.id;
+	}).get();
+	//Save currently selected values
+	$.each( ids, function( key, elementId ) {
+		selectedValues.push($('#'+ elementId).val().length);
+	});
+	console.log('selectedValues');
+	console.dir(selectedValues);
+	console.dir(validCombo);
+	if($.inArray(0, selectedValues) == -1 && validCombo) {
+		console.log("ENABLE BUTTON");
+		$( "#calculate" ).button( "option", "disabled", false );
+	} else {
+		console.log("DISABLE BUTTON");
+		$("#calculate").button( "option", "disabled", true );
+	};
+
 }
 function calculate() {
     var fixedArray = ""; // prevalence
