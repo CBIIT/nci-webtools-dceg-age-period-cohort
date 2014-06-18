@@ -27,6 +27,7 @@ var initialData = ["",
                     "e.g. 0.1,0.2,0.3,0.4,0.5",
                     "e.g. 1,2,3,4,5"];
 var	activeSelectionChange = false;
+var validCombo = false;
 
 var keysforfunction = [{1:"Sens"}, {2:"Spec"}, {3:"PPV"}, {4:"cNPV"}, {5:"Prev"}, {6:"Delta"}];
 var keysforfunction = [{1:"sensitivity"}, {2:"specificity"}, {3:"ppv"}, {4:"cnpv"}, {5:"prevalence"}, {6:"delta"}];
@@ -69,8 +70,34 @@ var keyLong = [{1:"Prevalence required to achieve specified PPV given delta and 
 {1:"Delta required to achieve specified cNPV given prevalence and specificity", 2:"Sensitivity required to achieve specified cNPV given prevalence and specificity"}];
 
 $(document).ready(function() {
+	//Create a dialog box to ask user if they would like to continue on rule violation.
+	 $(function() {
+		 $( "#dialog-confirm" ).dialog({
+			 resizable: false,
+			 height:375,
+			 width: 400,
+			 autoOpen: false,
+			 modal: true,
+			 buttons: {
+				 Yes: function() {
+					 $( this ).dialog( "close" );
+					// alert("calculate");
+					 calculate();
+				 },
+				 Cancel: function() {
+					 $( this ).dialog( "close" );
+					// alert('Cancel');
+				 }
+			 }
+		 });
+	});
+	/* 
+    $("#test-rules" ).button().click(function() {
+   		$( "#dialog-confirm" ).dialog("open");
+   		return false;
+    });
+	*/
 
-	//makeSelectionsUnique(functionnames);
 	$( "select" ).change(function() {
 			makeSelectionsUnique(functionnames, this.id);
 	});
@@ -80,130 +107,225 @@ $(document).ready(function() {
         return this.replace(/^\s+|\s+$/g, ''); 
       };
     }
-    $("#reset").click(function() {
-    	console.log("RESET EVERYTHING BABY");
-    	console.log("RESET blankout examples");
+    $("#reset").button().click(function() {
 		makeSelectionsUnique(functionnames, "independent_dropdown");
     	$("span.variable-example").text("");
     	$("option").removeAttr("disabled");
-    	console.log("RESET remove disabled from all select lists");
+		$("#status-bar").css("visibility", "hidden");
     });
-
-    $("#calculate").click(function()
-    {
-        var fixedArray = ""; // prevalence
-        var contourArray = ""; // ppv
-        var independentArray = ""; //specificity
-
-        var independentArray = $("#independent").val();
-        var independentval = $("#independent_dropdown").val();
-        independentArraySplit = independentArray.split(",");
-        var independentMin = Math.min.apply( Math, independentArraySplit )
-        var independentMax = Math.max.apply( Math, independentArraySplit )
-        var contourArray = $("#contour").val();
-        var contourval = $("#contour_dropdown").val();
-        var columnHeadings = contourArray.split(",");
-        var fixedArray = $("#fixed").val();
-        var fixedval = $("#fixed_dropdown").val();
-        var fixedArraySplit = fixedArray.split(",");
-        var fixedArraySize = fixedArraySplit.length;
-    
-        var fixed_dropdown = $("#fixed_dropdown").val();
-        
-        uniqueKey = (new Date()).getTime();
-    
-        var tabkey = ["Prevalence_Odds_Length"];
-        //var keys = ["Sensitivity",
-        //            "Delta"];
-        var titlekeys = ["Sensitivity required to achieve specified PPV given prevalence and specificity",
-                    "Delta required to achieve specified PPV given prevalence and specificity"];
-
-        var abbreviatedkeys = ["Sensitivity", 
-                               "Delta"];
-        var numberOfKeysForCurrentFunction = 0;
-
-        var keyvalueIndex = getKeyValueIndex(independentval, fixedval, contourval);
-        if (keyvalueIndex >= 0)
-        {
-        	var keyvalueShort = keyShort[keyvalueIndex];
-        	var keyvalueLong  = keyLong[keyvalueIndex];   
-		for (var key in keyvalueShort) {
-			numberOfKeysForCurrentFunction++;
-		}		
-        	var eIndependent = document.getElementById("independent_dropdown");
-        	var selectedIndependentValue  = eIndependent.options[eIndependent.selectedIndex].text;
-
-        	var eContour = document.getElementById("contour_dropdown");
-        	var selectedContourValue = eContour.options[eContour.selectedIndex].text;
-
-		tableFsrstColLabel = selectedIndependentValue + "\\" + selectedContourValue;
-		open_threads = numberOfKeysForCurrentFunction.length;
-		error_count = 0;
-
-		
-		$("#output").empty();
-		
-		// First make the right tabs
-		
-		tabs = $("<div id='tabs' style='width:1500px;'> </div>");
-		$("#output").append(tabs);
-		tab_names = $("<UL> </UL>");
-		tabs.append(tab_names);
-      		var spacing = "<p></p><p></p><p></p>";
-		
-		for (var i=0; i < fixedArraySplit.length; i++) {
-			tab_names.append("<LI><a  style='padding:3px;' href='#fixed-" + (i+1) + "'>" + fixed_dropdown + "<br>&nbsp&nbsp&nbsp "+ fixedArraySplit[i] + "</a></LI>");
-			tab_pane = $("<DIV style='width:1500px;height:1100px;' id='fixed-" + (i+1) + "' >  </div>")
-			tabs.append(tab_pane);			
-                        //tab_pane.append("<TABLE>");
-			//table_side = ("<TR><TD><div class='table-side' id='table-" + (i+1) + "'></div></TD>");
-		    //for (var j=0; j < abbreviatedkeys.length; j++) {
-		    for (var key in keyvalueShort) {
-			//table_graph_div = $("<div class='set-"+ abbreviatedkeys[j] + (i+1) + "' style='width: 1100px; float: left; clear:left;'><p></p></div>");
-			table_graph_div = $("<div class='set-"+ keyvalueShort[key] + (i+1) + "' style='width: 1200px; float: left; clear:left;'><p></p></div>");
-			tab_pane.append(table_graph_div);
-			graphic_side = ("<div class='graphic-side' id='graphic-" + keyvalueShort[key] +  (i+1) + "'><div style='clear:right;padding-top:10px;'> </div></div>");
-			table_graph_div.append(graphic_side);
-			table_side = $("<div class='table-side' id='table-" + keyvalueShort[key] + (i+1) + "'><br><h5>&nbsp;&nbsp;"+keyvalueLong[key]+"</h5></div><br><br>");
-			table_graph_div.append(table_side);
-			//graphic_side = ("<TD><div class='graphic-side' id='graphic-" + (i+1) + "'> </div></TD></TR>");
-                   }
-		}
-                //tab_pane.append("</TABLE>");
-		tabs.tabs();
-
-		for (var fixedValue=0; fixedValue < fixedArraySplit.length; fixedValue++)
-		{
-			tabindex = fixedValue+1;
-			//for (var keyIndex=0; keyIndex < keys.length; keyIndex++)
-			for (var shortkey in keyvalueShort)
-			{
-				getData({
-					key:keyvalueShort[shortkey],
-					keyindex:shortkey,
-					independentval:independentval,
-					fixedval:fixedval,
-					contourval:contourval,
-					independent:independentArray,
-					fixed:fixedArray,
-					Contour:contourArray,
-					Specmin:independentMin,
-					Specmax:independentMax,
-					uniqueId:uniqueKey,
-					tab:tabindex,
-					tabvalue:fixedArraySplit[fixedValue],
-					abreviatedkey:keyvalueShort[shortkey]
-				}, keyvalueShort[shortkey], tabindex, fixedArraySplit[fixedValue], uniqueKey, keyvalueShort[shortkey], columnHeadings);
-			}
-		}
-	} // if function mapping is available
-        else
-        {
-                $("#output").empty();
-        }
-     }); // calculate   
+    $("input").keyup(function(){
+    	console.log("keyup detected");
+    	var selectedValues = [];
+    	//Get ids from select elements
+    	var ids = $("input").map(function() {
+        	return this.id;
+    	}).get();
+    	//Save currently selected values
+    	$.each( ids, function( key, elementId ) {
+    		selectedValues.push($('#'+ elementId).val().length);
+    	});
+    	console.log('selectedValues');
+    	console.dir(selectedValues);
+    	console.dir(validCombo);
+    	if($.inArray(0, selectedValues) == -1 && validCombo) {
+    		console.log("ENABLE BUTTON");
+    		$( "#calculate" ).button( "option", "disabled", false );
+    	} else {
+    		console.log("DISABLE BUTTON");
+    		$( "#calculate" ).button( "option", "disabled", true );
+    	}
+    });
+    $("#calculate").button().click(function() {
+    	if(checkRules() == "Fail") {
+       		$( "#dialog-confirm" ).dialog("open");
+       		return false;
+    	} else {
+        	//alert("calculate");
+        	calculate();
+    	}
+    }); // calculate   
 });  // ready
 
+function checkRules() {
+	
+	var overallStatus = "Pass";
+	var numberOfRules = 5;
+	var vars = [];
+	var values = [];
+	$(".rule").removeAttr("style");
+	//get vars
+	//get values
+	for(var ruleId=1; ruleId<=numberOfRules; ruleId++) {
+		if(checkRule(ruleId, vars, values) == "Fail"){
+			ruleClass = "rule"+ruleId;
+			$("."+ruleClass).css("font-weight", "bold");
+			overallStatus = "Fail";
+		}
+	}
+	
+	overallStatus = "Fail";
+	console.log("overallStatus = "+overallStatus);
+	return overallStatus;
+
+}
+
+function checkRule(ruleId, vars, values) {
+	console.info("checking rule "+ruleId);
+	staus = "Pass";
+	switch(ruleId) {
+	case 1:
+		//
+		//Rule 1:
+		//Specificity, Sensitivity, PPV, cNPV, Prevalence can only be 0 to 1
+		//
+		status = "Pass";
+		break;
+	case 2:
+		//
+		//Rule 2:
+		//Delta can be 0 to 5
+		//
+		status = "Pass";
+	    break;
+	case 3:
+		//
+		//Rule 3:
+		//cNPV<PPV ...	For arrays: max(cNPV)<min(PPV)
+		//
+		status = "Pass";
+	    break;
+	case 4:
+		//
+		//Rule 4:
+		// cNPV < Prevalence < PPV... For arrays: max(prev)<min(PPV)  and max(cNPV)<min(Prevalence)
+		//
+		status = "Fail";
+	    break;
+	case 5:
+		//
+		//Rule 5:
+		//Sensivitity+Specificity-1>0
+		//
+		status = "Pass";
+	    break;
+	}
+	
+	return status;
+}
+function calculate() {
+    var fixedArray = ""; // prevalence
+    var contourArray = ""; // ppv
+    var independentArray = ""; //specificity
+
+    var independentArray = $("#independent").val();
+    var independentval = $("#independent_dropdown").val();
+    independentArraySplit = independentArray.split(",");
+    var independentMin = Math.min.apply( Math, independentArraySplit )
+    var independentMax = Math.max.apply( Math, independentArraySplit )
+    var contourArray = $("#contour").val();
+    var contourval = $("#contour_dropdown").val();
+    var columnHeadings = contourArray.split(",");
+    var fixedArray = $("#fixed").val();
+    var fixedval = $("#fixed_dropdown").val();
+    var fixedArraySplit = fixedArray.split(",");
+    var fixedArraySize = fixedArraySplit.length;
+
+    var fixed_dropdown = $("#fixed_dropdown").val();
+    
+    uniqueKey = (new Date()).getTime();
+
+    var tabkey = ["Prevalence_Odds_Length"];
+    //var keys = ["Sensitivity",
+    //            "Delta"];
+    var titlekeys = ["Sensitivity required to achieve specified PPV given prevalence and specificity",
+                "Delta required to achieve specified PPV given prevalence and specificity"];
+
+    var abbreviatedkeys = ["Sensitivity", 
+                           "Delta"];
+    var numberOfKeysForCurrentFunction = 0;
+
+    var keyvalueIndex = getKeyValueIndex(independentval, fixedval, contourval);
+    if (keyvalueIndex >= 0)
+    {
+    	var keyvalueShort = keyShort[keyvalueIndex];
+    	var keyvalueLong  = keyLong[keyvalueIndex];   
+	for (var key in keyvalueShort) {
+		numberOfKeysForCurrentFunction++;
+	}		
+    	var eIndependent = document.getElementById("independent_dropdown");
+    	var selectedIndependentValue  = eIndependent.options[eIndependent.selectedIndex].text;
+
+    	var eContour = document.getElementById("contour_dropdown");
+    	var selectedContourValue = eContour.options[eContour.selectedIndex].text;
+
+	tableFsrstColLabel = selectedIndependentValue + "\\" + selectedContourValue;
+	open_threads = numberOfKeysForCurrentFunction.length;
+	error_count = 0;
+
+	
+	$("#output").empty();
+	
+	// First make the right tabs
+	
+	tabs = $("<div id='tabs' style='width:1500px;'> </div>");
+	$("#output").append(tabs);
+	tab_names = $("<UL> </UL>");
+	tabs.append(tab_names);
+  		var spacing = "<p></p><p></p><p></p>";
+	
+	for (var i=0; i < fixedArraySplit.length; i++) {
+		tab_names.append("<LI><a  style='padding:3px;' href='#fixed-" + (i+1) + "'>" + fixed_dropdown + "<br>&nbsp&nbsp&nbsp "+ fixedArraySplit[i] + "</a></LI>");
+		tab_pane = $("<DIV style='width:1500px;height:1100px;' id='fixed-" + (i+1) + "' >  </div>")
+		tabs.append(tab_pane);			
+                    //tab_pane.append("<TABLE>");
+		//table_side = ("<TR><TD><div class='table-side' id='table-" + (i+1) + "'></div></TD>");
+	    //for (var j=0; j < abbreviatedkeys.length; j++) {
+	    for (var key in keyvalueShort) {
+		//table_graph_div = $("<div class='set-"+ abbreviatedkeys[j] + (i+1) + "' style='width: 1100px; float: left; clear:left;'><p></p></div>");
+		table_graph_div = $("<div class='set-"+ keyvalueShort[key] + (i+1) + "' style='width: 1200px; float: left; clear:left;'><p></p></div>");
+		tab_pane.append(table_graph_div);
+		graphic_side = ("<div class='graphic-side' id='graphic-" + keyvalueShort[key] +  (i+1) + "'><div style='clear:right;padding-top:10px;'> </div></div>");
+		table_graph_div.append(graphic_side);
+		table_side = $("<div class='table-side' id='table-" + keyvalueShort[key] + (i+1) + "'><br><h5>&nbsp;&nbsp;"+keyvalueLong[key]+"</h5></div><br><br>");
+		table_graph_div.append(table_side);
+		//graphic_side = ("<TD><div class='graphic-side' id='graphic-" + (i+1) + "'> </div></TD></TR>");
+               }
+	}
+            //tab_pane.append("</TABLE>");
+	tabs.tabs();
+
+	for (var fixedValue=0; fixedValue < fixedArraySplit.length; fixedValue++)
+	{
+		tabindex = fixedValue+1;
+		//for (var keyIndex=0; keyIndex < keys.length; keyIndex++)
+		for (var shortkey in keyvalueShort)
+		{
+			getData({
+				key:keyvalueShort[shortkey],
+				keyindex:shortkey,
+				independentval:independentval,
+				fixedval:fixedval,
+				contourval:contourval,
+				independent:independentArray,
+				fixed:fixedArray,
+				Contour:contourArray,
+				Specmin:independentMin,
+				Specmax:independentMax,
+				uniqueId:uniqueKey,
+				tab:tabindex,
+				tabvalue:fixedArraySplit[fixedValue],
+				abreviatedkey:keyvalueShort[shortkey]
+			}, keyvalueShort[shortkey], tabindex, fixedArraySplit[fixedValue], uniqueKey, keyvalueShort[shortkey], columnHeadings);
+		}
+	}
+} // if function mapping is available
+    else
+    {
+            $("#output").empty();
+    }
+}	
+
+	
 function getKeyValueIndex(independentvalue, fixedvalue, contourvalue) {
 
   rfunctionname = getFunctionName(independentvalue, fixedvalue, contourvalue);
@@ -384,6 +506,8 @@ function makeSelectionsUnique(originalOptions, elementId) {
 	
 	var selectedValues = [];
 	var disabledValues = [];
+	
+	$( "#calculate" ).button( "option", "disabled", true );
 
 	if(activeSelectionChange == true)
 		return;
@@ -513,21 +637,28 @@ function checkForInvalidVariableCombo() {
 			$("#status-bar").addClass("status-error");
 			$("#status-bar").removeClass("status-info");
 			$("#status-bar").text(message);
-			$( "#calculate" ).attr("disabled", "disabled");
+			//$( "#calculate" ).attr("disabled", "disabled");
+			//$( "#calculate" ).button( "option", "disabled", true );
+			validCombo = false;
 		} else {
 			//VALID COMBO FOUND
 			$("#status-bar").css("visibility", "hidden");
 			$("#status-bar").addClass("status-error");
 			$("#status-bar").removeClass("status-info");
 			$("#status-bar").text("VALID COMBO FOUND.");
-			$( "#calculate" ).removeAttr("disabled");
+			//$( "#calculate" ).removeAttr("disabled");
+			//$( "#calculate" ).button( "option", "disabled", false );
+			validCombo = true;
 		}
 	} else {
 		$("#status-bar").css("visibility", "hidden");
 		$("#status-bar").addClass("status-info");
 		$("#status-bar").removeClass("status-error");
 		$("#status-bar").text("You have unselected values.");
-		$( "#calculate" ).attr("disabled", "disabled");
+		//$( "#calculate" ).attr("disabled", "disabled");
+		//$( "#calculate" ).button( "option", "disabled", true );
+		validCombo = false;
+
 		return
 	}
 

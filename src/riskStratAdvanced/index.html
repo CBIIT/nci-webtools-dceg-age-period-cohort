@@ -48,7 +48,7 @@
 			<br>
 			<h2 align="center">Risk Stratification Advanced Analysis Options</h2>
 			<p></p>
-			<div style='width: 750px; float: left; clear:left;'>
+			<div style='width: 100%; float: left; clear:left;'>
 				<table>
 					<tr>
 						<td class='label'>Independent Variable</td>
@@ -86,7 +86,9 @@
 							</select>
 						</td>
 						<td>
-							<label for="contour"><input type="text" size="30" id="contour">
+							<label for="contour">
+								<input type="text" size="30" id="contour" pattern="([0-9,.])+([0-9])$" title="An array of floating point numbers seperated by commas.">
+							</label>
 						</td>
 						<td>
 							<span class="variable-example"></span>
@@ -95,7 +97,7 @@
 					<tr>
 						<td class='label'>Fixed Values</td>
 						<td>
-							<select id="fixed_dropdown" name="fixed_dropdown" id='fixed_dropdown'>
+							<select id="fixed_dropdown" name="fixed_dropdown" id='fixed_dropdown' pattern="([0-9,.])+([0-9])$"  title="An array of floating point numbers seperated by commas">
 								<option value="" selected></option>
 								<option value="prevalence">prevalence</option>
 								<option value="delta">delta</option>
@@ -107,7 +109,7 @@
 						</td>
 						<td>
 							<label for="fixed">
-								<input type="text" size="30" id="fixed">
+								<input type="text" size="30" id="fixed" pattern="([0-9,.])+([0-9])$" title="An array of floating point numbers seperated by commas">
 							</label>
 						</td>
 						<td>
@@ -116,14 +118,32 @@
 					</tr>
 				</table>
               <br />
-              <div id="status-bar">Status Bar</div>
-              <br />
               <button type="submit" id="calculate" class="btn btn-primary" disabled>Calculate</button>
-              <button type="reset" id="reset" class="btn ui-icon-refresh">Reset</button>
+              <button type="reset" id="reset" class="btn">Reset</button>
+<!--               <button id="test-rules" class="btn">Rules</button> -->
+              <div id="status-bar">Status Bar</div>
             </form>
 <br /><br />
-
-
+<div id="dialog-confirm" title="Rules Violation">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+		<div> One or more of the following rules have been violated:</div>
+		<ul>
+			<li class="rule rule1">Specificity, Sensitivity, PPV, cNPV, and Prevalence can only be 0 to 1</li>
+			<li class="rule rule2" style="font-weight:bold;">Delta can be 0 to 5</li>
+			<li class="rule rule3">cNPV < PPV < PPV</li>
+				<ul>
+					<li class="rule rule3">For arrays: max(cNPV) < min(PPV)</li>
+				</ul> 
+			<li class="rule rule4">cNPV < Prevalence < PPV</li>
+				<ul>
+					<li class="rule rule4">For arrays: max(prev) < min(PPV)  and max(cNPV) < min(Prevalence)</li>
+				</ul>
+			<li class="rule rule5">Sensivitity+Specificity-1 > 0</li>
+		</ul>
+		<span style="font-weight:bold;">Do you wish to continue with calculation anyway?</span>
+	</p>
+</div>
 <div id='output'> 
 </div>
 
