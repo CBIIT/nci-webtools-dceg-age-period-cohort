@@ -65,7 +65,7 @@
 						</td>
 						<td>
 							<label for="independent">
-								<input type="text" size="30" id="independent">
+								<input type="text" size="30" id="independent"  pattern="([0-9,.])+([0-9])$" title="An array of floating point numbers seperated by commas." title="An array of floating point numbers seperated by commas" required>
 							</label>
 						</td>
 						<td>
@@ -87,7 +87,7 @@
 						</td>
 						<td>
 							<label for="contour">
-								<input type="text" size="30" id="contour" pattern="([0-9,.])+([0-9])$" title="An array of floating point numbers seperated by commas.">
+								<input type="text" size="30" id="contour" pattern="([0-9,.])+([0-9])$" title="An array of floating point numbers seperated by commas." title="An array of floating point numbers seperated by commas" required>
 							</label>
 						</td>
 						<td>
@@ -97,7 +97,7 @@
 					<tr>
 						<td class='label'>Fixed Values</td>
 						<td>
-							<select id="fixed_dropdown" name="fixed_dropdown" id='fixed_dropdown' pattern="([0-9,.])+([0-9])$"  title="An array of floating point numbers seperated by commas">
+							<select id="fixed_dropdown" name="fixed_dropdown" id='fixed_dropdown'>
 								<option value="" selected></option>
 								<option value="prevalence">prevalence</option>
 								<option value="delta">delta</option>
@@ -109,7 +109,7 @@
 						</td>
 						<td>
 							<label for="fixed">
-								<input type="text" size="30" id="fixed" pattern="([0-9,.])+([0-9])$" title="An array of floating point numbers seperated by commas">
+								<input type="text" size="30" id="fixed" pattern="([0-9,.])+([0-9])$" title="An array of floating point numbers seperated by commas" required>
 							</label>
 						</td>
 						<td>
