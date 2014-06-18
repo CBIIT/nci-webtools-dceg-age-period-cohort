@@ -445,6 +445,8 @@ function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey){
         }
         else
         {
+		$("#status-bar").css("visibility", "visible");
+		$("#status-bar").addClass("status-error");
                 $("#status-bar").append(tableError[1].message);
         }
 }
