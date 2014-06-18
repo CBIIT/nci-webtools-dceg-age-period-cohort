@@ -397,70 +397,56 @@ function handleError(error, status, request){
 }
 
 function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey){
-        //console.log("JSON("+tabnumber+"): " + JSON.stringify(jsonTableData));
-
-//        console.log(columnHeadings);
-
-        
-        // We have to tear apart the json return object and make a new one with the right values
-        // First row is independent variable
         var independentArray = $("#independent").val();
         independentArraySplit = independentArray.split(",");
-        
-        
+
+
         var arr=[];
-        rows = jsonTableData.length;
-        for (var i=0;i<jsonTableData.length;i++) {
-        	var values = [];
-        	row_entries = jsonTableData[i];
-        	values.push(parseFloat(independentArraySplit[i]));
-        	for(var key in row_entries) {
-        	    values.push(row_entries[key]);
-        	}
-        	arr.push(values);
-        }        
+        var tableData = jsonTableData[0].data;
+        var tableError = jsonTableData[0].error;
+        if (tableError[0].true != 1)
+        {
+                rows = tableData.length;
+                for (var i=0;i<tableData.length;i++) {
+                        var values = [];
+                        row_entries = tableData[i];
+                        values.push(parseFloat(independentArraySplit[i]));
+                        for(var key in row_entries) {
+                                values.push(row_entries[key]);
+                        }
+                        arr.push(values);
+                }
 
-        var headings = [];
-        //headings.push({
-    //		sTitle: "&nbsp;"
-     //   });
-        headings.push({
-    		sTitle: tableFsrstColLabel 
-        });
-        for (var i=0;i<columnHeadings.length;i++) {
-        	headings.push({
-        		sTitle: columnHeadings[i]
-            });
-         }
-        //console.log("COL_HEAD: " + JSON.stringify(headings));
-        
-        
-      var table = $("<table cellpadding='0' cellspacing='0' border='0' class='display' id='example'></table>");
-      $("#table-" + abbreviatedKey + tabnumber).append(table);
-      table.dataTable( {
-		"aaData": arr,
-		"aoColumns": headings,
-		"bAutoWidth" : false,
-		"bFilter": false,
-		"bSearchable":false,
-		"bInfo":false,
-		"bSort":false,
-		"bPaginate": false,
-		"bDestroy": true,
-		"aaSorting": [[ 0, "asc" ]]
-      });
-        
-//        $('#output' + tabnumber).dataTable( {
-//                "aaData": jsonTableData,
-//                "aoColumns": columnHeaderData2d,
-//                "bAutoWidth" : false,
-//                "bFilter": false,
-//                "bSearchable":false,
-//                "bInfo":false,
-//                "bPaginate": false,
-//                "bDestroy": true
-//        });
+                var headings = [];
+                headings.push({
+                        sTitle: tableFsrstColLabel
+                });
+                for (var i=0;i<columnHeadings.length;i++) {
+                        headings.push({
+                                sTitle: columnHeadings[i]
+                        });
+                }
 
+
+                var table = $("<table cellpadding='0' cellspacing='0' border='0' class='display' id='example'></table>");
+                $("#table-" + abbreviatedKey + tabnumber).append(table);
+                table.dataTable( {
+                        "aaData": arr,
+                        "aoColumns": headings,
+                        "bAutoWidth" : false,
+                        "bFilter": false,
+                        "bSearchable":false,
+                        "bInfo":false,
+                        "bSort":false,
+                        "bPaginate": false,
+                        "bDestroy": true,
+                        "aaSorting": [[ 0, "asc" ]]
+                });
+        }
+        else
+        {
+                $("#status-bar").append(tableError[1].message);
+        }
 }
 
 function getColumnHeaderData(columnHeadings) {

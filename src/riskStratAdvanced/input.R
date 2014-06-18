@@ -34,11 +34,22 @@ getDataJSON <-function(urlEncodedString)
   tab <- gettab(inputList);
   tabvalue <- gettabvalue(inputList);
   keyGraphName <- getgraphname(inputList);
-  datatransposed<- getTable(independentvalue, fixedvalue, contourvalue, independent, fixed, contour, gsub("\n","",keyGraphName), keynumber, tabvalue, uniqueId);
-  
   jsonString = "";
-  jsonString=toJSON(datatransposed[,,as.numeric(tab)], method="C");
-  str_replace_all(jsonString, "[\n]","");
+  json_string = "";
+  errorString = "";
+  assign("last.warning", NULL, envir = baseenv());
+  result<-try(getTable(independentvalue, fixedvalue, contourvalue, independent, fixed, contour, gsub("\n","",keyGraphName), keynumber, tabvalue, uniqueId));
+
+  resultCheck = is(result,"try-error");
+
+  if (resultCheck == "FALSE") {
+    json_string = paste("[{\"error\": [{ \"true\": 0}, {\"message\": \"", " ", "\"}], \"data\":", str_replace_all(toJSON(result[,,as.numeric(tab)], method="C"), "[\n]",""), "}]")
+  } else {
+    json_string = paste("[{\"error\": [{ \"true\": 1}, {\"message\": \"",  str_replace_all(result[1], "[\n]",""), "\"}], \"data\":{}}]")
+  }
+
+  print(json_string);
+  return (json_string);
 }
 
 getVector <- function (vectorstring) {
