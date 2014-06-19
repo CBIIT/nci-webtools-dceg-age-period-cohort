@@ -20,7 +20,7 @@ var invalidCombos =    ["delta-sensitivity-specificity",
 						"cnpv-ppv-sensitivity",
 						"cnpv-ppv-specificity"];
 var initialData = ["", 
-					"e.g. 0.8, 0.85,0.9, 0.95, 0.995", 
+					"e.g. 0.8,0.85,0.9,0.95,0.995",
 					"e.g. 0.6,0.75,0.8,0.86,0.92",
 					"e.g. 0.6,0.7,0.8,0.9,0.95",
 					"e.g. 0.39,0.48,0.59,0.62,0.78",
@@ -71,62 +71,71 @@ var keyLong = [{1:"Prevalence required to achieve specified PPV given delta and 
 {1:"Delta required to achieve specified cNPV given prevalence and specificity", 2:"Sensitivity required to achieve specified cNPV given prevalence and specificity"}];
 
 $(document).ready(function() {
+
+	if(typeof String.prototype.trim !== 'function') {
+		String.prototype.trim = function() {
+			return this.replace(/^\s+|\s+$/g, ''); 
+		};
+	}
+	
 	//Create a dialog box to ask user if they would like to continue on rule violation.
 	createRulesDialog();
+	setupInputEvents();
 
 	$( "select" ).change(function() {
 			makeSelectionsUnique(functionnames, this.id);
 	});
-    
-    if(typeof String.prototype.trim !== 'function') {
-      String.prototype.trim = function() {
-        return this.replace(/^\s+|\s+$/g, ''); 
-      };
-    }
-    $("#reset").button().click(function() {
+
+	$("#reset").button().click(function() {
 		makeSelectionsUnique(functionnames, "independent_dropdown");
-    	$("span.variable-example").text("");
-    	$("option").removeAttr("disabled");
+		$("span.variable-example").text("");
+		$("option").removeAttr("disabled");
 		$("#status-bar").css("visibility", "hidden");
-    });
-    
-    $("input").keyup(function(){
-    	checkInputFields();
 	});
-    
-    $("input").change(function(){
-    	checkInputFields();
-    });
-  
-    //Mouseup event needed for ie to determine if they hit clear. 
-    $("input").bind("mouseup", function(e){
-		var $input = $(this);
-		var oldValue = $input.val();
-		
-		if (oldValue == "") return;
-		
-		// When this event is fired after clicking on the clear button
-		// the value is not cleared yet. We have to wait for it.
-		setTimeout(function() {
-			var newValue = $input.val();
-			if (newValue == "") {
-				// Gotcha
-				$input.trigger("cleared");
-		    	checkInputFields();
-			}
-		}, 1);
-    });
-    $("#calculate").button().click(function(e) {
-    	//e.preventDefault();
-    	if(checkRules() == "Fail") {
-       		$( "#dialog-confirm" ).dialog("open");
-       		return false;
-    	} else {
-        	calculate();
-    	}
-    });
-    
+
+	$("#calculate").button().click(function(e) {
+		//e.preventDefault();
+		if(checkRules() == "Fail") {
+			$( "#dialog-confirm" ).dialog("open");
+			return false;
+		} else {
+			calculate();
+		}
+	});
+
 });
+
+function setupInputEvents() {
+	$(function() {
+		$("input").keyup(function(){
+			checkInputFields();
+		});
+
+		$("input").change(function(){
+			checkInputFields();
+		});
+		//Mouseup event needed for ie to determine if they hit clear. 
+		$("input").bind("mouseup", function(e){
+			var $input = $(this);
+			var oldValue = $input.val();
+			
+			if (oldValue == "") return;
+			
+			// When this event is fired after clicking on the clear button
+			// the value is not cleared yet. We have to wait for it.
+			setTimeout(function() {
+				var newValue = $input.val();
+				if (newValue == "") {
+					// Gotcha
+					console.log("You are an IE user, hit cleared.");
+					$input.trigger("cleared");
+					checkInputFields();
+				}
+			}, 1);
+		});
+		 
+	 });
+}
 
 function createRulesDialog() {
 	 $(function() {
@@ -166,7 +175,7 @@ function checkRules() {
 
 	//Get ids from select elements
 	var ids = $("select").map(function() {
-    	return this.id;
+		return this.id;
 	}).get();
 	//Save currently selected values
 	$.each( ids, function( key, elementId ) {
@@ -256,39 +265,39 @@ function checkRule(ruleId, vars, values, min, max) {
 		// cNPV < Prevalence
 		//For arrays: max(cNPV) < min(Prevalence)
 		//
-		cnpvPostion = $.inArray("cnpv", vars);
-		prevalencePostion = $.inArray("prevalence", vars);
-		if(cnpvPostion>=0 && prevalencePostion>= 0) {
-			if(max[cnpvPostion] >= min[prevalencePostion])
+		cnpvPosition = $.inArray("cnpv", vars);
+		prevalencePosition = $.inArray("prevalence", vars);
+		if(cnpvPosition >= 0 && prevalencePosition >= 0) {
+			if(max[cnpvPosition] >= min[prevalencePosition])
 				status = "Fail";
 		}
 		console.log("status = "+status);
 	    break;
 	case 4:
 		//
-		//Rule 4:
+		// Rule 4:
 		// Prevalence < PPV...
 		//
 		//For arrays: max(prev) < min(PPV)</li>
-		prevalencePostion = $.inArray("prevalence", vars);
-		ppvPostion = $.inArray("ppv", vars);
-		if(prevalencePostion>=0 && ppvPostion>= 0) {
-			if(max[prevalencePostion] >= min[ppvPostion])
+		prevalencePosition = $.inArray("prevalence", vars);
+		ppvPosition = $.inArray("ppv", vars);
+		if(prevalencePosition >=0 && ppvPosition >= 0) {
+			if(max[prevalencePosition] >= min[ppvPosition])
 				status = "Fail";
 		}
 		
 	    break;
 	case 5:
 		//
-		//Rule 5:
-		//Sensivitity+Specificity-1>0
+		// Rule 5:
+		// Sensivitity+Specificity-1>0
 		//
-		//TODO:  Need to think through on a sorted array level, go through each position in array.
-		sensitivityPostion = $.inArray("sensitivity", vars);
-		specificityPostion = $.inArray("specificity", vars);
-		if(sensitivityPostion>=0 && specificityPostion>= 0) {
-			//if(max(cnpvPostion) >= min(ppvPostion))
-			//	status = "Fail";
+		sensitivityPosition = $.inArray("sensitivity", vars);
+		specificityPosition = $.inArray("specificity", vars);
+		if(sensitivityPosition >= 0 && specificityPosition >= 0) {
+			//TODO:  Need to think through on a sorted array level, go through each position in array.
+			if(max[sensitivityPosition] + max[specificityPosition] <= 1)
+				status = "Fail";
 		}
 	    break;
 	}
@@ -313,8 +322,8 @@ function checkInputFields() {
 	};
 
 }
+//Start of legacy code 6/19/2014
 function calculate() {
-	return;
     var fixedArray = ""; // prevalence
     var contourArray = ""; // ppv
     var independentArray = ""; //specificity
@@ -322,8 +331,8 @@ function calculate() {
     var independentArray = $("#independent").val();
     var independentval = $("#independent_dropdown").val();
     independentArraySplit = independentArray.split(",");
-    var independentMin = Math.min.apply( Math, independentArraySplit )
-    var independentMax = Math.max.apply( Math, independentArraySplit )
+    var independentMin = Math.min.apply( Math, independentArraySplit );
+    var independentMax = Math.max.apply( Math, independentArraySplit );
     var contourArray = $("#contour").val();
     var contourval = $("#contour_dropdown").val();
     var columnHeadings = contourArray.split(",");
@@ -377,7 +386,7 @@ function calculate() {
 	
 	for (var i=0; i < fixedArraySplit.length; i++) {
 		tab_names.append("<LI><a  style='padding:3px;' href='#fixed-" + (i+1) + "'>" + fixed_dropdown + "<br>&nbsp&nbsp&nbsp "+ fixedArraySplit[i] + "</a></LI>");
-		tab_pane = $("<DIV style='width:1500px;height:1100px;' id='fixed-" + (i+1) + "' >  </div>")
+		tab_pane = $("<DIV style='width:1500px;height:1100px;' id='fixed-" + (i+1) + "' >  </div>");
 		tabs.append(tab_pane);			
                     //tab_pane.append("<TABLE>");
 		//table_side = ("<TR><TD><div class='table-side' id='table-" + (i+1) + "'></div></TD>");
