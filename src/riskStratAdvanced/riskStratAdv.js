@@ -21,11 +21,11 @@ var invalidCombos =    ["delta-sensitivity-specificity",
 						"cnpv-ppv-specificity"];
 var initialData = ["", 
 					"e.g. 0.8, 0.85,0.9, 0.95, 0.995", 
-					"e.g. 0.6,0.75,0.8,0.86,0.92",
-					"e.g. 0.6,0.7,0.8,0.9,0.95",
-					"e.g. 0.39,0.48,0.59,0.62,0.78",
-					"e.g. 0.1,0.2,0.3,0.4,0.5",
-					"e.g. 1,2,3,4,5"];
+					"e.g. 0.6, 0.75, 0.8, 0.86, 0.92",
+					"e.g. 0.6, 0.7, 0.8, 0.9, 0.95",
+					"e.g. 0.39, 0.48, 0.59, 0.62, 0.78",
+					"e.g. 0.1, 0.2, 0.3, 0.4, 0.5",
+					"e.g. 1, 2, 3, 4, 5"];
 var	activeSelectionChange = false;
 var validCombo = false;
 
@@ -256,45 +256,46 @@ function checkRule(ruleId, vars, values, min, max) {
 		// cNPV < Prevalence
 		//For arrays: max(cNPV) < min(Prevalence)
 		//
-		cnpvPostion = $.inArray("cnpv", vars);
-		prevalencePostion = $.inArray("prevalence", vars);
-		if(cnpvPostion>=0 && prevalencePostion>= 0) {
-			if(max[cnpvPostion] >= min[prevalencePostion])
+		cnpvPosition = $.inArray("cnpv", vars);
+		prevalencePosition = $.inArray("prevalence", vars);
+		if(cnpvPosition >= 0 && prevalencePosition >= 0) {
+			if(max[cnpvPosition] >= min[prevalencePosition])
 				status = "Fail";
 		}
 		console.log("status = "+status);
 	    break;
 	case 4:
 		//
-		//Rule 4:
+		// Rule 4:
 		// Prevalence < PPV...
 		//
 		//For arrays: max(prev) < min(PPV)</li>
-		prevalencePostion = $.inArray("prevalence", vars);
-		ppvPostion = $.inArray("ppv", vars);
-		if(prevalencePostion>=0 && ppvPostion>= 0) {
-			if(max[prevalencePostion] >= min[ppvPostion])
+		prevalencePosition = $.inArray("prevalence", vars);
+		ppvPosition = $.inArray("ppv", vars);
+		if(prevalencePosition >=0 && ppvPosition >= 0) {
+			if(max[prevalencePosition] >= min[ppvPosition])
 				status = "Fail";
 		}
 		
 	    break;
 	case 5:
 		//
-		//Rule 5:
-		//Sensivitity+Specificity-1>0
+		// Rule 5:
+		// Sensivitity+Specificity-1>0
 		//
-		//TODO:  Need to think through on a sorted array level, go through each position in array.
-		sensitivityPostion = $.inArray("sensitivity", vars);
-		specificityPostion = $.inArray("specificity", vars);
-		if(sensitivityPostion>=0 && specificityPostion>= 0) {
-			//if(max(cnpvPostion) >= min(ppvPostion))
-			//	status = "Fail";
+		sensitivityPosition = $.inArray("sensitivity", vars);
+		specificityPosition = $.inArray("specificity", vars);
+		if(sensitivityPosition >= 0 && specificityPosition >= 0) {
+			//TODO:  Need to think through on a sorted array level, go through each position in array.
+			if(max[sensitivityPosition] + max[specificityPosition] <= 1)
+				status = "Fail";
 		}
 	    break;
 	}
 	
 	return status;
 }
+
 
 function checkInputFields() {
 	var selectedValues = [];
