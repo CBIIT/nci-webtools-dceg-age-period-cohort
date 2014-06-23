@@ -20,30 +20,32 @@ var invalidCombos =    ["delta-sensitivity-specificity",
 						"cnpv-ppv-sensitivity",
 						"cnpv-ppv-specificity"];
 var initialData = ["", 
-                   "e.g. 0.8, 0.85,0.9, 0.95, 0.995", 
-                   "e.g. 0.6,0.75,0.8,0.86,0.92",
-                    "e.g. 0.6,0.7,0.8,0.9,0.95",
-                    "e.g. 0.39,0.48,0.59,0.62,0.78",
-                    "e.g. 0.1,0.2,0.3,0.4,0.5",
-                    "e.g. 1,2,3,4,5"];
+					"e.g. 0.8, 0.85,0.9, 0.95, 0.995", 
+					"e.g. 0.6,0.75,0.8,0.86,0.92",
+					"e.g. 0.6,0.7,0.8,0.9,0.95",
+					"e.g. 0.39,0.48,0.59,0.62,0.78",
+					"e.g. 0.1,0.2,0.3,0.4,0.5",
+					"e.g. 1,2,3,4,5"];
 var	activeSelectionChange = false;
 var validCombo = false;
+var rulesViolationMsg = "";
 
 var keysforfunction = [{1:"Sens"}, {2:"Spec"}, {3:"PPV"}, {4:"cNPV"}, {5:"Prev"}, {6:"Delta"}];
 var keysforfunction = [{1:"sensitivity"}, {2:"specificity"}, {3:"ppv"}, {4:"cnpv"}, {5:"prevalence"}, {6:"delta"}];
 
 var rfunctions = ["SensPPVDelta", 
-                  "SensPPVPrev", 
-                  "SensPPVSpec",
-		  "SensPrevDelta",
-		  "SenscNPVDelta",
-		  "SenscNPVPrev",
-		  "SenscNPVSpec",
-                  "SpecPPVDelta",
-                  "SpecPPVPrev", 
-		  "SpecPrevDelta",
-		  "SpeccNPVDelta",
-                  "SpeccNPVPrev"]; 
+					"SensPPVPrev", 
+					"SensPPVSpec",
+					"SensPrevDelta",
+					"SenscNPVDelta",
+					"SenscNPVPrev",
+					"SenscNPVSpec",
+					"SpecPPVDelta",
+					"SpecPPVPrev", 
+					"SpecPrevDelta",
+					"SpeccNPVDelta",
+					"SpeccNPVPrev"]; 
+
 var keyShort = [{1:"Prevalence"}, 
             {1:'Delta', 2:'Specificity'}, 
 	    {1:'Prevalence', 2:'Delta'},
@@ -71,6 +73,64 @@ var keyLong = [{1:"Prevalence required to achieve specified PPV given delta and 
 
 $(document).ready(function() {
 	//Create a dialog box to ask user if they would like to continue on rule violation.
+	createRulesDialog();
+
+	$( "select" ).change(function() {
+			makeSelectionsUnique(functionnames, this.id);
+	});
+    
+    if(typeof String.prototype.trim !== 'function') {
+      String.prototype.trim = function() {
+        return this.replace(/^\s+|\s+$/g, ''); 
+      };
+    }
+    $("#reset").button().click(function() {
+		makeSelectionsUnique(functionnames, "independent_dropdown");
+    	$("span.variable-example").text("");
+    	$("option").removeAttr("disabled");
+		$("#status-bar").css("visibility", "hidden");
+		$("#output").empty();		
+    });
+    
+    $("input").keyup(function(){
+    	checkInputFields();
+	});
+    
+    $("input").change(function(){
+    	checkInputFields();
+    });
+  
+    //Mouseup event needed for ie to determine if they hit clear. 
+    $("input").bind("mouseup", function(e){
+		var $input = $(this);
+		var oldValue = $input.val();
+		
+		if (oldValue == "") return;
+		
+		// When this event is fired after clicking on the clear button
+		// the value is not cleared yet. We have to wait for it.
+		setTimeout(function() {
+			var newValue = $input.val();
+			if (newValue == "") {
+				// Gotcha
+				$input.trigger("cleared");
+		    	checkInputFields();
+			}
+		}, 1);
+    });
+    $("#calculate").button().click(function(e) {
+    	e.preventDefault();
+    	if(checkRules() == "Fail") {
+       		$( "#dialog-confirm" ).dialog("open");
+       		return false;
+    	} else {
+        	calculate();
+    	}
+    });
+    
+});
+
+function createRulesDialog() {
 	 $(function() {
 		 $( "#dialog-confirm" ).dialog({
 			 resizable: false,
@@ -91,84 +151,8 @@ $(document).ready(function() {
 			 }
 		 });
 	});
-	/* 
-    $("#test-rules" ).button().click(function() {
-   		$( "#dialog-confirm" ).dialog("open");
-   		return false;
-    });
-	*/
-
-	$( "select" ).change(function() {
-			makeSelectionsUnique(functionnames, this.id);
-	});
-    
-    if(typeof String.prototype.trim !== 'function') {
-      String.prototype.trim = function() {
-        return this.replace(/^\s+|\s+$/g, ''); 
-      };
-    }
-    $("#reset").button().click(function() {
-		makeSelectionsUnique(functionnames, "independent_dropdown");
-    	$("span.variable-example").text("");
-    	$("option").removeAttr("disabled");
-		$("#status-bar").css("visibility", "hidden");
-    });
-    $("input").keyup(function(){
-    	console.log("keyup detected");
-    	var selectedValues = [];
-    	//Get ids from select elements
-    	var ids = $("input").map(function() {
-        	return this.id;
-    	}).get();
-    	//Save currently selected values
-    	$.each( ids, function( key, elementId ) {
-    		selectedValues.push($('#'+ elementId).val().length);
-    	});
-    	console.log('selectedValues');
-    	console.dir(selectedValues);
-    	console.dir(validCombo);
-    	if($.inArray(0, selectedValues) == -1 && validCombo) {
-    		console.log("ENABLE BUTTON");
-    		$( "#calculate" ).button( "option", "disabled", false );
-    	} else {
-    		console.log("DISABLE BUTTON");
-    		$( "#calculate" ).button( "option", "disabled", true );
-    	}
-    });
-    $("#calculate").button().click(function(e) {
-        e.preventDefault();
-    	if(checkRules() == "Fail") {
-       		$( "#dialog-confirm" ).dialog("open");
-       		return false;
-    	} else {
-        	//alert("calculate");
-        	calculate();
-    	}
-    }); // calculate   
-});  // ready
-
-function checkRules() {
-	
-	var overallStatus = "Pass";
-	var numberOfRules = 5;
-	var vars = [];
-	var values = [];
-	$(".rule").removeAttr("style");
-	//get vars
-	//get values
-	for(var ruleId=1; ruleId<=numberOfRules; ruleId++) {
-		if(checkRule(ruleId, vars, values) == "Fail"){
-			ruleClass = "rule"+ruleId;
-			$("."+ruleClass).css("font-weight", "bold");
-			overallStatus = "Fail";
-		}
-	}
-	
-	overallStatus = "Fail";
-	console.log("overallStatus = "+overallStatus);
-	return overallStatus;
-
 }
+
 function sortFloat(a,b) { 
 	return a - b; 
 }
@@ -181,6 +165,7 @@ function checkRules() {
 	var values = [];
 	var min = [];
 	var max = [];
+	rulesViolationMsg = "";
 
 	//Get ids from select elements
 	var ids = $("select").map(function() {
@@ -205,8 +190,7 @@ function checkRules() {
 		min[key] = sorted[0];
 		max[key] = sorted[sorted.length-1]; 
 	});
-	
-	
+
 	$(".rule").removeAttr("style");
 	for(var ruleId=1; ruleId<=numberOfRules; ruleId++) {
 		if(checkRule(ruleId, selectedVars, values, min, max) == "Fail"){
@@ -221,6 +205,7 @@ function checkRules() {
 	return overallStatus;
 
 }
+
 function checkRule(ruleId, vars, values, min, max) {
 	console.info("checking rule "+ruleId);
 	console.dir(vars);
@@ -242,8 +227,10 @@ function checkRule(ruleId, vars, values, min, max) {
 			console.log("selectedVar = "+selectedVar);
 			console.log("min/max is "+min[key].toString()+" "+max[key].toString());
 			if(selectedVar != "delta") {
-				if(min[key] < minValue || max[key] > maxValue) 
+				if(min[key] < minValue || max[key] > maxValue) {
 					status = "Fail";
+					rulesViolationMsg +="<div>Rule: Specificity, Sensitivity, PPV, cNPV, Prevalence can only be 0 to 1</div>";
+				}
 			}
 			console.log("status = "+status);
 		});
@@ -261,8 +248,11 @@ function checkRule(ruleId, vars, values, min, max) {
 			console.log("selectedVar = "+selectedVar);
 			console.log("min/max is "+min[key].toString()+" "+max[key].toString());
 			if(selectedVar == "delta") {
-				if(min[key] < minValue || max[key] > maxValue) 
+				if(min[key] < minValue || max[key] > maxValue) { 
 					status = "Fail";
+					rulesViolationMsg +="<div>Rule: Delta can be 0 to 5</div>";
+					console.log(rulesViolationMsg);
+				}
 			}
 			console.log("status = "+status);
 		});
@@ -276,8 +266,10 @@ function checkRule(ruleId, vars, values, min, max) {
 		cnpvPostion = $.inArray("cnpv", vars);
 		prevalencePostion = $.inArray("prevalence", vars);
 		if(cnpvPostion>=0 && prevalencePostion>= 0) {
-			if(max[cnpvPostion] >= min[prevalencePostion])
+			if(max[cnpvPostion] >= min[prevalencePostion]) {
 				status = "Fail";
+				rulesViolationMsg +="<div>Rule: max(cNPV) < min(Prevalence)</div>";
+			}
 		}
 		console.log("status = "+status);
 	    break;
@@ -290,30 +282,59 @@ function checkRule(ruleId, vars, values, min, max) {
 		prevalencePostion = $.inArray("prevalence", vars);
 		ppvPostion = $.inArray("ppv", vars);
 		if(prevalencePostion>=0 && ppvPostion>= 0) {
-			if(max[prevalencePostion] >= min[ppvPostion])
+			if(max[prevalencePostion] >= min[ppvPostion]) {
 				status = "Fail";
+				rulesViolationMsg +="<div>Rule: max(prev) < min(PPV)</div>";
+			}
 		}
 		
 	    break;
 	case 5:
 		//
-		//Rule 5:
-		//Sensivitity+Specificity-1>0
+		// Rule 5:
+		// Sensivitity+Specificity-1>0
 		//
-		//TODO:  Need to think through on a sorted array level, go through each position in array.
-		sensitivityPostion = $.inArray("sensitivity", vars);
-		specificityPostion = $.inArray("specificity", vars);
-		if(sensitivityPostion>=0 && specificityPostion>= 0) {
-			//if(max(cnpvPostion) >= min(ppvPostion))
-			//	status = "Fail";
+		sensitivityPosition = $.inArray("sensitivity", vars);
+		specificityPosition = $.inArray("specificity", vars);
+		if(sensitivityPosition >= 0 && specificityPosition >= 0) {
+			//TODO:  Need to think through on a sorted array level, go through each position in array.
+			if(max[sensitivityPosition] + max[specificityPosition] <= 1) {
+				status = "Fail";
+				rulesViolationMsg +="<div>Rule: max(sensitivity) + max(specificity) > 1</div>";
+			}
 		}
-	    break;
-	}
+	    break;	}
 	
 	return status;
 }
 
+function checkInputFields() {
+	var selectedValues = [];
+	//Get ids from select elements
+	var ids = $("input").map(function() {
+    	return this.id;
+	}).get();
+	//Save currently selected values
+	$.each( ids, function( key, elementId ) {
+		selectedValues.push($('#'+ elementId).val().length);
+	});
+	if($.inArray(0, selectedValues) == -1 && validCombo) {
+		$( "#calculate" ).button( "option", "disabled", false );
+	} else {
+		$("#calculate").button( "option", "disabled", true );
+	};
+
+}
 function calculate() {
+	//return;
+	$("#status-bar").text("");
+	if(rulesViolationMsg.length > 0) {
+		 $("#status-bar").html(rulesViolationMsg);
+		 $("#status-bar").css("visibility", "visible");
+	} else {
+		 $("#status-bar").css("visibility", "hidden");
+	}
+
     var fixedArray = ""; // prevalence
     var contourArray = ""; // ppv
     var independentArray = ""; //specificity
@@ -368,7 +389,7 @@ function calculate() {
 	
 	// First make the right tabs
 	
-	tabs = $("<div id='tabs' style='width:1500px;'> </div>");
+	tabs = $("<div id='tabs' style='width:1000px;'> </div>");
 	$("#output").append(tabs);
 	tab_names = $("<UL> </UL>");
 	tabs.append(tab_names);
@@ -505,7 +526,7 @@ function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey){
         var arr=[];
         var tableData = jsonTableData[0].data;
         var tableError = jsonTableData[0].error;
-        if (tableError[0].true != 1)
+        if (tableError[0].errortrue != 1)
         {
                 rows = tableData.length;
                 for (var i=0;i<tableData.length;i++) {
@@ -553,15 +574,15 @@ function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey){
 }
 
 function getColumnHeaderData(columnHeadings) {
-        var columnHeaderData2d = new Array();
-        for (var key in columnHeadings){
-                var tempObject = {};
-                tempObject["mDataProp"] = columnHeadings[key];
-                tempObject["sTitle"] = columnHeadings[key];
-                tempObject["sWidth"] = "25%";
-                columnHeaderData2d.push(tempObject);
-        }
-        return columnHeaderData2d;
+	var columnHeaderData2d = new Array();
+	for (var key in columnHeadings){
+		var tempObject = {};
+		tempObject["mDataProp"] = columnHeadings[key];
+		tempObject["sTitle"] = columnHeadings[key];
+		tempObject["sWidth"] = "25%";
+    columnHeaderData2d.push(tempObject);
+	}
+	return columnHeaderData2d;
 }
 
 
@@ -726,26 +747,21 @@ function checkForInvalidVariableCombo() {
 			$("#status-bar").addClass("status-error");
 			$("#status-bar").removeClass("status-info");
 			$("#status-bar").text(message);
-			//$( "#calculate" ).attr("disabled", "disabled");
-			//$( "#calculate" ).button( "option", "disabled", true );
 			validCombo = false;
 		} else {
 			//VALID COMBO FOUND
 			$("#status-bar").css("visibility", "hidden");
 			$("#status-bar").addClass("status-error");
 			$("#status-bar").removeClass("status-info");
-			$("#status-bar").text("VALID COMBO FOUND.");
-			//$( "#calculate" ).removeAttr("disabled");
-			//$( "#calculate" ).button( "option", "disabled", false );
+			$("#status-bar").text("");
 			validCombo = true;
 		}
 	} else {
+		//Unselected Dropdowns
 		$("#status-bar").css("visibility", "hidden");
 		$("#status-bar").addClass("status-info");
 		$("#status-bar").removeClass("status-error");
-		$("#status-bar").text("You have unselected values.");
-		//$( "#calculate" ).attr("disabled", "disabled");
-		//$( "#calculate" ).button( "option", "disabled", true );
+		$("#status-bar").text("");
 		validCombo = false;
 
 		return
