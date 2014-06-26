@@ -32,7 +32,7 @@ td {
 }
 
 #output {
-	width: 600px;
+	/*width: 600px;*/
 }
 
 #inputdata {
@@ -43,6 +43,10 @@ h2 {
 	background-color: #AAA;
 	color: #444;
 	padding: 5px;
+}
+
+button {
+	padding:5px;
 }
 
 .prevalence_label {
@@ -59,7 +63,8 @@ h2 {
 
 .graphic-side {
 	float:right;
-	width:700;
+	/*width:700;*/
+	width:500px;
 }
 
 
@@ -128,4 +133,21 @@ h2 {
 }
 .status-error {
 	color:red;
+}
+.variable-example {
+	padding-left:10px;
+	text-align: left;
+}
+a#add-test-data {
+    text-decoration: none;
+    padding: 0 10 0 240px;
+}
+/* mouse over link */
+a#add-test-data:hover {
+    text-decoration: underline;
+}
+
+/* selected link */
+a#add-test-data:active {
+    color: #0000FF;
 }

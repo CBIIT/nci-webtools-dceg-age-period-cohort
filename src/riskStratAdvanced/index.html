@@ -65,7 +65,7 @@
 						</td>
 						<td>
 							<label for="independent">
-								<input type="text" size="30" id="independent">
+								<input type="text" size="30" id="independent"  pattern="([0-9,. \-])+" title="An array of floating point numbers seperated by commas." title="An array of floating point numbers seperated by commas" required>
 							</label>
 						</td>
 						<td>
@@ -87,7 +87,7 @@
 						</td>
 						<td>
 							<label for="contour">
-								<input type="text" size="30" id="contour" >
+								<input type="text" size="30" id="contour" pattern="([0-9,. \-])+" title="An array of floating point numbers seperated by commas." title="An array of floating point numbers seperated by commas" required>
 							</label>
 						</td>
 						<td>
@@ -97,7 +97,7 @@
 					<tr>
 						<td class='label'>Fixed Values</td>
 						<td>
-							<select id="fixed_dropdown" name="fixed_dropdown" id='fixed_dropdown' >
+							<select id="fixed_dropdown" name="fixed_dropdown" id='fixed_dropdown'>
 								<option value="" selected></option>
 								<option value="prevalence">prevalence</option>
 								<option value="delta">delta</option>
@@ -109,7 +109,7 @@
 						</td>
 						<td>
 							<label for="fixed">
-								<input type="text" size="30" id="fixed" >
+								<input type="text" size="30" id="fixed" pattern="([0-9,. \-])+" title="An array of floating point numbers seperated by commas" required>
 							</label>
 						</td>
 						<td>
@@ -118,12 +118,12 @@
 					</tr>
 				</table>
               <br />
-              <button type="submit" id="calculate" class="btn btn-primary" disabled>Calculate</button>
-              <button type="reset" id="reset" class="btn">Reset</button>
-<!--               <button id="test-rules" class="btn">Rules</button> -->
+	              <button id="calculate" class="btn btn-primary" disabled>Calculate</button>
+	              <button type="reset" id="reset" class="btn">Reset</button>
+	              <a id="add-test-data" href="#" title="Populate variables with a working example">Example</a>
               <div id="status-bar">Status Bar</div>
             </form>
-<br /><br />
+<br />
 <div id="dialog-confirm" title="Rules Violation">
 	<p>
 		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
@@ -131,15 +131,15 @@
 		<ul>
 			<li class="rule rule1">Specificity, Sensitivity, PPV, cNPV, and Prevalence can only be 0 to 1</li>
 			<li class="rule rule2" style="font-weight:bold;">Delta can be 0 to 5</li>
-			<li class="rule rule3">cNPV < PPV < PPV</li>
+			<li class="rule rule3">cNPV < Prevalence</li>
 				<ul>
-					<li class="rule rule3">For arrays: max(cNPV) < min(PPV)</li>
-				</ul> 
-			<li class="rule rule4">cNPV < Prevalence < PPV</li>
-				<ul>
-					<li class="rule rule4">For arrays: max(prev) < min(PPV)  and max(cNPV) < min(Prevalence)</li>
+					<li class="rule rule3">For arrays: max(cNPV) < min(Prevalence)</li>
 				</ul>
-			<li class="rule rule5">Sensivitity+Specificity-1 > 0</li>
+			<li class="rule rule4">Prevalence < PPV</li>
+				<ul>
+					<li class="rule rule4">For arrays: max(prev) < min(PPV)</li>
+				</ul>
+			<li class="rule rule5">Sensitivity+Specificity-1 > 0</li>
 		</ul>
 		<span style="font-weight:bold;">Do you wish to continue with calculation anyway?</span>
 	</p>
@@ -149,28 +149,6 @@
 
 <div id='output1'> 
 </div>
-<!-- 
-
-<div id="tabs" style="height:600;width:1000">
-  <ul>
-    <li><a href="#fixed-1">Prevalence</a></li>
-    <li><a href="#fixed-2">Prevalence</a></li>
-    <li><a href="#fixed-3">Prevalence</a></li>
-    <li><a href="#fixed-4">Prevalence</a></li>
-    <li><a href="#fixed-5">Prevalence</a></li>
-  </ul>
-  <div id="fixed-1">test
-  </div>
-  <div id="fixed-2">
-  </div>
-  <div id="fixed-3">
-  </div>
-  <div id="fixed-4">
-  </div>
-  <div id="fixed-5">
-  </div>
-</div>
- -->
 
 </div>
 	<!-- main -->
