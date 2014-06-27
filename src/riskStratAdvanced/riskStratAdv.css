@@ -56,19 +56,6 @@ button {
 	padding: 2px 25px 2px 25px;
 }
 
-.table-side {
-	float:left;
-	width:450;
-}
-
-.graphic-side {
-	float:right;
-	/*width:700;*/
-	width:500px;
-}
-
-
-
 .bibliography {
 	width: 950px;
 	clear: both;
@@ -138,16 +125,40 @@ button {
 	padding-left:10px;
 	text-align: left;
 }
+
 a#add-test-data {
-    text-decoration: none;
-    padding: 0 10 0 240px;
+    text-decoration: underline;
+    float:right;
 }
 /* mouse over link */
 a#add-test-data:hover {
-    text-decoration: underline;
+    font-weight: bold;
+}
+/*Tabs CSS */
+.table-title {
+	word-wrap: normal;
+	font-weight: bold;
+	/*border: solid blue 1px; */
+	width: 440px;
+	padding: 10 10 20 10px;
+	margin: 25px;
+}
+.table-side {
+	float:left;
+	width: 450px;
+	/* border: solid red 1px; */
 }
 
-/* selected link */
-a#add-test-data:active {
-    color: #0000FF;
+.graphic-side {
+	float:right;
+	/*width:700;*/
+	width:410px;
+	/*border: solid green 1px;*/
+}
+#tabs{
+	width:994px;
+}
+.tab-pane {
+	width: 950px;
+	height: 950px;
 }

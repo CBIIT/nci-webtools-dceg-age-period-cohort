@@ -413,7 +413,7 @@ function calculate() {
 	
 	// First make the right tabs
 	
-	tabs = $("<div id='tabs' style='width:1045px;'> </div>");
+	tabs = $("<div id='tabs'> </div>");
 	$("#output").append(tabs);
 	tab_names = $("<UL> </UL>");
 	tabs.append(tab_names);
@@ -421,18 +421,18 @@ function calculate() {
 	
 	for (var i=0; i < fixedArraySplit.length; i++) {
 		tab_names.append("<LI><a  style='padding:3px;' href='#fixed-" + (i+1) + "'>" + fixed_dropdown + "<br>&nbsp&nbsp&nbsp "+ fixedArraySplit[i] + "</a></LI>");
-		tab_pane = $("<DIV style='width:1000px;height:1100px;' id='fixed-" + (i+1) + "' >  </div>")
+		tab_pane = $("<div class='tab-pane' id='fixed-" + (i+1) + "' >  </div>")
 		tabs.append(tab_pane);			
                     //tab_pane.append("<TABLE>");
 		//table_side = ("<TR><TD><div class='table-side' id='table-" + (i+1) + "'></div></TD>");
 	    //for (var j=0; j < abbreviatedkeys.length; j++) {
 	    for (var key in keyvalueShort) {
 		//table_graph_div = $("<div class='set-"+ abbreviatedkeys[j] + (i+1) + "' style='width: 1100px; float: left; clear:left;'><p></p></div>");
-		table_graph_div = $("<div class='set-"+ keyvalueShort[key] + (i+1) + "' style='width: 1000px; float: left; clear:left;'><p></p></div>");
+		table_graph_div = $("<div class='set-"+ keyvalueShort[key] + (i+1) + "' style='width: 950px; float: left; clear:left;'><p></p></div>");
 		tab_pane.append(table_graph_div);
 		graphic_side = ("<div class='graphic-side' id='graphic-" + keyvalueShort[key] +  (i+1) + "'><div style='clear:right;padding-top:10px;'> </div></div>");
 		table_graph_div.append(graphic_side);
-		table_side = $("<div class='table-side' id='table-" + keyvalueShort[key] + (i+1) + "'><br><h5>&nbsp;&nbsp;"+keyvalueLong[key]+"</h5></div><br><br>");
+		table_side = $("<div class='table-side' id='table-" + keyvalueShort[key] + (i+1) + "'><br><div class='table-title'>&nbsp;&nbsp;"+keyvalueLong[key]+"</div></div><br><br>");
 		table_graph_div.append(table_side);
 		//graphic_side = ("<TD><div class='graphic-side' id='graphic-" + (i+1) + "'> </div></TD></TR>");
                }
@@ -540,6 +540,13 @@ function handleError(error, status, request){
         alert(" Error is "+ error);
         alert(" Error Status is "+ status);
         alert(" Error irequest is "+ request);
+        console.error("handleError called");
+        console.error("error");
+        console.dir(error);
+        console.error("status");
+        console.dir(status);
+        console.error("request");
+        console.dir(request);
 }
 
 function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey){
@@ -592,9 +599,11 @@ function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey){
         }
         else
         {
-		$("#status-bar").css("visibility", "visible");
-		$("#status-bar").addClass("status-error");
-                $("#status-bar").append(tableError[1].message);
+        	$("#status-bar").css("visibility", "visible");
+			$("#status-bar").addClass("status-error");
+            $("#status-bar").append("<div>" + tableError[1].message + "</div>");
+            //console.info("Error Received");
+            //console.dir(tableError);
         }
 }
 
