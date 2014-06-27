@@ -444,7 +444,6 @@ SpecPPVPrev <- function(spec,dppv,prev) {
   
 }
 
-
 SpecPrevDelta <- function(spec,prev,delta) {
   
   vecdelta<-as.vector(delta)  
@@ -622,7 +621,7 @@ DrawcNPVDeltaSpecPrev <- function(delta, specificity, prevalence) {
   for(i in Iterations){
     Sensitivity <- 1-pnorm(qnorm(specificity[i],0,1)-Delta,0,1,1)
     LRMinus <- specificity[i]/(1-Sensitivity)
-    cNPV <- (Val/LRMinus)/(1+Val/LRMinus)
+    cNPV = calculatecNPVfrSpecSens(specificity[i],calculateSensfrSpec(specificity[i],Delta),prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Delta,type="l",main=c("Complement of Negative Predictive Value vs. Delta","Given Different Values of Specificity",paste("Prevalence =",prevalence)),xlab="Delta",ylab="Complement of Negative Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -647,7 +646,7 @@ DrawcNPVDeltaPrevSpec<- function(delta, prevalence,specificity) {
     Val <- prevalence[i]/(1+prevalence[i])
     Sensitivity <- 1-pnorm(qnorm(specificity,0,1)-Delta,0,1,1)
     LRMinus <- specificity/(1-Sensitivity)
-    cNPV <- (Val[i]/LRMinus)/(1+Val[i]/LRMinus)
+    cNPV = calculatecNPVfrSpecSens(specificity,calculateSensfrSpec(specificity,Delta),prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Delta,type="l",main=c("Complement of Negative Predictive Value vs. Delta","Given Different Values of Prevalence",paste("Specificity =",specificity)),xlab="Delta",ylab="Complement of Negative Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -784,7 +783,7 @@ DrawPPVSpecDeltaPrev <- function(spec, delta, prevalence) {
     Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
     Sensitivity <- 1-pnorm(qnorm(Specificity,0,1)-Delta[i],0,1,1)
     LRPlus <- Sensitivity/(1-Specificity)
-    PPV <- LRPlus*Val/(1+LRPlus*Val)
+    PPV =calculatePPVfrSpecSens(Specificity,calculateSensfrSpec(Specificity,Delta[i]),prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Specificity,type="l",main=c("Positive Predictive Value vs. Specificity","Given Different Values of Delta",paste("Prevalence =",prevalence)),xlab="Specificity",ylab="Positive Predictive Value",ylim=c(0,1),xlim=range(Specificity),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -806,7 +805,7 @@ DrawPPVDeltaSpecPrev <- function(delta, specificity, prevalence) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- ((1 - pnorm(qnorm(specificity[i])-Delta))/(1-specificity[i]))*Val/(1+((1 - pnorm(qnorm(specificity[i])-Delta))/(1-specificity[i]))*Val)
+    PPV = calculatePPVfrSpecSens(specificity[i],calculateSensfrSpec(specificity[i],Delta),prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Delta,type="l",main=c("Positive Predictive Value vs. Delta","Given Different Values of Specificity",paste("Prevalence =",prevalence)),ylim=c(min(PPV),1),xlab="Delta",ylab="Positive Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -819,21 +818,19 @@ DrawPPVDeltaSpecPrev <- function(delta, specificity, prevalence) {
   
 }
 
-DrawPPVDeltaPrevSpec <- function(delta, prevalence,specificity) {
+DrawPPVDeltaPrevSpec <- function(delta, prevalence, specificity) {
   
   Delta <- seq(from=min(delta),to=max(delta),by=0.00001)
-  
+  Val <- prevalence/(1-prevalence)
   
   Iterations <- 1:length(prevalence)
   LTY <- Iterations
   
   for(i in Iterations){
-    Val <- prevalence[i]/
-    PPV=calculatePPV(specificity, Delta, Val)
-    #PPV <- ((1 - pnorm(qnorm(specificity)-Delta))/(1-specificity))*Val[i]/(1+((1 - pnorm(qnorm(specificity)-Delta))/(1-specificity))*Val[i])
+    PPV = calculatePPVfrSpecSens(specificity,calculateSensfrSpec(specificity,Delta),prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
-      plot(PPV~Delta,type="l",main=c("Positive Predictive Value vs. Delta","Given Different Values of Prevalence",paste("Specificity =",specificity)),ylim=c(min(PPV),1),xlab="Delta",ylab="Positive Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+      plot(PPV~Delta,type="l",main=c("Positive Predictive Value vs. Delta","Given Different Values of Specificity",paste("Prevalence =",prevalence)),ylim=c(min(PPV),1),xlab="Delta",ylab="Positive Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
     }
     else
       lines(y=PPV, x=Delta,lty=LTY[i])
@@ -854,7 +851,7 @@ DrawPPVPrevSpecDelta <- function(prev, specificity, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- LRPlus[i]*Val/(1+LRPlus[i]*Val)
+    PPV = calculatePPVfrSpecSens(specificity[i],calculateSensfrSpec(specificity[i],delta),prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Prevalence,type="l",main=c("Positive Predictive Value vs. Prevalence","Given Different Values of Positive Predictive Value",paste(expression(Delta),"=",delta)),xlab="Prevalence",ylab="Positive Predictive Value",ylim=c(min(PPV),1),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -879,7 +876,7 @@ DrawPPVPrevDeltaSpec <- function(prev, delta, specificity) {
     Val <- Prevalence/(1-Prevalence)
     Sensitivity <- 1 - pnorm(qnorm(specificity)-delta[i])
     LRPlus <- Sensitivity/(1-specificity)
-    PPV <- LRPlus*Val/(1+LRPlus*Val)
+    PPV = calculatePPVfrSpecSens(specificity,calculateSensfrSpec(specificity,delta[i]),Prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Prevalence,type="l",main=c("Positive Predictive Value vs. Prevalence","Given Different Values of Delta",paste("Specificity =",specificity)),xlab="Prevalence",ylab="Positive Predictive Value",ylim=c(min(PPV),1),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -903,7 +900,7 @@ DrawPPVSpecPrevDelta <- function(spec, prevalence, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- LRPlus*Val[i]/(1+LRPlus*Val[i])
+    PPV = calculatePPVfrSpecSens(Specificity,calculateSensfrSpec(Specificity,delta),prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Specificity,type="l",main=c("Positive Predictive Value vs. Specificity","Given Different Values of Prevalence",paste(expression(Delta),"=",delta)),xlab="Specificity",ylab="Positive Predictive Value",ylim=c(0,1),xlim=rev(range(Specificity)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1062,7 +1059,7 @@ DrawPPVSensDeltaPrev <- function(sens, delta, prevalence) {
     Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
     Specificity <- pnorm(qnorm(1-Sensitivity,0,1)+Delta[i],0,1,1)
     LRPlus <- Sensitivity/(1-Specificity)
-    PPV <- LRPlus*Val/(1+LRPlus*Val)
+    PPV = calculatePPVfrSpecSens(calculateSpecfrSens(Sensitivity,Delta[i]),Sensitivity,prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Sensitivity,type="l",main=c("Positive Predictive Value vs. Sensitivity","Given Different Values of Delta",paste("Prevalence =",prevalence)),xlab="Sensitivity",ylab="Positive Predictive Value",ylim=c(0,1),xlim=range(Sensitivity),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1085,7 +1082,7 @@ DrawPPVDeltaSensPrev <- function(delta, sensitivity, prevalence) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- (sensitivity[i]*prevalence)/(sensitivity[i]*prevalence + (1-pnorm(qnorm(1-sensitivity[i])+Delta))*prevalence)
+    PPV = calculatePPVfrSpecSens(calculateSpecfrSens(sensitivity[i],Delta),sensitivity[i],prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Delta,type="l",main=c("Positive Predictive Value vs. Delta","Given Different Values of Sensitivity",paste("Prevalence =",prevalence)),xlab="Delta",ylab="Positive Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1106,7 +1103,7 @@ DrawPPVDeltaPrevSens <- function(delta, prevalence, sensitivity) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- (sensitivity*Prevalence)/(sensitivity*Prevalence + (1-pnorm(qnorm(1-sensitivity)+Delta))*Prevalence)
+    PPV = calculatePPVfrSpecSens(calculateSpecfrSens(sensitivity,Delta),sensitivity,prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Delta,type="l",main=c("Positive Predictive Value vs. Delta","Given Different Values of Prevalence",paste("Prevalence =",prevalence)),xlab="Delta",ylab="Positive Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1131,7 +1128,7 @@ DrawPPVPrevSensDelta <- function(prev, sensitivity, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- LRPlus[i]*Val/(1+LRPlus[i]*Val)
+    PPV = calculatePPVfrSpecSens(calculateSpecfrSens(sensitivity[i],delta),sensitivity[i],Prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Prevalence,type="l",main=c("Positive Predictive Value vs. Prevalence", "Given Different Values of Prevalence",paste(expression(Delta),"=",delta)),xlab="Prevalence",ylab="Positive Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1156,7 +1153,7 @@ DrawPPVPrevDeltaSens <- function(prev, delta,sensitivity) {
     Val <- Prevalence/(1-Prevalence)
     Specificity <- pnorm(qnorm(1-sensitivity,0,1)+delta[i],0,1,1)
     LRPlus <- sensitivity/(1-Specificity)
-    PPV <- LRPlus*Val/(1+LRPlus*Val)
+    PPV = calculatePPVfrSpecSens(calculateSpecfrSens(sensitivity,delta[i]),sensitivity,Prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Prevalence,type="l",main=c("Positive Predictive Value vs. Prevalence", "Given Different Values of Delta",paste(expression(Delta),"=",delta)),xlab="Prevalence",ylab="Positive Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1204,7 +1201,7 @@ DrawPPVSensPrevDelta <- function(sens, prevalence, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- LRPlus*Val[i]/(1+LRPlus*Val[i])
+    PPV = calculatePPVfrSpecSens(calculateSpecfrSens(Sensitivity,delta),Sensitivity,prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Sensitivity,type="l",main=c("Positive Predictive Value vs. Sensitivity", "Given Different Values of Prevalence",paste(expression(Delta),"=",delta)),xlab="Sensitivity",ylab="Positive Predictive Value",ylim=c(0,max(PPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1226,7 +1223,7 @@ DrawPPVSensSpecPrev <- function(sens,specificity, prevalence) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- (Sensitivity/(1-specificity[i]))*(prevalence/(1-prevalence))/(1+(Sensitivity/(1-specificity[i]))*(prevalence/(1-prevalence)))
+    PPV = calculatePPVfrSpecSens(specificity[i],Sensitivity,prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Sensitivity,type="l",main=c("Positive Predictive Value vs. Sensitivity", "Given Different Values of Specificity"),xlab="Sensitivity",ylab="Positive Predictive Value",ylim=c(min(PPV),1),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1250,7 +1247,7 @@ DrawPPVSensPrevSpec <- function(sens,prevalence, specificity) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- (Sensitivity/(1-specificity))*(prevalence[i]/(1-prevalence[i]))/(1+(Sensitivity/(1-specificity))*(prevalence[i]/(1-prevalence[i])))
+    PPV = calculatePPVfrSpecSens(specificity,Sensitivity,prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Sensitivity,type="l",main=c("Positive Predictive Value vs. Sensitivity", "Given Different Values of Specificity"),xlab="Sensitivity",ylab="Positive Predictive Value",ylim=c(min(PPV),1),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1273,7 +1270,31 @@ DrawSensPPVSpecPrev <- function(ppv, specificity, prevalence) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Sensitivity <- (1-specificity[i])*(PPV/(1-PPV))/Val
+    Sensitivity=calculateSensfrPPV(PPV,prevalence,specificity[i])
+    if(i==1) {
+      par(mar=c(5.1, 4.1, 4.1, 9.5))
+      plot(Sensitivity~PPV,type="l",main=c("Sensitivity vs. Positive Predictive Value", "Given Different Values of Specificity"),xlab="Positive Predictive Value",ylab="Sensitivity",ylim=c(0,1),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+    }
+    else
+      lines(y=Sensitivity, x=PPV,lty=LTY[i])
+  }
+  
+  legend(lty=LTY,legend=specificity,"bottomright",cex=1.15,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Specificity")
+  
+  
+}
+
+DrawSensPPVPrevSpec <- function(ppv, prevalence,specificity) {
+  
+  PPV <- seq(from=min(ppv),to=max(ppv),by=0.00001)
+  
+  
+  Iterations <- 1:length(prevalence)
+  LTY <- Iterations
+  
+  for(i in Iterations){
+    Val <- prevalence[i]/(1-prevalence[i])
+    Sensitivity =calculateSensfrPPV(PPV,prevalence[i],specificity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Sensitivity~PPV,type="l",main=c("Sensitivity vs. Positive Predictive Value", "Given Different Values of Specificity"),xlab="Positive Predictive Value",ylab="Sensitivity",ylim=c(0,1),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1296,7 +1317,7 @@ DrawSpecSensPPVPrev <- function(sens, PPV,prevalence) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- 1 - Sensitivity*((1-PPV[i])/PPV[i])*(prevalence/(1-prevalence))
+    Specificity =calculateSpecfrPPV(PPV[i],prevalence, Sensitivity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Specificity~Sensitivity,type="l",main=c("Specificity vs. Sensitivity", "Given Different Values of Prevalence"),xlab="Sensitivity",ylab="Specificity",ylim=c(0,1),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1318,7 +1339,7 @@ DrawPPVSpecSensPrev <- function(spec, sensitivity,prevalence) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- (sensitivity[i]/(1-Specificity))*(prevalence/(1-prevalence))/(1+(sensitivity[i]/(1-Specificity))*(prevalence/(1-prevalence)))
+    PPV = calculatePPVfrSpecSens(Specificity,sensitivity[i],prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Specificity,type="l",main=c("Positive Predictive Value vs. Specificity", "Given Different Values of Sensitivity"),xlab="Specificity",ylab="Positive Predictive Value",ylim=c(min(PPV),1),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1340,7 +1361,7 @@ DrawPPVSpecPrevSens <- function(spec, prevalence, sensitivity) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- (sensitivity/(1-Specificity))*(prevalence[i]/(1-prevalence[i]))/(1+(sensitivity/(1-Specificity))*(prevalence[i]/(1-prevalence[i])))
+    PPV = calculatePPVfrSpecSens(Specificity,sensitivity,prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Specificity,type="l",main=c("Positive Predictive Value vs. Specificity", "Given Different Values of Prevalence"),xlab="Specificity",ylab="Positive Predictive Value",ylim=c(min(PPV),1),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1362,7 +1383,7 @@ DrawPPVPrevSensSpec <- function(prevalence, sensitivity,spec) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- (sensitivity[i]/(1-spec))*(Prevalence/(1-Prevalence))/(1+(sensitivity[i]/(1-spec))*(Prevalence/(1-Prevalence)))
+    PPV = calculatePPVfrSpecSens(spec,sensitivity[i],Prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Specificity,type="l",main=c("Positive Predictive Value vs. Specificity", "Given Different Values of Sensitivity"),xlab="Specificity",ylab="Positive Predictive Value",ylim=c(min(PPV),1),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1384,7 +1405,7 @@ DrawPPVPrevSpecSens <- function(prevalence, spec,sensitivity) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV <- (sensitivity/(1-spec[i]))*(Prevalence/(1-Prevalence))/(1+(sensitivity/(1-spec[i]))*(Prevalence/(1-Prevalence)))
+    PPV = calculatePPVfrSpecSens(spec[i],sensitivity,Prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Specificity,type="l",main=c("Positive Predictive Value vs. Specificity", "Given Different Values of Specificity"),xlab="Specificity",ylab="Positive Predictive Value",ylim=c(min(PPV),1),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1407,7 +1428,7 @@ DrawSpecPPVSensPrev <- function(ppv, sensitivity, prevalence) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- 1-sensitivity[i]*Val/(PPV/(1-PPV))
+    Specificity = calculateSpecfrPPV(PPV,prevalence,sensitivity[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Specificity~PPV,type="l",main=c("Specificity vs. Positive Predictive Value", "Given Different Values of Sensitivity"),xlab="Positive Predictive Value",ylab="Specificity",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1430,7 +1451,7 @@ DrawSpecPPVPrevSens <- function(ppv, prevalence,sensitivity) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- 1-sensitivity*Val[i]/(PPV/(1-PPV))
+    Specificity = calculateSpecfrPPV(PPV,prevalence[i],sensitivity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Specificity~PPV,type="l",main=c("Specificity vs. Positive Predictive Value", "Given Different Values of Sensitivity"),xlab="Positive Predictive Value",ylab="Specificity",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1455,7 +1476,7 @@ DrawcNPVPrevSpecDelta <- function(prev, specificity, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    cNPV <- (Val/LRMinus[i])/(1+Val/LRMinus[i])
+    cNPV = calculatecNPVfrSpecSens(specificity[i],calculateSensfrSpec(specificity[i],delta),Prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Prevalence,type="l",main=c("Complement of Negative Predictive Value vs. Prevalence","Given Different Values of Specificity",paste(expression(Delta),"=",delta)),xlab="Prevalence",ylab="Complement of Negative Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1480,7 +1501,7 @@ DrawcNPVPrevDeltaSpec <- function(prev, delta, specificity) {
     Val <- Prevalence/(1+Prevalence)
     Sensitivity <- 1-pnorm(qnorm(specificity,0,1)-delta[i],0,1,1)
     LRMinus <- specificity/(1-Sensitivity[i])
-    cNPV <- (Val/LRMinus[i])/(1+Val/LRMinus[i])
+    cNPV = calculatecNPVfrSpecSens(specificity,calculateSensfrSpec(specificity,delta[i]),Prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Prevalence,type="l",main=c("Complement of Negative Predictive Value vs. Prevalence","Given Different Values of Delta",paste("Specificity =",specificity)),xlab="Prevalence",ylab="Complement of Negative Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1504,7 +1525,7 @@ DrawcNPVSpecPrevDelta <- function(spec, prevalence, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    cNPV <- (Val[i]/LRMinus)/(1+Val[i]/LRMinus)
+    cNPV = calculatecNPVfrSpecSens(Specificity,calculateSensfrSpec(Specificity,delta),prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Specificity,type="l",main=c("Complement of Negative Predictive Value vs. Specificity","Given Different Values of Disease Prevalence",paste(expression(Delta),"=",delta)),xlab="Specificity",ylab="Complement of Negative Predictive Value",ylim=c(0,max(cNPV)),xlim=rev(range(Specificity)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1530,7 +1551,7 @@ DrawcNPVSpecDeltaPrev <- function(spec,delta, prevalence) {
     Val <- prevalence/(1+prevalence)
     Sensitivity <- 1-pnorm(qnorm(Specificity,0,1)-delta[i],0,1,1)
     LRMinus <- Specificity/(1-Sensitivity[i])
-    cNPV <- (Val/LRMinus[i])/(1+Val/LRMinus[i])
+    cNPV = calculatecNPVfrSpecSens(Specificity,calculateSensfrSpec(Specificity,delta[i]),prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Specificity,type="l",main=c("Complement of Negative Predictive Value vs. Specificity","Given Different Values of Delta",paste("Prevalence =",prevalence)),xlab="Specificity",ylab="Complement of Negative Predictive Value",ylim=c(0,max(cNPV)),xlim=rev(range(Specificity)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1871,6 +1892,26 @@ DrawDeltaSpecPrevPPV <- function(spec, prev, PPV) {
   
 }
 
+DrawDeltaSpecPPVPrev <- function(spec, PPV, prev) {
+  
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
+  
+  Iterations <- 1:length(PPV)
+  LTY <- Iterations
+  
+  for(i in Iterations){
+    Delta=calculateDeltafrPPVSpec(Specificity,prev,PPV[i])
+    if(i==1) {
+      par(mar=c(5.1, 4.1, 4.1, 9.5))
+      plot(Delta~Specificity,type="l",main=c("Delta vs. Specificity","Given Different Values of Prevalence"),xlab="Specificity",ylab="Delta",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+    }
+    else
+      lines(y=Delta, x=Specificity,lty=LTY[i])
+  }
+  
+  legend(lty=LTY,legend=PPV,"bottomright",cex=1.15,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="PPV")
+  
+}
 
 DrawcNPVDeltaSensPrev <- function(delta, sensitivity, prevalence) {
   
@@ -1883,7 +1924,7 @@ DrawcNPVDeltaSensPrev <- function(delta, sensitivity, prevalence) {
     Delta<-seq(from=min(delta),to=max(delta),by=0.00001)
     Specificity <- pnorm(qnorm(1-sensitivity[i],0,1)+Delta,0,1,1)
     LRMinus <- Specificity/(1-sensitivity[i])
-    cNPV <- (Val/LRMinus)/(1+Val/LRMinus)
+    cNPV = calculatecNPVfrSpecSens(calculateSpecfrSens(sensitivity[i],Delta),sensitivity[i],prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Delta,type="l",main=c("Complement of Negative Predictive Value vs. Delta","Given Different Values of Sensitivity",paste("Prevalence =",prevalence)),xlab="Delta",ylab="Complement of Negative Predictive Value",ylim=c(0,max(cNPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1907,7 +1948,7 @@ DrawcNPVDeltaPrevSens <- function(delta, prevalence, sensitivity) {
     Delta<-seq(from=min(delta),to=max(delta),by=0.00001)
     Specificity <- pnorm(qnorm(1-sensitivity,0,1)+Delta,0,1,1)
     LRMinus <- Specificity/(1-sensitivity)
-    cNPV <- (Val[i]/LRMinus)/(1+Val[i]/LRMinus)
+    cNPV <= calculatecNPVfrSpecSens(calculateSpecfrSens(sensitivity,Delta),sensitivity,prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Delta,type="l",main=c("Complement of Negative Predictive Value vs. Delta","Given Different Values of Prevalence",paste("Sensitivity =",sensitivity)),xlab="Delta",ylab="Complement of Negative Predictive Value",ylim=c(0,max(cNPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1933,7 +1974,7 @@ DrawcNPVSensDeltaPrev <- function(sens, delta, prevalence) {
     Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
     Specificity <- pnorm(qnorm(1-Sensitivity,0,1)+Delta[i],0,1,1)
     LRMinus <- Specificity/(1-Sensitivity)
-    cNPV <- (Val/LRMinus)/(1+Val/LRMinus)
+    cNPV = calculatecNPVfrSpecSens(calculateSpecfrSens(Sensitivity,Delta[i]),Sensitivity,prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Sensitivity,type="l",main=c("Complement of Negative Predictive Value vs. Sensitivity","Given Different Values of Delta",paste("Prevalence =",prevalence)),xlab="Sensitivity",ylab="Complement of Negative Predictive Value",xlim=range(Sensitivity),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2026,7 +2067,7 @@ DrawcNPVPrevSensDelta <- function(prev, sensitivity, delta) {
     Val <- Prevalence/(1+Prevalence)
     Specificity <- pnorm(delta + qnorm(1-sensitivity))
     LRMinus <- Specificity/(1-sensitivity)
-    cNPV <- (Val/LRMinus[i])/(1+Val/LRMinus[i])
+    cNPV = calculatecNPVfrSpecSens(calculateSpecfrSens(sensitivity[i],delta),sensitivity[i],Prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Prevalence,type="l",main=c("Complement of the Negative Predictive Value vs. Prevalence","Given Different Values of Sensitivity",paste(expression(Delta),"=",delta)),xlab="Prevalence",ylab="Complement of the Negative Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2051,7 +2092,7 @@ DrawcNPVPrevDeltaSens <- function(prev, delta, sensitivity) {
     Val <- Prevalence/(1+Prevalence)
     Specificity <- pnorm(delta[i] + qnorm(1-sensitivity))
     LRMinus <- Specificity/(1-sensitivity)
-    cNPV <- (Val/LRMinus[i])/(1+Val/LRMinus[i])
+    cNPV <- calculatecNPVfrSpecSens(calculateSpecfrSens(sensitivity,delta[i]),sensitivity,Prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Prevalence,type="l",main=c("Complement of the Negative Predictive Value vs. Prevalence","Given Different Values of Delta",paste(expression(Delta),"=",delta)),xlab="Prevalence",ylab="Complement of the Negative Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2075,7 +2116,7 @@ DrawcNPVSensPrevDelta <- function(sens, prevalence, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    cNPV <- (Val[i]/LRMinus)/(1+Val[i]/LRMinus)
+    cNPV = calculatecNPVfrSpecSens(calculateSpecfrSens(Sensitivity,delta),Sensitivity,prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Sensitivity,type="l",main=c("Complement of the Negative Predictive Value vs. Sensitivity","Given Different Values of Disease Prevalence",paste(expression(Delta),"=",delta)),xlab="Sensitivity",ylab="Complement of Negative Predictive Value",ylim=c(0,1),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2451,7 +2492,7 @@ DrawSpecSensPrevcNPV <- function(sens, prev, cNPV) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- (1-Sensitivity)*((1+prev[i])/prev[i])*(cNPV/(1-cNPV))
+    Specificity = calculateSpecfrcNPV(cNPV,prev[i],Sensitivity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Specificity~Sensitivity,type="l",main=c("Specificity vs. Sensitivity","Given Different Values of Prevalence for a Fixed cNPV"),ylim=c(0,1),xlab="Sensitivity",ylab="Specificity",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2472,7 +2513,7 @@ DrawSensSpecPrevcNPV <- function(spec, prev, cNPV) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Sensitivity <- 1 - Specificity*((1+prev[i])/prev[i])*(cNPV/(1-cNPV))
+    Sensitivity=calculateSensfrcNPV(cNPV,prev[i],Specificity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Sensitivity~Specificity,type="l",main=c("Sensitivity vs. Specificity","Given Different Values of Prevalence for a Fixed cNPV"),ylim=c(0,1),xlab="Specificity",ylab="Sensitivity",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2493,7 +2534,7 @@ DrawSensSpeccNPVPrev <- function(spec, cNPV,prev) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Sensitivity <- 1 - Specificity*((1+prev)/prev)*(cNPV[i]/(1-cNPV[i]))
+    Sensitivity = calculateSensfrcNPV(cNPV[i],prev,Specificity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Sensitivity~Specificity,type="l",main=c("Sensitivity vs. Specificity","Given Different Values of cNPV"),ylim=c(0,1),xlab="Specificity",ylab="Sensitivity",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2514,7 +2555,7 @@ DrawcNPVSensSpecPrev <- function(sens, specificity, prevalence) {
   LTY <- Iterations
   
   for(i in Iterations){
-    cNPV <- ((prevalence/(1+prevalence))*(1-Sensitivity)/specificity[i])/(1+((1-Sensitivity)/specificity[i])*(prevalence/(1+prevalence)))
+    cNPV = calculatecNPVfrSpecSens(specificity[i],Sensitivity,prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Sensitivity,type="l",main=c("Complement of the Negative Predictive Value vs. Sensitivity", "Given Different Values of Specificity"),xlab="Sensitivity",ylab="Complement of the Negative Predictive Value",ylim=c(0.,max(cNPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2536,7 +2577,7 @@ DrawcNPVSensPrevSpec <- function(sens, prevalence, specificity) {
   LTY <- Iterations
   
   for(i in Iterations){
-    cNPV <- ((prevalence[i]/(1+prevalence[i]))*(1-Sensitivity)/specificity)/(1+((1-Sensitivity)/specificity)*(prevalence[i]/(1+prevalence[i])))
+    cNPV =calculatecNPVfrSpecSens(specificity,Sensitivity,prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Sensitivity,type="l",main=c("Complement of the Negative Predictive Value vs. Sensitivity", "Given Different Values of Specificity"),xlab="Sensitivity",ylab="Complement of the Negative Predictive Value",ylim=c(0.,max(cNPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2558,7 +2599,7 @@ DrawcNPVPrevSensSpec <- function(prevalence,sens,specificity) {
   LTY <- Iterations
   
   for(i in Iterations){
-    cNPV <- ((Prevalence/(1+Prevalence))*(1-sens[i])/specificity)/(1+((1-sens[i])/specificity)*(Prevalence/(1+Prevalence)))
+    cNPV = calculatecNPVfrSpecSens(specificity,sens[i],Prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Prevalence,type="l",main=c("Complement of the Negative Predictive Value vs. Prevalence", "Given Different Values of Sensitivity"),xlab="Prevalence",ylab="Complement of the Negative Predictive Value",ylim=c(0.,max(cNPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2580,7 +2621,7 @@ DrawcNPVPrevSpecSens <- function(prevalence,specificity,sens) {
   LTY <- Iterations
   
   for(i in Iterations){
-    cNPV <- ((Prevalence/(1+Prevalence))*(1-sens)/specificity[i])/(1+((1-sens)/specificity[i])*(Prevalence/(1+Prevalence)))
+    cNPV=calculatecNPVfrSpecSens(specificity[i],sens,Prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Prevalence,type="l",main=c("Complement of the Negative Predictive Value vs. Prevalence", "Given Different Values of Specificity"),xlab="Prevalence",ylab="Complement of the Negative Predictive Value",ylim=c(0.,max(cNPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2605,7 +2646,7 @@ DrawSenscNPVSpecPrev <- function(cnpv, prevalence, specificity) {
   for(i in Iterations){
     Val <- prevalence[i]/(1+prevalence[i])
     cNPVPrev <- Val[i]/(cNPV/(1-cNPV))
-    Sensitivity <- 1-specificity*cNPVPrev[i]
+    Sensitivity =calculateSensfrcNPV(cNPV,prevalence[i],specificity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Sensitivity~cNPV,type="l",main=c("Sensitivity vs. Complement of the Negative Predictive Value", "Given Different Values of Prevalence"),xlab="Complement of the Negative Predictive Value",ylab="Sensitivity",xlim=c(0.,max(cNPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2615,6 +2656,31 @@ DrawSenscNPVSpecPrev <- function(cnpv, prevalence, specificity) {
   }
   
   legend(lty=LTY,legend=prevalence,"bottomright",cex=1.15,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Prevalence")
+  
+  
+}
+
+DrawSenscNPVPrevSpec <- function(cnpv, specificity,prevalence) {
+  
+  cNPV <- seq(from=min(cnpv),to=max(cnpv),by=0.00001)
+  
+  
+  Iterations <- 1:length(specificity)
+  LTY <- Iterations
+  
+  for(i in Iterations){
+    Val <- prevalence/(1+prevalence)
+    cNPVPrev <- Val/(cNPV/(1-cNPV))
+    Sensitivity = calculateSensfrcNPV(cNPV, prevalence,specificity[i])
+    if(i==1) {
+      par(mar=c(5.1, 4.1, 4.1, 9.5))
+      plot(Sensitivity~cNPV,type="l",main=c("Sensitivity vs. Complement of the Negative Predictive Value", "Given Different Values of Prevalence"),xlab="Complement of the Negative Predictive Value",ylab="Sensitivity",xlim=c(0.,max(cNPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+    }
+    else
+      lines(y=Sensitivity, x=cNPV,lty=LTY[i])
+  }
+  
+  legend(lty=LTY,legend=specificity,"bottomright",cex=1.15,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Specificity")
   
   
 }
@@ -2630,7 +2696,7 @@ DrawSensPrevcNPVSpec <- function(prevalence, cNPV,specificity) {
   for(i in Iterations){
     Val <- prevalence/(1+prevalence)
     cNPVPrev <- Val/(cNPV[i]/(1-cNPV[i]))
-    Sensitivity <- 1-specificity*cNPVPrev[i]
+    Sensitivity = calculateSensfrcNPV(cNPV[i],Prevalence,specificity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Sensitivity~Prevalence,type="l",main=c("Sensitivity vs. Prevalence", "Given Different Values of cNPV"),xlab="Prevalence",ylab="Sensitivity",xlim=c(0.,max(cNPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2655,7 +2721,7 @@ DrawSensPrevSpeccNPV <- function(prevalence, specificity,cNPV) {
   for(i in Iterations){
     Val <- prevalence/(1+prevalence)
     cNPVPrev <- Val/(cNPV/(1-cNPV))
-    Sensitivity <- 1-specificity[i]*cNPVPrev[i]
+    Sensitivity = calculateSensfrcNPV(cNPV,Prevalence,specificity[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Sensitivity~Prevalence,type="l",main=c("Sensitivity vs. Prevalence", "Given Different Values of Specificity"),xlab="Prevalence",ylab="Sensitivity",xlim=c(0.,max(cNPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2677,7 +2743,7 @@ DrawSpecSenscNPVPrev <- function(sens, cNPV, prevalence) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- (cNPV[i]/(1-cNPV[i]))*((1+prevalence)/prevalence)*(1-Sensitivity)
+    Specificity = calculateSpecfrcNPV(cNPV[i],prevalence,Sensitivity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Specificity~Sensitivity,type="l",main=c("Specificity vs. Sensitivity", "Given Different Values of the","Complement of the Negative Predictive Value"),ylim=c(min(Sensitivity),1),xlab="Sensitivity",ylab="Specificity",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2699,7 +2765,7 @@ DrawSpeccNPVSensPrev <- function(cnpv, sensitivity, prevalence) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- (cNPV/(1-cNPV))*(prevalence/(1-prevalence))*(1-sensitivity[i])
+    Specificity = calculateSpecfrcNPV(cNPV,prevalence,sensitivity[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Specificity~cNPV,type="l",main=c("Specificity vs. Complement of the Negative Predictive Value", "Given Different Values of Sensitivity"),xlab="Complement of the Negative Predictive Value",ylab="Specificity",xlim=c(0,max(cNPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2721,7 +2787,7 @@ DrawSpeccNPVPrevSens <- function(cnpv, prevalence,sensitivity) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- (cNPV/(1-cNPV))*(prevalence[i]/(1-prevalence[i]))*(1-sensitivity)
+    Specificity = calculateSpecfrcNPV(cNPV,prevalence[i],sensitivity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Specificity~cNPV,type="l",main=c("Specificity vs. Complement of the Negative Predictive Value", "Given Different Values of Prevalence"),xlab="Complement of the Negative Predictive Value",ylab="Specificity",xlim=c(0,max(cNPV)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2743,7 +2809,7 @@ DrawSpecPrevSenscNPV <- function(prevalence, sensitivity, cNPV) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- (cNPV/(1-cNPV))*(Prevalence/(1-Prevalence))*(1-sensitivity[i])
+    Specificity = calculateSpecfrcNPV(cNPV, Prevalence, sensitivity[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Specificity~Prevalence,type="l",main=c("Specificity vs. Prevalence", "Given Different Values of Sensitivity"),xlab="Prevalence",ylab="Specificity",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2765,7 +2831,7 @@ DrawSpecPrevcNPVSens <- function(prevalence, cNPV, sensitivity) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- (cNPV[i]/(1-cNPV[i]))*(Prevalence/(1-Prevalence))*(1-sensitivity)
+    Specificity = calculateSpecfrcNPV(cNPV[i],Prevalence,sensitivity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Specificity~Prevalence,type="l",main=c("Specificity vs. Prevalence", "Given Different Values of cNPV"),xlab="Prevalence",ylab="Specificity",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2787,7 +2853,29 @@ DrawcNPVSpecSensPrev <- function(spec, sensitivity, prevalence) {
   LTY <- Iterations
   
   for(i in Iterations){
-    cNPV <- (prevalence/(1+prevalence)*(1-sensitivity[i])/Specificity)/(1+((1-sensitivity[i])/Specificity)*(prevalence/(1+prevalence)))
+    cNPV = calculatecNPVfrSpecSens(Specificity,sensitivity[i],prevalence)
+    if(i==1) {
+      par(mar=c(5.1, 4.1, 4.1, 9.5))
+      plot(cNPV~Specificity,type="l",main=c("Complement of the Negative Predictive Value vs. Specificity", "Given Different Values of Sensitivity"),xlab="Specificity",ylab="Complement of the Negative Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+   }
+    else 
+      lines(y=cNPV, x=Specificity,lty=LTY[i])
+  }
+  
+  legend(lty=LTY,legend=sensitivity,"bottomright",cex=1.15,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Sensitivity")
+  
+}
+
+
+DrawcNPVSpecPrevSens <- function(spec, prevalence,sensitivity) {
+  
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
+  
+  Iterations <- 1:length(prevalence)
+  LTY <- Iterations
+  
+  for(i in Iterations){
+    cNPV = calculatecNPVfrSpecSens(Specificity,sensitivity,prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Specificity,type="l",main=c("Complement of the Negative Predictive Value vs. Specificity", "Given Different Values of Sensitivity"),xlab="Specificity",ylab="Complement of the Negative Predictive Value",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2796,7 +2884,7 @@ DrawcNPVSpecSensPrev <- function(spec, sensitivity, prevalence) {
       lines(y=cNPV, x=Specificity,lty=LTY[i])
   }
   
-  legend(lty=LTY,legend=sensitivity,"bottomright",cex=1.15,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Sensitivity")
+  legend(lty=LTY,legend=prevalence,"bottomright",cex=1.15,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Prevalence")
   
   
 }
@@ -2937,7 +3025,7 @@ DrawSensPrevPPVSpec <- function(prevalence,PPV,spec) {
   
   for(i in Iterations){
     Val <- Prevalence/(1-Prevalence)
-    Sensitivity <- (PPV[i]/(1 - PPV[i]))/Val*(1 - spec)
+    Sensitivity = calculateSensfrPPV(PPV[i],Prevalence,spec)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Sensitivity~Prevalence,type="l",main=c("Sensitivity vs. Prevalence", "Given Different Values of Positive Predictive Value",paste("Specificity =",specificity)),xlab="Specificity",ylab="Sensitivity",ylim=c(0,max(Sensitivity)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2958,7 +3046,7 @@ DrawSensPrevSpecPPV <- function(prevalence,spec,PPV) {
   
   for(i in Iterations){
     Val <- Prevalence/(1-Prevalence)
-    Sensitivity <- (PPV/(1 - PPV))/Val*(1 - spec[i])
+    Sensitivity =calculateSensfrPPV(PPV,Prevalence,spec[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Sensitivity~Prevalence,type="l",main=c("Sensitivity vs. Prevalence", "Given Different Values of Specificity",paste("PPV =",PPV)),xlab="Specificity",ylab="Sensitivity",ylim=c(0,max(Sensitivity)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2978,7 +3066,7 @@ DrawSensSpecPPVPrev <- function(spec, PPV, prevalence) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Sensitivity <- (PPV[i]/(1 - PPV[i]))/Val*(1 - Specificity)
+    Sensitivity =calculateSensfrPPV(PPV[i],prevalence,Specificity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Sensitivity~Specificity,type="l",main=c("Sensitivity vs. Specificity", "Given Different Values of Positive Predictive Value",paste("Prevalence =",prevalence)),xlab="Specificity",ylab="Sensitivity",ylim=c(0,max(Sensitivity)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -2999,7 +3087,7 @@ DrawSensSpecPrevPPV <- function(spec, prevalence,PPV) {
   
   for(i in Iterations){
     Val <- prevalence[i]/(1-prevalence[i])
-    Sensitivity <- (PPV/(1 - PPV))/Val[i]*(1 - Specificity)
+    Sensitivity = calculateSensfrPPV(PPV,prevalence[i],Specificity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Sensitivity~Specificity,type="l",main=c("Sensitivity vs. Specificity", "Given Different Values of Prevalence",paste("PPV =",PPV)),xlab="Specificity",ylab="Sensitivity",ylim=c(0,max(Sensitivity)),lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -3169,7 +3257,7 @@ DrawSpecSensPrevPPV <- function(sens,prev,ppv) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- 1 - Sensitivity*(prev/(1-prev))*((1-ppv[i])/ppv[i])
+    Specificity = calculateSpecfrPPV(ppv[i],prev,Sensitivity)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Specificity~Sensitivity,type="l",main=c("Specificity vs. Sensitivity","Given Different Values of Positive Predictive Value"),ylim=c(0,1),xlab="Sensitivity",ylab="Specificity",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -3191,7 +3279,7 @@ DrawSpecPrevPPVSens <- function(prev,ppv,sens) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- 1 - sens*(Prevalence/(1-Prevalence))*((1-ppv[i])/ppv[i])
+    Specificity = calculateSpecfrPPV(ppv[i],Prevalence,sens)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Specificity~Prevalence,type="l",main=c("Specificity vs. Prevalence","Given Different Values of PPV"),ylim=c(0,1),xlab="Prevalence",ylab="Specificity",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -3212,7 +3300,7 @@ DrawSpecPrevSensPPV <- function(prev,sens,ppv) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Specificity <- 1 - sens[i]*(Prevalence/(1-Prevalence))*((1-ppv)/ppv)
+    Specificity = calculateSpecfrPPV(ppv,Prevalence,sens[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Specificity~Prevalence,type="l",main=c("Specificity vs. Prevalence","Given Different Values of Sensitivity"),ylim=c(0,1),xlab="Prevalence",ylab="Specificity",lty=LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -3247,16 +3335,11 @@ calculateDeltafrcNPVSpec<- function(specificity,prevalence,cnpv) {
   delta <- qnorm(specificity) - qnorm(1-Sensitivity)
 }
 
-calculateDeltafrcNPVSpec<- function(specificity,prevalence,cnpv) {
-  cNPVPrev <- (prevalence/(1+prevalence))/(cnpv/(1-cnpv))
-  Sensitivity <- 1-specificity*cNPVPrev
-  delta <- qnorm(specificity) - qnorm(1-Sensitivity)
-}
-
 calculateDeltafrcNPVSens<- function(sensitivity,prevalence,cnpv) {
   specificity <- (1-sensitivity)*((1+prevalence)/prevalence)*(cnpv/(1-cnpv))
   delta <- qnorm(specificity) - qnorm(1-sensitivity)
 }
+
 
 calculateSensfrSpec<- function(specificity,delta) {
   sensitivity <- 1-pnorm(qnorm(specificity)-delta)
@@ -3265,3 +3348,28 @@ calculateSensfrSpec<- function(specificity,delta) {
 calculateSpecfrSens<- function(sensitivity,delta) {
   specificity <- pnorm(delta+qnorm(1-sensitivity))
 }
+
+calculateSensfrPPV<- function(ppv,prevalence,specificity) {
+  sensitivity <- ((1-prevalence)/prevalence)*(ppv/(1-ppv))*(1-specificity)
+}
+
+calculateSensfrcNPV <- function(cnpv,prevalence,specificity) {
+  sensitivity <- 1-specificity*((1+prevalence)/prevalence)*(cnpv/(1-cnpv))
+}
+
+calculateSpecfrcNPV <- function(cnpv,prevalence,sensitivity) {
+  specificity <- (1-sensitivity)*((1+prevalence)/prevalence)*(cnpv/(1-cnpv))
+}
+
+calculateSpecfrPPV <- function(ppv,prevalence,sensitivity) {
+  specificity <- 1-sensitivity*(prevalence/(1-prevalence))*((1-ppv)/ppv)
+}
+
+calculatePPVfrSpecSens <- function(specificity,sensitivity,prevalence) {
+  PPV <- ((sensitivity/(1-specificity))*(prevalence/(1-prevalence)))/(1+(sensitivity/(1-specificity))*(prevalence/(1-prevalence)))
+}
+
+calculatecNPVfrSpecSens <- function(specificity,sensitivity,prevalence) {
+  cNPV <- ((prevalence/(1+prevalence))*(1-sensitivity)/specificity)/(1+(prevalence/(1+prevalence))*(1-sensitivity)/specificity)
+}
+
