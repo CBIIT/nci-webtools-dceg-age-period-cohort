@@ -44,7 +44,7 @@ def setRWorkingDirectory():
     sourceReturn1 = robjects.r("path")
     return ""
 
-@app.route('/riskStratAdvRest/cal', methods = ['GET','POST'])
+@app.route('/riskStratAdvRest/cal', methods = ['POST'])
 @jsonp
 def callRFunction():
     rSource = robjects.r('source')
