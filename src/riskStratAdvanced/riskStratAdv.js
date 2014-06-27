@@ -350,6 +350,21 @@ function checkInputFields() {
 
 }
 function calculate() {
+	//Check pattern for each input box
+	
+	var checkInput =[];
+	console.log(document.getElementById("independent").checkValidity());
+	console.log(document.getElementById("contour").checkValidity());
+	console.log(document.getElementById("fixed").checkValidity());
+	checkInput.push(document.getElementById("independent").checkValidity());
+	checkInput.push(document.getElementById("contour").checkValidity());
+	checkInput.push(document.getElementById("fixed").checkValidity());
+	if($.inArray(false, checkInput) >= 0) {
+		$("#status-bar").css("visibility", "visible");
+		$("#status-bar").html("Invalid input array.  Enter a valid array of floating point values.");
+		return;
+	}
+	 
 	//return;
 	$("#status-bar").text("");
 	if(rulesViolationMsg.length > 0) {
@@ -364,14 +379,20 @@ function calculate() {
     var independentArray = ""; //specificity
 
     var independentArray = $("#independent").val();
+    //Remove all spaces and non-characters
+    independentArray = independentArray.replace(/[^\d,.-]/g, '');
     var independentval = $("#independent_dropdown").val();
     independentArraySplit = independentArray.split(",");
     var independentMin = Math.min.apply( Math, independentArraySplit )
     var independentMax = Math.max.apply( Math, independentArraySplit )
     var contourArray = $("#contour").val();
+    //Remove all spaces and non-characters
+    contourArray = contourArray.replace(/[^\d,.-]/g, '');
     var contourval = $("#contour_dropdown").val();
     var columnHeadings = contourArray.split(",");
     var fixedArray = $("#fixed").val();
+    //Remove all spaces and non-characters
+    fixedArray = fixedArray.replace(/[^\d,.-]/g, '');
     var fixedval = $("#fixed_dropdown").val();
     var fixedArraySplit = fixedArray.split(",");
     var fixedArraySize = fixedArraySplit.length;
