@@ -540,13 +540,6 @@ function handleError(error, status, request){
         alert(" Error is "+ error);
         alert(" Error Status is "+ status);
         alert(" Error irequest is "+ request);
-        console.error("handleError called");
-        console.error("error");
-        console.dir(error);
-        console.error("status");
-        console.dir(status);
-        console.error("request");
-        console.dir(request);
 }
 
 function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey){
