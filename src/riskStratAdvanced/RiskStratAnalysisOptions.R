@@ -1467,7 +1467,7 @@ DrawPrevcNPVDeltaSpec <- function(cnpv, delta,specificity) {
   LTY <- Iterations
   
   for(i in Iterations) {
-    Prevalence =calculatePrevalencefrcNPV(cNPV,specificity,calculateSensfrSpec(specificity[i],delta)
+    Prevalence =calculatePrevalencefrcNPV(cNPV,specificity,calculateSensfrSpec(specificity[i],delta))
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Prevalence~cNPV,type="l",main=c("Specificity vs. Complement of Negative Predictive Value","Given Different Values of Delta",paste("Specificity =",specificity)),xlab="Complement of Negative Predictive Value",ylab="Prevalence",lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1530,7 +1530,7 @@ DrawPrevDeltaSpeccNPV <- function(delta, spec, cnpv) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Prevalence =calculatePrevalencefrcNPV(cnpv,spec[i],calculateSensfrSpec(spec[i],Delta)
+    Prevalence =calculatePrevalencefrcNPV(cnpv,spec[i],calculateSensfrSpec(spec[i],Delta))
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Prevalence~Delta,type="l",main=c("Prevalence vs. Delta","Given Different Values of Specificity"),ylim=c(0,1),xlab="Delta",ylab="Prevalence",lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1552,7 +1552,7 @@ DrawPrevDeltacNPVSpec <- function(delta, cnpv, spec) {
   
   for(i in Iterations){
     sensitivity <- 1- pnorm(qnorm(spec)-Delta)
-    Prevalence = calculatePrevalencefrcNPV(cnpv[i],spec,calculateSensfrSpec(spec,Delta)
+    Prevalence = calculatePrevalencefrcNPV(cnpv[i],spec,calculateSensfrSpec(spec,Delta))
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Prevalence~Delta,type="l",main=c("Prevalence vs. Delta","Given Different Values of cNPV"),xlab="Delta",ylab="Prevalence",lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
@@ -1594,7 +1594,7 @@ DrawPrevSpecDeltacNPV <- function(spec, delta,cnpv) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Prevalence = calculatePrevalencefrcNPV(cnpv,Specificity,calculateSensfrSpec(Specificity,delta[i])
+    Prevalence = calculatePrevalencefrcNPV(cnpv,Specificity,calculateSensfrSpec(Specificity,delta[i]))
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Prevalence~Specificity,type="l",main=c("Prevalence vs. Specificity","Given Different Values of Delta"),ylim=c(0,1),xlab="Specificity",ylab="Prevalence",lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
