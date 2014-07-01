@@ -150,7 +150,7 @@ SensPrevDelta <- function(sens,prev,delta) {
   spec<-array(c(rep(NA,times=length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecdelta)), dimnames = list(vecsens,vecdelta))
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecdelta)) {
-      spec[i,j]=calculateSpecfrSens(vecsens[i],vecdelta[k])
+      spec[i,j]=calculateSpecfrSens(vecsens[i],vecdelta[j])
     }
   }
   
@@ -204,7 +204,7 @@ SenscNPVDelta <- function(sens,dcnpv,delta) {
   spec<-array(c(rep(NA,times=length(vecsens)*length(vecdelta))),dim = c(length(vecsens),length(vecdelta)),dimnames = list(vecsens,vecdelta))  ##full table
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecdelta)) {
-      spec[i,j]=calculateSpecfrSens(vecsens[i],vecdelta[k])
+      spec[i,j]=calculateSpecfrSens(vecsens[i],vecdelta[j])
     }
   }
   
@@ -373,7 +373,7 @@ SpecPrevDelta <- function(spec,prev,delta) {
   sens<-array(c(rep(NA,times=length(vecspec)*length(vecdelta))), dim = c(length(vecspec),length(vecdelta)), dimnames = list(vecspec,vecdelta))
   for(i in 1:length(vecspec)) {
     for(j in 1:length(vecdelta)) {
-      sens[i,j]=calculateSensfrSpec(vecspec[i],vecdelta[k])
+      sens[i,j]=calculateSensfrSpec(vecspec[i],vecdelta[j])
     }
   }
   
