@@ -1,0 +1,395 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>National Lung Screening Trial</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<link href="files/2col.css" rel="stylesheet" type="text/css" media="all">
+<link href="files/2col.css" rel="stylesheet" type="text/css" media="print">
+<script src="files/angular.min.js"></script>
+<script src="files/FormController.js"></script>
+</head>
+<body  ng-app="myapp">
+    <div class="skip">
+        <a title="Skip to content" href="#skiptocontent">Skip to content</a></div>
+    <div class="minibanner-red">
+        <ul>
+            <li class="nci"><a href="http://www.cancer.gov/">National Cancer Institute</a></li>
+            <li class="cancergov"><a href="http://www.cancer.gov/">www.cancer.gov</a></li>
+            <li class="nih"><a href="http://www.nih.gov/">at the National Institutes of Health</a></li>
+        </ul>
+    </div>
+    <div id="center">
+        <a name="top"></a>
+        <!-- Content Headers -->
+        <div id="bcrabanner">
+        <img src="files/bcra-banner-2.jpg" alt="Breast Cancer Risk Assessment Tool" height="118" width="1000"></div>
+        <!-- end Content Headers -->
+        <!--bof last modified date and version -->
+        
+       
+        <!--eof last modified date and version -->
+
+<ul id="nav">
+ <li id="nav-1"><a href="index.htm">Home</a></li>
+ <li id="nav-3"><a href="about.htm">About the Tool</a></li>
+ <li id="nav-4"><a href="risk.htm">Risk Factor</a></li>
+ <li id="nav-4"><a href="quick_links.htm">Quick Links</a></li>
+</ul>
+<div id="ContentColumns">
+
+<br /><br />
+<p><a href="http://www.cancer.gov/clinicaltrials/noteworthy-trials/nlst" target="_blank" title="NLST (National Lung Screening Trial)">NLST (National Lung Screening Trial)</a> compares the efficacy of low-dose helical CT with that of standard chest X-ray for detecting lung cancer. The initial findings reveal that low-dose CT resulted in 20% reduction in lung cancer mortality among participants satisfying the NLST inclusion criteria (55-74 years of age, minimum 30 pack-years of smoking and no more than 15 years since quitting). But it is yet unknown if the risk of lung cancer death changes the benefits/harms of low-dose CT screening. The NLST Lung Cancer Screening Tool is a statistical analysis tool that predicts a person's risk of lung cancer death based on a series of demographic and clinical risk factors for lung cancer. Findings from the tool support defining the high-risk targeting population for low-dose CT screening where benefits of screening overweigh harms thus improving the selection process for lung-cancer screening.</p>
+
+
+
+ <div id="ContentColumnsLeft">
+
+
+
+<div class="maincontentbox">
+ <div class="maincontentboxtitle"><ul><li class="left title">Risk Tool</li><li class="title">&nbsp;</li></ul></div>
+
+<div class="maincontentboxtext">
+<p><strong>The task force does not recommend that you get screened if you are not between the ages of 55 and 80, or if you are a non smoker, or if you are a current smoker with less than 30 pack-year of smoking or if you are a former smoker who quitted for more than 15 years.</strong></p>
+
+<div ng-controller="MyController" >
+
+<form name="" id="" action="" method="get">
+<table border="0" cellpadding="0" cellspacing="0" width="440">
+
+ <tbody>
+
+<tr>
+
+  <td valign="top" width="330">Age</td>
+
+  <td valign="top" width="8">&nbsp;</td>
+
+  <td align="right" valign="top" width="109">
+
+   <input type="text" name="age" ng-mouseleave="myForm.changeAge()" ng-model="myForm.age" style="width: 135px;"><br/>
+
+  </td>
+
+ </tr>
+
+ <tr>
+  <td ng-show="myForm.ageCriteria" colspan=3><span style="color:red; font-weight:bold;"><br />The task force does NOT recommend that you get screened<br/></span></td>
+ </tr>
+
+ <tr><td colspan="3" background="files/questions-divider.gif" valign="top"><img src="files/questions-divider.gif" alt="" height="20" width="4"></td></tr>
+
+ <tr>
+
+  <td valign="top" width="330"><label for="genetics">Gender</label></td>
+
+  <td valign="top" width="8">&nbsp;</td>
+
+  <td align="right" valign="top" width="150">
+
+   <input type="radio" ng-change="myForm.changeGender()" ng-model="myForm.gender" value="male">Male
+
+   <input type="radio" style="margin-left:45px;" ng-change="myForm.changeGender()" ng-model="myForm.gender" value="female">Female
+
+  </td>
+
+ </tr>
+
+ <tr><td colspan="3" background="files/questions-divider.gif" valign="top"><img src="files/questions-divider.gif" alt="" height="20" width="4"></td></tr>
+
+ <tr>
+
+  <td valign="top">Type of Smoker?<br/>
+
+</td>
+
+  <td valign="top">&nbsp;</td>
+
+  <td align="right" valign="top">
+
+   <select ng-change="myForm.changeType()" ng-model="myForm.type" style="width: 150px;">
+
+    <option value="current">Current Smoker</option>
+
+    <option value="former">Former Smoker</option>
+
+    <option value="non">Non Smoker</option>
+
+   </select><br />
+
+  </td>
+
+ </tr>
+
+ <tr ng-show="myForm.typeCriteria">
+
+    <td colspan="3" style="color:red; font-weight:bold;"><br />The task force does NOT recommend that you get screened</td>
+
+ </tr>
+
+ <tr ng-show="myForm.startShow">
+
+  <td valign="top"><br />
+
+            What age did you start smoking?<br />
+
+  </td>
+
+  <td valign="top">&nbsp;</td>
+
+  <td align="right" valign="top">
+
+            <br /><input type="text" name="start" ng-change="myForm.changeStart()" ng-model="myForm.start" style="width: 135px;"><br/><br/>
+
+ </tr>
+
+ <tr ng-show="myForm.startShow">
+
+  <td valign="top">
+
+            How many packs per day do you smoke on average?<br />
+
+  </td>
+
+  <td valign="top">&nbsp;</td>
+
+  <td align="right" valign="top">
+
+            <input type="text" name="packs" ng-change="myForm.changePacks()" ng-model="myForm.packs" style="width: 135px;">
+
+ </tr>
+
+ </tr>
+ <tr ng-show="myForm.packsCriteria"><td colspan="3" style="color:red; font-weight:bold;"><br />The task force does NOT recommend that you get screened</td>
+ </tr>
+
+
+
+
+ <tr ng-show="myForm.quitShow">
+
+  <td valign="top">
+
+            <br />How old were you when you quit?
+
+  </td>
+
+  <td valign="top">&nbsp;</td>
+
+  <td align="right" valign="top">
+
+            <br /><input type="text" name="quit" ng-mouseleave="myForm.changeQuit()" ng-model="myForm.quit"  style="width: 135px;">
+
+  </td>
+
+ </tr>
+ <tr ng-show="myForm.quitCriteria">  <td colspan="3" style="color:red; font-weight:bold;"><br />The task force does NOT recommend that you get screened</td>
+ </tr>
+
+
+
+
+
+
+
+
+
+
+
+ <tr><td colspan="3" background="files/questions-divider.gif" valign="top"><img src="files/questions-divider.gif" alt="" height="20" width="4"></td></tr>
+
+ <tr>
+
+  <td valign="top">Race or Ethnic Group:</td>
+
+  <td valign="top">&nbsp;</td>
+
+  <td align="right" valign="top">
+
+   <select ng-change="myForm.changeGroup()" ng-model="myForm.group" style="width: 150px;">
+
+    <option value="white">Non-Hispanic White</option>
+
+    <option value="black">Non-Hispanic Black</option>
+
+    <option value="hispanic">Hispanic</option>
+
+    <option value="asian">Asian</option>
+
+    <option value="other">other</option>
+
+   </select>
+
+  </td>
+
+ </tr>
+
+ <tr><td colspan="3" background="files/questions-divider.gif" valign="top"><img src="files/questions-divider.gif" alt="" height="20" width="4"></td></tr>
+
+ <tr>
+
+  <td valign="top">Lung disease?</td>
+
+  <td valign="top">&nbsp;</td>
+
+  <td align="right" valign="top">
+
+   <select ng-change="myForm.changeGroup()" ng-model="myForm.disease" style="width: 150px;">
+
+    <option value="none">None</option>
+
+    <option value="emphysema">Emphysema</option>
+
+    <option value="bronchitis">Chronic Bronchitis</option>
+
+    <option value="other">Other</option>
+
+   </select>
+
+  </td>
+
+ </tr>
+
+ <tr><td colspan="3" background="files/questions-divider.gif" valign="top"><img src="files/questions-divider.gif" alt="" height="20" width="4"></td></tr>
+
+ <tr>
+
+  <td valign="top">Family history of lung cancer?</td>
+
+  <td valign="top">&nbsp;</td>
+
+  <td align="right" valign="top">
+
+   <select ng-change="myForm.changeGroup()" ng-model="myForm.history" style="width: 150px;">
+
+    <option value="none">None</option>
+
+    <option value="grandparents">Grandparents</option>
+
+    <option value="parents">Parents</option>
+
+    <option value="siblings">Siblings</option>
+
+   </select>
+
+  </td>
+
+ </tr>
+
+ <tr><td colspan="3" background="files/questions-divider.gif" valign="top">
+   <img src="files/questions-divider.gif" alt="" height="20" width="4"></td></tr>
+
+<tr>
+
+  <td valign="top" width="330">Height?</td>
+
+  <td valign="top" width="8">&nbsp;</td>
+
+  <td align="right" valign="top" width="109">
+
+<table><tr><td><input type="text" name="heightfeet" style="width: 58px;"></td>
+<td><input type="text" name="heightinches" style="width: 58px;"></td></tr>
+<tr><td align="left">(Feet)</td><td>(Inches)</td></tr>
+</table>
+
+
+  </td>
+
+ </tr>
+
+ <tr><td colspan="3" background="files/questions-divider.gif" valign="top">
+   <img src="files/questions-divider.gif" alt="" height="20" width="4"></td></tr>
+
+<tr>
+
+  <td valign="top" width="330">Weight?</td>
+
+  <td valign="top" width="8">&nbsp;</td>
+
+  <td align="right" valign="top" width="109">
+
+<table><tr><td><input type="text" name="weight" style="width: 135px;"></td></tr>
+<tr><td align="left">(Pounds)</td></tr>
+</table>
+
+  </td>
+
+ </tr>
+
+ <tr><td colspan="3" background="files/questions-divider.gif" valign="top"><img src="files/questions-divider.gif" alt="" height="20" width="4"></td></tr>
+
+ <tr>
+
+  <td colspan="5" align="right" valign="top"><input type="submit" name="submit" value="Calculate" id="submit" /> 
+  <input type="reset" name="reset" value="Reset" id="reset" ng-click="myForm.resetForm()"/></td>
+
+ </tr></tbody>
+
+</table>
+
+</form>
+
+</div><br /><br />
+ </div>
+</div>
+</div>
+
+<div id="ContentColumnsRight">
+<div id="RightColumn">
+
+<div id="AccordionTitle">Your Results</div>
+
+<div id="RightColumnContent"><p>Brief summary of the screening tool results.</div>
+
+<section class="ac-container">
+ <div>
+  <input id="ac-1" name="accordion-1" type="checkbox" checked />
+  <label for="ac-1">Risk of dying from lung cancer</label>
+  <article class="ac-small"><p>Result: x%</p> <p>Explanation: text</p><p><a href="#" title="Learn more">Click here</a> to learn more about your results.</p></article>
+ </div>
+ <div>
+  <input id="ac-2" name="accordion-1" type="checkbox" />
+  <label for="ac-2">Risk reduction due to lung cancer screening</label>
+  <article class="ac-small"><p>Result: x%</p> <p>Explanation: text</p><p><a href="#" title="Learn more">Click here</a> to learn more about your results.</p></article>
+ </div>
+ <div>
+  <input id="ac-3" name="accordion-1" type="checkbox" />
+  <label for="ac-3">Chance of having a false positive result</label>
+  <article class="ac-small"><p>Result: x%</p> <p>Explanation: text</p><p><a href="#" title="Learn more">Click here</a> to learn more about your results.</p></article>
+ </div>
+ <div>
+  <input id="ac-4" name="accordion-1" type="checkbox" />
+  <label for="ac-4">Percentile in your risk group if in the trial</label>
+  <article class="ac-small"><p>Result: x%</p> <p>Explanation: text</p><p><a href="#" title="Learn more">Click here</a> to learn more about your results.</p></article>
+ </div>
+</section>
+
+<div id="RightColumnContent"><p></p></div>
+
+<div id="AccordionTitle">Further Information</div>
+
+<div id="RightColumnContent"><p>Learning about lung cancer and its treatment can help you prepare for your appointments, understand different types of treatment, and prevent and manage any side effects.<br /><br /></p></div>
+
+
+
+
+
+</div>
+</div>
+
+
+
+
+<div id="footer">
+
+ <p><a href="http://www.cancer.gov/bcrisktool/Default.aspx">Home</a>&nbsp;|&nbsp;<a href="http://www.cancer.gov/help">Contact Us</a>&nbsp;|&nbsp;<a href="http://www.cancer.gov/global/web/policies">Policies</a>&nbsp;|&nbsp;<a href="http://www.cancer.gov/global/web/policies/accessibility">Accessibility</a></p>
+
+ <p class="agency-links"><a href="http://www.hhs.gov/">U.S. Department of Health and Human Services</a> &nbsp;|&nbsp; <a href="http://www.nih.gov/">National Institutes of Health</a> &nbsp;|&nbsp; <a href="http://www.cancer.gov/">National Cancer Institute</a> &nbsp;|&nbsp; <a href="http://www.usa.gov/">USA.gov</a></p>
+
+ <p class="tagline">NIH…Turning Discovery Into Health<sup>®</sup></p>
+
+</div><!-- end Footer -->
+
+</div>
+
+</body>
+</html>
