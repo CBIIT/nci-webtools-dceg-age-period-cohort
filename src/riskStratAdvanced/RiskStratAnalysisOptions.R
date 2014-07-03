@@ -117,7 +117,7 @@ SensPPVSpec <- function(sens,dppv,spec) {
   delta<-array(c(rep(NA,times=length(vecsens)*length(vecspec))), dim = c(length(vecsens),length(vecspec)), dimnames = list(vecsens,vecspec))
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecspec)) {
-      delta[i,j]= calculateDeltafrSpecSens(vecspec[j],vecspec[i])
+      delta[i,j]= calculateDeltafrSpecSens(vecspec[j],vecsens[i])
     }
   }
   
@@ -248,7 +248,7 @@ SenscNPVPrev <- function(sens,dcnpv,prev) {
   
   T1<-as.table(delta)
   T2<-as.table(spec)
-  data<-list("Delta required to achieve specified cNPV given prevalence and sensitivity"=T1,"Specificity required to achieve specified cNPV given prevalence and sensitvity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired NPV"=vecdnpv,"Desired cNPV as odds"=vecdcnpv,"Ratio of desired cNPV and prevalence, odds scale"=dcnpvprev)
+  data<-list("Delta required to achieve specified cNPV given prevalence and sensitivity"=T1,"Specificity required to achieve specified cNPV given prevalence and sensitvity"=T2,"Prevalence"=prev)
   data
 }
 
@@ -470,7 +470,7 @@ SpeccNPVPrev <- function(spec,dcnpv,prev) {
   
   T1<-as.table(delta)
   T2<-as.table(sens)
-  data<-list("Delta required to achieve specified cNPV given prevalence and specificity"=T1,"Sensitivity required to achieve specified cNPV given prevalence and specificity"=T2,"Prevalence"=prev,"Prevalence Odds"=podds,"Desired NPV"=vecdnpv,"Desired cNPV as odds"=vecdcnpv,"Ratio of desired cNPV and prevalence, odds scale"=dcnpvprev)
+  data<-list("Delta required to achieve specified cNPV given prevalence and specificity"=T1,"Sensitivity required to achieve specified cNPV given prevalence and specificity"=T2,"Prevalence"=prev)
   data
 }
 
@@ -3205,6 +3205,6 @@ calculatecNPVfrSpecSens <- function(specificity,sensitivity,prevalence) {
   cNPV <- ((prevalence/(1+prevalence))*(1-sensitivity)/specificity)/(1+(prevalence/(1+prevalence))*(1-sensitivity)/specificity)
 }
 
-calculateDeltafrSpecSens <- function(specificity,sensitivitiy) {
+calculateDeltafrSpecSens <- function(specificity,sensitivity) {
   delta <- qnorm(specificity) - qnorm(1-sensitivity)
 }
