@@ -216,7 +216,7 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 <p>The most important functions calculated by the web tool are summarized in the <u><a href="#keyfunctions">Table of Key Functions</a></u> using the following conventions: </p>
 <ul>
 	<li>The APC model is defined over <i>A</i> age groups and <i>P</i> calendar periods with equal intervals. </li>
-	<li>The central age group, calendar period, and birth cohort define standard <B>reference values</B> <i>a</i>, <i>p</i> and <i>c</i>, respectively. </li>
+	<li>The central age group, calendar period, and birth cohort define standard <B>reference values</B> <i>a0</i>, <i>p0</i> and <i>c0</i>, respectively. </li>
 	<li>When there is an even number of age, period, or cohort categories, the reference value is the lower of the two central values.  </li>
 	<li>All values labeled <B>CI Lo</B> are lower 95% confidence limits. All values labeled <B>CI Hi</B> are upper 95% confidence limits.</li>
 </ul>
@@ -228,7 +228,7 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 	</tr>
 	<tr>
 		<td>Fitted Temporal Trend</td>
-		<td>Expected age-adjusted rates over time</td>
+		<td>Expected rates over time in reference age group <i>a0</i> adjusted for cohort effects</td>
 	</tr>
 	<tr>
 		<td>Net Drift</td>
@@ -240,21 +240,19 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 	</tr>
 	<tr>
 		<td>Cross-Sectional Age Curve (Cross Age)</td>
-		<td>Expected age-specific rates within a given calendar period</td>
+		<td>Expected age-specific rates in reference period <i>p0</i> adjusted for cohort effects</td>
 	</tr>
 	<tr>
 		<td>Longitudinal Age Curve (Long Age)</td>
-		<td>Expected age-specific rates for a given number of birth cohorts</td>
+		<td>Expected age-specific rates in reference cohort <i>c0</i> adjusted for period effects</td>
 	</tr>
 	<tr>
 		<td>Period Rate Ratios (PeriodRR)</td>
-		<td>Ratio of age-specific rates in period relative to reference period  
-</td>
+		<td>Ratio of age-specific rates in each period relative to reference period <i>p0</i></td>
 	</tr>
 	<tr>
 		<td>Cohort Rate Ratios (CohortRR)</td>
-		<td>Ratio of age-specific rates in cohort relative to reference cohort 
-</td>
+		<td>Ratio of age-specific rates in each cohort relative to reference cohort <i>c0</i></td>
 	</tr>
 </table>
 <ul>
@@ -273,7 +271,7 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 	<tr>
 		<td>Net drift = 0</td>
 		<td>Fitted temporal trends are stable (i.e., flat with no change) over time. <br />
-Fitted longitudinal and cross-sectional age curves are equal.
+Fitted longitudinal and cross-sectional age curves are proportional.
 		</td>
 		<td>1
 		</td>
