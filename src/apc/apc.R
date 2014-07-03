@@ -56,6 +56,9 @@ apc <- function(R, ...)
   # (2) Age Deviations
   #
   a <- matrix(PVP$D$a)
+  a0 <- PVP$RVals[1]
+  a0LOC <- match(a0, a)
+  
   ba <- D$XAD%*%B[D$Pt[[4]]]
   va <- D$XAD%*%s2VAR[D$Pt[[4]],D$Pt[[4]]]%*%t(D$XAD)
   sa <- matrix(sqrt(diag(va)))
@@ -71,6 +74,9 @@ apc <- function(R, ...)
   # (3) Period Deviations
   #
   p <- matrix(PVP$D$p)
+  p0 <- PVP$RVals[2]
+  p0LOC <- match(p0, p)
+  
   bp <- D$XPD%*%B[D$Pt[[5]]]
   vp <- D$XPD%*%s2VAR[D$Pt[[5]],D$Pt[[5]]]%*%t(D$XPD)
   sp <- matrix(sqrt(diag(vp)))
@@ -83,9 +89,23 @@ apc <- function(R, ...)
   PVAL3 <- pchisq(X23, df3, lower.tail = FALSE)
   
   #
-  # (4) Cohort Deviations
+  # (4) Cohort Deviations incorporating the weighting
   #
   c <- matrix(PVP$D$c)
+  c0 <- PVP$RVals[3]
+  c0LOC <- match(c0, c)
+  
+  #
+  # Construct P1 transformation from classical Holford Deviations to Weighted Deviations
+  Xc <- cbind(matrix(1, C), c-c0)
+  TMP <- table(PVP$D$DATA[,3])
+  W <- matrix(as.vector(TMP))
+  WXc <- (W%*%matrix(1,ncol=2))*Xc
+  Rwc <- solve(t(Xc)%*%WXc,t(WXc))
+  P1 <- diag(C) - Xc%*%Rwc
+  # Update XCD matrix 
+  D$XCD <- P1%*%D$XCD
+    
   bc <- D$XCD%*%B[D$Pt[[6]]]
   vc <- D$XCD%*%s2VAR[D$Pt[[6]],D$Pt[[6]]]%*%t(D$XCD)
   sc <- matrix(sqrt(diag(vc)))
@@ -98,24 +118,24 @@ apc <- function(R, ...)
   PVAL4 <- pchisq(X24, df4, lower.tail = FALSE)
   
   #
-  # (5) Longitudinal Age Curve
+  # (5) Longitudinal Age Curve, centered on the reference cohort
   #
-  a0 <- PVP$RVals[1]
-  XLA <- cbind(matrix(1, A), a-a0, D$XAD)
+  
+  XLA <- cbind(matrix(1, A), a-a0, D$XAD, matrix(1, A)%*%D$XCD[c0LOC,])
   lot <- log(PVP$offset_tick)
-  lar <- lot + XLA%*%B[c(1, 2, D$Pt[[4]])]
-  lav <- XLA%*%s2VAR[c(1, 2, D$Pt[[4]]), c(1, 2, D$Pt[[4]])]%*%t(XLA)
+  lar <- lot + XLA%*%B[c(1, 2, D$Pt[[4]], D$Pt[[6]])]
+  lav <- XLA%*%s2VAR[c(1, 2, D$Pt[[4]], D$Pt[[6]]), c(1, 2, D$Pt[[4]], D$Pt[[6]])]%*%t(XLA)
   las <- matrix(sqrt(diag(lav)))
   lac <- cbind(lar - 1.96*las, lar + 1.96*las)
   LongAge <- cbind(a, exp(lar), exp(lac))
   dimnames(LongAge) <- list(c(), c("Age", "Rate", "CILo", "CIHi"))
   
   #
-  # (6) Cross-Sectional Age Curve
+  # (6) Cross-Sectional Age Curve, centered on the reference period
   #
-  XXA <- cbind(matrix(1, A), a-a0, -1*(a-a0), D$XAD)
-  xar <- lot + XXA%*%B[c(1, 2, 3, D$Pt[[4]])]
-  xav <- XXA%*%s2VAR[c(1, 2, 3, D$Pt[[4]]), c(1, 2, 3, D$Pt[[4]])]%*%t(XXA)
+  XXA <- cbind(matrix(1, A), a-a0, -1*(a-a0), D$XAD, matrix(1, A)%*%D$XPD[p0LOC,])
+  xar <- lot + XXA%*%B[c(1, 2, 3, D$Pt[[4]], D$Pt[[5]])]
+  xav <- XXA%*%s2VAR[c(1, 2, 3, D$Pt[[4]], D$Pt[[5]]), c(1, 2, 3, D$Pt[[4]], D$Pt[[5]])]%*%t(XXA)
   xas <- matrix(sqrt(diag(xav)))
   xac <- cbind(xar - 1.96*xas, xar + 1.96*xas)
   CrossAge <- cbind(a, exp(xar), exp(xac))
@@ -123,22 +143,21 @@ apc <- function(R, ...)
   
   #
   # (6c) Ratio of Longitudinal-to-Cross-Sectional Age Curves
-  b <- B[3]
-  v <- s2VAR[3,3]
-  r <- (a-a0)%*%b
-  vr <- (a-a0)%*%v%*%t(a-a0)
-  s <- matrix(sqrt(diag(vr)))
-  ci <- cbind(r - 1.96*s, r + 1.96*s)
-  Long2CrossRR <- cbind(a, exp(r), exp(ci))
+  #
+  XLX <- cbind(a-a0, matrix(1,A)%*%D$XCD[c0LOC,], matrix(-1,A)%*%D$XPD[p0LOC,])
+  lcr <- XLX%*%B[c(3, D$Pt[[6]], D$Pt[[5]])]
+  lcv <- XLX%*%s2VAR[c(3, D$Pt[[6]], D$Pt[[5]]), c(3, D$Pt[[6]], D$Pt[[5]])]%*%t(XLX)
+  lcs <- matrix(sqrt(diag(lcv)))
+  lcc <- cbind(lcr - 1.96*lcs, lcr + 1.96*lcs)
+  Long2CrossRR <- cbind(a, exp(lcr), exp(lcc))
   dimnames(Long2CrossRR) <- list(c(), c("Age", "Rate Ratio", "CILo", "CIHi"))
   
   #
-  # (7) Fitted Temporal Trends
+  # (7) Fitted Temporal Trends centered on reference age
   #
-  p0 <- PVP$RVals[2]
-  XPT <- cbind(matrix(1, P), p-p0, D$XPD)
-  ftt <- lot + XPT%*%B[c(1, 3, D$Pt[[5]])]
-  ftv <- XPT%*%s2VAR[c(1, 3, D$Pt[[5]]), c(1, 3, D$Pt[[5]])]%*%t(XPT)
+  XPT <- cbind(matrix(1, P), p-p0, D$XPD, matrix(1,P)%*%D$XAD[a0LOC,])
+  ftt <- lot + XPT%*%B[c(1, 3, D$Pt[[5]], D$Pt[[4]])]
+  ftv <- XPT%*%s2VAR[c(1, 3, D$Pt[[5]], D$Pt[[4]]), c(1, 3, D$Pt[[5]], D$Pt[[4]])]%*%t(XPT)
   fts <- matrix(sqrt(diag(ftv)))
   ftc <- cbind(ftt - 1.96*fts, ftt + 1.96*fts)
   FittedTemporalTrends <- cbind(p, exp(ftt), exp(ftc))
@@ -237,8 +256,12 @@ apc <- function(R, ...)
   CM0[,C+1] <- 0
   EDiff <- CM0%*%g
   VDiff <- CM0%*%v%*%t(CM0)
-  X210 <- t(EDiff)%*%solve(VDiff, EDiff)
-  df10 <- A
+  # count degrees of freedom
+  TMP <- qr(VDiff)
+  dfld <- TMP$rank
+  INCa <- seq(1, dfld)
+  X210 <- t(EDiff[INCa])%*%solve(VDiff[INCa,INCa], EDiff[INCa])
+  df10 <- dfld
   PVAL10 <- pchisq(X210, df10, lower.tail = FALSE)
   
   WaldTests <- matrix(
@@ -333,8 +356,13 @@ checkPVPPAIRS <- function(R, OverDispersion = 1, offset_tick = 10^5, zero_fill =
   if (!(A && B && C))
     stop("Invalid Age, Period, or Cohort reference value.")
   end
-  }
   
+  
+  if (!(RVals[3] == RVals[2] - RVals[1]))
+    stop("Inconsistent Age, Period, and Cohort reference values.")  
+  end
+  
+  }
   # Replace 0 events with zero_fill value.
   e <- matrix(D$DATA[,4])
   e[e==0] <- zero_fill
@@ -524,45 +552,44 @@ plot.apc <- function(M)
   par(mfrow = c(4,3))
   
  
-  DATA <- cbind(matrix(M$LongAge[,1]), exp(M$LongAge[,c(2,3,4)]))
+  DATA <- cbind(matrix(M$LongAge[,1]), (M$LongAge[,c(2,3,4)]))
   dimnames(DATA) <- list(c(), c("Age", "Rate", "CILo", "CIHi"))
-  pcurve(DATA)
+  pcurve(DATA, col = "darkred", colf = "pink", lwd = 3, cex = 1.0, pch = 21)
   title(main = "Longitudinal Age Curve", cex.main = 1)
   
-  DATA <- cbind(matrix(M$CrossAge[,1]), exp(M$CrossAge[,c(2,3,4)]))
+  DATA <- cbind(matrix(M$CrossAge[,1]), (M$CrossAge[,c(2,3,4)]))
   dimnames(DATA) <- list(c(), c("Age", "Rate", "CILo", "CIHi"))
-  pcurve(DATA)
-  (M$CrossAge)
+  pcurve(DATA, lwd = 3, col = "darkred", colf = "pink", cex = 1.0, pch = 21)
   title(main = "Cross-Sectional Age Curve", cex.main = 1)
   
-  pcurve(M$Long2CrossRR)
+  pcurve(M$Long2CrossRR, lwd = 3, col = "darkred", colf = "pink", cex = 1.0, pch = 21)
   abline(1,0, lty = 3)
   title(main = "Long vs. Cross RR", cex.main = 1)
   
-  pcurve(M$FittedTemporalTrends)
+  pcurve(M$FittedTemporalTrends, col = "steelblue4", colf = "slategray1", lwd = 3, cex = 1.0, pch = 21)
   title(main = "Fitted Temporal Trends", cex.main = 1)
   
-  pcurve(M$PeriodRR)
+  pcurve(M$PeriodRR, col = "steelblue4", colf = "slategray1", lwd = 3, cex = 1.0, pch = 21)
   abline(1, 0, lty = 3)
   title(main = "Period RR", cex.main = 1)
   
-  pcurve(M$CohortRR)
+  pcurve(M$CohortRR, col = "seagreen4", colf = "darkseagreen1", lwd = 3, cex = 1.0, pch = 21)
   abline(1, 0, lty = 3)
   title(main = "Cohort RR", cex.main = 1)
   
-  pcurve(M$LocalDrifts)
+  pcurve(M$LocalDrifts, col = "black", colf = "grey88", lwd = 3, cex = 1.0, pch = 21)
   abline(0, 0, lty = 3)
   title(main = "Local Drifts", cex.main = 1)
   
-  pcurve(M$AgeDeviations)
+  pcurve(M$AgeDeviations, col = "darkred", colf = "pink", lwd = 3, cex = 1.0, pch = 21)
   abline(0, 0, lty = 3)
   title(main = "Age Deviations", cex.main = 1)
 
-  pcurve(M$PerDeviations)
+  pcurve(M$PerDeviations, col = "steelblue4", colf = "slategray1", lwd = 3 , cex = 1.0, pch = 21)
   abline(0, 0, lty = 3)
   title(main = "Period Deviations", cex.main = 1)
  
-  pcurve(M$CohDeviations)
+  pcurve(M$CohDeviations, col = "seagreen4", colf = "darkseagreen1", lwd = 3, cex = 1.0, pch = 21)
   abline(0, 0, lty = 3)
   title(main = "Cohort Deviations", cex.main = 1)
   
