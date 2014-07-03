@@ -5,7 +5,7 @@ library('stringr');
 #source ('~/myproject/nci-analysis-tools-web-presence/src/apc/writeToExcel.R')
 
 # Use these directories in production
-source ('apcLatest.R');
+source ('apc.R');
 source ('writeToExcel.R')
 
 # Use These directories when testing locally running a Flask Server
