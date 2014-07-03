@@ -21,7 +21,7 @@ SensSpecPrev <- function(sens,spec,prev) {
   Delta<-array(c(rep(NA,times=length(sens)*length(spec))), dim = c(length(sens),length(spec)), dimnames = list(sens,spec))
   for(i in 1:length(sens)) {
     for(j in 1:length(spec)) {
-        Delta[i,j] <- qnorm(spec[j])-qnorm(1-sens[i])
+        Delta[i,j] =calculateDeltafrSpecSens(spec[j],sens[i])
     }
   }
   T1 <- as.table(PPV)
@@ -3163,7 +3163,7 @@ calculatePrevalencefrPPV<-function(ppv,specificity,sensitivity) {
 }
 
 calculateDeltafrPPV<-function(sensitivity, prevalence, ppv) {
-  delta <- qnorm(1-sensitivity*(prevalence/(1-Prevalence))*((1-ppv)/ppv)) - qnorm(1-sensitivity) 
+  delta <- qnorm(1-sensitivity*(prevalence/(1-prevalence))*((1-ppv)/ppv)) - qnorm(1-sensitivity) 
 }
 
 calculateDeltafrPPVSpec<-function(specificity,prevalence,ppv) {
