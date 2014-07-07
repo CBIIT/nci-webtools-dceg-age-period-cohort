@@ -745,7 +745,7 @@ DrawPPVPrevSpecDelta <- function(prev, specificity, delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    PPV = calculatePPVfrSpecSens(specificity[i],calculateSensfrSpec(specificity[i],delta),prevalence)
+    PPV = calculatePPVfrSpecSens(specificity[i],calculateSensfrSpec(specificity[i],delta),Prevalence)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(PPV~Prevalence,type="l",main=c("Positive Predictive Value vs. Prevalence","Given Different Values of Positive Predictive Value",paste(expression(Delta),"=",delta)),xlab="Prevalence",ylab="Positive Predictive Value",ylim=c(0,1),lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
