@@ -48,7 +48,8 @@ var rfunctions = ["SensPPVDelta",
 					"SpecPPVPrev", 
 					"SpecPrevDelta",
 					"SpeccNPVDelta",
-					"SpeccNPVPrev"]; 
+					"SpeccNPVPrev",
+					"SensSpecPrev"]; 
 
 var keyShort = [{1:"Prevalence"}, 
             {1:'Delta', 2:'Specificity'}, 
@@ -353,9 +354,9 @@ function calculate() {
 	//Check pattern for each input box
 	
 	var checkInput =[];
-	console.log(document.getElementById("independent").checkValidity());
-	console.log(document.getElementById("contour").checkValidity());
-	console.log(document.getElementById("fixed").checkValidity());
+	//console.log(document.getElementById("independent").checkValidity());
+	//console.log(document.getElementById("contour").checkValidity());
+	//console.log(document.getElementById("fixed").checkValidity());
 	checkInput.push(document.getElementById("independent").checkValidity());
 	checkInput.push(document.getElementById("contour").checkValidity());
 	checkInput.push(document.getElementById("fixed").checkValidity());
@@ -557,10 +558,19 @@ function getData(data, tableTitle, tabnumber, tabValue, uniqueKey, abbreviatedKe
 }
 
 function handleError(error, status, request){
-
-        alert(" Error is "+ error);
-        alert(" Error Status is "+ status);
-        alert(" Error irequest is "+ request);
+	//alert(" Error is "+ error);
+	//alert(" Error Status is "+ status);
+	//alert(" Error irequest is "+ request);
+	$("#status-bar").text("");
+	$("#status-bar").html("<div>" + error + "</div>");
+	$("#status-bar").css("visibility", "visible");
+	if (typeof console == "object") {
+		console.info("Server AJAX Return Error");
+		console.info("Type: " + error);
+		console.info("Status: "+ status);
+		console.info("request object:");
+		console.log(request.responseText);
+	}
 }
 
 function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey){
