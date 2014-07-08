@@ -135,7 +135,7 @@ getTable <-function(independentValues, fixedValues, contourValues, independent, 
   print(datatransposed)
 
   #getSensSpecGraph(as.numeric(specmin), as.numeric(specmax), as.numeric(tabvalue), dppv, keyGraphName, uniqueId);
-  drawGraph(independent, fixed, contour, firstinputVector, secondinputVector, key, tabvalue, uniqueId);
+  drawGraph(independent, fixed, contour, getVector(independentValues), getVector(contourValues), key, tabvalue, uniqueId);
   return (datatransposed);
 }
 
