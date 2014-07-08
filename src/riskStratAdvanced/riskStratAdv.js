@@ -36,20 +36,19 @@ var rulesViolationMsg = "";
 
 var keysforfunction = [{1:"Sens"}, {2:"Spec"}, {3:"PPV"}, {4:"cNPV"}, {5:"Prev"}, {6:"Delta"}];
 var keysforfunction = [{1:"sensitivity"}, {2:"specificity"}, {3:"ppv"}, {4:"cnpv"}, {5:"prevalence"}, {6:"delta"}];
-
-var rfunctions = ["SensPPVDelta", 
-					"SensPPVPrev", 
-					"SensPPVSpec",
+var rfunctions = ["SensPPVDelta",
+					"SensPPVPrev",
+					"SensSpecPPV",
 					"SensPrevDelta",
 					"SenscNPVDelta",
 					"SenscNPVPrev",
-					"SenscNPVSpec",
+					"SensSpeccNPV",
+					"SensSpecPrev",
 					"SpecPPVDelta",
-					"SpecPPVPrev", 
+					"SpecPPVPrev",
 					"SpecPrevDelta",
 					"SpeccNPVDelta",
-					"SpeccNPVPrev",
-					"SensSpecPrev"]; 
+					"SpeccNPVPrev"];
 
 var keyShort = [{1:"Prevalence"}, 
             {1:'Delta', 2:'Specificity'}, 
