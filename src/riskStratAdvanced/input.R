@@ -16,6 +16,7 @@ datatransposed = "";
 getDataJSON <-function(urlEncodedString)
 {
   dir.create(imageDirectory);
+  try(dev.off(), silent=TRUE);
   inputList <- parseURLEncodedString(urlEncodedString);
   independent<-getindependent(inputList);   #PPV -2
   independentvalue<-getindependentValue(inputList);
