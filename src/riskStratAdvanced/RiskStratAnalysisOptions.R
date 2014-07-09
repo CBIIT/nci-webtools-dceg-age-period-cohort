@@ -27,7 +27,7 @@ SensSpecPrev <- function(sens,spec,prev) {
   T1 <- as.table(PPV)
   T2 <- as.table(cNPV)
   T3 <- as.table(Delta)
-  data <- list("Positive Predictive Value"=T1,"complement of the Negative Predictive Value"=T2,"Delta"=T3)
+  data <- list("Positive Predictive Value"=T1,"Complement of the Negative Predictive Value"=T2,"Delta"=T3)
   data
 }
 
@@ -103,7 +103,7 @@ SensPPVPrev <- function(sens,dppv,prev) {
   
 }
 
-SensPPVSpec <- function(sens,dppv,spec) {
+SensSpecPPV <- function(sens,spec,dppv) {
   
   ##Specificity, PPV, Sensitivity as input and Delta and Prevalence as output
   
@@ -121,11 +121,11 @@ SensPPVSpec <- function(sens,dppv,spec) {
     }
   }
   
-  prev<-array(c(rep(NA,times=length(vecdppv)*length(vecsens)*length(vecspec))), dim = c(length(vecsens),length(vecdppv),length(vecspec)), dimnames = list(vecsens,vecdppv,vecspec))
+  prev<-array(c(rep(NA,times=length(vecdppv)*length(vecsens)*length(vecspec))), dim = c(length(vecsens),length(vecspec), length(vecdppv)), dimnames = list(vecsens,vecspec, vecdppv))
   for(i in 1:length(vecsens)) {
-    for(j in 1:length(vecdppv)) {
-      for(k in 1:length(vecspec)) {
-        prev[i,j,k]=calculatePrevalencefrPPV(vecdppv[j],vecspec[k],vecsens[i])
+    for(j in 1:length(vecspec)) {
+      for(k in 1:length(vecdppv)) {
+        prev[i,j,k]=calculatePrevalencefrPPV(vecdppv[k],vecspec[j],vecsens[i])
       }
     }
   }
@@ -253,7 +253,7 @@ SenscNPVPrev <- function(sens,dcnpv,prev) {
 }
 
 
-SenscNPVSpec <- function(sens,dcnpv,spec) {
+SensSpeccNPV <- function(sens,spec,dcnpv) {
   
   ##Sensitivity, cNPV, Specificity as input and Delta and Prevalence as output  
   
@@ -264,11 +264,11 @@ SenscNPVSpec <- function(sens,dcnpv,spec) {
   vecspec<-as.vector(spec)  ##specificity values
   
   
-  prev<-array(c(rep(NA,times=length(vecdcnpv)*length(vecsens)*length(vecspec))),dim = c(length(vecsens),length(vecdcnpv),length(vecspec)),dimnames = list(vecsens,vecdcnpv,vecspec))  ##full table
+  prev<-array(c(rep(NA,times=length(vecdcnpv)*length(vecsens)*length(vecspec))),dim = c(length(vecsens),length(vecspec), length(vecdcnpv)),dimnames = list(vecsens,vecspec, vecdcnpv))  ##full table
   for(i in 1:length(vecsens)) {
-    for(j in 1:length(vecdcnpv)) {
-      for(k in 1:length(vecspec)) {
-        prev[i,j,k]=calculatePrevalencefrcNPV(vecdcnpv[j],vecspec[k],vecsens[i])
+    for(j in 1:length(vecspec)) {
+      for(k in 1:length(vecdcnpv)) {
+        prev[i,j,k]=calculatePrevalencefrcNPV(vecdcnpv[k],vecspec[j],vecsens[i])
       }
     }
   }
@@ -1606,7 +1606,7 @@ DrawPrevSpeccNPVDelta <- function(spec,cnpv,delta) {
   LTY <- Iterations
   
   for(i in Iterations){
-    Prevalence = calculatePrevalencefrcNPV(cnpv[i],Specificity,calcSensfrSpec(Specificity,delta))
+    Prevalence = calculatePrevalencefrcNPV(cnpv[i],Specificity,calculateSensfrSpec(Specificity,delta))
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(Prevalence~Specificity,type="l",main=c("Prevalence vs. Specificity","Given Different Values of cNPV"),ylim=c(0,1),xlab="Specificity",ylab="Prevalence",lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
