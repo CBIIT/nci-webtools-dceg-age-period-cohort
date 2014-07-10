@@ -63,18 +63,19 @@ var keyShort = [{1:"Prevalence"},
 	    {1:'PPV', 2:'cNPV'},
             {1:'Prevalence'},
             {1:'Delta', 2:'Sensitivity'}]; 
-var keyLong = [{1:"Prevalence required to achieve specified PPV given delta and sensitivity", 2:"Prevalence required to achieve specified PPV given delta and sensitivity"},
-{1:"Delta required to achieve specified PPV given prevalence and sensitivity", 2:"Specificity required to achieve specified PPV given prevalence and sensitivity"}, 
-{1:"Prevalence required to achieve specified PPV given specificity and sensitivity", 2:"Delta required to achieve specified PPV given specificity and sensitivity"},
-{1:"Delta required to achieve specified PPV given specificity and sensitivity", 2:"Complement of the Negative Predictive Value given sensitivity, prevalence, and delta", 3:"Specificity given delta and sensitivity"},
-{1:"(Prevalence required to achieve specified cNPV given delta and sensitivity", 2:"Specificity required to achieve specified cNPV given delta and sensitivity"},
-{1:"Delta required to achieve specified cNPV given prevalence and sensitivity", 2:"Specificity required to achieve specified cNPV given prevalence and sensitivity"},
-{1:"Prevalence required to achieve specified cNPV given specificity and sensitivity", 2:"Delta given specificity and sensitivity"},
-{1:"Prevalence required to achieve specified PPV given delta and specificity", 2:"Sensitivity required to achieve specified PPV given delta and specificity"},
-{1:"Delta required to achieve specified PPV given prevalence and specificity", 2:"Sensitivity required to achieve specified PPV given prevalence and specificity"},
+var keyLong = [{1:"Prevalence given desired PPV, delta, and sensitivity", 2:"Specificity given desired PPV, delta, and sensitivity"},
+{1:"Delta given desired PPV, prevalence, and sensitivity", 2:"Specificity given desired PPV, prevalence, and sensitivity"}, 
+{1:"Prevalence given desired PPV, specificity, and sensitivity", 2:"Delta given desired PPV, specificity, and sensitivity"},
+{1:"Positive Predictive Value given sensitivity, prevalence, and delta", 2:"Complement of the Negative Predictive Value given sensitivity, prevalence, and delta"},
+{1:"Prevalence given desired cNPV, delta, and sensitivity", 2:"Specificity given desired cNPV, delta, and sensitivity"},
+{1:"Delta given desired cNPV, prevalence, and sensitivity", 2:"Specificity given desired cNPV, prevalence, and sensitvity"},
+{1:"Prevalence given desired cNPV, specificity, and sensitivity", 2:"Delta given specificity and sensitivity"},
+{1:"Positive Predictive Value given sensitivity, specificity, and prevalence", 2:"Complement of the Negative Predictive Value given sensitivity, specificity, and prevalence"},
+{1:"Prevalence given desired PPV, delta, and specificity", 2:"Sensitivity given desired PPV, delta, and specificity"},
+{1:"Delta given desired PPV, prevalence, and specificity", 2:"Sensitivity given desired PPV, prevalence, and specificity"},
 {1:"Positive Predictive Value given specificity, prevalence, and delta", 2:"Complement of the Negative Predictive Value given specificity, prevalence, and delta", 3:"Sensitivity given delta and specificity"},
-{1:"Prevalence required to achieve specified cNPV given delta and specificity", 2:"Sensitivity required to achieve specified cNPV given delta and specificity"},
-{1:"Delta required to achieve specified cNPV given prevalence and specificity", 2:"Sensitivity required to achieve specified cNPV given prevalence and specificity"}];
+{1:"Prevalence given desired cNPV, delta, and specificity", 2:"Sensitivity given desired cNPV, delta, and specificity"},
+{1:"Delta given desired cNPV, prevalence, and specificity", 2:"Sensitivity given desired cNPV, prevalence, and specificity"}];
 
 $(document).ready(function() {
 	$('body').bind('beforeunload',function(){
