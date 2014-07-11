@@ -266,7 +266,7 @@ function getAPCData(data, keyData, uniqueId){
 	$.ajax({
 			type: 'POST',
 			//type: 'GET',
-			url: "/createPanCanList/list",
+			url: "/apcRest/",
 			//url: "http://analysistools-dev.nci.nih.gov/createPanCanList/list",
 			//url: "http://"+hostname+"/createPanCanList/list",
 			data: data,
@@ -457,7 +457,7 @@ function on_change_starting_age() {
 	
 	var starting_age = parseInt($("#startAge").val());
 	
-	var num_ages = line_array.length - 1;
+	var num_ages = line_array.length ;
 	for (var y=0;y<num_ages;y++) {
 		$("#age_" + y).html(compute_age(y));
 	}
@@ -526,7 +526,7 @@ function determine_count_array() {
 	var num_ages = numberOfRows();
 	
 	var counts = "";
-	for (var y=0;y<num_ages;y++) {
+	for (var y=0;y<=num_ages;y++) {
 		for (var x=0;x<num_periods;x++) {
 			counts += line_array[y][(x*2)] + ',';
 		}
@@ -540,7 +540,7 @@ function determine_pop_array() {
 	var num_ages = numberOfRows();
 	
 	var pop_array = "";
-	for (var y=0;y<num_ages;y++) {
+	for (var y=0;y<=num_ages;y++) {
 		for (var x=0;x<num_periods;x++) {
 			pop_array += line_array[y][((x*2)+1)] + ',';
 		}
@@ -553,7 +553,7 @@ function numberOfPeriods () {
 }
 
 function numberOfRows () {
-	return line_array.length - 1;
+	return line_array.length-1;
 }
 
 
@@ -598,19 +598,19 @@ function display_table(txt, delimiter) {
 //			description = first_cell_in_row.substring(14);  // Everything after Description:_
 			test_another_row = true;
 		} else if (first_cell_in_row.substring(0, 10) == "Start Year") {
-			start_year = first_cell_in_row.substring(12);  // Everything after Start Year:_
+			start_year = parseInt(first_cell_in_row.substring(12));  // Everything after Start Year:_
 			test_another_row = true;
 		} else if (first_cell_in_row.substring(0, 9) == "Start Age") {
-			start_age = first_cell_in_row.substring(11);  // Everything after Start Age:_
+			start_age = parseInt(first_cell_in_row.substring(11));  // Everything after Start Age:_
 			test_another_row = true;
 		} else if (first_cell_in_row.substring(0, 16) == "Interval (Years)") {
-			year = first_cell_in_row.substring(18);  // Everything after Interval (Year):_
+			year = parseInt(first_cell_in_row.substring(18));  // Everything after Interval (Year):_
 			test_another_row = true;
 		} else if (first_cell_in_row.substring(0, 5) == "Years") {
-			year = first_cell_in_row.substring(7);  // Everything after Year:_
+			year = parseInt(first_cell_in_row.substring(7));  // Everything after Year:_
 			test_another_row = true;
 		} else if (first_cell_in_row.substring(0, 8) == "Interval") {
-			year = first_cell_in_row.substring(10);  // Everything after Interval:_
+			year = parseInt(first_cell_in_row.substring(10));  // Everything after Interval:_
 			test_another_row = true;
 		} else if (first_cell_in_row == "" || isNaN(first_cell_in_row)) {
 			test_another_row = true; // Also remove blank lines			
@@ -637,11 +637,12 @@ function display_table(txt, delimiter) {
 		return false;
 	}
 	
-	var rows;
+	var rows = line_array.length;
+//	var rows;
 	
 	// Sometimes the data has a blank row at the end, do not iterate on it.
-	if (line_array[line_array.length -1][0] == "") rows = line_array.length;
-	else rows = line_array.length + 1;
+//	if (line_array[line_array.length -1][0] == "") rows = line_array.length;
+//	else rows = line_array.length + 1;
 	
 	// Note each 'col' is actually 2 columns in the data and tables
 	var cols = Math.floor((line_array[0].length + 1) / 2);
