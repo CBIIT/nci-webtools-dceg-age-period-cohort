@@ -68,7 +68,7 @@ def jsonp(func):
     return decorated_function
 
 
-@app.route('/createPanCanList/list', methods = ['POST'])
+@app.route('/apcRest/', methods = ['POST'])
 @jsonp
 def createPanCanList():
     robjects.r('''source('apcForRpy2.R')''')
