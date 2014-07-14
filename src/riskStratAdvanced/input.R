@@ -46,7 +46,7 @@ getDataJSON <-function(urlEncodedString)
   if (resultCheck == "FALSE") {
     json_string = paste("[{\"error\": [{ \"errortrue\": 0}, {\"message\": \"", " ", "\"}], \"data\":", str_replace_all(toJSON(result[,,as.numeric(tab)], method="C"), "[\n]",""), "}]")
   } else {
-    json_string = paste("[{\"error\": [{ \"errortrue\": 1}, {\"message\": \"",  str_replace_all(result[1], "[\n]",""), "\"}], \"data\":{}}]")
+    json_string = paste("[{\"error\": [{ \"errortrue\": 1}, {\"message\": \"",  gsub("\"", "", str_replace_all(result[1], "[\n]","")), "\"}], \"data\":{}}]")
   }
 
   print(json_string);
