@@ -847,5 +847,6 @@ function addCommas(nStr)
 }
 
 function openHelpWindow(pageURL) {
-                window.open(pageURL, "Help", "alwaysRaised,dependent,status,scrollbars,resizable,width=1000,height=800");
+    var helpWin=window.open(pageURL, "Help", "alwaysRaised,dependent,status,scrollbars,resizable,width=1000,height=800");
+    helpWin.focus();
 }
