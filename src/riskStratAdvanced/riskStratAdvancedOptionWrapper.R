@@ -118,7 +118,7 @@ getTable <-function(independentVector, fixedVector, contourVector, key, keynumbe
   return (getTable(independentvalue, fixedvalue, contourvalue, independent, fixed, contour, key, keynumber, tabvalue, uniqueId));
 }
 
-getTable <-function(independentValues, fixedValues, contourValues, independent, fixed, contour, key, keynumber, tabvalue, uniqueId)
+getTable <-function(independentValues, fixedValues, contourValues, independent, fixed, contour, key, keynumber, tabvalue, uniqueId, tab)
 {
   tranposeorder = "";
   tranposeorder <- gettransposeorder(independent, fixed, contour);
@@ -126,17 +126,28 @@ getTable <-function(independentValues, fixedValues, contourValues, independent, 
   firstinputVector<-getVector(functionvalueorder[[1]]);
   secondinputVector<-getVector(functionvalueorder[[2]]);
   thirdinputVector<-getVector(functionvalueorder[[3]]);
-  data <- calculate(firstinputVector, secondinputVector, thirdinputVector, independent, fixed, contour);
-
-  print(tranposeorder)
-  print(keynumber)
-  print(data)
-  datatransposed <- getTransposedData(independent, fixed, contour, tranposeorder, data[[as.numeric(keynumber)]]);
-  print(datatransposed)
-
-  #getSensSpecGraph(as.numeric(specmin), as.numeric(specmax), as.numeric(tabvalue), dppv, keyGraphName, uniqueId);
-  drawGraph(independent, fixed, contour, getVector(independentValues), getVector(contourValues), key, tabvalue, uniqueId);
-  return (datatransposed);
+  resultdata <- try(calculate(firstinputVector, secondinputVector, thirdinputVector, independent, fixed, contour));
+  
+  resultCheck = is(resultdata,"try-error");
+  
+  if (resultCheck == "FALSE") {
+    datatransposed <- getTransposedData(independent, fixed, contour, tranposeorder, resultdata[[as.numeric(keynumber)]]);
+    print(datatransposed)
+    json_string = paste("[{ \"table_error\": [{ \"errortrue\": 0}, {\"message\": \"", " ", "\"}], \"data\":", str_replace_all(toJSON(datatransposed[,,as.numeric(tab)], method="C"), "[\n]",""), ",")
+  } else {
+    json_string = paste("[{ \"table_error\": [{ \"errortrue\": 1}, {\"message\": \"",  gsub("\"", "", str_replace_all(resultdata[1], "[\n]","")), "\"}], \"data\":{},")
+  }
+  
+  resultgraph <- try(drawGraph(independent, fixed, contour, getVector(independentValues), getVector(contourValues), key, tabvalue, uniqueId));
+  resultCheck = is(resultgraph,"try-error");
+  
+  if (resultCheck == "FALSE") {
+    json_string = paste(json_string, "\"graph_error\": [{ \"errortrue\": 0}, {\"message\": \"", " ", "\"}]}]")
+  } else {
+    json_string = paste(json_string, "\"graph_error\": [{ \"errortrue\": 1}, {\"message\": \"",  gsub("\"", "", str_replace_all(resultgraph[1], "[\n]","")), "\"}]}]")
+  }
+  
+  return (json_string);
 }
 
 getFunctionNameAsIs <- function (independent, contour, fixed) {
