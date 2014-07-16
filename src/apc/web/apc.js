@@ -566,10 +566,17 @@ function display_table(txt, delimiter) {
 	txt = i_text;
 	
 	var lines = txt.split("\n");
+	// Must remove any trailing blank lines
+	while (lines[lines.length-1].length == 0) {
+		lines.pop();
+	}
+	// Then add 1 and only 1 back
+	lines.push("");
+	
 	line_array = new Array(lines.length);
 	for (count = 0; count < lines.length;count++) {
 		//line_array[count] = lines[count].split("\t");
-		line_array[count] = lines[count].split(delimiter);
+		line_array[count] = lines[count].split(delimiter);			
 	}
 
 	var test_another_row = true;
