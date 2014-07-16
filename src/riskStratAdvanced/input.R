@@ -39,18 +39,10 @@ getDataJSON <-function(urlEncodedString)
   json_string = "";
   errorString = "";
   assign("last.warning", NULL, envir = baseenv());
-  result<-try(getTable(independentvalue, fixedvalue, contourvalue, independent, fixed, contour, gsub("\n","",keyGraphName), keynumber, tabvalue, uniqueId));
+  result<-getTable(independentvalue, fixedvalue, contourvalue, independent, fixed, contour, gsub("\n","",keyGraphName), keynumber, tabvalue, uniqueId, tab);
 
-  resultCheck = is(result,"try-error");
-
-  if (resultCheck == "FALSE") {
-    json_string = paste("[{\"error\": [{ \"errortrue\": 0}, {\"message\": \"", " ", "\"}], \"data\":", str_replace_all(toJSON(result[,,as.numeric(tab)], method="C"), "[\n]",""), "}]")
-  } else {
-    json_string = paste("[{\"error\": [{ \"errortrue\": 1}, {\"message\": \"",  gsub("\"", "", str_replace_all(result[1], "[\n]","")), "\"}], \"data\":{}}]")
-  }
-
-  print(json_string);
-  return (json_string);
+  print(result);
+  return (result);
 }
 
 getVector <- function (vectorstring) {
