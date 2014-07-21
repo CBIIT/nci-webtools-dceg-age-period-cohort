@@ -3158,7 +3158,7 @@ calculateDeltafrPPV<-function(sensitivity, prevalence, ppv) {
 }
 
 calculateDeltafrPPVSpec<-function(specificity,prevalence,ppv) {
-  delta <- qnorm(specificity) - qnorm(1-(ppv/(1-ppv))/(prevalence/(1-prevalence))*(1-specificity))
+  delta <- qnorm(specificity) - qnorm(1-((ppv/(1-ppv))/(prevalence/(1-prevalence)))*(1-specificity))
 }
 
 calculateDeltafrcNPVSpec<- function(specificity,prevalence,cnpv) {
