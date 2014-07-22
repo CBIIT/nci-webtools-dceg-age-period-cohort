@@ -581,8 +581,10 @@ function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey){
 
         var arr=[];
         var tableData = jsonTableData[0].data;
-        var tableError = jsonTableData[0].error;
+        var tableError = jsonTableData[0].table_error;
+        var graphError = jsonTableData[0].graph_error;
         var tableErrorValue = tableError[0].errortrue;
+        var graphErrorValue = graphError[0].errortrue;
         if (tableErrorValue != 1)
         {
                 rows = tableData.length;
@@ -627,6 +629,10 @@ function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey){
         	$("#status-bar").css("visibility", "visible");
 			$("#status-bar").addClass("status-error");
             $("#status-bar").append("<div>" + tableError[1].message + "</div>");
+            if (graphErrorValue != 1)
+            {
+               $("#status-bar").append("<div>" + graphError[1].message + "</div>");
+	    }
             //console.info("Error Received");
             //console.dir(tableError);
         }
