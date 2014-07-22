@@ -15,7 +15,7 @@ app.controller("MyController", function($scope, $http){
 
         $scope.myForm.changeAge = function() {
             if($scope.myForm.age != '' && $scope.myForm.age != undefined){
-                $scope.myForm.ageCriteria = !($scope.myForm.age > 54 && $scope.myForm.age < 81);
+                $scope.myForm.ageCriteria = !($scope.myForm.age > 54 && $scope.myForm.age < 80);
             }
             else{
                  $scope.myForm.ageCriteria = false;
@@ -28,12 +28,25 @@ app.controller("MyController", function($scope, $http){
             $scope.myForm.typeCriteria = $scope.myForm.type == 'non';
         }
 
+
+
         $scope.myForm.changeQuit = function(){
-            $scope.myForm.quitCriteria = ($scope.myForm.age - $scope.myForm.quit > 15);
+            if ($scope.myForm.quit=='') {
+                $scope.myForm.quitCriteria = false;
+            }
+            else {
+                $scope.myForm.quitCriteria = ($scope.myForm.age - $scope.myForm.quit > 15);                
+            }
+
         }
         
         $scope.myForm.changePacks = function(){
-            $scope.myForm.packsCriteria = (($scope.myForm.age - $scope.myForm.start) * $scope.myForm.packs < 30);
+            if ($scope.myForm.packs=='') {
+                $scope.myForm.packsCriteria = false;
+            }
+            else {
+                $scope.myForm.packsCriteria = (($scope.myForm.age - $scope.myForm.start) * $scope.myForm.packs < 30);
+            }
         }
         
         $scope.myForm.resetForm = function(){
@@ -46,6 +59,7 @@ app.controller("MyController", function($scope, $http){
             $scope.myForm.group = '';
             $scope.myForm.gender = '';
             $scope.myForm.disease = '';
-            $scope.myForm.history = '';         
+            $scope.myForm.history = '';   
+	    $scope.myForm.gender = '';      
         }
 });
