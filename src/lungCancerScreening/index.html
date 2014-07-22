@@ -1,10 +1,24 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>National Lung Screening Trial</title><meta http-equiv="Content-type" content="text/html; charset=UTF-8"><link href="files/2col.css" rel="stylesheet" type="text/css" media="all"><link href="files/2col.css" rel="stylesheet" type="text/css" media="print"><script src="files/angular.min.js"></script><script src="files/FormController.js"></script></head><body  ng-app="myapp">
-<div class="skip"><a title="Skip to content" href="#skiptocontent">Skip to content</a></div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>National Lung Screening Trial</title>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link href="files/2col.css" rel="stylesheet" type="text/css" media="all">
+<link href="files/2col.css" rel="stylesheet" type="text/css" media="print">
+<script src="files/angular.min.js"></script>
+<script src="files/FormController.js"></script>
+</head>
+<body  ng-app="myapp">
+
+<div class="skip"><a title="Skip to content" href="#skiptocontent">Skip to content</a></div>
+
 <div id="logos"><div id="logosContainer">
  <div id="left"><a href="http://www.cancer.gov" target="_blank"><img src="files/nci.jpg" width="286" height="43" border="0" alt="National Cancer Institute" title="National Cancer Institute" /></a></div>
  <div id="right"><a href="http://www.cancer.gov" target="_blank"><img src="files/nih.jpg" width="322" height="43" border="0" alt="at the National Institutes of Health" title="at the National Institutes of Health" /></a></div>
-</div></div>
-<div id="center"><a name="top"></a><div id="bcrabanner"><img src="files/bcra-banner-2.jpg" alt="Breast Cancer Risk Assessment Tool" height="118" width="1000"></div>
+</div></div>
+
+<div id="center"><a name="top"></a><div id="bcrabanner"><img src="files/bcra-banner-2.jpg" alt="Breast Cancer Risk Assessment Tool" height="118" width="1000"></div>
+
 <nav>
  <ul>
   <li class="menu-item"><a href="index.html">Home</a></li>
@@ -24,11 +38,14 @@
 
 <p><a href="http://www.cancer.gov/clinicaltrials/noteworthy-trials/nlst" target="_blank" title="NLST (National Lung Screening Trial)">NLST (National Lung Screening Trial)</a> compares the efficacy of low-dose helical CT with that of standard chest X-ray for detecting lung cancer. The initial findings reveal that low-dose CT resulted in 20% reduction in lung cancer mortality among participants satisfying the NLST inclusion criteria (55-74 years of age, minimum 30 pack-years of smoking and no more than 15 years since quitting). But it is yet unknown if the risk of lung cancer death changes the benefits/harms of low-dose CT screening. The NLST Lung Cancer Screening Tool is a statistical analysis tool that predicts a person's risk of lung cancer death based on a series of demographic and clinical risk factors for lung cancer. Findings from the tool support defining the high-risk targeting population for low-dose CT screening where benefits of screening overweigh harms thus improving the selection process for lung-cancer screening.</p>
 
-<div id="ContentColumnsLeft">
-<div id="mainBoxContainer">
+<div id="ContentColumnsLeft">
+
+
+<div id="mainBoxContainer">
 <div id="mainBoxTitle">Risk Tool</div>
 <div id="mainBoxContent">
-<p><strong>The task force does not recommend that you get screened if you are not between the ages of 55 and 79, or if you are a non smoker, or if you are a current smoker with less than 30 pack-year of smoking or if you are a former smoker who quitted for more than 15 years.</strong></p>
+<p><strong>The task force does not recommend that you get screened if you are not between the ages of 55 and 79, or if you are a non smoker, or if you are a current smoker with less than 30 pack-year of smoking or if you are a former smoker who quitted for more than 15 years.</strong></p>
+
 <div ng-controller="MyController" >
 <form name="" id="" action="" method="get">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -178,13 +195,35 @@
 </div><br /><br />
  </div>
 </div>
-</div>
-<div id="ContentColumnsRight">
-<div id="RightColumn"><div id="mainBoxContainer">
+</div>
+
+<div id="ContentColumnsRight">
+
+<div id="RightColumn">
+
+<div id="mainBoxContainer">
 <div id="mainBoxTitle">Your Results</div>
-<div id="mainBoxContent">
-<p>White male of 60 years of age with BMI = 30</p>
-<section class="ac-container"> <div>  <input id="ac-1" name="accordion-1" type="checkbox" />  <label for="ac-1">Risk of dying from lung cancer x%</label>  <article class="ac-small"><p>Risk: x%, top x% of risk group in trial.</p> <p>Explanation: text</p><p><a href="#" title="Learn more">Click here</a> to learn more about your results.</p><p>test</p></article> </div> <div>  <input id="ac-2" name="accordion-1" type="checkbox" />  <label for="ac-2">Risk reduction due to lung cancer screening x%</label>  <article class="ac-small"><p>Result: x%</p> <p>Explanation: text</p><p><a href="#" title="Learn more">Click here</a> to learn more about your results.</p></article> </div> <div>  <input id="ac-3" name="accordion-1" type="checkbox" />  <label for="ac-3">Chance of having a false positive result x%</label>  <article class="ac-small"><p>Result: x%</p> <p>Explanation: text</p><p><a href="#" title="Learn more">Click here</a> to learn more about your results.</p></article> </div></section>
+<div id="mainBoxContent">
+
+<p>White male of 60 years of age with BMI = 30</p>
+
+<section class="ac-container">
+ <div>
+  <input id="ac-1" name="accordion-1" type="checkbox" />
+  <label for="ac-1">Risk of dying from lung cancer x%</label>
+  <article class="ac-small"><p>Risk: x%, top x% of risk group in trial.</p> <p>Explanation: text</p><p><a href="#" title="Learn more">Click here</a> to learn more about your results.</p><p>test</p></article>
+ </div>
+ <div>
+  <input id="ac-2" name="accordion-1" type="checkbox" />
+  <label for="ac-2">Risk reduction due to lung cancer screening x%</label>
+  <article class="ac-small"><p>Result: x%</p> <p>Explanation: text</p><p><a href="#" title="Learn more">Click here</a> to learn more about your results.</p></article>
+ </div>
+ <div>
+  <input id="ac-3" name="accordion-1" type="checkbox" />
+  <label for="ac-3">Chance of having a false positive result x%</label>
+  <article class="ac-small"><p>Result: x%</p> <p>Explanation: text</p><p><a href="#" title="Learn more">Click here</a> to learn more about your results.</p></article>
+ </div>
+</section>
 
 <table border="0" cellpadding="0" cellspacing="0" width="60%"><tr align="center" valign="middle"><td><img src="files/print.png"></td><td><strong> Print Results</strong></td><td><img src="files/download.png"></td><td><strong> Download Results</strong></td></tr></table>
 
@@ -197,8 +236,10 @@
 <p>Learning about lung cancer and its treatment can help you prepare for your appointments, understand different types of treatment, and prevent and manage any side effects.<br /></p>
 
 </div>
-</div></div></div>
-<div id="footer">
+</div></div></div>
+
+<div id="footer">
+
  <p> <a href="https://ncicbsupport.nci.nih.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
  <a href="http://ncicb.nci.nih.gov/NCICB/support" title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
  <a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
@@ -207,9 +248,14 @@
  <a href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br /><br />
  <a href="http://www.dhhs.gov/">Department of Health and Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp;
  <a href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
- <a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://www.usa.gov/">USA.gov</a></p>
- <p> NIH...Turning Discovery Into Health<sup>&reg;</sup></p>
-</div>
-</div>
-</body>
+ <a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://www.usa.gov/">USA.gov</a></p>
+
+ <p> NIH...Turning Discovery Into Health<sup>&reg;</sup></p>
+
+</div>
+
+</div>
+
+</body>
+
 </html>
