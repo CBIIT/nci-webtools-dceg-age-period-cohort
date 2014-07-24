@@ -3146,7 +3146,7 @@ DrawSpecPrevSensPPV <- function(prev,sens,ppv) {
 }
 
 calculatePrevalencefrcNPV<-function(cnpv, specificity, sensitivity) {
-  prevalence <- cnpv/(1-cnpv)*(specificity/(1-sensitivity))/(1-(cnpv/(1-cnpv))*(specificity/(1-sensitivity)))
+  prevalence <- specificity*(cnpv/(1-cnpv))/(1-sensitivity+specificity*(cnpv/(1-cnpv)))
 }
 
 calculatePrevalencefrPPV<-function(ppv,specificity,sensitivity) {
@@ -3162,13 +3162,12 @@ calculateDeltafrPPVSpec<-function(specificity,prevalence,ppv) {
 }
 
 calculateDeltafrcNPVSpec<- function(specificity,prevalence,cnpv) {
-  cNPVPrev <- (prevalence/(1+prevalence))/(cnpv/(1-cnpv))
-  Sensitivity <- 1-specificity*cNPVPrev
-  delta <- qnorm(specificity) - qnorm(1-Sensitivity)
+  sensitivity <- 1-specificity*((1-prevalence)/prevalence)*(cnpv/(1-cnpv))
+  delta <- qnorm(specificity) - qnorm(1-sensitivity)
 }
 
 calculateDeltafrcNPVSens<- function(sensitivity,prevalence,cnpv) {
-  specificity <- (1-sensitivity)*((1+prevalence)/prevalence)*(cnpv/(1-cnpv))
+  specificity <- (1-sensitivity)*((1-prevalence)/prevalence)*(cnpv/(1-cnpv))
   delta <- qnorm(specificity) - qnorm(1-sensitivity)
 }
 
@@ -3186,11 +3185,11 @@ calculateSensfrPPV<- function(ppv,prevalence,specificity) {
 }
 
 calculateSensfrcNPV <- function(cnpv,prevalence,specificity) {
-  sensitivity <- 1-specificity*((1+prevalence)/prevalence)*(cnpv/(1-cnpv))
+  sensitivity <- 1-specificity*((1-prevalence)/prevalence)*(cnpv/(1-cnpv))
 }
 
 calculateSpecfrcNPV <- function(cnpv,prevalence,sensitivity) {
-  specificity <- (1-sensitivity)*((1+prevalence)/prevalence)*(cnpv/(1-cnpv))
+  specificity <- (1-sensitivity)*((1-prevalence)/prevalence)*(cnpv/(1-cnpv))
 }
 
 calculateSpecfrPPV <- function(ppv,prevalence,sensitivity) {
@@ -3202,7 +3201,7 @@ calculatePPVfrSpecSens <- function(specificity,sensitivity,prevalence) {
 }
 
 calculatecNPVfrSpecSens <- function(specificity,sensitivity,prevalence) {
-  cNPV <- ((prevalence/(1+prevalence))*(1-sensitivity)/specificity)/(1+(prevalence/(1+prevalence))*(1-sensitivity)/specificity)
+  cNPV <- 1 - specificity*(1-prevalence)/(specificity*(1-prevalence) + (1-sensitivity)*prevalence)
 }
 
 calculateDeltafrSpecSens <- function(specificity,sensitivity) {
