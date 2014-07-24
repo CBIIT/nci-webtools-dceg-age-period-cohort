@@ -248,7 +248,7 @@ SenscNPVPrev <- function(sens,dcnpv,prev) {
   
   T1<-as.table(delta)
   T2<-as.table(spec)
-  data<-list("Delta given desired cNPV, prevalence, and sensitivity"=T1,"Specificity given desired cNPV, prevalence, and sensitvity"=T2,"Prevalence"=prev)
+  data<-list("Delta given desired cNPV, prevalence, and sensitivity"=T1,"Specificity given desired cNPV, prevalence, and sensitivity"=T2,"Prevalence"=prev)
   data
 }
 
