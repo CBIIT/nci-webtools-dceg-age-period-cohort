@@ -1870,7 +1870,7 @@ DrawDeltacNPVSensPrev <- function(cnpv, sensitivity, prevalence) {
     Delta= calculateDeltafrcNPVSens(sensitivity[i],prevalence,cNPV)
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
-      plot(Delta~cNPV,type="l",main=c("Delta vs. Complement of Negative Predictive Value","Given Different Values of Sensitivity",paste("Prevalence =",prevalence)),xlab="Complement of Negative Predictive Value",ylab="Delta",ylim=c(0,6),lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+      plot(Delta~cNPV,type="l",main=c("Delta vs. Complement of Negative Predictive Value","Given Different Values of Sensitivity"),xlab="Complement of Negative Predictive Value",ylab="Delta",ylim=c(0,6),lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
     }
     else
       lines(y=Delta, x=cNPV,lty=LTY[i], col = LTY[i])
