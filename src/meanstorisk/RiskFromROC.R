@@ -83,7 +83,7 @@ RiskFromROC <- function(data, specificity, prevalence) {
   }
   
   ab<-matrix(c(rep(NA,times=length(val)*length(lrplus))),nrow=length(lrplus),ncol=length(val)) ##PPV table
-  ca<-matrix(c(rep(NA,times=length(cval)*length(lrminus))),nrow=length(lrminus),ncol=length(cval)) ##cNPV table
+  ca<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val)) ##cNPV table
   for(i in 1:length(val)) {
     for(j in 1:length(lrplus)) {
       ab[j,i]<-lrplus[j]*val[i]/(1+lrplus[j]*val[i])
@@ -100,8 +100,8 @@ RiskFromROC <- function(data, specificity, prevalence) {
   T4<-as.table(data4)
   
   ##PPV-cNPV table
-  pc<-matrix(c(rep(NA,times=length(cval)*length(lrminus))),nrow=length(lrminus),ncol=length(cval))
-  for(i in 1:length(cval)) {
+  pc<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val))
+  for(i in 1:length(val)) {
     for(j in 1:length(lrminus)) {
       pc[j,i]<-ab[j,i]-ca[j,i]
     }
@@ -216,7 +216,7 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   }
   
   ab<-matrix(c(rep(NA,times=length(val)*length(lrplus))),nrow=length(lrplus),ncol=length(val)) ##PPV table
-  ca<-matrix(c(rep(NA,times=length(cval)*length(lrminus))),nrow=length(lrminus),ncol=length(cval)) ##cNPV table
+  ca<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val)) ##cNPV table
   for(i in 1:length(val)) {
     for(j in 1:length(lrplus)) {
       ab[j,i]<-lrplus[j]*val[i]/(1+lrplus[j]*val[i])
@@ -233,8 +233,8 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   T4<-as.table(data4)
   
   ##PPV-cNPV table
-  pc<-matrix(c(rep(NA,times=length(cval)*length(lrminus))),nrow=length(lrminus),ncol=length(cval))
-  for(i in 1:length(cval)) {
+  pc<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val))
+  for(i in 1:length(val)) {
     for(j in 1:length(lrminus)) {
       pc[j,i]<-ab[j,i]-ca[j,i]
     }
