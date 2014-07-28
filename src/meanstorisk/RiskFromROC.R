@@ -211,10 +211,8 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   T2<-as.table(data2)
   
   val<-as.vector(c(rep(NA,times=length(prev))))
-  cval<-as.vector(c(rep(NA,times=length(prev))))
   for(i in 1:length(prev)) {
     val[i]<-prev[i]/(1-prev[i])
-    cval[i]<-prev[i]/(1+prev[i])
   }
   
   ab<-matrix(c(rep(NA,times=length(val)*length(lrplus))),nrow=length(lrplus),ncol=length(val)) ##PPV table
@@ -222,7 +220,7 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   for(i in 1:length(val)) {
     for(j in 1:length(lrplus)) {
       ab[j,i]<-lrplus[j]*val[i]/(1+lrplus[j]*val[i])
-      ca[j,i]<-(cval[i]/lrminus[j])/(1+cval[i]/lrminus[j])
+      ca[j,i]<-(val[i]/lrminus[j])/(1+val[i]/lrminus[j])
     }
   }
   
