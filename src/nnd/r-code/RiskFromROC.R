@@ -83,7 +83,7 @@ RiskFromROC <- function(data, specificity, prevalence) {
   }
   
   ab<-matrix(c(rep(NA,times=length(val)*length(lrplus))),nrow=length(lrplus),ncol=length(val))  ##PPV table
-  ca<-matrix(c(rep(NA,times=length(cval)*length(lrminus))),nrow=length(lrminus),ncol=length(cval))  ##cNPV table
+  ca<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val))  ##cNPV table
   for(i in 1:length(val)) {
     for(j in 1:length(lrplus)) {
       ab[j,i]<-lrplus[j]*val[i]/(1+lrplus[j]*val[i])
