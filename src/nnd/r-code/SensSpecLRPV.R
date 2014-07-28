@@ -12,7 +12,7 @@ SensSpecLRPV <- function(sens,spec,prev) {
 		lrplus[i]<-sens[i]/(1-vecspec[i])
 		lrminus[i]<-vecspec[i]/(1-sens[i])
 		ppv[i]<-lrplus[i]*prev/(1-prev)/(1 + lrplus[i]*prev/(1-prev))
-  		cnpv[i]<-((prev/(1+prev))/lrminus[i])/(1 + (prev/(1+prev))/lrminus[i])
+  		cnpv[i]<-((prev/(1-prev))/lrminus[i])/(1 + (prev/(1-prev))/lrminus[i])
 	}
 	
 	data<-matrix(c(vecspec,vecsens,lrplus,lrminus,ppv,cnpv),nrow=length(vecspec),ncol=6) 
