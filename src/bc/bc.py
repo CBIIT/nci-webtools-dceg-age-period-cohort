@@ -139,7 +139,7 @@ def callFunction(parsedString):
  	   r_getname_function(r_input_key, r_input_sensref, r_input_specref, r_input_sens, r_input_spec, r_input_labels)
     return jsonReturn[0]
 
-@app.route('/BiomarkerComparison/cal', methods = ['GET','POST'])
+@app.route('/bcRest/', methods = ['GET','POST'])
 @jsonp
 def biomarkerComparison():
     print " biomarkerComparison >> " + request.query_string + "\n";
