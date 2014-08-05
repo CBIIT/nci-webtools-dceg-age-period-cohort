@@ -76,13 +76,13 @@ def callFunctionWithPrev(parsedString):
     r_input_prev=robjects.globalenv[(prev.split("<-"))[0]]
     r_input_labels=robjects.globalenv[(labels.split("<-"))[0]]
     r_input_key=robjects.globalenv[(uniqueKey.split("<-"))[0]]
-    # source all R functions places in the director r-code
+    # source all R functions places in the current directory
     rSource = robjects.r('source')
     rfilelist = []
-    rfilelist += [each for each in os.listdir("./r-code") if each.endswith('.R')]
+    rfilelist += [each for each in os.listdir("./") if each.endswith('.R')]
     for rfile in rfilelist:
         print " R files "+str(rfile)
- 	rSource("./r-code/"+rfile)
+ 	rSource("./"+rfile)
  	rFunctionName=(rfile.split("."))[0]
  	r_getname_function = robjects.globalenv[str(rFunctionName)]
 	if (rFunctionName == 'JsonWrapper'):
@@ -124,13 +124,13 @@ def callFunction(parsedString):
     r_input_sensWithRef=robjects.globalenv[(sensArrayWithRef.split("<-"))[0]]
     r_input_labels=robjects.globalenv[(labels.split("<-"))[0]]
     r_input_key=robjects.globalenv[(uniqueKey.split("<-"))[0]]
-    # source all R functions places in the director r-code
+    # source all R functions places in the current directory
     rSource = robjects.r('source')
     rfilelist = []
-    rfilelist += [each for each in os.listdir("./r-code") if each.endswith('.R')]
+    rfilelist += [each for each in os.listdir("./") if each.endswith('.R')]
     for rfile in rfilelist:
         print " R files "+str(rfile)
- 	rSource("./r-code/"+rfile)
+ 	rSource("./"+rfile)
  	rFunctionName=(rfile.split("."))[0]
  	r_getname_function = robjects.globalenv[str(rFunctionName)]
 	if (rFunctionName == 'JsonWrapperLR'):
@@ -139,7 +139,7 @@ def callFunction(parsedString):
  	   r_getname_function(r_input_key, r_input_sensref, r_input_specref, r_input_sens, r_input_spec, r_input_labels)
     return jsonReturn[0]
 
-@app.route('/BiomarkerComparison/cal', methods = ['GET','POST'])
+@app.route('/bcRest/', methods = ['GET','POST'])
 @jsonp
 def biomarkerComparison():
     print " biomarkerComparison >> " + request.query_string + "\n";

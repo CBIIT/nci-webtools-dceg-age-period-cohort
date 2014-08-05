@@ -1,5 +1,7 @@
+imageDirectory="./tmp/"
 DrawSensSpecLR <- function(uniquekey, sensref, specref,sensitivity,specificity, names) {
-  file<-paste("./tmp/", uniquekey, "SensSpecLR.jpg")
+  dir.create(imageDirectory)
+  file<-paste(imageDirectory, uniquekey, "SensSpecLR.jpg")
   graphfile<-gsub("\\s", "", file)
   png(graphfile)
   Specificity <- seq(from=0,to=1,by=0.00001)

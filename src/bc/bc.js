@@ -222,7 +222,7 @@ function do_calculation()
     {
         $.ajax({
             type: "GET",
-            url: "http://"+hostname+"/BiomarkerComparison/cal",
+            url: "http://"+hostname+"/bcRest/",
             data:{numberOfValues: "8",
                   refSpec: refSpec,
                   refSens: refSens,
@@ -244,7 +244,7 @@ function do_calculation()
     {
         $.ajax({
             type: "GET",
-            url: "http://"+hostname+"/BiomarkerComparison/cal",
+            url: "http://"+hostname+"/bcRest/",
             data:{numberOfValues: "7",
                   refSpec: refSpec,
                   refSens: refSens,

@@ -1,10 +1,10 @@
 library('RJSONIO')
 library('stringr')
-source ('./r-code/SensSpecLRPV.R')
+source ('./SensSpecLR.R')
 
-JsonWrapper <- function(sens,spec,prev)
+JsonWrapperLR <- function(sens,spec)
 {
-  data<- SensSpecLRPV(sens, spec, prev);
+  data<- SensSpecLR(sens, spec);
   jsonString = "";
   jsonString=toJSON(round(data,3), method="C");
   str_replace_all(jsonString, "[\n]","");
