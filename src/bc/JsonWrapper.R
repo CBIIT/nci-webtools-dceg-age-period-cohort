@@ -1,6 +1,6 @@
 library('RJSONIO')
 library('stringr')
-source ('./r-code/SensSpecLRPV.R')
+source ('./SensSpecLRPV.R')
 
 JsonWrapper <- function(sens,spec,prev)
 {
