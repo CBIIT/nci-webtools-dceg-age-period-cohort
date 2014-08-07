@@ -162,21 +162,21 @@ function do_calculation()
     var refSpec;
     var refSens;
 	
-    var sensArray = "c(";
-    var specArray = "c(";
-    var prev = "c(";
-    var sensArrayWithRef = "c(";
-    var specArrayWithRef = "c(";
-    var labels = "c(";
+    var sensArray = "";
+    var specArray = "";
+    var prev = "";
+    var sensArrayWithRef = "";
+    var specArrayWithRef = "";
+    var labels = "";
 
     var prevalence = $("#prevalence").val();
     
     if (!isNumberBetweenZeroAndOne(prevalence)) {
         validPrevValue = false;
-    	prev = "c(0)"; 
+    	prev = 0;
     } else {
         validPrevValue = true;
-        prev = "c(" + prevalence + ")";
+        prev = prevalence;
     }
     
     var hasNoErrors = true;
@@ -204,12 +204,12 @@ function do_calculation()
     	
     	
     });
-    sensArray = sensArray.slice(0, -1) + ")";
-    specArray = specArray.slice(0, -1) + ")";
-    sensArrayWithRef = sensArrayWithRef.slice(0, -1) + ")";
-    specArrayWithRef = specArrayWithRef.slice(0, -1) + ")";
+    sensArray = sensArray.slice(0, -1);
+    specArray = specArray.slice(0, -1);
+    sensArrayWithRef = sensArrayWithRef.slice(0, -1);
+    specArrayWithRef = specArrayWithRef.slice(0, -1);
     
-    labels = labels.slice(0, -1) + ")";
+    labels = labels.slice(0, -1);
 
     if (!hasNoErrors) {
     	alert ("Error with input data.  Not all values are numbers between Zero and One");
@@ -221,7 +221,7 @@ function do_calculation()
     if (validPrevValue)
     {
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: "http://"+hostname+"/bcRest/",
             data:{numberOfValues: "8",
                   refSpec: refSpec,
@@ -233,8 +233,10 @@ function do_calculation()
                   prev: prev,
                   labels: labels,
                   unique_key: uniqueKey},
-            dataType:"jsonp",
-            success:set_data,
+            dataType:"json",
+            success:function(data) {
+            	set_data(data);
+            },
             error: function (request, status, error) {
                 alert(request.responseText);
             }
@@ -243,7 +245,7 @@ function do_calculation()
     else
     {
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: "http://"+hostname+"/bcRest/",
             data:{numberOfValues: "7",
                   refSpec: refSpec,
@@ -254,8 +256,10 @@ function do_calculation()
                   sensArrayWithRef: sensArrayWithRef,
                   labels: labels,
                   unique_key: uniqueKey},
-            dataType:"jsonp",
-            success:set_data,
+            dataType:"json",
+            success:function(data) {
+            	set_data(data);
+            },
             error: function (request, status, error) {
                 alert(request.responseText);
             }
@@ -271,7 +275,7 @@ function isNumberBetweenZeroAndOne(n) {
 }
 
 function refreshGraph(drawgraph) {
-   if (drawgraph == 1) graph_file = "./tmp/"+uniqueKey+"SensSpecLR.jpg?";
+   if (drawgraph == 1) graph_file = "./tmp/SensSpecLR-"+uniqueKey+".png?";
    else graph_file = "./images/fail-message.jpg?";
 
    d = new Date();
@@ -280,22 +284,18 @@ function refreshGraph(drawgraph) {
 
 function set_data(dt)
 {
-        var jsonString;
-        var jsonObject;
-        for (property in dt) {
-                jsonString = dt[property];
-        }
-        refreshGraph(1);
-	$("#output").empty();
-        $("#output th").remove();
-        jsonObject = $.parseJSON(jsonString);
-	if (validPrevValue)
+   var jsonObject=JSON.parse(JSON.stringify(dt));
+ 
+   refreshGraph(1);
+   $("#output").empty();
+   $("#output th").remove();
+   if (validPrevValue)
 	{
-        	createOutputTableWithPrev(jsonObject)
+        createOutputTableWithPrev(jsonObject)
 	}
 	else
 	{
-        	createOutputTable(jsonObject)
+        createOutputTable(jsonObject)
 	}
 }
 
