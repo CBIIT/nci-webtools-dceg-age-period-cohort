@@ -1800,7 +1800,7 @@ DrawcNPVDeltaPrevSens <- function(delta, prevalence, sensitivity) {
   
   for(i in Iterations){
 
-    cNPV <= calculatecNPVfrSpecSens(calculateSpecfrSens(sensitivity,Delta),sensitivity,prevalence[i])
+    cNPV = calculatecNPVfrSpecSens(calculateSpecfrSens(sensitivity,Delta),sensitivity,prevalence[i])
     if(i==1) {
       par(mar=c(5.1, 4.1, 4.1, 9.5))
       plot(cNPV~Delta,type="l",main=c("Complement of Negative Predictive Value vs. Delta","Given Different Values of Prevalence",paste("Sensitivity =",sensitivity)),xlab="Delta",ylab="Complement of Negative Predictive Value",ylim=c(0,1),lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
