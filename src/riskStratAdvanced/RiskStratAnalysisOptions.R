@@ -2952,6 +2952,48 @@ DrawPrevSensSpecPPV <- function(sens,spec,PPV) {
   
 }
 
+DrawDeltaSensSpecPPV <- function(sens,spec,PPV) {
+  
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
+  
+  Iterations <- 1:length(spec)
+  LTY <- Iterations
+  
+  for(i in Iterations){
+    Delta =calculateDeltafrSpecSens(spec[i],Sensitivity)
+    if(i==1) {
+      par(mar=c(5.1, 4.1, 4.1, 9.5))
+      plot(Delta~Sensitivity,type="l",main=c("Delta vs. Sensitivity","Given Different Values of Specificity", paste("PPV = ",PPV)),xlab="Sensitivity",ylab="Delta",ylim=c(0,6),lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+    }
+    else
+      lines(y=Delta, x=Sensitivity,lty=LTY[i], col = LTY[i])
+  }
+  
+  legend(lty=LTY,legend=spec,"bottomright",cex=1.15, col= LTY,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Specificity") 
+  
+}
+
+DrawDeltaSpecSensPPV <- function(spec,sensPPV) {
+  
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
+  
+  Iterations <- 1:length(sens)
+  LTY <- Iterations
+  
+  for(i in Iterations){
+    Delta =calculateDeltafrSpecSens(Specificity,sens[i])
+    if(i==1) {
+      par(mar=c(5.1, 4.1, 4.1, 9.5))
+      plot(Delta~Specificity,type="l",main=c("Delta vs. Specificity","Given Different Values of Sensitivity", paste("PPV = ",PPV)),xlab="Specificity",ylab="Delta",ylim=c(0,6),lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+    }
+    else
+      lines(y=Delta, x=Specificity,lty=LTY[i], col = LTY[i])
+  }
+  
+  legend(lty=LTY,legend=sens,"bottomright",cex=1.15, col= LTY,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Sensitivity") 
+  
+}
+
 DrawPrevSpecSensPPV <- function(spec,sens,PPV) {
   
   Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
