@@ -2973,7 +2973,7 @@ DrawDeltaSensSpecPPV <- function(sens,spec,PPV) {
   
 }
 
-DrawDeltaSpecSensPPV <- function(spec,sensPPV) {
+DrawDeltaSpecSensPPV <- function(spec,sens,PPV) {
   
   Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
   
