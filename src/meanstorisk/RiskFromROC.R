@@ -73,7 +73,7 @@ RiskFromROC <- function(data, specificity, prevalence) {
     lrminus[i]<-vecspec[i]/(1-sens[i])
   }
   
-  data2<-matrix(sigfigures(c(vecspec,sens,lrplus,lrminus),nrow=length(vecspec),ncol=4)) ##Sensitivity Specificity table
+  data2<-matrix(sigfigures(c(vecspec,sens,lrplus,lrminus)),nrow=length(vecspec),ncol=4) ##Sensitivity Specificity table
   colnames(data2)<-c("Specificity", "Sensitivity","LR+","LR-")
   T2<-as.table(data2)
   
@@ -82,12 +82,12 @@ RiskFromROC <- function(data, specificity, prevalence) {
     val[i]<-prev[i]/(1-prev[i])
   }
   
-  ab<-matrix(sigfigures(c(rep(NA,times=length(val)*length(lrplus)))),nrow=length(lrplus),ncol=length(val)) ##PPV table
-  ca<-matrix(sigfigures(c(rep(NA,times=length(val)*length(lrminus)))),nrow=length(lrminus),ncol=length(val)) ##cNPV table
+  ab<-matrix(c(rep(NA,times=length(val)*length(lrplus))),nrow=length(lrplus),ncol=length(val)) ##PPV table
+  ca<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val)) ##cNPV table
   for(i in 1:length(val)) {
     for(j in 1:length(lrplus)) {
-      ab[j,i]<-lrplus[j]*val[i]/(1+lrplus[j]*val[i])
-      ca[j,i]<-(val[i]/lrminus[j])/(1+val[i]/lrminus[j])
+      ab[j,i]<-sigfigures(lrplus[j]*val[i]/(1+lrplus[j]*val[i]))
+      ca[j,i]<-sigfigures((val[i]/lrminus[j])/(1+val[i]/lrminus[j]))
     }
   }
   
@@ -100,23 +100,23 @@ RiskFromROC <- function(data, specificity, prevalence) {
   T4<-as.table(data4)
   
   ##PPV-cNPV table
-  pc<-matrix(sigfigures(c(rep(NA,times=length(val)*length(lrminus)))),nrow=length(lrminus),ncol=length(val))
+  pc<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val))
   for(i in 1:length(val)) {
     for(j in 1:length(lrminus)) {
-      pc[j,i]<-ab[j,i]-ca[j,i]
+      pc[j,i]<-sigfigures(ab[j,i]-ca[j,i])
     }
   }
   
-  data5<-pc
+  data5<- pc
   colnames(data5)<-prevalence
   T5<-as.table(data5)
   
-  progba<-matrix(sigfigures(c(rep(NA,times=length(prev)*length(sens)))),nrow=length(sens),ncol=length(prev)) ##Program-based table
-  pba<-matrix(sigfigures(c(rep(NA,times=length(prev)*length(lrplus)))),nrow=length(lrplus),ncol=length(prev)) ##PPV-based table
+  progba<-matrix(c(rep(NA,times=length(prev)*length(sens))),nrow=length(sens),ncol=length(prev)) ##Program-based table
+  pba<-matrix(c(rep(NA,times=length(prev)*length(lrplus))),nrow=length(lrplus),ncol=length(prev)) ##PPV-based table
   for(i in 1:length(prev)) {
     for(j in 1:length(sens)) {
-      progba[j,i]<-1000*prev[i]*sens[j]
-      pba[j,i]<-1000*ab[j,i]
+      progba[j,i]<-sigfigures(1000*prev[i]*sens[j])
+      pba[j,i]<-sigfigures(1000*ab[j,i])
     }
   }
   
@@ -130,22 +130,22 @@ RiskFromROC <- function(data, specificity, prevalence) {
   
   sb<-as.vector(c(rep(NA,times=length(sens)))) ##Sensitivity-Based table
   for(i in 1:length(sens)) {
-    sb[i]<-1000*sens[i]
+    sb[i]<-sigfigures(1000*sens[i])
   }
   
-  data8<-matrix(sigfigures(rep(sb,times=length(prev))),nrow=length(sens),ncol=length(prev),byrow=F)
+  data8<-matrix(rep(sb,times=length(prev)),nrow=length(sens),ncol=length(prev),byrow=F)
   colnames(data8)<-prevalence
   T8<-as.table(data8)
   
   ##Dominated by specificity for rare disease table
-  dsa<-matrix(sigfigures(c(rep(NA,times=length(prev)*length(vecspec)))),nrow=length(vecspec),ncol=length(prev))
+  dsa<-matrix(c(rep(NA,times=length(prev)*length(vecspec))),nrow=length(vecspec),ncol=length(prev))
   for(i in 1:length(prev)) {
     for(j in 1:length(vecspec)) {
-      dsa[j,i]<-1000*(prev[i]*sens[j]+(1-prev[i])*(1-vecspec[j]))
+      dsa[j,i]<-sigfigures(1000*(prev[i]*sens[j]+(1-prev[i])*(1-vecspec[j])))
     }
   }
   
-  data9<-dsa
+  data9 <- dsa
   colnames(data9)<-prevalence
   T9<-as.table(data9)
   
@@ -215,12 +215,12 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
     val[i]<-prev[i]/(1-prev[i])
   }
   
-  ab<-matrix(sigfigures(c(rep(NA,times=length(val)*length(lrplus)))),nrow=length(lrplus),ncol=length(val)) ##PPV table
-  ca<-matrix(sigfigures(c(rep(NA,times=length(val)*length(lrminus)))),nrow=length(lrminus),ncol=length(val)) ##cNPV table
+  ab<-matrix(c(rep(NA,times=length(val)*length(lrplus))),nrow=length(lrplus),ncol=length(val)) ##PPV table
+  ca<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val)) ##cNPV table
   for(i in 1:length(val)) {
     for(j in 1:length(lrplus)) {
-      ab[j,i]<-lrplus[j]*val[i]/(1+lrplus[j]*val[i])
-      ca[j,i]<-(val[i]/lrminus[j])/(1+val[i]/lrminus[j])
+      ab[j,i]<-sigfigures(lrplus[j]*val[i]/(1+lrplus[j]*val[i]))
+      ca[j,i]<-sigfigures((val[i]/lrminus[j])/(1+val[i]/lrminus[j]))
     }
   }
   
@@ -233,10 +233,10 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   T4<-as.table(data4)
   
   ##PPV-cNPV table
-  pc<-matrix(sigfigures(c(rep(NA,times=length(val)*length(lrminus)))),nrow=length(lrminus),ncol=length(val))
+  pc<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val))
   for(i in 1:length(val)) {
     for(j in 1:length(lrminus)) {
-      pc[j,i]<-ab[j,i]-ca[j,i]
+      pc[j,i]<-sigfigures(ab[j,i]-ca[j,i])
     }
   }
   
@@ -244,12 +244,12 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   colnames(data5)<-prevalence
   T5<-as.table(data5)
   
-  progba<-matrix(sigfigures(c(rep(NA,times=length(prev)*length(sens)))),nrow=length(sens),ncol=length(prev)) ##Program-based table
-  pba<-matrix(sigfigures(c(rep(NA,times=length(prev)*length(lrplus)))),nrow=length(lrplus),ncol=length(prev)) ##PPV-based table
+  progba<-matrix(c(rep(NA,times=length(prev)*length(sens))),nrow=length(sens),ncol=length(prev)) ##Program-based table
+  pba<-matrix(c(rep(NA,times=length(prev)*length(lrplus))),nrow=length(lrplus),ncol=length(prev)) ##PPV-based table
   for(i in 1:length(prev)) {
     for(j in 1:length(sens)) {  
-      progba[j,i]<-1000*prev[i]*sens[j]
-      pba[j,i]<-1000*ab[j,i]
+      progba[j,i]<-sigfigures(1000*prev[i]*sens[j])
+      pba[j,i]<-sigfigures(1000*ab[j,i])
     }
   }
   
@@ -263,18 +263,18 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   
   sb<-as.vector(c(rep(NA,times=length(sens)))) ##Sensitivity-Based table
   for(i in 1:length(sens)) {
-    sb[i]<-1000*sens[i]
+    sb[i]<-sigfigures(1000*sens[i])
   }
   
-  data8<-matrix(sigfigures(rep(sb,times=length(prev))),nrow=length(sens),ncol=length(prev),byrow=F)
+  data8<-matrix(rep(sb,times=length(prev)),nrow=length(sens),ncol=length(prev),byrow=F)
   colnames(data8)<-prevalence
   T8<-as.table(data8)
   
   ##Dominated by specificity for rare disease table
-  dsa<-matrix(sigfigures(c(rep(NA,times=length(prev)*length(vecspec)))),nrow=length(vecspec),ncol=length(prev))
+  dsa<-matrix(c(rep(NA,times=length(prev)*length(vecspec))),nrow=length(vecspec),ncol=length(prev))
   for(i in 1:length(prev)) {
     for(j in 1:length(vecspec)) {
-      dsa[j,i]<-1000*(prev[i]*sens[j]+(1-prev[i])*(1-vecspec[j]))
+      dsa[j,i]<-sigfigures(1000*(prev[i]*sens[j]+(1-prev[i])*(1-vecspec[j])))
     }
   }
   
