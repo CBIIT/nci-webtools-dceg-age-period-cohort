@@ -42,7 +42,7 @@ function bind_reference_row() {
     	var row = $(this).attr("row");
     	var col = $(this).attr("col");
 		clear_reference_row();
-		$(this).html("<img src='./images/checkbox.png' height='18' width='18' alt='check'/>");
+		$(this).html("<img src='/common/images/checkbox.png' height='18' width='18' alt='check'/>");
 		$(this).parent().addClass("reference_row")
 			.children().last().empty().html("&nbsp");
     });	
@@ -107,7 +107,7 @@ function change_value (field, new_value) {
 }
 
 function clear_reference_row() {
-	$("#inputdata").find(".reference").html("<img src='./images/uncheckbox.png' height='18' width='18' alt='uncheck'/>");
+	$("#inputdata").find(".reference").html("<img src='/common/images/uncheckbox.png' height='18' width='18' alt='uncheck'/>");
 	$("#inputdata").find("tr").each (function () {
 		$(this).removeClass("reference_row");
 		if (!$(this).hasClass('non-data-row')) {
@@ -128,7 +128,7 @@ function add_new_row() {
 	var num_rows = $("#inputdata").find("tr").length - 3;
 	$("#inputdata").find("tr").last().prev().after("<tr row='" + num_rows + "'>" +
 			"<td><b>" + (num_rows+1) + "</b></td>" +
-			"<td class='reference' row='" + num_rows + "' col='reference'><img src='./images/uncheckbox.png' height='18' width='18'  alt='uncheck'/></td>" + 
+			"<td class='reference' row='" + num_rows + "' col='reference'><img src='/common/images/uncheckbox.png' height='18' width='18'  alt='uncheck'/></td>" + 
 			"<td class='input sensitivity' row='" + num_rows + "' col='sensitivity'>&nbsp;</td>" +
 			"<td class='input specificity' row='" + num_rows + "' col='specificity'>&nbsp;</td>" +
 			"<td><BUTTON class='remove_row_button'>Remove</BUTTON></td>" +
@@ -276,7 +276,7 @@ function isNumberBetweenZeroAndOne(n) {
 
 function refreshGraph(drawgraph) {
    if (drawgraph == 1) graph_file = "./tmp/SensSpecLR-"+uniqueKey+".png?";
-   else graph_file = "./images/fail-message.jpg?";
+   else graph_file = "/common/images/fail-message.jpg?";
 
    d = new Date();
    $("#graph").attr("src", graph_file+d.getTime());
