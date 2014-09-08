@@ -6,7 +6,7 @@ SensSpecPrev <- function(sens,spec,prev) {
   for(i in 1:length(sens)) {
     for(j in 1:length(spec)) {
       for(k in 1:length(prev)) {
-        PPV[i,j,k] = calculatePPVfrSpecSens(spec[j],sens[i],prev[k])
+        PPV[i,j,k] = sigfigures(calculatePPVfrSpecSens(spec[j],sens[i],prev[k]))
       }
     }
   }
@@ -14,14 +14,14 @@ SensSpecPrev <- function(sens,spec,prev) {
   for(i in 1:length(sens)) {
     for(j in 1:length(spec)) {
       for(k in 1:length(prev)) {
-        cNPV[i,j,k] <- calculatecNPVfrSpecSens(spec[j],sens[i],prev[k])
+        cNPV[i,j,k] = sigfigures(calculatecNPVfrSpecSens(spec[j],sens[i],prev[k]))
       }
     }
   }
   Delta<-array(c(rep(NA,times=length(sens)*length(spec))), dim = c(length(sens),length(spec)), dimnames = list(sens,spec))
   for(i in 1:length(sens)) {
     for(j in 1:length(spec)) {
-        Delta[i,j] =calculateDeltafrSpecSens(spec[j],sens[i])
+        Delta[i,j] = sigfigures(calculateDeltafrSpecSens(spec[j],sens[i]))
     }
   }
   T1 <- as.table(PPV)
@@ -47,7 +47,7 @@ SensPPVDelta <- function(sens,dppv,delta) {
   spec<-array(c(rep(NA,times=length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecdelta)), dimnames = list(vecsens,vecdelta))
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecdelta)) {
-      spec[i,j]= calculateSensfrSpec(vecsens[i],vecdelta[j])
+      spec[i,j]= sigfigures(calculateSensfrSpec(vecsens[i],vecdelta[j]))
     }
   }
   
@@ -55,7 +55,7 @@ SensPPVDelta <- function(sens,dppv,delta) {
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecdppv)) {
       for(k in 1:length(vecdelta)) {
-        prev[i,j,k]<- calculatePrevalencefrPPV(vecdppv[j],calculateSpecfrSens(vecsens[i],delta[k]),vecsens[i])
+        prev[i,j,k]<- sigfigures(calculatePrevalencefrPPV(vecdppv[j],calculateSpecfrSens(vecsens[i],delta[k]),vecsens[i]))
       }
     }
   }
@@ -82,7 +82,7 @@ SensPPVPrev <- function(sens,dppv,prev) {
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecdppv)) {
       for(k in 1:length(prev)) {
-        delta[i,j,k]= calculateDeltafrPPV(vecsens[i],prev[k],vecdppv[j])
+        delta[i,j,k]= sigfigures(calculateDeltafrPPV(vecsens[i],prev[k],vecdppv[j]))
       }
     }
   }
@@ -91,7 +91,7 @@ SensPPVPrev <- function(sens,dppv,prev) {
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecdppv)) {
       for(k in 1:length(prev)) {
-        spec[i,j,k]=calculateSpecfrPPV(vecdppv[j],prev[k],vecsens[i])
+        spec[i,j,k]=sigfigures(calculateSpecfrPPV(vecdppv[j],prev[k],vecsens[i]))
       }
     }
   }
@@ -117,7 +117,7 @@ SensSpecPPV <- function(sens,spec,dppv) {
   delta<-array(c(rep(NA,times=length(vecsens)*length(vecspec))), dim = c(length(vecsens),length(vecspec)), dimnames = list(vecsens,vecspec))
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecspec)) {
-      delta[i,j]= calculateDeltafrSpecSens(vecspec[j],vecsens[i])
+      delta[i,j]= sigfigures(calculateDeltafrSpecSens(vecspec[j],vecsens[i]))
     }
   }
   
@@ -125,7 +125,7 @@ SensSpecPPV <- function(sens,spec,dppv) {
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecspec)) {
       for(k in 1:length(vecdppv)) {
-        prev[i,j,k]=calculatePrevalencefrPPV(vecdppv[k],vecspec[j],vecsens[i])
+        prev[i,j,k]=sigfigures(calculatePrevalencefrPPV(vecdppv[k],vecspec[j],vecsens[i]))
       }
     }
   }
@@ -150,7 +150,7 @@ SensPrevDelta <- function(sens,prev,delta) {
   spec<-array(c(rep(NA,times=length(vecsens)*length(vecdelta))), dim = c(length(vecsens),length(vecdelta)), dimnames = list(vecsens,vecdelta))
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecdelta)) {
-      spec[i,j]=calculateSpecfrSens(vecsens[i],vecdelta[j])
+      spec[i,j]=sigfigures(calculateSpecfrSens(vecsens[i],vecdelta[j]))
     }
   }
   
@@ -158,7 +158,7 @@ SensPrevDelta <- function(sens,prev,delta) {
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecprev)) {
       for(k in 1:length(vecdelta)) {
-        ppv[i,j,k]=calculatePPVfrSpecSens(calculateSpecfrSens(vecsens[i],vecdelta[k]),vecsens[i],vecprev[j])
+        ppv[i,j,k]=sigfigures(calculatePPVfrSpecSens(calculateSpecfrSens(vecsens[i],vecdelta[k]),vecsens[i],vecprev[j]))
       }
     }
   }
@@ -167,7 +167,7 @@ SensPrevDelta <- function(sens,prev,delta) {
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecprev)) {
       for(k in 1:length(vecdelta)) {
-        cnpv[i,j,k]=calculatecNPVfrSpecSens(calculateSpecfrSens(vecsens[i],vecdelta[k]),vecsens[i],vecprev[j])
+        cnpv[i,j,k]=sigfigures(calculatecNPVfrSpecSens(calculateSpecfrSens(vecsens[i],vecdelta[k]),vecsens[i],vecprev[j]))
       }
     }
   }
@@ -196,7 +196,7 @@ SenscNPVDelta <- function(sens,dcnpv,delta) {
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecdcnpv)) {
       for(k in 1:length(vecdelta)) {
-        prev[i,j,k]=calculatePrevalencefrcNPV(vecdcnpv[j],calculateSpecfrSens(vecsens[i],vecdelta[k]),vecsens[i])
+        prev[i,j,k]=sigfigures(calculatePrevalencefrcNPV(vecdcnpv[j],calculateSpecfrSens(vecsens[i],vecdelta[k]),vecsens[i]))
       }
     }
   }
@@ -204,7 +204,7 @@ SenscNPVDelta <- function(sens,dcnpv,delta) {
   spec<-array(c(rep(NA,times=length(vecsens)*length(vecdelta))),dim = c(length(vecsens),length(vecdelta)),dimnames = list(vecsens,vecdelta))  ##full table
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecdelta)) {
-      spec[i,j]=calculateSpecfrSens(vecsens[i],vecdelta[j])
+      spec[i,j]=sigfigures(calculateSpecfrSens(vecsens[i],vecdelta[j]))
     }
   }
   
@@ -232,7 +232,7 @@ SenscNPVPrev <- function(sens,dcnpv,prev) {
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecdcnpv)) {
       for(k in 1:length(prev)) {
-        delta[i,j,k]=calculateDeltafrcNPVSens(vecsens[i],prev[k],vecdcnpv[j])
+        delta[i,j,k]=sigfigures(calculateDeltafrcNPVSens(vecsens[i],prev[k],vecdcnpv[j]))
       }
     }
   }
@@ -241,7 +241,7 @@ SenscNPVPrev <- function(sens,dcnpv,prev) {
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecdcnpv)) {
       for(k in 1:length(prev)) {
-        spec[i,j,k]=calculateSpecfrcNPV(vecdcnpv[j],prev[k],vecsens[i])
+        spec[i,j,k]=sigfigures(calculateSpecfrcNPV(vecdcnpv[j],prev[k],vecsens[i]))
       }
     }
   }
@@ -268,7 +268,7 @@ SensSpeccNPV <- function(sens,spec,dcnpv) {
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecspec)) {
       for(k in 1:length(vecdcnpv)) {
-        prev[i,j,k]=calculatePrevalencefrcNPV(vecdcnpv[k],vecspec[j],vecsens[i])
+        prev[i,j,k]=sigfigures(calculatePrevalencefrcNPV(vecdcnpv[k],vecspec[j],vecsens[i]))
       }
     }
   }
@@ -276,7 +276,7 @@ SensSpeccNPV <- function(sens,spec,dcnpv) {
   delta<-array(c(rep(NA,times=length(vecsens)*length(vecspec))),dim = c(length(vecsens),length(vecspec)),dimnames = list(vecsens,vecspec))  ##full table
   for(i in 1:length(vecsens)) {
     for(j in 1:length(vecspec)) {
-      delta[i,j]=calculateDeltafrSpecSens(vecspec[j],vecsens[i])
+      delta[i,j]=sigfigures(calculateDeltafrSpecSens(vecspec[j],vecsens[i]))
     }
   }
   
@@ -302,7 +302,7 @@ SpecPPVDelta <- function(spec,dppv,delta) {
   sens<-array(c(rep(NA,times=length(vecspec)*length(vecdelta))), dim = c(length(vecspec),length(vecdelta)), dimnames = list(vecspec,vecdelta))
   for(i in 1:length(vecspec)) {
     for(j in 1:length(vecdelta)) {
-      sens[i,j]=calculateSensfrSpec(vecspec[i],vecdelta[j])
+      sens[i,j]=sigfigures(calculateSensfrSpec(vecspec[i],vecdelta[j]))
     }
   }
   
@@ -310,7 +310,7 @@ SpecPPVDelta <- function(spec,dppv,delta) {
   for(i in 1:length(vecspec)) {
     for(j in 1:length(vecdppv)) {
       for(k in 1:length(vecdelta)) {
-        prev[i,j,k]=calculatePrevalencefrPPV(vecdppv[j],vecspec[i],calculateSensfrSpec(vecspec[i],vecdelta[k]))
+        prev[i,j,k]=sigfigures(calculatePrevalencefrPPV(vecdppv[j],vecspec[i],calculateSensfrSpec(vecspec[i],vecdelta[k])))
       }
     }
   }
@@ -339,7 +339,7 @@ SpecPPVPrev <- function(spec,dppv,prev) {
   for(i in 1:length(vecspec)) {
     for(j in 1:length(vecdppv)) {
       for(k in 1:length(prev)) {
-        delta[i,j,k]=calculateDeltafrPPVSpec(vecspec[i],prev[k],vecdppv[j])
+        delta[i,j,k]=sigfigures(calculateDeltafrPPVSpec(vecspec[i],prev[k],vecdppv[j]))
       }
     }
   }
@@ -348,7 +348,7 @@ SpecPPVPrev <- function(spec,dppv,prev) {
   for(i in 1:length(vecspec)) {
     for(j in 1:length(vecdppv)) {
       for(k in 1:length(prev)) {
-        sens[i,j,k]= calculateSensfrPPV(vecdppv[j],prev[k],vecspec[i])
+        sens[i,j,k]= sigfigures(calculateSensfrPPV(vecdppv[j],prev[k],vecspec[i]))
       }
     }
   }
@@ -373,7 +373,7 @@ SpecPrevDelta <- function(spec,prev,delta) {
   sens<-array(c(rep(NA,times=length(vecspec)*length(vecdelta))), dim = c(length(vecspec),length(vecdelta)), dimnames = list(vecspec,vecdelta))
   for(i in 1:length(vecspec)) {
     for(j in 1:length(vecdelta)) {
-      sens[i,j]=calculateSensfrSpec(vecspec[i],vecdelta[j])
+      sens[i,j]=sigfigures(calculateSensfrSpec(vecspec[i],vecdelta[j]))
     }
   }
   
@@ -381,7 +381,7 @@ SpecPrevDelta <- function(spec,prev,delta) {
   for(i in 1:length(vecspec)) {
     for(j in 1:length(vecprev)) {
       for(k in 1:length(vecdelta)) {
-        ppv[i,j,k] = calculatePPVfrSpecSens(vecspec[i],calculateSensfrSpec(vecspec[i],vecdelta[k]),vecprev[j])
+        ppv[i,j,k] = sigfigures(calculatePPVfrSpecSens(vecspec[i],calculateSensfrSpec(vecspec[i],vecdelta[k]),vecprev[j]))
       }
     }
   }
@@ -390,7 +390,7 @@ SpecPrevDelta <- function(spec,prev,delta) {
   for(i in 1:length(vecspec)) {
     for(j in 1:length(vecprev)) {
       for(k in 1:length(vecdelta)) {
-        cnpv[i,j,k]=calculatecNPVfrSpecSens(vecspec[i],calculateSensfrSpec(vecspec[i],vecdelta[k]),vecprev[j])
+        cnpv[i,j,k]=sigfigures(calculatecNPVfrSpecSens(vecspec[i],calculateSensfrSpec(vecspec[i],vecdelta[k]),vecprev[j]))
       }
     }
   }
@@ -419,7 +419,7 @@ SpeccNPVDelta <- function(spec,dcnpv,delta) {
   for(i in 1:length(vecspec)) {
     for(j in 1:length(vecdcnpv)) {
       for(k in 1:length(vecdelta)) {
-        prev[i,j,k] = calculatePrevalencefrcNPV(vecdcnpv[j],vecspec[i],calculateSensfrSpec(vecspec[i],vecdelta[k]))
+        prev[i,j,k] = sigfigures(calculatePrevalencefrcNPV(vecdcnpv[j],vecspec[i],calculateSensfrSpec(vecspec[i],vecdelta[k])))
       }
     }
   }
@@ -427,7 +427,7 @@ SpeccNPVDelta <- function(spec,dcnpv,delta) {
   sens<-array(c(rep(NA,times=length(vecspec)*length(vecdelta))),dim = c(length(vecspec),length(vecdelta)),dimnames = list(vecspec,vecdelta))  ##full table
   for(i in 1:length(vecspec)) {
     for(j in 1:length(vecdelta)) {
-      sens[i,j]=calculateSensfrSpec(vecspec[i],vecdelta[j])
+      sens[i,j]=sigfigures(calculateSensfrSpec(vecspec[i],vecdelta[j]))
     }
   }
   
@@ -454,7 +454,7 @@ SpeccNPVPrev <- function(spec,dcnpv,prev) {
   for(i in 1:length(vecspec)) {
     for(j in 1:length(vecdcnpv)) {
       for(k in 1:length(prev)) {
-        delta[i,j,k]=calculateDeltafrSpecSens(vecspec[i],calculateSensfrcNPV(vecdcnpv[j],prev[k],vecspec[i]))
+        delta[i,j,k]=sigfigures(calculateDeltafrSpecSens(vecspec[i],calculateSensfrcNPV(vecdcnpv[j],prev[k],vecspec[i])))
       }
     }
   }
@@ -463,7 +463,7 @@ SpeccNPVPrev <- function(spec,dcnpv,prev) {
   for(i in 1:length(vecspec)) {
     for(j in 1:length(vecdcnpv)) {
       for(k in 1:length(prev)) {
-        sens[i,j,k] = calculateSensfrcNPV(vecdcnpv[j],prev[k],vecspec[i])
+        sens[i,j,k] = sigfigures(calculateSensfrcNPV(vecdcnpv[j],prev[k],vecspec[i]))
       }
     }
   }
@@ -2785,6 +2785,48 @@ legend(lty=LTY,legend=spec,"bottomright",cex=1.15, col= LTY,text.font=2,bty="o",
 
 }
 
+DrawDeltaSensSpeccNPV <- function(sens,spec,cnpv) {
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
+  Iterations <- 1:length(spec)
+  LTY <- Iterations
+  
+  for(i in Iterations){
+    Delta=calculateDeltafrSpecSens(spec[i], Sensitivity)
+    #Prevalence <- cnpv/(1-cnpv)*(spec[i]/(1-Sensitivity))/(1-(cnpv/(1-cnpv))*(spec[i]/(1-Sensitivity)))
+    if(i==1) {
+      par(mar=c(5.1, 4.1, 4.1, 9.5))
+      plot(Delta~Sensitivity,type="l",main=c("Delta vs. Sensitivity", "Given Different Values of Specificity",paste("cNPV = ",cnpv)),xlab="Sensitivity",ylab="Delta",ylim=c(0,6),lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+    }
+    else
+      lines(y=Delta, x=Sensitivity,lty=LTY[i], col = LTY[i])
+  }
+  
+  legend(lty=LTY,legend=spec,"bottomright",cex=1.15, col= LTY,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Specificity")
+  
+  
+}
+
+DrawDeltaSpecSenscNPV <- function(spec,sens,cnpv) {
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
+  Iterations <- 1:length(sens)
+  LTY <- Iterations
+  
+  for(i in Iterations){
+    Delta=calculateDeltafrSpecSens(Specificity, sens[i])
+    #Prevalence <- cnpv/(1-cnpv)*(spec[i]/(1-Sensitivity))/(1-(cnpv/(1-cnpv))*(spec[i]/(1-Sensitivity)))
+    if(i==1) {
+      par(mar=c(5.1, 4.1, 4.1, 9.5))
+      plot(Delta~Specificity,type="l",main=c("Delta vs. Specificity", "Given Different Values of Sensitivity",paste("cNPV = ",cnpv)),xlab="Specificity",ylab="Delta",ylim=c(0,6),lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+    }
+    else
+      lines(y=Delta, x=Specificity,lty=LTY[i], col = LTY[i])
+  }
+  
+  legend(lty=LTY,legend=sens,"bottomright",cex=1.15, col= LTY,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Sensitivity")
+  
+  
+}
+
 DrawPrevSenscNPVSpec <- function(sens,cnpv,spec) {
   Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
   Iterations <- 1:length(cnpv)
@@ -2949,6 +2991,48 @@ DrawPrevSensSpecPPV <- function(sens,spec,PPV) {
   }
   
   legend(lty=LTY,legend=spec,"bottomright",cex=1.15, col= LTY,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Specificity") 
+  
+}
+
+DrawDeltaSensSpecPPV <- function(sens,spec,PPV) {
+  
+  Sensitivity <- seq(from=min(sens),to=max(sens),by=0.00001)
+  
+  Iterations <- 1:length(spec)
+  LTY <- Iterations
+  
+  for(i in Iterations){
+    Delta =calculateDeltafrSpecSens(spec[i],Sensitivity)
+    if(i==1) {
+      par(mar=c(5.1, 4.1, 4.1, 9.5))
+      plot(Delta~Sensitivity,type="l",main=c("Delta vs. Sensitivity","Given Different Values of Specificity", paste("PPV = ",PPV)),xlab="Sensitivity",ylab="Delta",ylim=c(0,6),lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+    }
+    else
+      lines(y=Delta, x=Sensitivity,lty=LTY[i], col = LTY[i])
+  }
+  
+  legend(lty=LTY,legend=spec,"bottomright",cex=1.15, col= LTY,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Specificity") 
+  
+}
+
+DrawDeltaSpecSensPPV <- function(spec,sens,PPV) {
+  
+  Specificity <- seq(from=min(spec),to=max(spec),by=0.00001)
+  
+  Iterations <- 1:length(sens)
+  LTY <- Iterations
+  
+  for(i in Iterations){
+    Delta =calculateDeltafrSpecSens(Specificity,sens[i])
+    if(i==1) {
+      par(mar=c(5.1, 4.1, 4.1, 9.5))
+      plot(Delta~Specificity,type="l",main=c("Delta vs. Specificity","Given Different Values of Sensitivity", paste("PPV = ",PPV)),xlab="Specificity",ylab="Delta",ylim=c(0,6),lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+    }
+    else
+      lines(y=Delta, x=Specificity,lty=LTY[i], col = LTY[i])
+  }
+  
+  legend(lty=LTY,legend=sens,"bottomright",cex=1.15, col= LTY,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,pch=c(1,3),title="Sensitivity") 
   
 }
 
@@ -3206,4 +3290,8 @@ calculatecNPVfrSpecSens <- function(specificity,sensitivity,prevalence) {
 
 calculateDeltafrSpecSens <- function(specificity,sensitivity) {
   delta <- qnorm(specificity) - qnorm(1-sensitivity)
+}
+
+sigfigures <- function(number) {
+  data <- as.numeric(formatC(signif(number,digits=3), digits=3,format="fg", flag="#"))
 }

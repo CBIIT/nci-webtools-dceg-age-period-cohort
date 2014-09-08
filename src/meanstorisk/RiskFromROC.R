@@ -53,7 +53,7 @@ RiskFromROC <- function(data, specificity, prevalence) {
   auc <- pred$auc
   auc
   
-  data1<-matrix(c(a[1],b[1],mean,a[2],b[2],NA,a[3],b[3],n,stdev[1],stdev[2],NA,var[1],var[2],overallvar,coefvar[1],coefvar[2],overallcoefvar,NA,NA,diff,NA,NA,delta,NA,NA,auc),ncol=3,nrow=9,byrow=T)
+  data1<-matrix(sigfigures(c(a[1],b[1],mean,a[2],b[2],NA,a[3],b[3],n,stdev[1],stdev[2],NA,var[1],var[2],overallvar,coefvar[1],coefvar[2],overallcoefvar,NA,NA,diff,NA,NA,delta,NA,NA,auc)),ncol=3,nrow=9,byrow=T)
   rownames(data1)<-c("Mean","Standard Error","N","Standard Deviation","Variance","Coefficient of Variation (CV)","Difference in means","Delta","AUC")
   colnames(data1)<-c("Cases","Controls","Overall")
   T1<-as.table(data1)
@@ -73,7 +73,7 @@ RiskFromROC <- function(data, specificity, prevalence) {
     lrminus[i]<-vecspec[i]/(1-sens[i])
   }
   
-  data2<-matrix(c(vecspec,sens,lrplus,lrminus),nrow=length(vecspec),ncol=4) ##Sensitivity Specificity table
+  data2<-matrix(sigfigures(c(vecspec,sens,lrplus,lrminus)),nrow=length(vecspec),ncol=4) ##Sensitivity Specificity table
   colnames(data2)<-c("Specificity", "Sensitivity","LR+","LR-")
   T2<-as.table(data2)
   
@@ -86,8 +86,8 @@ RiskFromROC <- function(data, specificity, prevalence) {
   ca<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val)) ##cNPV table
   for(i in 1:length(val)) {
     for(j in 1:length(lrplus)) {
-      ab[j,i]<-lrplus[j]*val[i]/(1+lrplus[j]*val[i])
-      ca[j,i]<-(val[i]/lrminus[j])/(1+val[i]/lrminus[j])
+      ab[j,i]<-sigfigures(lrplus[j]*val[i]/(1+lrplus[j]*val[i]))
+      ca[j,i]<-sigfigures((val[i]/lrminus[j])/(1+val[i]/lrminus[j]))
     }
   }
   
@@ -103,11 +103,11 @@ RiskFromROC <- function(data, specificity, prevalence) {
   pc<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val))
   for(i in 1:length(val)) {
     for(j in 1:length(lrminus)) {
-      pc[j,i]<-ab[j,i]-ca[j,i]
+      pc[j,i]<-sigfigures(ab[j,i]-ca[j,i])
     }
   }
   
-  data5<-pc
+  data5<- pc
   colnames(data5)<-prevalence
   T5<-as.table(data5)
   
@@ -115,8 +115,8 @@ RiskFromROC <- function(data, specificity, prevalence) {
   pba<-matrix(c(rep(NA,times=length(prev)*length(lrplus))),nrow=length(lrplus),ncol=length(prev)) ##PPV-based table
   for(i in 1:length(prev)) {
     for(j in 1:length(sens)) {
-      progba[j,i]<-1000*prev[i]*sens[j]
-      pba[j,i]<-1000*ab[j,i]
+      progba[j,i]<-sigfigures(1000*prev[i]*sens[j])
+      pba[j,i]<-sigfigures(1000*ab[j,i])
     }
   }
   
@@ -130,7 +130,7 @@ RiskFromROC <- function(data, specificity, prevalence) {
   
   sb<-as.vector(c(rep(NA,times=length(sens)))) ##Sensitivity-Based table
   for(i in 1:length(sens)) {
-    sb[i]<-1000*sens[i]
+    sb[i]<-sigfigures(1000*sens[i])
   }
   
   data8<-matrix(rep(sb,times=length(prev)),nrow=length(sens),ncol=length(prev),byrow=F)
@@ -141,11 +141,11 @@ RiskFromROC <- function(data, specificity, prevalence) {
   dsa<-matrix(c(rep(NA,times=length(prev)*length(vecspec))),nrow=length(vecspec),ncol=length(prev))
   for(i in 1:length(prev)) {
     for(j in 1:length(vecspec)) {
-      dsa[j,i]<-1000*(prev[i]*sens[j]+(1-prev[i])*(1-vecspec[j]))
+      dsa[j,i]<-sigfigures(1000*(prev[i]*sens[j]+(1-prev[i])*(1-vecspec[j])))
     }
   }
   
-  data9<-dsa
+  data9 <- dsa
   colnames(data9)<-prevalence
   T9<-as.table(data9)
   
@@ -188,7 +188,7 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   
   auc<-AUCFromDelta(delta)
   
-  data1<-matrix(c(a[1],b[1],mean,a[2],b[2],NA,a[3],b[3],n,stdev[1],stdev[2],NA,var[1],var[2],overallvar,coefvar[1],coefvar[2],overallcoefvar,NA,NA,diff,NA,NA,delta, NA, NA, auc),ncol=3,nrow=9,byrow=T)
+  data1<-matrix(sigfigures(c(a[1],b[1],mean,a[2],b[2],NA,a[3],b[3],n,stdev[1],stdev[2],NA,var[1],var[2],overallvar,coefvar[1],coefvar[2],overallcoefvar,NA,NA,diff,NA,NA,delta, NA, NA, auc)),ncol=3,nrow=9,byrow=T)
   rownames(data1)<-c("Mean","Standard Error","N","Standard Deviation","Variance","Coefficient of Variation (CV)","Difference in means","Delta", "AUC")
   colnames(data1)<-c("Cases","Controls","Overall")
   T1<-as.table(data1)
@@ -206,7 +206,7 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
     lrminus[i]<-vecspec[i]/(1-sens[i])
   }
   
-  data2<-matrix(c(vecspec,sens,lrplus,lrminus),nrow=length(vecspec),ncol=4) ##Sensitivity Specificity table
+  data2<-matrix(sigfigures(c(vecspec,sens,lrplus,lrminus)),nrow=length(vecspec),ncol=4) ##Sensitivity Specificity table
   colnames(data2)<-c("Specificity", "Sensitivity","LR+","LR-")
   T2<-as.table(data2)
   
@@ -219,8 +219,8 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   ca<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val)) ##cNPV table
   for(i in 1:length(val)) {
     for(j in 1:length(lrplus)) {
-      ab[j,i]<-lrplus[j]*val[i]/(1+lrplus[j]*val[i])
-      ca[j,i]<-(val[i]/lrminus[j])/(1+val[i]/lrminus[j])
+      ab[j,i]<-sigfigures(lrplus[j]*val[i]/(1+lrplus[j]*val[i]))
+      ca[j,i]<-sigfigures((val[i]/lrminus[j])/(1+val[i]/lrminus[j]))
     }
   }
   
@@ -236,7 +236,7 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   pc<-matrix(c(rep(NA,times=length(val)*length(lrminus))),nrow=length(lrminus),ncol=length(val))
   for(i in 1:length(val)) {
     for(j in 1:length(lrminus)) {
-      pc[j,i]<-ab[j,i]-ca[j,i]
+      pc[j,i]<-sigfigures(ab[j,i]-ca[j,i])
     }
   }
   
@@ -248,8 +248,8 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   pba<-matrix(c(rep(NA,times=length(prev)*length(lrplus))),nrow=length(lrplus),ncol=length(prev)) ##PPV-based table
   for(i in 1:length(prev)) {
     for(j in 1:length(sens)) {  
-      progba[j,i]<-1000*prev[i]*sens[j]
-      pba[j,i]<-1000*ab[j,i]
+      progba[j,i]<-sigfigures(1000*prev[i]*sens[j])
+      pba[j,i]<-sigfigures(1000*ab[j,i])
     }
   }
   
@@ -263,7 +263,7 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   
   sb<-as.vector(c(rep(NA,times=length(sens)))) ##Sensitivity-Based table
   for(i in 1:length(sens)) {
-    sb[i]<-1000*sens[i]
+    sb[i]<-sigfigures(1000*sens[i])
   }
   
   data8<-matrix(rep(sb,times=length(prev)),nrow=length(sens),ncol=length(prev),byrow=F)
@@ -274,7 +274,7 @@ deltaspecppv <- function (cases,controls,specificity,prevalence) {
   dsa<-matrix(c(rep(NA,times=length(prev)*length(vecspec))),nrow=length(vecspec),ncol=length(prev))
   for(i in 1:length(prev)) {
     for(j in 1:length(vecspec)) {
-      dsa[j,i]<-1000*(prev[i]*sens[j]+(1-prev[i])*(1-vecspec[j]))
+      dsa[j,i]<-sigfigures(1000*(prev[i]*sens[j]+(1-prev[i])*(1-vecspec[j])))
     }
   }
   
@@ -309,5 +309,9 @@ AUCFromDelta <- function(delta) {
     1 - pnorm(qnorm(Specificity) - delta)
   }
   AUC <- integrate(Sensitivity,0,1)
-  AUC$value
+  sigfigures(AUC$value)
+}
+
+sigfigures <- function(number) {
+  data <- as.numeric(formatC(signif(number,digits=3), digits=3,format="fg", flag="#"))
 }
