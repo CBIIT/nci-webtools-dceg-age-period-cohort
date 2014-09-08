@@ -93,3 +93,14 @@ h2 {
 .bibliography_link {
 	width: 50px;
 }
+
+.popupDefinition {
+	display: none; 
+	position: absolute; 
+	left: 430px; top: 850px; 
+	border: solid #C4C4C0 1px; padding: 10px; 
+	background-color: #FFFFEB; 
+	text-align: left; 
+	font-size: 12px; 
+	width: 250px;
+}
