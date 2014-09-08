@@ -4,15 +4,20 @@
 <title>Risk Stratification Advanced Analysis</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
-<script src="/lib/jquery/jquery-1.9.1.js"></script>
-<script src="/lib/jquery/jquery-ui-1.10.3.js"></script>
+<script
+	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script
+	src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
 <script src="./riskStratAdv.js"></script>
-<script src="/lib/jquery/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script src="/common/js/glossary.js"></script>
 
-<link rel="stylesheet" type="text/css" href="/lib/jquery/jquery-ui-1.10.3.css" />
-<link rel="stylesheet" type="text/css" href="./style.css" />
-<link rel="stylesheet" type="text/css" href="./riskStratAdv.css" />
-<link rel="stylesheet" type="text/css" href="./dataTables.css" />
+<link rel="stylesheet"
+	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet"
+	href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css" />
+<link rel="stylesheet" href="/common/css/style.css" />
+<link rel="stylesheet" href="./riskStratAdv.css" />
 
 </head>
 
@@ -23,12 +28,12 @@
 			<div id="logos">
 				<div id="left">
 					<a href="http://www.cancer.gov" target="_blank"><img
-						src="images/nci.jpg" width="286" height="40" border="0"
+						src="/common/images/nci.jpg" width="286" height="40" border="0"
 						alt="National Cancer Institute" title="National Cancer Institute" /></a>
 				</div>
 				<div id="right">
 					<a href="http://www.cancer.gov" target="_blank"><img
-						src="images/nih.jpg" width="322" height="40" border="0"
+						src="/common/images/nih.jpg" width="322" height="40" border="0"
 						alt="at the National Institutes of Health"
 						title="at the National Institutes of Health" /></a>
 				</div>
@@ -38,122 +43,115 @@
 
 		<div id="banners">
 			<div id="left">
-				<img src="images/DCEGBB.png"
-					alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch"
+				<img src="/common/images/DCEG-BB-HREB.png"
+					alt="Banner for NCI Division of Cancer Epidemiology, Genetics Biostatistics Branch, Hormonal and Reproductive Epidemiology Branch "
 					height="43" />
 			</div>
 		</div>
 		<form>
-
-		<div id='main'>
 			<br>
 			<h2 align="center">Risk Stratification Advanced Analysis Options</h2>
 			<p></p>
-			<div style='width: 100%; float: left; clear:left;'>
-				<table>
-					<tr>
-						<td class='label'>Independent Variable</td>
-						<td>
-							<select id="independent_dropdown" name="independent_dropdown">
-								<option value="" selected></option>
-								<option value="specificity">Specificity</option>
-								<option value="prevalence">Prevalence</option>
-								<option value="ppv">PPV</option>
-								<option value="delta">Delta</option>
-								<option value="sensitivity">Sensitivity</option>
-								<option value="cnpv">cNPV</option>
-							</select>
-						</td>
-						<td>
-							<label for="independent">
-								<input type="text" size="30" id="independent"  pattern="([0-9,. \-])+" title="An array of floating point numbers seperated by commas." title="An array of floating point numbers seperated by commas" required>
-							</label>
-						</td>
-						<td>
-							<span class="variable-example"></span>
-						</td>
-					</tr>
-					<tr>
-						<td class='label'>Contour</td>
-						<td>
-							<select id="contour_dropdown" name="contour_dropdown">
-								<option value="" selected></option>
-								<option value="ppv">PPV</option>
-								<option value="prevalence">Prevalence</option>
-								<option value="specificity">Specificity</option>
-								<option value="delta">Delta</option>
-								<option value="sensitivity">Sensitivity</option>
-								<option value="cnpv">cNPV</option>
-							</select>
-						</td>
-						<td>
-							<label for="contour">
-								<input type="text" size="30" id="contour" pattern="([0-9,. \-])+"  title="An array of floating point numbers seperated by commas." title="An array of floating point numbers seperated by commas" required>
-							</label>
-						</td>
-						<td>
-							<span class="variable-example"></span>
-						</td>
-					</tr>
-					<tr>
-						<td class='label'>Fixed Values</td>
-						<td>
-							<select id="fixed_dropdown" name="fixed_dropdown" id='fixed_dropdown'>
-								<option value="" selected></option>
-								<option value="prevalence">Prevalence</option>
-								<option value="delta">Delta</option>
-								<option value="ppv">PPV</option>
-								<option value="specificity">Specificity</option>
-								<option value="sensitivity">Sensitivity</option>
-								<option value="cnpv">cNPV</option>
-							</select>
-						</td>
-						<td>
-							<label for="fixed">
-								<input type="text" size="30" id="fixed" pattern="([0-9,. \-])+" title="An array of floating point numbers seperated by commas" required>
-							</label>
-						</td>
-						<td>
-							<span class="variable-example"></span>
-						</td>
-					</tr>
-				</table>
-              <br />
-              <div style="width:450px;">
-	            <button id="calculate" class="btn btn-primary" disabled>Calculate</button>
-	            <button type="reset" id="reset" class="btn">Reset</button>
-				<a id="add-test-data" href="#" title="Populate variables with a working example">Example</a>
-	         </div>
-              <div id="status-bar">Status Bar</div>
-			</form>
-<br />
-<div id="dialog-confirm" title="Rules Violation">
-	<p>
-		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
-		<div> One or more of the following rules have been violated:</div>
-		<ul>
-			<li class="rule rule1">Specificity, Sensitivity, PPV, cNPV, and Prevalence can only be 0 to 1</li>
-			<li class="rule rule2" style="font-weight:bold;">Delta can be 0 to 5</li>
-			<li class="rule rule3">cNPV &lt; Prevalence</li>
+			<table>
+				<tr>
+					<td class='label'>Independent Variable</td>
+					<td><select id="independent_dropdown"
+						name="independent_dropdown">
+							<option value="" selected></option>
+							<option value="specificity">Specificity</option>
+							<option value="prevalence">Prevalence</option>
+							<option value="ppv">PPV</option>
+							<option value="delta">Delta</option>
+							<option value="sensitivity">Sensitivity</option>
+							<option value="cnpv">cNPV</option>
+					</select></td>
+					<td><label for="independent"> <input type="text"
+							size="30" id="independent" pattern="([0-9,. \-])+"
+							title="An array of floating point numbers seperated by commas."
+							title="An array of floating point numbers seperated by commas"
+							required>
+					</label></td>
+					<td><span class="variable-example"></span></td>
+				</tr>
+				<tr>
+					<td class='label'>Contour</td>
+					<td><select id="contour_dropdown" name="contour_dropdown">
+							<option value="" selected></option>
+							<option value="ppv">PPV</option>
+							<option value="prevalence">Prevalence</option>
+							<option value="specificity">Specificity</option>
+							<option value="delta">Delta</option>
+							<option value="sensitivity">Sensitivity</option>
+							<option value="cnpv">cNPV</option>
+					</select></td>
+					<td><label for="contour"> <input type="text" size="30"
+							id="contour" pattern="([0-9,. \-])+"
+							title="An array of floating point numbers seperated by commas."
+							title="An array of floating point numbers seperated by commas"
+							required>
+					</label></td>
+					<td><span class="variable-example"></span></td>
+				</tr>
+				<tr>
+					<td class='label'>Fixed Values</td>
+					<td><select id="fixed_dropdown" name="fixed_dropdown"
+						id='fixed_dropdown'>
+							<option value="" selected></option>
+							<option value="prevalence">Prevalence</option>
+							<option value="delta">Delta</option>
+							<option value="ppv">PPV</option>
+							<option value="specificity">Specificity</option>
+							<option value="sensitivity">Sensitivity</option>
+							<option value="cnpv">cNPV</option>
+					</select></td>
+					<td><label for="fixed"> <input type="text" size="30"
+							id="fixed" pattern="([0-9,. \-])+"
+							title="An array of floating point numbers seperated by commas"
+							required>
+					</label></td>
+					<td><span class="variable-example"></span></td>
+				</tr>
+			</table>
+			<br />
+			<div style="width: 450px;">
+				<button id="calculate" class="btn btn-primary" disabled>Calculate</button>
+				<button type="reset" id="reset" class="btn">Reset</button>
+				<a id="add-test-data" href="#"
+					title="Populate variables with a working example">Example</a>
+			</div>
+			<div id="status-bar">Status Bar</div>
+		</form>
+		<br />
+		<div id="dialog-confirm" title="Rules Violation">
+			<p>
+				<span class="ui-icon ui-icon-alert"
+					style="float: left; margin: 0 7px 20px 0;"></span>
+			<div>One or more of the following rules have been violated:</div>
+			<ul>
+				<li class="rule rule1">Specificity, Sensitivity, PPV, cNPV, and
+					Prevalence can only be 0 to 1</li>
+				<li class="rule rule2" style="font-weight: bold;">Delta can be
+					0 to 5</li>
+				<li class="rule rule3">cNPV &lt; Prevalence</li>
 				<ul>
-					<li class="rule rule3">For arrays: max(cNPV) &lt; min(Prevalence)</li>
+					<li class="rule rule3">For arrays: max(cNPV) &lt;
+						min(Prevalence)</li>
 				</ul>
-			<li class="rule rule4">Prevalence &lt; PPV</li>
+				<li class="rule rule4">Prevalence &lt; PPV</li>
 				<ul>
 					<li class="rule rule4">For arrays: max(prev) &lt; min(PPV)</li>
 				</ul>
-			<li class="rule rule5">Sensitivity+Specificity-1 &gt; 0</li>
-		</ul>
-		<span style="font-weight:bold;">Do you wish to continue with calculation anyway?</span>
-	</p>
-</div>
-<div id='output'> 
-</div>
+				<li class="rule rule5">Sensitivity+Specificity-1 &gt; 0</li>
+			</ul>
+			<span style="font-weight: bold;">Do you wish to continue with
+				calculation anyway?</span>
+			</p>
+		</div>
+		<div id='output'></div>
 
-<div id='output1'> 
-</div>
+		<div id='output1'></div>
 
-</div>
+	</div>
 	<!-- main -->
 
 	<div id="portal-footer">
@@ -173,7 +171,6 @@
 				href="http://www.usa.gov/">USA.gov</a>
 		</div>
 		<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
-	</div>
 	</div>
 
 </body>

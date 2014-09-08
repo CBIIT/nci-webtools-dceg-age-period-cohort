@@ -665,7 +665,7 @@ function isNumberBetweenZeroAndOne(n) {
 
 function refreshGraph(drawgraph) {
    if (drawgraph == 1) graph_file = "./tmp/"+uniqueKey+"SensSpecLR.jpg?";
-   else graph_file = "./images/fail-message.jpg?";
+   else graph_file = "/common/images/fail-message.jpg?";
 
    d = new Date();
    $("#graph").attr("src", graph_file+d.getTime());
