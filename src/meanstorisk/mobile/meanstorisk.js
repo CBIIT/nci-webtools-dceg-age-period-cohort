@@ -148,7 +148,7 @@ function refreshGraph(drawgraph) {
    if (drawgraph == 1) {
          graph_file = "../"+uniqueKey+"rplot.png?";
    } else {
-         graph_file = "../images/fail-message.jpg?";
+         graph_file = "/common/images/fail-message.jpg?";
    }
 
    d = new Date();

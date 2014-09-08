@@ -1,281 +1,300 @@
+<!DOCTYPE html>
 <html>
-<!DOCTYPE html> 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<head> 
-	<title>My Page</title> 
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
-	<link rel="stylesheet" href="./jquery.mobile-1.3.2.css" />
-	<link rel="stylesheet" href="./meanstorisk.css" />
-	<script src="./jquery-1.9.1.js"></script>
-	<script src="./jquery.mobile-1.3.2.js"></script>
-	<script src="./meanstorisk.js"></script>
-</head> 
-<body> 
+<head>
+<title>My Page</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.css" />
+<script
+	src="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.js"></script>
+<link rel="stylesheet" href="./meanstorisk.css" />
+<script src="./meanstorisk.js"></script>
+</head>
+<body>
 
-<div data-role="page" id="main">
+	<div data-role="page" id="main">
 
-	<div data-role="header" data-position="fixed" class="ui-bar">
-		<h1>Means To Risk</h1>
-	</div><!-- /header -->
+		<div data-role="header" data-position="fixed" class="ui-bar">
+			<h1>Means To Risk</h1>
+		</div>
+		<!-- /header -->
 
-	<div data-role="content">
-		<ul data-role="listview">
-			<li>Delta: <span id='delta-title'>2.32</span> </li>
-			<li><a href="#case-control">Case Control Data</a> </li>
-			<li><a href="#graph">Graph</a> </li>
-			<li><a href="#ppv">PPV</a> </li>
-		</ul>
+		<div data-role="content">
+			<ul data-role="listview">
+				<li>Delta: <span id='delta-title'>2.32</span>
+				</li>
+				<li><a href="#case-control">Case Control Data</a></li>
+				<li><a href="#graph">Graph</a></li>
+				<li><a href="#ppv">PPV</a></li>
+			</ul>
+		</div>
 	</div>
-</div><!-- /page id='main' -->
+	<!-- /page id='main' -->
 
-<div data-role="page" id="case-control">
+	<div data-role="page" id="case-control">
 
-	<div data-role="header" data-position="fixed" class="ui-bar">
-		<a href="#main" data-role="button">Home</a>
-		<h1>Means To Risk</h1>
-	</div><!-- /header -->
+		<div data-role="header" data-position="fixed" class="ui-bar">
+			<a href="#main" data-role="button">Home</a>
+			<h1>Means To Risk</h1>
+		</div>
+		<!-- /header -->
 
-	<div data-role="content">
-		<h2> Delta: <span id='delta'>2.32</span></h2>
-		<table>
-		   <tr> 
-		   	<th class='data rj top'> </th>
-		   	<th class='data top'>Cases</th>
-		   	<th class='data top'>Controls</th>
-		   	<th class='data top'>Overall</th>
-		   	<th class='data top'>Diff</th>
-		   </tr>
-		   <tr> 
-		   	<th class='data rj'>Mean</th>
-		   	<td class='data' id='mean-cases'>4</td>
-		   	<td class='data' id='mean-controls'>1</td>
-		   	<td class='data' id='mean-overall'>2.0</td>
-		   	<td class='data' id='mean-diff'>3.0</td>
-		   </tr>
-		   <tr> 
-		   	<th class='data rj'>StdErr</th>
-		   	<td class='data' id='stderr-cases'>0.1</td>
-		   	<td class='data' id='stderr-controls'>0.1</td>
-		   	<td class='data' id='stderr-overall'></td>
-		   	<td class='data' id='stderr-diff'></td>
-		   </tr>
-		   <tr> 
-		   	<th class='data rj'>N</th>
-		   	<td class='data' id='N-cases'>100</td>
-		   	<td class='data' id='N-controls'>200</td>
-		   	<td class='data' id='N-overall'>300</td>
-		   	<td class='data' id='N-diff'></td>
-		   </tr>
-		   <tr> 
-		   	<th class='data rj'>StdDev</th>
-		   	<td class='data' id='stddev-cases'>1.0</td>
-		   	<td class='data' id='stddev-controls'>1.414</td>
-		   	<td class='data' id='stddev-overall'></td>
-		   	<td class='data' id='stddev-diff'></td>
-		   </tr>
-		   <tr> 
-		   	<th class='data rj'>Var</th>
-		   	<td class='data' id='var-cases'>1.0</td>
-		   	<td class='data' id='var-controls'>2.0</td>
-		   	<td class='data' id='var-overall'>1.67</td>
-		   	<td class='data' id='var-diff'></td>
-		   </tr>
-		   <tr>
-		   	<th class='data rj'>CV</th>
-		   	<td class='data' id='cv-cases'>0.25</td>
-		   	<td class='data' id='cv-controls'>1.414</td>
-		   	<td class='data' id='cv-overall'>0.6455</td>
-		   	<td class='data' id='cv-diff'></td>
-		   </tr>
-		   <tr> <th class='data rj'>Diff in Mean</th>
-		   	<td class='data' id='diff-cases'></td>
-		   	<td class='data' id='diff-controls'></td>
-		   	<td class='data' id='diff-overall'>3.0</td>
-		   	<td class='data' id='diff-diff'></td>
-		   </tr>
-		</table>
-		
-		<a href="#enter-data" data-role="button">Enter Case Control Info</a>
-		<a id="compute-graph-button" href="#graph" data-role="button">Calculate Graph</a>
-		<a href="#ppv" data-role="button">Calculate Tables</a>
+		<div data-role="content">
+			<h2>
+				Delta: <span id='delta'>2.32</span>
+			</h2>
+			<table>
+				<tr>
+					<th class='data rj top'></th>
+					<th class='data top'>Cases</th>
+					<th class='data top'>Controls</th>
+					<th class='data top'>Overall</th>
+					<th class='data top'>Diff</th>
+				</tr>
+				<tr>
+					<th class='data rj'>Mean</th>
+					<td class='data' id='mean-cases'>4</td>
+					<td class='data' id='mean-controls'>1</td>
+					<td class='data' id='mean-overall'>2.0</td>
+					<td class='data' id='mean-diff'>3.0</td>
+				</tr>
+				<tr>
+					<th class='data rj'>StdErr</th>
+					<td class='data' id='stderr-cases'>0.1</td>
+					<td class='data' id='stderr-controls'>0.1</td>
+					<td class='data' id='stderr-overall'></td>
+					<td class='data' id='stderr-diff'></td>
+				</tr>
+				<tr>
+					<th class='data rj'>N</th>
+					<td class='data' id='N-cases'>100</td>
+					<td class='data' id='N-controls'>200</td>
+					<td class='data' id='N-overall'>300</td>
+					<td class='data' id='N-diff'></td>
+				</tr>
+				<tr>
+					<th class='data rj'>StdDev</th>
+					<td class='data' id='stddev-cases'>1.0</td>
+					<td class='data' id='stddev-controls'>1.414</td>
+					<td class='data' id='stddev-overall'></td>
+					<td class='data' id='stddev-diff'></td>
+				</tr>
+				<tr>
+					<th class='data rj'>Var</th>
+					<td class='data' id='var-cases'>1.0</td>
+					<td class='data' id='var-controls'>2.0</td>
+					<td class='data' id='var-overall'>1.67</td>
+					<td class='data' id='var-diff'></td>
+				</tr>
+				<tr>
+					<th class='data rj'>CV</th>
+					<td class='data' id='cv-cases'>0.25</td>
+					<td class='data' id='cv-controls'>1.414</td>
+					<td class='data' id='cv-overall'>0.6455</td>
+					<td class='data' id='cv-diff'></td>
+				</tr>
+				<tr>
+					<th class='data rj'>Diff in Mean</th>
+					<td class='data' id='diff-cases'></td>
+					<td class='data' id='diff-controls'></td>
+					<td class='data' id='diff-overall'>3.0</td>
+					<td class='data' id='diff-diff'></td>
+				</tr>
+			</table>
+
+			<a href="#enter-data" data-role="button">Enter Case Control Info</a>
+			<a id="compute-graph-button" href="#graph" data-role="button">Calculate
+				Graph</a> <a href="#ppv" data-role="button">Calculate Tables</a>
+		</div>
+
 	</div>
+	<!-- /page id='case-control' -->
 
-</div><!-- /page id='case-control' -->
+	<div data-role="page" id="graph">
+		<div data-role="header" data-position="fixed" class="ui-bar">
+			<a href="#main" data-role="button">Home</a>
+			<h1>Means To Risk</h1>
+		</div>
+		<!-- /header -->
 
-<div data-role="page" id="graph">
-	<div data-role="header" data-position="fixed" class="ui-bar">
-		<a href="#main" data-role="button">Home</a>
-		<h1>Means To Risk</h1>
-	</div><!-- /header -->
+		<div data-role="content">
+			<p>
+				<IMG id='graph_image' style="max-width: 100%" src='rplot.png'>
+				</img>
+			</p>
+		</div>
 
-	<div data-role="content">
-	   <p><IMG id='graph_image' style="max-width:100%" src='rplot.png'> </img></p>
 	</div>
-	
-</div><!-- /page id='graph' -->
+	<!-- /page id='graph' -->
 
-<div data-role="page" id="ppv">
-	<div data-role="header" data-position="fixed" class="ui-bar">
-		<a href="#main" data-role="button">Home</a>
-		<h1>Means To Risk</h1>
-	</div><!-- /header -->
+	<div data-role="page" id="ppv">
+		<div data-role="header" data-position="fixed" class="ui-bar">
+			<a href="#main" data-role="button">Home</a>
+			<h1>Means To Risk</h1>
+		</div>
+		<!-- /header -->
 
-	<div data-role="content" style="overflow-x:auto">
+		<div data-role="content" style="overflow-x: auto">
 
 			<TABLE class='output_data'>
-			
-				<TR><TH class='table_data header' colspan='10'> 
-					Risk of Disease after a POSITIVE Test
-				</TH></TR>
-				<TR><TH class='table_data header' colspan='10' style='background-color:#B080FF;'> 
-					Positive Predictive Value (PPV)
-				</TH></TR>
+
+				<TR>
+					<TH class='table_data header' colspan='10'>Risk of Disease
+						after a POSITIVE Test</TH>
+				</TR>
+				<TR>
+					<TH class='table_data header' colspan='10'
+						style='background-color: #B080FF;'>Positive Predictive Value
+						(PPV)</TH>
+				</TR>
 				<TR class='table_data header'>
-					<TH class='table_data header' colspan='4' style='border-right:1px solid black;'> 
-						Sens. Given Spec. <br /> for Given Delta
+					<TH class='table_data header' colspan='4'
+						style='border-right: 1px solid black;'>Sens. Given Spec. <br />
+						for Given Delta
 					</TH>
-					<TH class='table_data header' colspan='6'> Disease Prevalence </TH>
-					
+					<TH class='table_data header' colspan='6'>Disease Prevalence</TH>
+
 				</TR>
 				<TR class='table_data header'>
-					<TH class='table_data header'> Spec.</TH>
-					<TH class='table_data header'> Sens.</TH>
-					<TH class='table_data header'> LR+ </TH>
-					<TH class='table_data header' style='border-right:1px solid black;'> LR- </TH>
-					<TH class='table_data header' id='PPV_header_0'> 1.0E-01 </TH>
-					<TH class='table_data header' id='PPV_header_1'> 1.0E-02 </TH>
-					<TH class='table_data header' id='PPV_header_2'> 1.0E-03 </TH>
-					<TH class='table_data header' id='PPV_header_3'> 1.0E-04 </TH>
-					<TH class='table_data header' id='PPV_header_4'> 1.0E-05 </TH>
-					<TH class='table_data header' id='PPV_header_5'> 1.0E-06 </TH>
+					<TH class='table_data header'>Spec.</TH>
+					<TH class='table_data header'>Sens.</TH>
+					<TH class='table_data header'>LR+</TH>
+					<TH class='table_data header'
+						style='border-right: 1px solid black;'>LR-</TH>
+					<TH class='table_data header' id='PPV_header_0'>1.0E-01</TH>
+					<TH class='table_data header' id='PPV_header_1'>1.0E-02</TH>
+					<TH class='table_data header' id='PPV_header_2'>1.0E-03</TH>
+					<TH class='table_data header' id='PPV_header_3'>1.0E-04</TH>
+					<TH class='table_data header' id='PPV_header_4'>1.0E-05</TH>
+					<TH class='table_data header' id='PPV_header_5'>1.0E-06</TH>
 				</TR>
 				<TR class='table_data'>
-					<TD class='table_data col1' id='PPV_Specificity_0'> 0.8 </TD>
-					<TD class='table_data col1' id='PPV_Sensitivity_0'> 0.93 </TD>
-					<TD class='table_data col1' id='PPV_LRplus_0'> 4.6 </TD>
-					<TD class='table_data col1' id='PPV_LRminus_0' style='border-right:1px solid black;'> 11.6 </TD>
-					<TD class='table_data col1' id='PPV_0_0'> 0.341 </TD>
-					<TD class='table_data col1' id='PPV_0_1'> 0.0449 </TD>
-					<TD class='table_data col1' id='PPV_0_2'> 0.00464 </TD>
-					<TD class='table_data col1' id='PPV_0_3'> 0.000465 </TD>
-					<TD class='table_data col1' id='PPV_0_4'> 0.0000465 </TD>
-					<TD class='table_data col1' id='PPV_0_5'> 0.0000046 </TD>
+					<TD class='table_data col1' id='PPV_Specificity_0'>0.8</TD>
+					<TD class='table_data col1' id='PPV_Sensitivity_0'>0.93</TD>
+					<TD class='table_data col1' id='PPV_LRplus_0'>4.6</TD>
+					<TD class='table_data col1' id='PPV_LRminus_0'
+						style='border-right: 1px solid black;'>11.6</TD>
+					<TD class='table_data col1' id='PPV_0_0'>0.341</TD>
+					<TD class='table_data col1' id='PPV_0_1'>0.0449</TD>
+					<TD class='table_data col1' id='PPV_0_2'>0.00464</TD>
+					<TD class='table_data col1' id='PPV_0_3'>0.000465</TD>
+					<TD class='table_data col1' id='PPV_0_4'>0.0000465</TD>
+					<TD class='table_data col1' id='PPV_0_5'>0.0000046</TD>
 				</TR>
 				<TR class='table_data'>
-					<TD class='table_data col1' id='PPV_Specificity_1'> 0.9 </TD>
-					<TD class='table_data col1' id='PPV_Sensitivity_1'> 0.851 </TD>
-					<TD class='table_data col1' id='PPV_LRplus_1'> 8.51 </TD>
-					<TD class='table_data col1' id='PPV_LRminus_1' style='border-right:1px solid black;'> 6.05 </TD>
-					<TD class='table_data col1' id='PPV_1_0'> 0.486 </TD>
-					<TD class='table_data col1' id='PPV_1_1'> 0.0792 </TD>
-					<TD class='table_data col1' id='PPV_1_2'> 0.00845 </TD>
-					<TD class='table_data col1' id='PPV_1_3'> 0.000851</TD>
-					<TD class='table_data col1' id='PPV_1_4'> 0.0000851</TD>
-					<TD class='table_data col1' id='PPV_1_5'> 0.0000085</TD>
+					<TD class='table_data col1' id='PPV_Specificity_1'>0.9</TD>
+					<TD class='table_data col1' id='PPV_Sensitivity_1'>0.851</TD>
+					<TD class='table_data col1' id='PPV_LRplus_1'>8.51</TD>
+					<TD class='table_data col1' id='PPV_LRminus_1'
+						style='border-right: 1px solid black;'>6.05</TD>
+					<TD class='table_data col1' id='PPV_1_0'>0.486</TD>
+					<TD class='table_data col1' id='PPV_1_1'>0.0792</TD>
+					<TD class='table_data col1' id='PPV_1_2'>0.00845</TD>
+					<TD class='table_data col1' id='PPV_1_3'>0.000851</TD>
+					<TD class='table_data col1' id='PPV_1_4'>0.0000851</TD>
+					<TD class='table_data col1' id='PPV_1_5'>0.0000085</TD>
 				</TR>
 				<TR class='table_data'>
-					<TD class='table_data col1' id='PPV_Specificity_2'> 0.95 </TD>
-					<TD class='table_data col1' id='PPV_Sensitivity_2'> 0.751 </TD>
-					<TD class='table_data col1' id='PPV_LRplus_2'> 15 </TD>
-					<TD class='table_data col1' id='PPV_LRminus_2' style='border-right:1px solid black;'> 3.82 </TD>
-					<TD class='table_data col1' id='PPV_2_0'> 0.625 </TD>
-					<TD class='table_data col1' id='PPV_2_1'> 0.132 </TD>
-					<TD class='table_data col1' id='PPV_2_2'> 0.0148 </TD>
-					<TD class='table_data col1' id='PPV_2_3'> 0.0015 </TD>
-					<TD class='table_data col1' id='PPV_2_4'> 0.00015 </TD>
-					<TD class='table_data col1' id='PPV_2_5'> 0.000015</TD>
+					<TD class='table_data col1' id='PPV_Specificity_2'>0.95</TD>
+					<TD class='table_data col1' id='PPV_Sensitivity_2'>0.751</TD>
+					<TD class='table_data col1' id='PPV_LRplus_2'>15</TD>
+					<TD class='table_data col1' id='PPV_LRminus_2'
+						style='border-right: 1px solid black;'>3.82</TD>
+					<TD class='table_data col1' id='PPV_2_0'>0.625</TD>
+					<TD class='table_data col1' id='PPV_2_1'>0.132</TD>
+					<TD class='table_data col1' id='PPV_2_2'>0.0148</TD>
+					<TD class='table_data col1' id='PPV_2_3'>0.0015</TD>
+					<TD class='table_data col1' id='PPV_2_4'>0.00015</TD>
+					<TD class='table_data col1' id='PPV_2_5'>0.000015</TD>
 				</TR>
 				<TR class='table_data'>
-					<TD class='table_data col1' id='PPV_Specificity_3'> 0.99 </TD>
-					<TD class='table_data col1' id='PPV_Sensitivity_3'> 0.499 </TD>
-					<TD class='table_data col1' id='PPV_LRplus_3'> 49.9 </TD>
-					<TD class='table_data col1' id='PPV_LRminus_3' style='border-right:1px solid black;'> 1.98 </TD>
-					<TD class='table_data col1' id='PPV_3_0'> 0.847 </TD>
-					<TD class='table_data col1' id='PPV_3_1'> 0.335 </TD>
-					<TD class='table_data col1' id='PPV_3_2'> 0.0476</TD>
-					<TD class='table_data col1' id='PPV_3_3'> 0.00497 </TD>
-					<TD class='table_data col1' id='PPV_3_4'> 0.000499</TD>
-					<TD class='table_data col1' id='PPV_3_5'> 0.000050</TD>
+					<TD class='table_data col1' id='PPV_Specificity_3'>0.99</TD>
+					<TD class='table_data col1' id='PPV_Sensitivity_3'>0.499</TD>
+					<TD class='table_data col1' id='PPV_LRplus_3'>49.9</TD>
+					<TD class='table_data col1' id='PPV_LRminus_3'
+						style='border-right: 1px solid black;'>1.98</TD>
+					<TD class='table_data col1' id='PPV_3_0'>0.847</TD>
+					<TD class='table_data col1' id='PPV_3_1'>0.335</TD>
+					<TD class='table_data col1' id='PPV_3_2'>0.0476</TD>
+					<TD class='table_data col1' id='PPV_3_3'>0.00497</TD>
+					<TD class='table_data col1' id='PPV_3_4'>0.000499</TD>
+					<TD class='table_data col1' id='PPV_3_5'>0.000050</TD>
 				</TR>
 				<TR class='table_data'>
-					<TD class='table_data col1' id='PPV_Specificity_4'> 0.995 </TD>
-					<TD class='table_data col1' id='PPV_Sensitivity_4'> 0.401 </TD>
-					<TD class='table_data col1' id='PPV_LRplus_4'> 80.1 </TD>
-					<TD class='table_data col1' id='PPV_LRminus_4' style='border-right:1px solid black;'> 1.66 </TD>
-					<TD class='table_data col1' id='PPV_4_0'> 0.899 </TD>
-					<TD class='table_data col1' id='PPV_4_1'> 0.447 </TD>
-					<TD class='table_data col1' id='PPV_4_2'> 0.0742 </TD>
-					<TD class='table_data col1' id='PPV_4_3'> 0.00795 </TD>
-					<TD class='table_data col1' id='PPV_4_4'> 0.0008 </TD>
-					<TD class='table_data col1' id='PPV_4_5'> 0.00008 </TD>
+					<TD class='table_data col1' id='PPV_Specificity_4'>0.995</TD>
+					<TD class='table_data col1' id='PPV_Sensitivity_4'>0.401</TD>
+					<TD class='table_data col1' id='PPV_LRplus_4'>80.1</TD>
+					<TD class='table_data col1' id='PPV_LRminus_4'
+						style='border-right: 1px solid black;'>1.66</TD>
+					<TD class='table_data col1' id='PPV_4_0'>0.899</TD>
+					<TD class='table_data col1' id='PPV_4_1'>0.447</TD>
+					<TD class='table_data col1' id='PPV_4_2'>0.0742</TD>
+					<TD class='table_data col1' id='PPV_4_3'>0.00795</TD>
+					<TD class='table_data col1' id='PPV_4_4'>0.0008</TD>
+					<TD class='table_data col1' id='PPV_4_5'>0.00008</TD>
 				</TR>
 			</TABLE>
 
-	</div>
-	   
-</div><!-- /page id='ppv' -->
-
-
-<div data-role="page" id="enter-data">
-	<div data-role="header" data-position="fixed" class="ui-bar">
-		<a href="#main" data-role="button">Home</a>
-		<h1>Means To Risk</h1>
-	</div><!-- /header -->
-
-	<div data-role="content">
-	
-	<div class="ui-grid-b">
-		<div class="ui-block-a">
-			
 		</div>
-		<div class="ui-block-b">
-			Cases
-		</div>
-		<div class="ui-block-c">
-			Control
-		</div>
-	</div>
-
-	<div class="ui-grid-b">
-		<div class="ui-block-a">
-			Mean:		
-		</div>
-		<div class="ui-block-b">
-			<input type="text" name="name" id="mean-cases-input" value="4" />
-		</div>
-		<div class="ui-block-c">
-			<input type="text" name="name" id="mean-controls-input" value="1" />
-		</div>
-
-		<div class="ui-block-a">
-			Standard Error:		
-		</div>
-		<div class="ui-block-b">
-			<input type="text" name="name" id="stderr-cases-input" value="0.1" />
-		</div>
-		<div class="ui-block-c">
-			<input type="text" name="name" id="stderr-controls-input" value="0.1" />
-		</div>
-
-		<div class="ui-block-a">
-			N:	
-		</div>
-		<div class="ui-block-b">
-			<input type="text" name="name" id="N-cases-input" value="100" />
-		</div>
-		<div class="ui-block-c">
-			<input type="text" name="name" id="N-controls-input" value="200" />
-		</div>
-
 
 	</div>
-	
-	</div><!-- /data-role=content -->
-	<a id="compute-delta-button" href="#case-control" data-role="button">Compute Delta</a>
+	<!-- /page id='ppv' -->
 
-	   
-</div><!-- /page id='enter-data' -->
+
+	<div data-role="page" id="enter-data">
+		<div data-role="header" data-position="fixed" class="ui-bar">
+			<a href="#main" data-role="button">Home</a>
+			<h1>Means To Risk</h1>
+		</div>
+		<!-- /header -->
+
+		<div data-role="content">
+
+			<div class="ui-grid-b">
+				<div class="ui-block-a"></div>
+				<div class="ui-block-b">Cases</div>
+				<div class="ui-block-c">Control</div>
+			</div>
+
+			<div class="ui-grid-b">
+				<div class="ui-block-a">Mean:</div>
+				<div class="ui-block-b">
+					<input type="text" name="name" id="mean-cases-input" value="4" />
+				</div>
+				<div class="ui-block-c">
+					<input type="text" name="name" id="mean-controls-input" value="1" />
+				</div>
+
+				<div class="ui-block-a">Standard Error:</div>
+				<div class="ui-block-b">
+					<input type="text" name="name" id="stderr-cases-input" value="0.1" />
+				</div>
+				<div class="ui-block-c">
+					<input type="text" name="name" id="stderr-controls-input"
+						value="0.1" />
+				</div>
+
+				<div class="ui-block-a">N:</div>
+				<div class="ui-block-b">
+					<input type="text" name="name" id="N-cases-input" value="100" />
+				</div>
+				<div class="ui-block-c">
+					<input type="text" name="name" id="N-controls-input" value="200" />
+				</div>
+
+
+			</div>
+
+		</div>
+		<!-- /data-role=content -->
+		<a id="compute-delta-button" href="#case-control" data-role="button">Compute
+			Delta</a>
+
+
+	</div>
+	<!-- /page id='enter-data' -->
 
 
 </body>
