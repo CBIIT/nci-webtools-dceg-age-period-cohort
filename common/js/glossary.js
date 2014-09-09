@@ -75,15 +75,23 @@ function openHelpWindow(pageURL) {
 
 function bindClickToTermDefinition(termId) {
 	$('#' + termId).click(function() {
+		var fullName=Glossary[termId].fullName;
 		var definition = Glossary[termId].definition;
-		$('#' + termId + "Definition").html(definition);
+		$('#' + termId + "Definition").html("<h3>"+fullName+"</h3>"+definition);
 		$('#' + termId + "Definition").show();
-		console.log("clicked");
+		$('#'+termId+"Definition").position({
+			my: "left+150 top-50",
+			at: "left top",
+			of: "#"+termId
+		});
+		$('#'+termId).addClass("enlarge");
 	});
 }
 
 function bindMouseOutToTermDefinition(termId) {
 	$('#' + termId).mouseout(function() {
 		$('#' + termId + "Definition").hide();
+		$('#'+termId).removeClass("enlarge");
 	});
+	
 }
