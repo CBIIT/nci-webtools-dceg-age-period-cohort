@@ -51,3 +51,18 @@ a.help {
    text-decoration:underline;
    cursor:help;
 }
+
+.popupDefinition {
+	display: none; 
+	position: absolute; 
+    border: solid #C4C4C0 1px; padding: 10px; 
+	background-color: #FFFFEB; 
+	text-align: left; 
+	font-size: 12px; 
+	width: 250px;
+	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+}
+
+.enlarge {
+	transform: scale(1.1);
+}
