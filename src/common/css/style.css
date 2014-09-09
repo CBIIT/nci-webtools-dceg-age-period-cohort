@@ -64,5 +64,6 @@ a.help {
 }
 
 .enlarge {
+	text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
 	transform: scale(1.1);
 }
