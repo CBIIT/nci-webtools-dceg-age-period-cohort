@@ -394,19 +394,19 @@ function create_tabbed_table(dt) {
 	
 	make_tabs();
 	
-	set_matrix("#tab-1", 'PPV', 'Risk of Disease after a POSITIVE Test', 'Positive Predicted Value (PPV)', 
+	set_matrix("tab-1", 'PPV', 'Risk of Disease after a POSITIVE Test', 'Positive Predicted Value (PPV)', 
 			dt['Sensitivity Given Specificity'], dt['PPV']);	
-	set_matrix("#tab-2", 'cNPV', 'Risk of Disease after a NEGATIVE Test', 'Complement of the Negative Predictive Value (cNPV)', 
+	set_matrix("tab-2", 'cNPV', 'Risk of Disease after a NEGATIVE Test', 'Complement of the Negative Predictive Value (cNPV)', 
 			dt['Sensitivity Given Specificity'], dt['cNPV']);	
-	set_matrix("#tab-3", 'PPVcNPV', 'Range of Risk after Test Results', 'PPV &minus; cNPV', 
+	set_matrix("tab-3", 'PPVmcNPV', 'Range of Risk after Test Results', 'PPV &minus; cNPV', 
 			dt['Sensitivity Given Specificity'], dt['PPV-cNPV']);	
-	set_matrix("#tab-4", 'ProgramBased', '# of Cases Detected per 1000 People Screened', 'Program &minus; Based', 
+	set_matrix("tab-4", 'ProgramBased', '# of Cases Detected per 1000 People Screened', 'Program &minus; Based', 
 			dt['Sensitivity Given Specificity'], dt['Program-Based']);	
-	set_matrix("#tab-5", 'PPVBased', '# of Cases Detected per 1000 Who are Screen Positive', 'PPV &minus; Based', 
+	set_matrix("tab-5", 'PPVBased', '# of Cases Detected per 1000 Who are Screen Positive', 'PPV &minus; Based', 
 			dt['Sensitivity Given Specificity'], dt['PPV-Based']);	
-	set_matrix("#tab-6", 'SensitivityBased', '# of Cases Detected per 1000 With Disease', 'Sensitivity &minus; Based', 
+	set_matrix("tab-6", 'SensitivityBased', '# of Cases Detected per 1000 With Disease', 'Sensitivity &minus; Based', 
 			dt['Sensitivity Given Specificity'], dt['Sensitivity-Based']);	
-	set_matrix("#tab-7", 'DominatedByRareDisease', '# Per 1000 Screenees Who Screen Positive', 'Dominated by Specificity for Rare Disease', 
+	set_matrix("tab-7", 'DominatedByRareDisease', '# Per 1000 Screenees Who Screen Positive', 'Dominated by Specificity for Rare Disease', 
 			dt['Sensitivity Given Specificity'], dt['Dominated by Specificity for a Rare Disease']);	
 	
 }
@@ -435,7 +435,7 @@ function set_matrix(tab_id, type, table_name, table_second_name, sensitivity_mat
 	
 	
 	var general_table = $("<TABLE class='table_data' style='width:94%;'></TABLE>");
-	$(tab_id).empty().append(general_table);
+	$("#"+tab_id).empty().append(general_table);
 	
 	var first_header_row = $("<tr></tr>");	
 	first_header_row.append("<TH class='table_data header' colspan='" +  (prevalence_count + 4)
@@ -443,22 +443,21 @@ function set_matrix(tab_id, type, table_name, table_second_name, sensitivity_mat
 	first_header_row.appendTo(general_table);
 
 	var second_header_row = $("<tr></tr>");	
-	second_header_row.append("<TH class='table_data " + type + "_stripe' colspan='" +  (prevalence_count + 4) +"'>" 
-		+ table_second_name + "</TH>");
+	second_header_row.append("<TH class='table_data " + type + "_stripe' colspan='" +  (prevalence_count + 4) + "'><div class='termToDefine' id='" + type + tab_id+"' data-term='"+type+"'>" + table_second_name + "</div><div class='popupDefinition' id='" + type +tab_id+ "Definition'></div></TH>");
 	second_header_row.appendTo(general_table);
 
 	var third_header_row = $("<tr></tr>");	
 	third_header_row.append("<TH class='table_data header' colspan='4' style='border-right:1px solid black;'>" 
-		+ "Sensitivity Given Specificity <br /> for Given Delta </TH>" );
-	third_header_row.append("<TH class='table_data header' colspan='" + prevalence_count + "' >Disease Prevalence</TH>");
+		+ "<div class='termToDefine' id='Sens2-"+tab_id+"' data-term='Sens'>Sensitivity Given Specificity <br /> for Given Delta </div><div class='popupDefinition' id='Sens2-"+tab_id+"Definition'></div></TH>" );
+	third_header_row.append("<TH class='table_data header' colspan='" + prevalence_count + "' ><div class='termToDefine' id='DP2-"+tab_id+"' data-term='DP'>Disease Prevalence</div><div class='popupDefinition' id='DP2-"+tab_id+"Definition'></div></TH>");
 	third_header_row.appendTo(general_table);
 	
 	var header_row = $("<tr></tr>");
 	header_row.attr('id', type + '_table_row_header');
-	header_row.append("<TH class='table_data header'>Specificity</TD>");
-	header_row.append("<TH class='table_data header'>Sensitivity</TD>");
-	header_row.append("<TH class='table_data header'>LR+</TD>");
-	header_row.append("<TH class='table_data header' style='border-right:1px solid black;'>LR-</TD>");
+	header_row.append("<TH class='table_data header'><div class='termToDefine' id='Spec-"+tab_id+"' data-term='Spec'>Specificity</div><div class='popupDefinition' id='Spec-"+tab_id+"Definition'></div></TD>");
+	header_row.append("<TH class='table_data header'><div class='termToDefine' id='Sens-"+tab_id+"' data-term='Sens'>Sensitivity</div><div class='popupDefinition' id='Sens-"+tab_id+"Definition'></div></TD>");
+	header_row.append("<TH class='table_data header'><div class='termToDefine' id='LRP-"+tab_id+"' data-term='LRP'>LR+</div><div class='popupDefinition' id='LRP-"+tab_id+"Definition'></div></TD>");
+	header_row.append("<TH class='table_data header' style='border-right:1px solid black;'><div class='termToDefine' id='LRN-"+tab_id+"' data-term='LRN'>LR-</div><div class='popupDefinition' id='LRN-"+tab_id+"Definition'></div></TD>");
 	for (var x=0;x<prevalence_count;x++) {
 		header_row.append("<TH class='table_data header'>" + format_number(prevalence_values[x]) + "</TD>");
 	}
@@ -488,6 +487,8 @@ function set_matrix(tab_id, type, table_name, table_second_name, sensitivity_mat
 		}
 		row.appendTo(general_table);
 	}	
+    //from glossary.js for term definition popup in the output
+	bindTermToDefine();
 }
 
 

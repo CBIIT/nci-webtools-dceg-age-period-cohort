@@ -9,8 +9,8 @@
 	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script
 	src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
-<script src="./meanstorisk.js"></script>
 <script src="/common/js/glossary.js"></script>
+<script src="./meanstorisk.js"></script>
 
 <link rel="stylesheet"
 	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
@@ -58,8 +58,7 @@
 				<div class='input_panel'>
 
 					<div style='margin: 5px; font-weight: bold;'>
-						Choose how to enter the data <a class="help" href="#"
-							onclick="openHelpWindow('help.html')">Help</a>
+						Choose how to enter the data
 					</div>
 					<FORM>
 						<DIV id='accordion'>
@@ -121,13 +120,14 @@
 						<BR /> <BR />
 						<TABLE class='table_data' style='margin-left: 5px;'>
 							<TR>
-								<TH><div class="termToDefine" id="Spec">Specificity:</div>
+								<TH><div class="termToDefine" id="Spec" data-term="Spec">Specificity:</div>
 								<div class="popupDefinition" id="SpecDefinition"></div></TH>
 								<TD><label for='specificity'><INPUT type='text'
 										size='40' value='0.8, 0.9, 0.95, 0.99, 0.999' id='specificity' /></label></TD>
 							</TR>
 							<TR>
-								<TH>Prevalence:</TH>
+								<TH><div class="termToDefine" id="DP" data-term="DP">Prevalence:</div>
+								<div class="popupDefinition" id="DPDefinition"></div></TH>
 								<TD><label for='prevalence'><INPUT type='text'
 										size='40' value='0.1, 0.05, 0.01, 0.005, 0.001'
 										id='prevalence' /></label></TD>
@@ -180,7 +180,8 @@
 							<TD class='table_data' id='variance_overall'></TD>
 						</TR>
 						<TR class='table_data'>
-							<TH class='table_data col1'>Coefficient of Variation (CV)</TH>
+							<TH class='table_data col1'><div class="termToDefine" id="CV" data-term="CV">Coefficient of Variation (CV)</div>
+								<div class="popupDefinition" id="CVDefinition"></div></TH>
 							<TD class='table_data' id='cv_cases'></TD>
 							<TD class='table_data' id='cv_controls'></TD>
 							<TD class='table_data' id='cv_overall'></TD>
@@ -192,14 +193,16 @@
 							<TD class='table_data' id='diff_overall'></TD>
 						</TR>
 						<TR class='table_data'>
-							<TH class='table_data col1'>Delta</TH>
+							<TH class='table_data col1'><div class="termToDefine" id="Delta" data-term="Delta">Delta</div>
+								<div class="popupDefinition" id="DeltaDefinition"></div></TH>
 							<TD class='table_data' id='delta_cases'></TD>
 							<TD class='table_data' id='delta_controls'></TD>
 							<TD class='table_data' id='delta_overall'></TD>
 							</TD>
 						</TR>
 						<TR class='table_data'>
-							<TH class='table_data col1'>AUC</TH>
+							<TH class='table_data col1'><div class="termToDefine" id="AUC" data-term="AUC">AUC</div>
+								<div class="popupDefinition" id="AUCDefinition"></div></TH>
 							<TD class='table_data' id='auc_cases'></TD>
 							<TD class='table_data' id='auc_controls'></TD>
 							<TD class='table_data' id='auc_overall'></TD>
