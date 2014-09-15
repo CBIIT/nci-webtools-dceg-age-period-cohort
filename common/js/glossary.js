@@ -7,6 +7,10 @@ var Glossary = {
 		fullName : "Coefficient of Variation",
 		definition : "The coefficient of variation is defined as the ratio of the standard deviation to the mean. It shows the extent of variability in relation to mean of the population."
 	},
+	cNPV : {
+		fullName : "Complement of Negative Predictive Value (cNPV)",
+		definition : "Probability of disease, given a negative test result from biomarker. Unlike sensitivity and specificity, cNPV's reflect disease prevalence and is useful for risk stratification."
+	},
 	Delta : {
 		fullName : "Delta",
 		definition : "The statistic delta is the ratio of the absolute difference in average level of the biomarker between cases and controls in units of standard deviation."
@@ -55,13 +59,14 @@ var Glossary = {
 
 $(document).ready(
 		function() {
+			// this only takes care of the input page, needs a separate bind for
+			// the output page
+			bindTermToDefine();
 			var htmlText = "";
 			for ( var abbrev in Glossary) {
 				var term = Glossary[abbrev];
 				htmlText += "<b>" + term.fullName + ":</b> " + term.definition
 						+ "<br/><br/>";
-				bindClickToTermDefinition(abbrev);
-				bindMouseOutToTermDefinition(abbrev);
 			}
 			$('#glossary').html(htmlText);
 		});
@@ -73,25 +78,36 @@ function openHelpWindow(pageURL) {
 	helpWin.focus();
 }
 
-function bindClickToTermDefinition(termId) {
-	$('#' + termId).click(function() {
-		var fullName=Glossary[termId].fullName;
-		var definition = Glossary[termId].definition;
-		$('#' + termId + "Definition").html("<h3>"+fullName+"</h3>"+definition);
-		$('#' + termId + "Definition").show();
-		$('#'+termId+"Definition").position({
-			my: "left+150 top-50",
-			at: "left top",
-			of: "#"+termId
-		});
-		$('#'+termId).addClass("enlarge");
+/* bind click and mouseout events to class termToDefine and associated id */
+function bindTermToDefine() {
+	$('div.termToDefine').on(
+			"click",
+			function() {
+				var id = $(this).attr("id");
+				//html5 data-attributes
+				var termName=$(this).data("term");
+				// if termName matches abbreviation in glossary
+				var term = Glossary[termName];
+				var termToDefineElem = $("#" + id);
+				var termDefinitionElem = $("#" + id + "Definition");
+				termDefinitionElem.html("<h3>" + term.fullName + "</h3>"
+						+ term.definition);
+				termDefinitionElem.show();
+				//place definition popup at a position left and top down 20 aligned to the center of the id 
+				termDefinitionElem.position({
+					my : "left top+20",
+					at : "center",
+					of : $("#"+id),
+				});
+				$("#"+id).addClass("enlarge");
+				
+			}).on("mouseout", function() {
+		var id = $(this).attr("id");
+		var termToDefineElem = $("#" + id);
+		var termDefinitionElem = $("#" + id + "Definition");
+
+		termDefinitionElem.hide();
+		$("#"+id).removeClass("enlarge");
 	});
 }
 
-function bindMouseOutToTermDefinition(termId) {
-	$('#' + termId).mouseout(function() {
-		$('#' + termId + "Definition").hide();
-		$('#'+termId).removeClass("enlarge");
-	});
-	
-}
