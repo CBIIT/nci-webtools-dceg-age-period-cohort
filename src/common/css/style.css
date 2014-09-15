@@ -54,7 +54,6 @@ a.help {
 
 .popupDefinition {
 	display: none; 
-	position: absolute; 
     border: solid #C4C4C0 1px; padding: 10px; 
 	background-color: #FFFFEB; 
 	text-align: left; 
