@@ -8,8 +8,8 @@
 	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script
 	src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
-<script src="./bc.js"></script>
 <script src="/common/js/glossary.js"></script>
+<script src="./bc.js"></script>
 
 <link rel="stylesheet"
 	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
@@ -48,7 +48,7 @@
 
 		<div id='main'>
 			<br>
-			<h2 align="center">Biomarker Comparison Tool</h2>
+			<h2 class="title" align="center">Biomarker Comparison Tool</h2>
 			<p>
 				This tool plots contours of likelihood ratio positive (LR+) and
 				likelihood ratio negative (LR-) for a reference test with indicated
@@ -107,9 +107,10 @@
 							<tr class='non-data-row'>
 								<th class='header'>#</th>
 								<th class='header'>Reference</th>
-								<th class='header'><div class="termToDefine" id="Sens">Sensitivity</div>
+								<th class='header'><div class="termToDefine" id="Sens" data-term="Sens">Sensitivity</div>
 									<div class="popupDefinition" id="SensDefinition"></div></th>
-								<th class='header'>Specificity</th>
+								<th class='header'><div class="termToDefine" id="Spec" data-term="Spec">Specificity</div>
+									<div class="popupDefinition" id="SpecDefinition"></div></th>
 								<th class='header'>&nbsp;</th>
 							</tr>
 						</thead>
@@ -153,7 +154,8 @@
 					<br />
 					<table>
 						<tr>
-							<td class='prevalence_label'>Prevalence</td>
+							<td class='prevalence_label'><div class="termToDefine" id="DP" data-term="DP">Prevalence</div>
+									<div class="popupDefinition" id="DPDefinition"></div></td>
 							<td><label for="prevalence"><input type="text"
 									id="prevalence"></label></td>
 						</tr>
