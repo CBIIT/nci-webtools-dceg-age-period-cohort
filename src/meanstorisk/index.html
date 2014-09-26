@@ -37,207 +37,205 @@
 			</div>
 		</div>
 		<br>
-
-
-		<div class='main_area'>
-			<div class='top_section'>
-				<div id="banners">
-					<div id="dceg_logo">
-						<img src="/common/images/DCEG-BB-HREB.png" style="float: left;"
-							alt="Banner for NCI Division of Cancer Epidemiology, Genetics Biostatistics Branch, Hormonal and Reproductive Epidemiology Branch "
-							height="43" />
-					</div>
-				</div>
-				<h2 class='title' align="center">
-					From Difference in Means to Risk Stratification: A Web Tool <span
-						id="helpGlossaryLinks"> <a href="#"
-						onclick="openHelpWindow('help.html')">Help</a> <a href="#"
-						onclick="openHelpWindow('glossary.html')">Glossary</a>
-					</span>
-				</h2>
-				<div class='input_panel'>
-
-					<div style='margin: 5px; font-weight: bold;'>
-						Choose how to enter the data
-					</div>
-					<FORM>
-						<DIV id='accordion'>
-							<H3 class='input_accordion'>User Defined Distribution (from
-								File)</H3>
-							<DIV class='input_accordion'>
-								<p class='indent data_entry_by_file'>
-									Upload a raw case and control biomarker data file in csv format
-									<a href='p16-ELISA-sample-data.csv'> <i>(Example)</i>
-									</a>
-								</p>
-								<p class='indent'>
-									<label for="input_file_upload"><INPUT
-										id='input_file_upload' type='file' class='data_entry_by_file' /></label>
-								</p>
-							</DIV>
-							<H3 class='input_accordion'>Normal Distribution</H3>
-							<DIV class='input_accordion'>
-								<p class='indent data_entry_by_input'>Enter Mean, Standard
-									Error, and N for Cases and Controls</p>
-
-								<TABLE class='table_data '
-									style='margin: 5px; margin-left: 20px; padding: 2px;'>
-									<TR class='table_data header'>
-										<TH class='table_data header'></TH>
-										<TH class='table_data header'>Cases</TH>
-										<TH class='table_data header'>Controls</TH>
-									</TR>
-									<TR class='table_data'>
-										<TH class='table_data col1'>Mean</TH>
-										<TD class='table_data'><label for='mean_cases_input'>&nbsp;</label><INPUT
-											id='mean_cases_input' class='data_entry_by_input' type='text'
-											value='4' size=4 /></TD>
-										<TD class='table_data'><label for='mean_controls_input'>&nbsp;</label><INPUT
-											id='mean_controls_input' class='data_entry_by_input'
-											type='text' value='1' size=4 /></TD>
-									</TR>
-									<TR class='table_data'>
-										<TH class='table_data col1'>Standard Error</TH>
-										<TD class='table_data'><label for='stderr_cases_input'>&nbsp;</label><INPUT
-											id='stderr_cases_input' class='data_entry_by_input'
-											type='text' value='0.1' size=4 /></TD>
-										<TD class='table_data'><label for='stderr_controls_input'>&nbsp;</label><INPUT
-											id='stderr_controls_input' class='data_entry_by_input'
-											type='text' value='0.1' size=4 /></TD>
-									</TR>
-									<TR class='table_data'>
-										<TH class='table_data col1'>N</TH>
-										<TD class='table_data'><label for='N_cases_input'>&nbsp;</label><INPUT
-											id='N_cases_input' class='data_entry_by_input' type='text'
-											value='100' size=4 /></TD>
-										<TD class='table_data'><label for='N_controls_input'>&nbsp;</label><INPUT
-											id='N_controls_input' class='data_entry_by_input' type='text'
-											value='200' size=4 /></TD>
-									</TR>
-								</TABLE>
-							</DIV>
+		<div id="banners">
+			<div id="left">
+				<img src="/common/images/DCEG-BB-HREB.png"
+					alt="Banner for NCI Division of Cancer Epidemiology, Genetics Biostatistics Branch, Hormonal and Reproductive Epidemiology Branch "
+					height="43" />
+			</div>
+		</div>
+		<br>
+		<div class='top_section'>
+			<h2 class='title' align="center">From Difference in Means to
+				Risk Stratification: A Web Tool</h2>
+			<div id="helpGlossaryLinks">
+				<a href="#" onclick="openHelpWindow('help.html')">Help</a> <a
+					href="#" onclick="openHelpWindow('glossary.html')">Glossary</a>
+			</div>
+			<br>
+			<div class='input_panel'>
+				<div style='margin: 5px; font-weight: bold;'>Choose how to
+					enter the data</div>
+				<FORM>
+					<DIV id='accordion'>
+						<H3 class='input_accordion'>User Defined Distribution (from
+							File)</H3>
+						<DIV class='input_accordion'>
+							<p class='indent data_entry_by_file'>
+								Upload a raw case and control biomarker data file in csv format
+								<a href='p16-ELISA-sample-data.csv'> <i>(Example)</i>
+								</a>
+							</p>
+							<p class='indent'>
+								<label for="input_file_upload"><INPUT
+									id='input_file_upload' type='file' class='data_entry_by_file' /></label>
+							</p>
 						</DIV>
-						<BR /> <BR />
-						<TABLE class='table_data' style='margin-left: 5px;'>
-							<TR>
-								<TH><div class="termToDefine" id="Spec" data-term="Spec">Specificity:</div>
+						<H3 class='input_accordion'>Normal Distribution</H3>
+						<DIV class='input_accordion'>
+							<p class='indent data_entry_by_input'>Enter Mean, Standard
+								Error, and N for Cases and Controls</p>
+
+							<TABLE class='table_data '
+								style='margin: 5px; margin-left: 20px; padding: 2px;'>
+								<TR class='table_data header'>
+									<TH class='table_data header'></TH>
+									<TH class='table_data header'>Cases</TH>
+									<TH class='table_data header'>Controls</TH>
+								</TR>
+								<TR class='table_data'>
+									<TH class='table_data col1'>Mean</TH>
+									<TD class='table_data'><label for='mean_cases_input'>&nbsp;</label><INPUT
+										id='mean_cases_input' class='data_entry_by_input' type='text'
+										value='4' size=4 /></TD>
+									<TD class='table_data'><label for='mean_controls_input'>&nbsp;</label><INPUT
+										id='mean_controls_input' class='data_entry_by_input'
+										type='text' value='1' size=4 /></TD>
+								</TR>
+								<TR class='table_data'>
+									<TH class='table_data col1'>Standard Error</TH>
+									<TD class='table_data'><label for='stderr_cases_input'>&nbsp;</label><INPUT
+										id='stderr_cases_input' class='data_entry_by_input'
+										type='text' value='0.1' size=4 /></TD>
+									<TD class='table_data'><label for='stderr_controls_input'>&nbsp;</label><INPUT
+										id='stderr_controls_input' class='data_entry_by_input'
+										type='text' value='0.1' size=4 /></TD>
+								</TR>
+								<TR class='table_data'>
+									<TH class='table_data col1'>N</TH>
+									<TD class='table_data'><label for='N_cases_input'>&nbsp;</label><INPUT
+										id='N_cases_input' class='data_entry_by_input' type='text'
+										value='100' size=4 /></TD>
+									<TD class='table_data'><label for='N_controls_input'>&nbsp;</label><INPUT
+										id='N_controls_input' class='data_entry_by_input' type='text'
+										value='200' size=4 /></TD>
+								</TR>
+							</TABLE>
+						</DIV>
+					</DIV>
+					<BR /> <BR />
+					<TABLE class='table_data' style='margin-left: 5px;'>
+						<TR>
+							<TH><div class="termToDefine" id="Spec" data-term="Spec">Specificity:</div>
 								<div class="popupDefinition" id="SpecDefinition"></div></TH>
-								<TD><label for='specificity'><INPUT type='text'
-										size='40' value='0.8, 0.9, 0.95, 0.99, 0.999' id='specificity' /></label></TD>
-							</TR>
-							<TR>
-								<TH><div class="termToDefine" id="DP" data-term="DP">Prevalence:</div>
+							<TD><label for='specificity'><INPUT type='text'
+									size='40' value='0.8, 0.9, 0.95, 0.99, 0.999' id='specificity' /></label></TD>
+						</TR>
+						<TR>
+							<TH><div class="termToDefine" id="DP" data-term="DP">Prevalence:</div>
 								<div class="popupDefinition" id="DPDefinition"></div></TH>
-								<TD><label for='prevalence'><INPUT type='text'
-										size='40' value='0.1, 0.05, 0.01, 0.005, 0.001'
-										id='prevalence' /></label></TD>
-							</TR>
-						</TABLE>
-						<INPUT type='button' value='Calculate' id='calculate_button'
-							style='margin: 10px; float: left;' /> <INPUT type='button'
-							value='Download Excel File' id='download_button'
-							style='margin: 10px; float: right;' />
-					</FORM>
-				</div>
-				<div class='table_panel'>
-					<TABLE class='table_data' id='inputs_card'>
-						<TR class='table_data header'>
-							<TH class='table_data header'></TH>
-							<TH class='table_data header'>&nbsp;Cases&nbsp;</TH>
-							<TH class='table_data header'>&nbsp;Controls&nbsp;</TH>
-							<TH class='table_data header'>&nbsp;Overall&nbsp;</TH>
+							<TD><label for='prevalence'><INPUT type='text'
+									size='40' value='0.1, 0.05, 0.01, 0.005, 0.001' id='prevalence' /></label></TD>
 						</TR>
-						<TR class='table_data'>
-							<TH class='table_data col1'>Mean</TH>
-							<TD class='table_data' id='mean_cases'></TD>
-							<TD class='table_data' id='mean_controls'></TD>
-							<TD class='table_data' id='mean_overall'></TD>
-						</TR>
-						<TR class='table_data'>
-							<TH class='table_data col1'>Standard Error</TH>
-							<TD class='table_data' id='stderr_cases'></TD>
-							<TD class='table_data' id='stderr_controls'></TD>
-							<TD class='table_data' id='stderr_overall'></TD>
-						</TR>
-						<TR class='table_data'>
-							<TH class='table_data col1'>N</TH>
-							<TD class='table_data' id='N_cases'></TD>
-							<TD class='table_data' id='N_controls'></TD>
-							<TD class='table_data' id='N_overall'></TD>
-						</TR>
-
-
-						<TR class='table_data line-above'>
-							<TH class='table_data col1'>Standard Deviation</TH>
-							<TD class='table_data' id='deviation_cases'></TD>
-							<TD class='table_data' id='deviation_controls'></TD>
-							<TD class='table_data' id='deviation_overall'></TD>
-						</TR>
-						<TR class='table_data'>
-							<TH class='table_data col1'>Variance</TH>
-							<TD class='table_data' id='variance_cases'></TD>
-							<TD class='table_data' id='variance_controls'></TD>
-							<TD class='table_data' id='variance_overall'></TD>
-						</TR>
-						<TR class='table_data'>
-							<TH class='table_data col1'><div class="termToDefine" id="CV" data-term="CV">Coefficient of Variation (CV)</div>
-								<div class="popupDefinition" id="CVDefinition"></div></TH>
-							<TD class='table_data' id='cv_cases'></TD>
-							<TD class='table_data' id='cv_controls'></TD>
-							<TD class='table_data' id='cv_overall'></TD>
-						</TR>
-						<TR class='table_data'>
-							<TH class='table_data col1'>Difference in Mean</TH>
-							<TD class='table_data' id='diff_cases'></TD>
-							<TD class='table_data' id='diff_controls'></TD>
-							<TD class='table_data' id='diff_overall'></TD>
-						</TR>
-						<TR class='table_data'>
-							<TH class='table_data col1'><div class="termToDefine" id="Delta" data-term="Delta">Delta</div>
-								<div class="popupDefinition" id="DeltaDefinition"></div></TH>
-							<TD class='table_data' id='delta_cases'></TD>
-							<TD class='table_data' id='delta_controls'></TD>
-							<TD class='table_data' id='delta_overall'></TD>
-							</TD>
-						</TR>
-						<TR class='table_data'>
-							<TH class='table_data col1'><div class="termToDefine" id="AUC" data-term="AUC">AUC</div>
-								<div class="popupDefinition" id="AUCDefinition"></div></TH>
-							<TD class='table_data' id='auc_cases'></TD>
-							<TD class='table_data' id='auc_controls'></TD>
-							<TD class='table_data' id='auc_overall'></TD>
-							</TD>
-						</TR>
-
 					</TABLE>
+					
+					<INPUT type='button' value='Calculate' id='calculate_button'
+						style='margin: 10px; float: left;' /> <INPUT type='button'
+						value='Download Excel File' id='download_button'
+						style='margin: 10px; float: right;' />
+				</FORM>
+			</div>
+			<div class='table_panel'>
+				<TABLE class='table_data' id='inputs_card'>
+					<TR class='table_data header'>
+						<TH class='table_data header'></TH>
+						<TH class='table_data header'>&nbsp;Cases&nbsp;</TH>
+						<TH class='table_data header'>&nbsp;Controls&nbsp;</TH>
+						<TH class='table_data header'>&nbsp;Overall&nbsp;</TH>
+					</TR>
+					<TR class='table_data'>
+						<TH class='table_data col1'>Mean</TH>
+						<TD class='table_data' id='mean_cases'></TD>
+						<TD class='table_data' id='mean_controls'></TD>
+						<TD class='table_data' id='mean_overall'></TD>
+					</TR>
+					<TR class='table_data'>
+						<TH class='table_data col1'>Standard Error</TH>
+						<TD class='table_data' id='stderr_cases'></TD>
+						<TD class='table_data' id='stderr_controls'></TD>
+						<TD class='table_data' id='stderr_overall'></TD>
+					</TR>
+					<TR class='table_data'>
+						<TH class='table_data col1'>N</TH>
+						<TD class='table_data' id='N_cases'></TD>
+						<TD class='table_data' id='N_controls'></TD>
+						<TD class='table_data' id='N_overall'></TD>
+					</TR>
 
 
-				</div>
-				<div class='graph_panel'></div>
+					<TR class='table_data line-above'>
+						<TH class='table_data col1'>Standard Deviation</TH>
+						<TD class='table_data' id='deviation_cases'></TD>
+						<TD class='table_data' id='deviation_controls'></TD>
+						<TD class='table_data' id='deviation_overall'></TD>
+					</TR>
+					<TR class='table_data'>
+						<TH class='table_data col1'>Variance</TH>
+						<TD class='table_data' id='variance_cases'></TD>
+						<TD class='table_data' id='variance_controls'></TD>
+						<TD class='table_data' id='variance_overall'></TD>
+					</TR>
+					<TR class='table_data'>
+						<TH class='table_data col1'><div class="termToDefine" id="CV"
+								data-term="CV">Coefficient of Variation (CV)</div>
+							<div class="popupDefinition" id="CVDefinition"></div></TH>
+						<TD class='table_data' id='cv_cases'></TD>
+						<TD class='table_data' id='cv_controls'></TD>
+						<TD class='table_data' id='cv_overall'></TD>
+					</TR>
+					<TR class='table_data'>
+						<TH class='table_data col1'>Difference in Mean</TH>
+						<TD class='table_data' id='diff_cases'></TD>
+						<TD class='table_data' id='diff_controls'></TD>
+						<TD class='table_data' id='diff_overall'></TD>
+					</TR>
+					<TR class='table_data'>
+						<TH class='table_data col1'><div class="termToDefine"
+								id="Delta" data-term="Delta">Delta</div>
+							<div class="popupDefinition" id="DeltaDefinition"></div></TH>
+						<TD class='table_data' id='delta_cases'></TD>
+						<TD class='table_data' id='delta_controls'></TD>
+						<TD class='table_data' id='delta_overall'></TD>
+						</TD>
+					</TR>
+					<TR class='table_data'>
+						<TH class='table_data col1'><div class="termToDefine"
+								id="AUC" data-term="AUC">AUC</div>
+							<div class="popupDefinition" id="AUCDefinition"></div></TH>
+						<TD class='table_data' id='auc_cases'></TD>
+						<TD class='table_data' id='auc_controls'></TD>
+						<TD class='table_data' id='auc_overall'></TD>
+						</TD>
+					</TR>
+
+				</TABLE>
+
+
 			</div>
-			<div class='bottom_section'>
-				<div class='tabbed_output_panel'></div>
-			</div>
+			<div class='graph_panel'></div>
 		</div>
-
-		<div id="portal-footer">
-			<div class="footerLinks">
-				<a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-				<a href="mailto:NCIMeansToRiskWebAdmin@mail.nih.gov" title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-				<a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-				<a href="http://www.cancer.gov/global/web/policies/accessibility"
-					title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-					href="http://cancer.gov/global/viewing-files" target="_blank"
-					title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-					href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br />
-				<br /> <a href="http://www.dhhs.gov/">Department of Health and
-					Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-					href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-				<a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
-					href="http://www.usa.gov/">USA.gov</a>
-			</div>
-			<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
+		<div class='bottom_section'>
+			<div class='tabbed_output_panel'></div>
 		</div>
+	</div>
+
+	<div id="portal-footer">
+		<div class="footerLinks">
+			<a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="mailto:NCIMeansToRiskWebAdmin@mail.nih.gov" title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/global/web/policies/accessibility"
+				title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://cancer.gov/global/viewing-files" target="_blank"
+				title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br />
+			<br /> <a href="http://www.dhhs.gov/">Department of Health and
+				Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+				href="http://www.usa.gov/">USA.gov</a>
+		</div>
+		<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
 	</div>
 	<div id='please_wait_calculate'>Calculating Values</div>
 	<div id='please_wait_download'>Preparing file for download</div>
