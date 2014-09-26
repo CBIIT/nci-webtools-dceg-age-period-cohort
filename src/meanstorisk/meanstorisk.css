@@ -1,27 +1,28 @@
-.main_area {
-	width:100%;
-}
 
 .top_section {
 	height: 400px;
-	width: 1200px;
 }
 
 .bottom_section {
 	clear:left;
 	height:400px;
-	width:1200px;
 }
 
 .input_panel {
 	position:relative;
 	float:left;
 	width:400px;
-	height:99%;
 	background:#DDD;
 	border: 1px #BBB solid;
 }
 
+#accordion h3 {
+	font-size: 10pt;	
+}
+
+#accordion .ui-accordion-content {  
+	font-size: 10pt;
+}
 
 div.input_accordion {
 	background: #FFF url();
@@ -72,11 +73,6 @@ H3.input_accordion {
 .col1 {
 	padding:6px;
 	text-align:right;
-}
-
-body {
-	font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
-	font-size: 75%;
 }
 
 .maincard {
