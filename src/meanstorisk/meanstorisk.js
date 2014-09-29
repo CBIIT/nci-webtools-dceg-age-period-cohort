@@ -496,9 +496,9 @@ function draw_graph() {
     url = "http://" + hostname +"/meanstoriskRest/"
 
     if ($( "#accordion" ).accordion("option", "active" ) == 0) {
-    	graph_file = "./img/CSV"+uniqueKey+".png?";
+    	graph_file = "./tmp/CSV"+uniqueKey+".png?";
     } else {
-    	graph_file = "./img/input"+uniqueKey+".png?";
+    	graph_file = "./tmp/input"+uniqueKey+".png?";
    	
     }
 
