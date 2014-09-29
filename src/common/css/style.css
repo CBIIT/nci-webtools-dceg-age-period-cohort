@@ -61,6 +61,7 @@ a.help {
 	font-size: 12px; 
 	width: 250px;
 	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+	z-index:2;
 }
 
 .enlarge {
