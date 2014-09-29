@@ -41,7 +41,7 @@ var Glossary = {
 	},
 	ROC : {
 		fullName : "Receiver operator characteristic (ROC) curve",
-		definition : "A presentation that plots a point for all possible thresholds of the biomarker, with the y-axis representing sensitivity and the x-axis representing 1 – specificity¬¬ of the test.  The ROC curve graphically displays the tradeoff of increased sensitivity but decreased specificity from lowering the threshold, and vice versa."
+		definition : "A presentation that plots a point for all possible thresholds of the biomarker, with the y-axis representing sensitivity and the x-axis representing 1 - <i>specificity</i> of the test.  The ROC curve graphically displays the tradeoff of increased sensitivity but decreased specificity from lowering the threshold, and vice versa."
 	},
 	Risk : {
 		fullName : "Risk",
