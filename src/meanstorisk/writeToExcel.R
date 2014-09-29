@@ -1,8 +1,6 @@
 library('xlsx');
 
-#excelDirectory <- "/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/xlsx/";
-
-excelDirectory <- "./xlsx/";
+excelDirectory <- "./tmp/";
 
 writeResultsToExcel <- function (risk, graphName) {
   outwb <- createWorkbook();

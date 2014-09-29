@@ -3,11 +3,7 @@ library('stringr')
 source ('./RiskFromROC.R')
 source ('./writeToExcel.R')
 
-#source('/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/RiskFromROC.R');
-#source ('/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/writeToExcel.R')
-
-imageDirectory <- "./img/";
-#imageDirectory <- "/home/brent/development/nci-analysis-tools-web-presence/src/meanstorisk/img";
+imageDirectory <- "./tmp/";
 
 getDataJSON <-function(urlEncodedString)
 {
