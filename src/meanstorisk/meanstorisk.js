@@ -6,8 +6,8 @@ var numberOfCols;
 
 
 var ppv_tabs = {
-	"PPV": "PPV = Positive Predicted Value (PPV)",
-	"cNPV": "cNPV = 1 - PPV = Compliment of the Negative Predicted Value",
+	"PPV": "PPV = Positive Predictive Value (PPV)",
+	"cNPV": "cNPV = 1 - PPV = Compliment of the Negative Predictive Value",
 	"Risk Difference": "PPV - cNPV",
 	"Cases per 1000 Screened": "# of Cases Detected per 1000 Screened",
 	"Cases per 1000 Positive": "# of Cases Detected per 1000 Who Screened Positive",
@@ -394,7 +394,7 @@ function create_tabbed_table(dt) {
 	
 	make_tabs();
 	
-	set_matrix("tab-1", 'PPV', 'Risk of Disease after a POSITIVE Test', 'Positive Predicted Value (PPV)', 
+	set_matrix("tab-1", 'PPV', 'Risk of Disease after a POSITIVE Test', 'Positive Predictive Value (PPV)', 
 			dt['Sensitivity Given Specificity'], dt['PPV']);	
 	set_matrix("tab-2", 'cNPV', 'Risk of Disease after a NEGATIVE Test', 'Complement of the Negative Predictive Value (cNPV)', 
 			dt['Sensitivity Given Specificity'], dt['cNPV']);	
