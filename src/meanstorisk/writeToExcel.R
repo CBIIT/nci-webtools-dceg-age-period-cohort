@@ -14,7 +14,7 @@ writeResultsToExcel <- function (risk, graphName) {
                   Alignment(h="ALIGN_CENTER");
   
   cellStyleBlue <-  CellStyle(outwb) +  Font(outwb, heightInPoints=20, isBold=TRUE, name="Courier", color="black") + 
-                    Fill(backgroundColor="blue", foregroundColor="blue", pattern="SOLID_FOREGROUND") +
+                    Fill(backgroundColor="cornflowerblue", foregroundColor="cornflowerblue", pattern="SOLID_FOREGROUND") +
                     bottomBorder +
                     Alignment(h="ALIGN_CENTER");
   
@@ -52,7 +52,7 @@ writeResultsToExcel <- function (risk, graphName) {
   programBasedSheet     <- createSheet(outwb, sheetName = "Cases per 1000 Screened");
   ppvBasedSheet         <- createSheet(outwb, sheetName = "Cases per 1000 Positive");
   sensitivityBasedSheet <- createSheet(outwb, sheetName = "Cases per 1000 with Disease");
-  dominatedSheet        <- createSheet(outwb, sheetName = "Dominated by Specificity for a Rare Disease");
+  #dominatedSheet        <- createSheet(outwb, sheetName = "Dominated by Specificity for a Rare Disease");
 
   addDataFrame(x = as.data.frame.matrix(risk$Delta), sheet = deltaSheet, row.names=TRUE, col.name=TRUE);
 #--------------
@@ -298,8 +298,8 @@ addDataFrame(x = as.data.frame.matrix(risk$`PPV-cNPV`), sheet = ppvCnpvSheet, st
   
   #--------------------------------------------
 
-  addDataFrame(x = as.data.frame.matrix(risk$`Sensitivity Given Specificity`), sheet = dominatedSheet, startRow=4, row.names=FALSE, col.name=TRUE);
-  addDataFrame(x = as.data.frame.matrix(risk$`Dominated by Specificity for a Rare Disease`), sheet = dominatedSheet, row.names=FALSE, col.name=TRUE, startRow=4, startColumn=5);
+  #addDataFrame(x = as.data.frame.matrix(risk$`Sensitivity Given Specificity`), sheet = dominatedSheet, startRow=4, row.names=FALSE, col.name=TRUE);
+  #addDataFrame(x = as.data.frame.matrix(risk$`Dominated by Specificity for a Rare Disease`), sheet = dominatedSheet, row.names=FALSE, col.name=TRUE, startRow=4, startColumn=5);
   
   addPicture(graphName, deltaSheet, scale = .65, startRow = 1, startColumn = 6);
 
