@@ -2,7 +2,7 @@ library('RJSONIO')
 library('stringr')
 source ('RiskStratAnalysisOptions.R')
 
-imageDirectory <- "./img/";
+imageDirectory <- "./tmp/";
 rdirectory <- "";
 drawfunctionprefix = "Draw"
 keysforfunction = list("Sens"=1, "Spec"=2, "PPV"=3, "cNPV"=4, "Prev"=5, "Delta"=6);
