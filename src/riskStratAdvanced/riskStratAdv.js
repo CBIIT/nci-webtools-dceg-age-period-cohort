@@ -14,7 +14,7 @@ var tableFirstColLabel;
 var keysforfunctionnames = ["", "Sens", "Spec", "PPV", "cNPV", "Prev", "Delta"];
 
 var functionnames = ["", "sensitivity", "specificity", "ppv", "cnpv", "prevalence", "delta"];
-/* Note: invalidCombos must be entered in alphabetical order per variable.*/
+/* Note: invalidCombos must be entered in alphabetical order per variable. */
 var invalidCombos =    ["delta-sensitivity-specificity",
 						"cnpv-delta-ppv",
 						"cnpv-ppv-prevalence",
@@ -77,13 +77,23 @@ var keyLong = [{1:"Prevalence given desired PPV, delta, and sensitivity", 2:"Spe
 {1:"Prevalence given desired cNPV, delta, and specificity", 2:"Sensitivity given desired cNPV, delta, and specificity"},
 {1:"Delta given desired cNPV, prevalence, and specificity", 2:"Sensitivity given desired cNPV, prevalence, and specificity"}];
 
+var terms = {
+	sensitivity: "Sens",
+	specificity: "Spec",
+	prevalence: "DP",
+	delta: "Delta",
+	PPV: "PPV",
+	cNPV: "CNPV",
+};
+
 $(document).ready(function() {
 	$('body').bind('beforeunload',function(){
-		   //do something
+		   // do something
 		alert("We gonna clear some things up.");
 	});
 	
-	//Create a dialog box to ask user if they would like to continue on rule violation.
+	// Create a dialog box to ask user if they would like to continue on rule
+	// violation.
 	createRulesDialog();
 
 	$( "select" ).change(function() {
@@ -107,7 +117,7 @@ $(document).ready(function() {
     	checkInputFields();
     });
   
-    //Mouseup event needed for ie to determine if they hit clear. 
+    // Mouseup event needed for ie to determine if they hit clear.
     $("input").bind("mouseup", function(e){
 		var $input = $(this);
 		var oldValue = $input.val();
@@ -142,8 +152,15 @@ $(document).ready(function() {
     resetPage();
 });
 
+function getDefinitionText (selectedInput) {
+	var termAbbreviation=terms[selectedInput];
+	var definitionText="<div class='termToDefine' id='"+termAbbreviation+"' data-term='"+termAbbreviation+"'>Definition</div><div class='popupDefinition' id='"+termAbbreviation+"Definition'></div>";
+	bindTermToDefine();
+	return definitionText;
+}
+
 function addTestData() {
-//	 select dropdown
+// select dropdown
 	$("#independent_dropdown").val("specificity"); 
 	$("#contour_dropdown").val("prevalence"); 
 	$("#fixed_dropdown").val("delta"); 
@@ -154,19 +171,21 @@ function addTestData() {
 	$("#fixed").val("1, 1.5, 2, 3"); 
 	$( "#calculate" ).button( "option", "disabled", false );
 	$(".variable-example").text("");
-	
+	$("div.termToDefine").show();
 }
+
 function resetPage() {
 	makeSelectionsUnique(functionnames, "independent_dropdown");
 	$("span.variable-example").text("");
 	$("option").removeAttr("disabled");
 	$("#status-bar").css("visibility", "hidden");
-	//Reselect User selection
-	//resetOption = $("#fixed_dropdown").find("").val();
-	//resetOption( "option", "selected", true );
+	// Reselect User selection
+	// resetOption = $("#fixed_dropdown").find("").val();
+	// resetOption( "option", "selected", true );
 	$("select").val(""); 
 	$("input").val(""); 
-	$("#output").empty();		
+	$("#output").empty();	
+	$("div.termToDefine").hide();
 }
 function createRulesDialog() {
 	 $(function() {
@@ -205,21 +224,21 @@ function checkRules() {
 	var max = [];
 	rulesViolationMsg = "";
 
-	//Get ids from select elements
+	// Get ids from select elements
 	var ids = $("select").map(function() {
     	return this.id;
 	}).get();
-	//Save currently selected values
+	// Save currently selected values
 	$.each( ids, function( key, elementId ) {
 		selectedVars.push($('#'+ elementId).val());
 	});
-	//Get ids from input elements
+	// Get ids from input elements
 	var ids = $("input").map(function() {
     	return this.id;
 	}).get();
-	//Save currently selected values
+	// Save currently selected values
 	$.each( ids, function( key, elementId ) {
-		//Change user input into array of floating point values
+		// Change user input into array of floating point values
 		userInput = $('#'+ elementId).val();
 		temp = userInput.split(',');
 		for(var i; i<temp.length; i++) {
@@ -251,10 +270,10 @@ function checkRule(ruleId, vars, values, min, max) {
 	switch(ruleId) {
 	case 1:
 		//
-		//Rule 1:
-		//Specificity, Sensitivity, PPV, cNPV, Prevalence can only be 0 to 1
+		// Rule 1:
+		// Specificity, Sensitivity, PPV, cNPV, Prevalence can only be 0 to 1
 		//
-		//Test all values except Delta
+		// Test all values except Delta
 		minValue = 0;
 		maxValue = 1;
 		$.each( vars, function( key, selectedVar ) {
@@ -269,10 +288,10 @@ function checkRule(ruleId, vars, values, min, max) {
 		break;
 	case 2:
 		//
-		//Rule 2:
-		//Delta can be 0 to 5
+		// Rule 2:
+		// Delta can be 0 to 5
 		//
-		//Test only delta
+		// Test only delta
 		minValue = 0;
 		maxValue = 5;
 		$.each( vars, function( key, selectedVar ) {
@@ -286,9 +305,9 @@ function checkRule(ruleId, vars, values, min, max) {
 	    break;
 	case 3:
 		//
-		//Rule 3:
+		// Rule 3:
 		// cNPV < Prevalence
-		//For arrays: max(cNPV) < min(Prevalence)
+		// For arrays: max(cNPV) < min(Prevalence)
 		//
 		cnpvPostion = $.inArray("cnpv", vars);
 		prevalencePostion = $.inArray("prevalence", vars);
@@ -301,10 +320,10 @@ function checkRule(ruleId, vars, values, min, max) {
 	    break;
 	case 4:
 		//
-		//Rule 4:
+		// Rule 4:
 		// Prevalence < PPV...
 		//
-		//For arrays: max(prev) < min(PPV)</li>
+		// For arrays: max(prev) < min(PPV)</li>
 		prevalencePostion = $.inArray("prevalence", vars);
 		ppvPostion = $.inArray("ppv", vars);
 		if(prevalencePostion>=0 && ppvPostion>= 0) {
@@ -323,7 +342,8 @@ function checkRule(ruleId, vars, values, min, max) {
 		sensitivityPosition = $.inArray("sensitivity", vars);
 		specificityPosition = $.inArray("specificity", vars);
 		if(sensitivityPosition >= 0 && specificityPosition >= 0) {
-			//TODO:  Need to think through on a sorted array level, go through each position in array.
+			// TODO: Need to think through on a sorted array level, go through
+			// each position in array.
 			if(max[sensitivityPosition] + max[specificityPosition] <= 1) {
 				status = "Fail";
 				rulesViolationMsg +="<div>Rule: max(sensitivity) + max(specificity) > 1</div>";
@@ -336,11 +356,11 @@ function checkRule(ruleId, vars, values, min, max) {
 
 function checkInputFields() {
 	var selectedValues = [];
-	//Get ids from select elements
+	// Get ids from select elements
 	var ids = $("input").map(function() {
     	return this.id;
 	}).get();
-	//Save currently selected values
+	// Save currently selected values
 	$.each( ids, function( key, elementId ) {
 		selectedValues.push($('#'+ elementId).val().length);
 	});
@@ -352,12 +372,12 @@ function checkInputFields() {
 
 }
 function calculate() {
-	//Check pattern for each input box
+	// Check pattern for each input box
 	
 	var checkInput =[];
-	//console.log(document.getElementById("independent").checkValidity());
-	//console.log(document.getElementById("contour").checkValidity());
-	//console.log(document.getElementById("fixed").checkValidity());
+	// console.log(document.getElementById("independent").checkValidity());
+	// console.log(document.getElementById("contour").checkValidity());
+	// console.log(document.getElementById("fixed").checkValidity());
 	checkInput.push(document.getElementById("independent").checkValidity());
 	checkInput.push(document.getElementById("contour").checkValidity());
 	checkInput.push(document.getElementById("fixed").checkValidity());
@@ -367,7 +387,7 @@ function calculate() {
 		return;
 	}
 	 
-	//return;
+	// return;
 	$("#status-bar").text("");
 	if(rulesViolationMsg.length > 0) {
 		 $("#status-bar").html(rulesViolationMsg);
@@ -378,22 +398,22 @@ function calculate() {
 
     var fixedArray = ""; // prevalence
     var contourArray = ""; // ppv
-    var independentArray = ""; //specificity
+    var independentArray = ""; // specificity
 
     var independentArray = $("#independent").val();
-    //Remove all spaces and non-characters
+    // Remove all spaces and non-characters
     independentArray = independentArray.replace(/[^\d,.-]/g, '');
     var independentval = $("#independent_dropdown").val();
     independentArraySplit = independentArray.split(",");
     var independentMin = Math.min.apply( Math, independentArraySplit )
     var independentMax = Math.max.apply( Math, independentArraySplit )
     var contourArray = $("#contour").val();
-    //Remove all spaces and non-characters
+    // Remove all spaces and non-characters
     contourArray = contourArray.replace(/[^\d,.-]/g, '');
     var contourval = $("#contour_dropdown").val();
     var columnHeadings = contourArray.split(",");
     var fixedArray = $("#fixed").val();
-    //Remove all spaces and non-characters
+    // Remove all spaces and non-characters
     fixedArray = fixedArray.replace(/[^\d,.-]/g, '');
     var fixedval = $("#fixed_dropdown").val();
     var fixedArraySplit = fixedArray.split(",");
@@ -404,8 +424,8 @@ function calculate() {
     uniqueKey = (new Date()).getTime();
 
     var tabkey = ["Prevalence_Odds_Length"];
-    //var keys = ["Sensitivity",
-    //            "Delta"];
+    // var keys = ["Sensitivity",
+    // "Delta"];
     var titlekeys = ["Sensitivity required to achieve specified PPV given prevalence and specificity",
                 "Delta required to achieve specified PPV given prevalence and specificity"];
 
@@ -446,27 +466,30 @@ function calculate() {
 		tab_names.append("<LI><a  style='padding:3px;' href='#fixed-" + (i+1) + "'>" + fixed_dropdown + "<br>&nbsp&nbsp&nbsp "+ fixedArraySplit[i] + "</a></LI>");
 		tab_pane = $("<div class='tab-pane' id='fixed-" + (i+1) + "' >  </div>")
 		tabs.append(tab_pane);			
-                    //tab_pane.append("<TABLE>");
-		//table_side = ("<TR><TD><div class='table-side' id='table-" + (i+1) + "'></div></TD>");
-	    //for (var j=0; j < abbreviatedkeys.length; j++) {
+                    // tab_pane.append("<TABLE>");
+		// table_side = ("<TR><TD><div class='table-side' id='table-" + (i+1) +
+		// "'></div></TD>");
+	    // for (var j=0; j < abbreviatedkeys.length; j++) {
 	    for (var key in keyvalueShort) {
-		//table_graph_div = $("<div class='set-"+ abbreviatedkeys[j] + (i+1) + "' style='width: 1100px; float: left; clear:left;'><p></p></div>");
+		// table_graph_div = $("<div class='set-"+ abbreviatedkeys[j] + (i+1) +
+		// "' style='width: 1100px; float: left; clear:left;'><p></p></div>");
 		table_graph_div = $("<div class='set-"+ keyvalueShort[key] + (i+1) + "' style='width: 950px; float: left; clear:left;'><p></p></div>");
 		tab_pane.append(table_graph_div);
 		graphic_side = ("<div class='graphic-side' id='graphic-" + keyvalueShort[key] +  (i+1) + "'><div style='clear:right;padding-top:10px;'> </div></div>");
 		table_graph_div.append(graphic_side);
 		table_side = $("<div class='table-side' id='table-" + keyvalueShort[key] + (i+1) + "'><br><div class='table-title'>&nbsp;&nbsp;"+keyvalueLong[key]+"</div></div><br><br>");
 		table_graph_div.append(table_side);
-		//graphic_side = ("<TD><div class='graphic-side' id='graphic-" + (i+1) + "'> </div></TD></TR>");
+		// graphic_side = ("<TD><div class='graphic-side' id='graphic-" + (i+1)
+		// + "'> </div></TD></TR>");
                }
 	}
-            //tab_pane.append("</TABLE>");
+            // tab_pane.append("</TABLE>");
 	tabs.tabs();
 
 	for (var fixedValue=0; fixedValue < fixedArraySplit.length; fixedValue++)
 	{
 		tabindex = fixedValue+1;
-		//for (var keyIndex=0; keyIndex < keys.length; keyIndex++)
+		// for (var keyIndex=0; keyIndex < keys.length; keyIndex++)
 		for (var shortkey in keyvalueShort)
 		{
 			getData({
@@ -498,7 +521,7 @@ function calculate() {
 function getKeyValueIndex(independentvalue, fixedvalue, contourvalue) {
 
   rfunctionname = getFunctionName(independentvalue, fixedvalue, contourvalue);
-  //alert(rfunctionname);
+  // alert(rfunctionname);
 
   for (var functions=0; functions < rfunctions.length; functions++)
   {
@@ -543,25 +566,25 @@ function getData(data, tableTitle, tabnumber, tabValue, uniqueKey, abbreviatedKe
           handleError(error, status, request);  
         },
         complete: function(data) {
-            //console.log("Completing: " + tableTitle);
+            // console.log("Completing: " + tableTitle);
             open_threads--;
             if (open_threads == 0) {
-               //$("#please_wait").dialog('close');
+               // $("#please_wait").dialog('close');
                if (error_count > 0) {
                   alert ("There were " + error_count + " errors with your request");
                   error_count=0;
                }
             }
             loadImage(tabnumber, tabValue.trim(), uniqueKey, abbreviatedKey);
-            //fillTable(data, columnHeadings, tabnumber, abbreviatedKey);
+            // fillTable(data, columnHeadings, tabnumber, abbreviatedKey);
         }
     });    
 }
 
 function handleError(error, status, request){
-	//alert(" Error is "+ error);
-	//alert(" Error Status is "+ status);
-	//alert(" Error irequest is "+ request);
+	// alert(" Error is "+ error);
+	// alert(" Error Status is "+ status);
+	// alert(" Error irequest is "+ request);
 	$("#status-bar").text("");
 	$("#status-bar").html("<div>" + error + "</div>");
 	$("#status-bar").css("visibility", "visible");
@@ -633,8 +656,8 @@ function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey){
             {
                $("#status-bar").append("<div>" + graphError[1].message + "</div>");
 	    }
-            //console.info("Error Received");
-            //console.dir(tableError);
+            // console.info("Error Received");
+            // console.dir(tableError);
         }
 }
 
@@ -652,7 +675,7 @@ function getColumnHeaderData(columnHeadings) {
 
 
 function loadImage(tabNumber, tabValue, uniqueId, graphNamePreFix) {
-        $('#graphic-' + graphNamePreFix + tabNumber).append("<img style='height: 400px; text-align: right;' class='center' src='./img/" + graphNamePreFix + uniqueId + "-" + tabValue + ".png'>");
+        $('#graphic-' + graphNamePreFix + tabNumber).append("<img style='height: 400px; text-align: right;' class='center' src='./tmp/" + graphNamePreFix + uniqueId + "-" + tabValue + ".png'>");
 }
 
 
@@ -689,17 +712,17 @@ function makeSelectionsUnique(originalOptions, elementId) {
 	
 	activeSelectionChange = true;
 	
-	//Get ids from select elements
+	// Get ids from select elements
 	var ids = $("select").map(function() {
     	return this.id;
 	}).get();
 	
-	//Save currently selected values
+	// Save currently selected values
 	$.each( ids, function( key, elementId ) {
 		selectedValues.push($('#'+ elementId+' option:selected').val());
 	});
 	
-	//Repopulate each dropdown with the original list and reselect.
+	// Repopulate each dropdown with the original list and reselect.
 	for (var key = 0; key < ids.length; key++) {
 		disabledValues = [];
 		for(var i = 0; i < selectedValues.length; i++) {
@@ -712,12 +735,12 @@ function makeSelectionsUnique(originalOptions, elementId) {
 		removeAllOptions(dropdownBoxId);
 		addAllOptions(dropdownBoxId, originalOptions, disabledValues);
 		
-		//Reselect User selection
+		// Reselect User selection
 		$('#'+dropdownBoxId).val(selectedValues[key]).change();
 	}
-	//If sandbox populate with default values
-	//if(window.location.hostname == "analysistools-sandbox.nci.nih.gov" ||
-	//		window.location.hostname == "localhost")
+	// If sandbox populate with default values
+	// if(window.location.hostname == "analysistools-sandbox.nci.nih.gov" ||
+	// window.location.hostname == "localhost")
 	setInitialValue(elementId);
 	checkForInvalidVariableCombo(elementId);
 	activeSelectionChange = false;
@@ -753,7 +776,7 @@ function addAllOptions(dropdownBoxId, originalOptions, disabledOptions) {
 
 
 function checkForValidRange() {
-	//alert("chekForValidRange()");
+	// alert("chekForValidRange()");
 	
 }
 
@@ -763,41 +786,41 @@ function setInitialValue(textboxId) {
 	key = $.inArray(selectedOption, functionnames);
 	
 	eSelect = document.getElementById(textboxId);
-	//Get the parent row <tr> of this <select>
+	// Get the parent row <tr> of this <select>
 	eSelect2 = $(eSelect).parent().parent()[0];
 
-	//This next command removes the selected attribute from options, 
-	//so we will reselect it later.
+	// This next command removes the selected attribute from options,
+	// so we will reselect it later.
 	$(eSelect2).find(":input").val("");
 	$(eSelect2).find("span").text(initialData[key]);
 
-	//Reselect User selection
+	// Reselect User selection
 	$('#'+textboxId).val(selectedOption).change();
 }
 
 function checkForInvalidVariableCombo() {
-	//Get array of variables
+	// Get array of variables
 
-	//Get ids from select elements
+	// Get ids from select elements
 	var selectedValues = [];
 	var ids = $("select").map(function() {
     	return this.id;
 	}).get();
 	
-	//Save currently selected values
+	// Save currently selected values
 	$.each( ids, function( key, elementId ) {
 		selectedValues.push($('#'+ elementId+' option:selected').val());
 	});
 	
-	//Make sure all three variables exists else return
+	// Make sure all three variables exists else return
 	blankCount = $.inArray("", selectedValues);
 	if($.inArray("", selectedValues) == -1) {
-		//All three variables are slected.  Check if it is valid.
+		// All three variables are slected. Check if it is valid.
 		selectedValuesSorted = selectedValues.sort(); 
 		selectedValuesSortedString = selectedValues.join("-");
 		
 		if($.inArray(selectedValuesSortedString, invalidCombos) >= 0) {
-			//INVALID COMBO FOUND
+			// INVALID COMBO FOUND
 			userSelectedVariables = selectedValues[0].toString() + ", " +
 								selectedValues[1].toString() + ",  and " +
 								selectedValues[2].toString();
@@ -810,7 +833,7 @@ function checkForInvalidVariableCombo() {
 			$("#status-bar").text(message);
 			validCombo = false;
 		} else {
-			//VALID COMBO FOUND
+			// VALID COMBO FOUND
 			$("#status-bar").css("visibility", "hidden");
 			$("#status-bar").addClass("status-error");
 			$("#status-bar").removeClass("status-info");
@@ -818,7 +841,7 @@ function checkForInvalidVariableCombo() {
 			validCombo = true;
 		}
 	} else {
-		//Unselected Dropdowns
+		// Unselected Dropdowns
 		$("#status-bar").css("visibility", "hidden");
 		$("#status-bar").addClass("status-info");
 		$("#status-bar").removeClass("status-error");
