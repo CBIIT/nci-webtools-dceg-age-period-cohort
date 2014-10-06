@@ -1,15 +1,23 @@
+.ui-widget {
+	font-size: 12px;
+}
+
 .label {
-	float:right;
+	float: right;
+}
+
+.title {
+	background-color: #aaa;
 }
 
 .example-image {
-	float:left;
+	float: left;
 }
 
 .explanation {
-	float:left;
-	padding-left:15px;
-	width:600px;
+	float: left;
+	padding-left: 15px;
+	width: 600px;
 }
 
 .reference_row {
@@ -33,20 +41,11 @@ td {
 
 #output {
 	/*width: 600px;*/
+	
 }
 
 #inputdata {
 	width: 500px;
-}
-
-h2 {
-	background-color: #AAA;
-	color: #444;
-	padding: 5px;
-}
-
-button {
-	padding:5px;
 }
 
 .prevalence_label {
@@ -101,11 +100,11 @@ button {
 }
 
 #status-bar {
-    background: #CCC;
-    display: block; 
+	background: #CCC;
+	display: block;
 	border: none;
 	box-sizing: border-box;
-	font: 18px arial,sans-serif;
+	font: 18px arial, sans-serif;
 	left: 0;
 	margin: 10px;
 	outline: none;
@@ -113,26 +112,28 @@ button {
 	top: 2px;
 	width: 100%;
 	visibility: hidden;
-	
 }
+
 .status-info {
-	color:black
+	color: black
 }
+
 .status-error {
-	color:red;
+	color: red;
 }
+
 .variable-example {
-	padding-left:10px;
+	padding-left: 10px;
 	text-align: left;
 }
 
 a#add-test-data {
-    text-decoration: underline;
-    float:right;
+	text-decoration: underline;
+	float: right;
 }
 /* mouse over link */
 a#add-test-data:hover {
-    font-weight: bold;
+	font-weight: bold;
 }
 /*Tabs CSS */
 .table-title {
@@ -143,22 +144,35 @@ a#add-test-data:hover {
 	padding: 10 10 20 10px;
 	margin: 25px;
 }
+
 .table-side {
-	float:left;
+	float: left;
 	width: 450px;
 	/* border: solid red 1px; */
 }
 
 .graphic-side {
-	float:right;
+	float: right;
 	/*width:700;*/
-	width:410px;
+	width: 410px;
 	/*border: solid green 1px;*/
 }
-#tabs{
-	width:994px;
+
+#tabs {
+	width: 994px;
 }
+
 .tab-pane {
 	width: 950px;
 	height: 950px;
+}
+
+.vertical-text {
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	white-space: nowrap;
+	width: 15px;
 }
