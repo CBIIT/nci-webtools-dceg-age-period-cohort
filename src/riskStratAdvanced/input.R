@@ -2,7 +2,6 @@ library('RJSONIO')
 library('stringr')
 source ('riskStratAdvancedOptionWrapper.R')
 
-imageDirectory <- "./img/";
 rdirectory <- "";
 drawfunctionprefix = "Draw"
 keysforfunction = list("Sens"=1, "Spec"=2, "PPV"=3, "cNPV"=4, "Prev"=5, "Delta"=6);
@@ -15,7 +14,6 @@ datatransposed = "";
 
 getDataJSON <-function(urlEncodedString)
 {
-  dir.create(imageDirectory);
   try(dev.off(), silent=TRUE);
   inputList <- parseURLEncodedString(urlEncodedString);
   independent<-getindependent(inputList);   #PPV -2
@@ -63,23 +61,6 @@ getDrawFunctionName <- function (drawfunctionprefix, key, rfunctionname) {
   print(rDrawFileName)
   print(rfunctionname)
   return(rDrawFileName)
-}
-
-
-getDeltaSpecGraph <- function (specmin, specmax, prev, ppv, keyGraphName, uniqueId) {
-  imageFileName = paste(imageDirectory, keyGraphName, uniqueId, "-", prev, ".png", sep = '');
-  png(file = imageFileName , units="in", width=10, height=8, res=150);
-  DrawDeltaSpecPPV(specmin, specmax, prev, ppv);
-  dev.off();
-  imageFileName;
-}
-
-getSensSpecGraph <- function (specmin, specmax, prev, ppv, keyGraphName, uniqueId) {
-  imageFileName = paste(imageDirectory, keyGraphName, uniqueId, "-", prev, ".png", sep = '');
-  png(file = imageFileName , units="in", width=10, height=8, res=150);
-  DrawSensSpecPPV(specmin,specmax,prev, ppv);
-  dev.off();
-  imageFileName;
 }
 
 getKey <- function (inputList) {
