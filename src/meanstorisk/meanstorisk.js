@@ -402,9 +402,9 @@ function create_tabbed_table(dt) {
 			dt['Sensitivity Given Specificity'], dt['PPV-cNPV']);	
 	set_matrix("tab-4", 'ProgramBased', '# of Cases Detected per 1000 People Screened', 'Program &minus; Based', 
 			dt['Sensitivity Given Specificity'], dt['Program-Based']);	
-	set_matrix("tab-5", 'PPVBased', '# of Cases Detected per 1000 Who are Screen Positive', 'PPV &minus; Based', 
+	set_matrix("tab-5", 'PPV', '# of Cases Detected per 1000 Who are Screen Positive', 'PPV &minus; Based', 
 			dt['Sensitivity Given Specificity'], dt['PPV-Based']);	
-	set_matrix("tab-6", 'SensitivityBased', '# of Cases Detected per 1000 With Disease', 'Sensitivity &minus; Based', 
+	set_matrix("tab-6", 'Sens', '# of Cases Detected per 1000 With Disease', 'Sensitivity &minus; Based', 
 			dt['Sensitivity Given Specificity'], dt['Sensitivity-Based']);	
 	set_matrix("tab-7", 'DominatedByRareDisease', '# Per 1000 Screenees Who Screen Positive', 'Dominated by Specificity for Rare Disease', 
 			dt['Sensitivity Given Specificity'], dt['Dominated by Specificity for a Rare Disease']);	
