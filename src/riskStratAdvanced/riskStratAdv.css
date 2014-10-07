@@ -135,14 +135,16 @@ a#add-test-data {
 a#add-test-data:hover {
 	font-weight: bold;
 }
+
 /*Tabs CSS */
 .table-title {
 	word-wrap: normal;
 	font-weight: bold;
 	/*border: solid blue 1px; */
-	width: 440px;
-	padding: 10 10 20 10px;
-	margin: 25px;
+	padding: 5 5 5 5px;
+	margin: 10px;
+	text-align:center;
+	background-color: #F8FAFA;
 }
 
 .table-side {
