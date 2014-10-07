@@ -16,14 +16,6 @@
 	border: 1px #BBB solid;
 }
 
-#accordion h3 {
-	font-size: 10pt;	
-}
-
-#accordion .ui-accordion-content {  
-	font-size: 10pt;
-}
-
 div.input_accordion {
 	background: #FFF url();
 }
@@ -53,7 +45,6 @@ H3.input_accordion {
 
 .tabbed_output_panel {
 	height:99%;
-	font-size:10px;
 }
 
 .title {
@@ -94,7 +85,6 @@ table.table_data {
 	border:1px #BBB solid;
 	margin-left:20px;
 	margin-right:20px;
-	font-size:10pt;
 	float:left;
 }
 
@@ -104,7 +94,6 @@ table.output_data {
 	border:2px black solid;
 	margin-left:20px;
 	margin-right:20px;
-	font-size:small;
 }
 
 td.table_data {
@@ -177,4 +166,8 @@ tr.line-above {
 
 .ui-accordion {
 	overflow:hidden;
+}
+
+.ui-widget {
+	font-size:12px;
 }
