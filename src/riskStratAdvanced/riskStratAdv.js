@@ -225,8 +225,64 @@ function addTestData() {
 	$("#fixed").val("1, 1.5, 2, 3");
 	$("#calculate").button("option", "disabled", false);
 	$(".variable-example").text("");
-
+	addPopupDefinition();
 }
+
+var termLookup = {
+	ppv : "PPV",
+	cnpv : "cNPV",
+	sensitivity : "Sens",
+	specificity : "Spec",
+	delta : "Delta",
+	prevalence : "DP"
+}
+
+function addPopupDefinition() {
+	var independent = $('#independent_dropdown').val();
+	var contour = $('#contour_dropdown').val();
+	var fixedValue = $('#fixed_dropdown').val();
+	if (!!independent) {
+		var independentTerm = termLookup[independent];
+		createPopupDefinitionElement("indDef", independentTerm, independentTerm);
+	}
+	else {
+		$("#indDef").html("");
+	}
+	if (!!contour) {
+		var contourTerm = termLookup[contour];
+		createPopupDefinitionElement("contourDef", contourTerm, contourTerm);
+	}
+	else {
+		$("#contourDef").html("");
+	}
+	if (!!fixedValue) {
+		var fixedValueTerm = termLookup[fixedValue];
+		createPopupDefinitionElement("fvDef", fixedValueTerm, fixedValueTerm);
+	}
+	else {
+		$("#fvDef").html("");
+	}
+	bindTermToDefine();
+}
+
+function createPopupDefinitionElement(elementId, termId, dataTerm) {
+	$("#" + elementId)
+			.html(
+					"<div class='termToDefine' id='"
+							+ termId
+							+ "' data-term='"
+							+ dataTerm
+							+ "'><img src='/common/images/info.png'></div><div class='popupDefinition' id='"
+							+ termId + "Definition'></div>");
+}
+
+function resetPopupDefinition() {
+	// remove popup definition elements
+	$("#indDef").html("");
+	$("#contourDef").html("");
+	$("#fvDef").html("");
+}
+
 function resetPage() {
 	makeSelectionsUnique(functionnames, "independent_dropdown");
 	$("span.variable-example").text("");
@@ -238,7 +294,9 @@ function resetPage() {
 	$("select").val("");
 	$("input").val("");
 	$("#output").empty();
+	resetPopupDefinition();
 }
+
 function createRulesDialog() {
 	$(function() {
 		$("#dialog-confirm").dialog({
@@ -431,6 +489,7 @@ function checkInputFields() {
 	;
 
 }
+
 function calculate() {
 	// Check pattern for each input box
 
@@ -552,8 +611,8 @@ function calculate() {
 				table_graph_div.append(graphic_side);
 				table_side = $("<div class='table-side' id='table-"
 						+ keyvalueShort[key] + (i + 1)
-						+ "'><br><div class='table-title'>&nbsp;&nbsp;"
-						+ keyvalueLong[key] + "</div></div><br><br>");
+						+ "'><br><div class='table-title'>" + keyvalueLong[key]
+						+ "</div></div><br><br>");
 				table_graph_div.append(table_side);
 				// graphic_side = ("<TD><div class='graphic-side' id='graphic-"
 				// + (i+1)
@@ -705,7 +764,7 @@ function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey) {
 		table.dataTable({
 			"aaData" : arr,
 			"aoColumns" : headings,
-			"bJQueryUI": true,
+			"bJQueryUI" : true,
 			"bAutoWidth" : false,
 			"bFilter" : false,
 			"bSearchable" : false,
@@ -716,7 +775,8 @@ function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey) {
 			"aaSorting" : [ [ 0, "asc" ] ]
 		});
 		// add a first column as independent values
-		$("#" + tableId + " tr:first").prepend("<th class='ui-state-default' colspan='2'></th>");
+		$("#" + tableId + " tr:first").prepend(
+				"<th class='ui-state-default' colspan='2'></th>");
 		var i = 0;
 		$("#" + tableId + " tr:not(:first)").each(
 				function() {
@@ -728,9 +788,9 @@ function fillTable(jsonTableData, columnHeadings, tabnumber, abbreviatedKey) {
 
 		// add another first column for independent type
 		$("#" + tableId + " tr:eq(1)").prepend(
-				"<th class='header' rowspan='"
-						+ independentArraySplit.length + "'><div class='vertical-text'>"
-						+ tableFirstRowLabel + "</div></th>");
+				"<th class='header' rowspan='" + independentArraySplit.length
+						+ "'><div class='vertical-text'>" + tableFirstRowLabel
+						+ "</div></th>");
 
 		// add a column heading for contour type
 		$("#" + tableId + " thead").prepend(
@@ -883,6 +943,8 @@ function setInitialValue(textboxId) {
 
 	// Reselect User selection
 	$('#' + textboxId).val(selectedOption).change();
+	addPopupDefinition();
+
 }
 
 function checkForInvalidVariableCombo() {
@@ -937,6 +999,454 @@ function checkForInvalidVariableCombo() {
 		validCombo = false;
 
 		return
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+										
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+												
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+										
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+														
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+										
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+												
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+										
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+																
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+										
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+												
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+										
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+														
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+										
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+								
+
+		
+
+				
+
+		
+
+						
+
+		
+
+				
+
+		
+
+												
 
 		
 
