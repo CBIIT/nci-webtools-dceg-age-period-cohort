@@ -12,12 +12,12 @@
 <script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 <script src="/common/js/meansToRiskGlossary.js"></script>
 
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" />
+<link rel="stylesheet"
+	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" />
 <link rel="stylesheet"
 	href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css" />
 <link rel="stylesheet" href="/common/css/style.css" />
 <link rel="stylesheet" href="./riskStratAdv.css" />
-
 </head>
 
 <body>
@@ -76,6 +76,7 @@
 							title="An array of floating point numbers seperated by commas"
 							required>
 					</label></td>
+					<td><div id="indDef"></div></td>
 					<td><span class="variable-example"></span></td>
 				</tr>
 				<tr>
@@ -95,6 +96,7 @@
 							title="An array of floating point numbers seperated by commas"
 							required>
 					</label></td>
+					<td><div id="contourDef"></div></td>
 					<td><span class="variable-example"></span></td>
 				</tr>
 				<tr>
@@ -114,6 +116,7 @@
 							title="An array of floating point numbers seperated by commas"
 							required>
 					</label></td>
+					<td><div id="fvDef"></div></td>
 					<td><span class="variable-example"></span></td>
 				</tr>
 			</table>
@@ -138,19 +141,14 @@
 				<li class="rule rule2" style="font-weight: bold;">Delta can be
 					0 to 5</li>
 				<li class="rule rule3">cNPV &lt; Prevalence</li>
-				<ul>
-					<li class="rule rule3">For arrays: max(cNPV) &lt;
-						min(Prevalence)</li>
-				</ul>
+				<li class="rule rule3">For arrays: max(cNPV) &lt;
+					min(Prevalence)</li>
 				<li class="rule rule4">Prevalence &lt; PPV</li>
-				<ul>
-					<li class="rule rule4">For arrays: max(prev) &lt; min(PPV)</li>
-				</ul>
+				<li class="rule rule4">For arrays: max(prev) &lt; min(PPV)</li>
 				<li class="rule rule5">Sensitivity+Specificity-1 &gt; 0</li>
 			</ul>
 			<span style="font-weight: bold;">Do you wish to continue with
 				calculation anyway?</span>
-			</p>
 		</div>
 		<div id='output'></div>
 
