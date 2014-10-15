@@ -42,33 +42,56 @@
 			<div id="banners">
 				<div id="dceg_logo">
 					<img src="/common/images/DCEG-BB-HREB.png" style="float: left;"
-					alt="Banner for NCI Division of Cancer Epidemiology, Genetics Biostatistics Branch, Hormonal and Reproductive Epidemiology Branch "
+						alt="Banner for NCI Division of Cancer Epidemiology, Genetics Biostatistics Branch, Hormonal and Reproductive Epidemiology Branch "
 						height="43" />
 				</div>
 			</div>
 			<h2 class='title' align="center">Help</h2>
-<b>Instructions for Input</b><br>
-This tool calculates values and creates a graph for valid combinations of given PPV, cNPV, delta, specificity, sensitivity, and prevalence values.<br>
-1)	Choose which values you would like to input as the independent variable, or for the x-axis of the output graph, from the drop-down menu next to 'Independent Variable'.  Then enter your values as decimals separated by commas.<br>
-2)	Choose which values you would like to input as the contours of the output graph from the drop-down menu next to 'Contour'.  Then enter your values as decimals separated by commas.<br>
-3)	Choose which values you would like to input as fixed values.  Then enter your values as decimals separated by commas.<br>
-4)	Click 'Calculate'<br><br>
+			<p>
+				<b>Instructions for Input</b><br> This tool calculates values
+				and creates a graph for valid combinations of given PPV, cNPV,
+				delta, specificity, sensitivity, and prevalence values. Click on the
+				'Example' link for an example input combination.
+			<ol>
+				<li>Choose which values you would like to input as the
+					independent variable, or for the x-axis of the output graph, from
+					the drop-down menu next to 'Independent Variable'. Then enter your
+					values as decimals separated by commas.</li>
+				<li>Choose which values you would like to input as the contours
+					of the output graph from the drop-down menu next to 'Contour'. Then
+					enter your values as decimals separated by commas.</li>
+				<li>Choose which values you would like to input as fixed
+					values. Then enter your values as decimals separated by commas.</li>
+				<li>Click 'Calculate'</li>
+			</ol>
+			<p>
+				<b>Input Validation Rules</b>
+			<ul>
+				<li>Specificity, Sensitivity, PPV, cNPV, and Prevalence can
+					only be 0 to 1</li>
+				<li>Delta can be 0 to 5</li>
+				<li>cNPV < Prevalence</li>
+				<li>For arrays: max(cNPV) < min(Prevalence)</li>
+				<li>Prevalence < PPV</li>
+				<li>For arrays: max(prev) < min(PPV)</li>
+				<li>Sensitivity+Specificity-1 > 0</li>
+				<li>PPV and cNPV; Sensitivity, Specificity, and Delta; PPV,
+					Prevalence, and Delta; and cNPV, Prevalence, and Delta are invalid
+					combinations of input</li>
+			</ul>
+			</p>
 
-Note: If you would like to see an example of calculated values, click on the 'Example' link.<br>
-Also, there are rules for combinations and valid input.<br>
-<ul>
-<li>
-Specificity, Sensitivity, PPV, cNPV, and Prevalence can only be 0 to 1</li>
-<li>Delta can be 0 to 5</li>
-<li>cNPV < Prevalence</li>
-<li>For arrays: max(cNPV) < min(Prevalence)</li>
-<li>Prevalence < PPV</li>
-<li>For arrays: max(prev) < min(PPV)</li>
-<li>Sensitivity+Specificity-1 > 0</li>
-<li>PPV and cNPV; Sensitivity, Specificity, and Delta; PPV, Prevalence, and Delta; and cNPV, Prevalence, and Delta are invalid combinations of input</li>
-</ul><br>
-Where do I go for technical support? Please send an <a href="mailto:NCIMeansToRiskWebAdmin@mail.nih.gov" title="Support">e-mail</a> to our technical support team.<br>
-What browsers does the web tool support? The web tool has been tested to work with Internet Explorer 10, Firefox and Chrome. The file upload feature currently does not work with Internet Explorer 9 and below. 
+			<p>
+				<b>Where do I go for technical support?</b> Please send an <a
+					href="mailto:NCIMeansToRiskWebAdmin@mail.nih.gov?subject=Advanced Risk Stratification Tool Support"
+					title="Advanced Risk Stratification Support">e-mail</a> to our
+				technical support team.
+			</p>
+			<p>
+				<b>What browsers does the web tool support? </b>The web tool has
+				been tested to work with Internet Explorer 10, Firefox and Chrome.
+				The tool does not support Internet Explorer 9 and below.
+			</p>
 			<div id="portal-footer">
 				<div class="footerLinks">
 					<a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
