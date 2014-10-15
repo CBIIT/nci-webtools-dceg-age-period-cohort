@@ -1,46 +1,94 @@
-#logos {height:43px; background-color:#A90101;}
-
-#logos #left {float:left;}
-
-#logos #right {height:43px; float:right;}
-
-#dceg_logo {
-	height:43px;
-	background-image: url("../images/DCEGBB-RightSide.png"); 
-	width: 100%; 
-	background-repeat: repeat-x; 
-	background-size: 10px 43px;"
+#logos {
+	height: 43px;
+	background-color: #A90101;
 }
 
-#banners {height:43px;}
+#logos #left {
+	float: left;
+}
 
-#banners #left {float:left;}
+#logos #right {
+	height: 43px;
+	float: right;
+}
 
-#banners #right {height:43px; float:right;}
+#dceg_logo {
+	height: 43px;
+	background-image: url("../images/DCEGBB-RightSide.png");
+	width: 100%;
+	background-repeat: repeat-x;
+	background-size: 10px 43px;
+}
 
-#wrapper { width: 955px; margin: 0 auto;} 
+#banners {
+	height: 43px;
+}
 
-#login {width: 935px; margin: 0 auto; border: solid 1px #322e82; margin-top: 30px;}
+#banners #left {
+	float: left;
+}
 
-#portal-footer {line-height: 1.2em; margin: 2em 0em 1em 0em; padding: 1em 0em 1em 0em; text-align: center; background-color:#FFF; color: #333333; font-size: 79%;}
+#banners #right {
+	height: 43px;
+	float: right;
+}
 
-#portal-footer a {text-decoration: none; color: #333333; border: none;}
+#wrapper {
+	width: 955px;
+	margin: 0 auto;
+}
 
-#portal-footer a:visited {color: #333333;}
+#login {
+	width: 935px;
+	margin: 0 auto;
+	border: solid 1px #322e82;
+	margin-top: 30px;
+}
 
-#portal-footer a:hover {text-decoration: underline;}
+#portal-footer {
+	line-height: 1.2em;
+	margin: 2em 0em 1em 0em;
+	padding: 1em 0em 1em 0em;
+	text-align: center;
+	background-color: #FFF;
+	color: #333333;
+	font-size: 79%;
+}
 
-.footerLinks {padding: .5em 0em 0em 0em;}
+#portal-footer a {
+	text-decoration: none;
+	color: #333333;
+	border: none;
+}
 
-body {background-image:url('http://cbiit.nci.nih.gov/page_bg.jpg'); background-repeat:repeat-x; font-family: Arial, Helvetica, sans-serif; font-size:90%; color:#444; margin: 0px;}
+#portal-footer a:visited {
+	color: #333333;
+}
+
+#portal-footer a:hover {
+	text-decoration: underline;
+}
+
+.footerLinks {
+	padding: .5em 0em 0em 0em;
+}
+
+body {
+	background-image: url('http://cbiit.nci.nih.gov/page_bg.jpg');
+	background-repeat: repeat-x;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 90%;
+	color: #444;
+	margin: 0px;
+}
 
 a.help {
-	background-image:url('/common/images/help.png');
-	background-repeat:no-repeat;
-	background-size:16px 16px;
-	padding-left:22px;
-	padding-bottom:5px;
-	text-decoration:none;
+	background-image: url('/common/images/help.png');
+	background-repeat: no-repeat;
+	background-size: 16px 16px;
+	padding-left: 22px;
+	padding-bottom: 5px;
+	text-decoration: none;
 }
 
 #helpGlossaryLinks {
@@ -48,23 +96,46 @@ a.help {
 }
 
 .termToDefine {
-   text-decoration:underline;
-   cursor:help;
+	text-decoration: underline;
+	cursor: help;
 }
 
 .popupDefinition {
-	display: none; 
-	position: absolute; 
-    border: solid #C4C4C0 1px; padding: 10px; 
-	background-color: #FFFFEB; 
-	text-align: left; 
-	font-size: 12px; 
+	display: none;
+	position: absolute;
+	border: solid #C4C4C0 1px;
+	padding: 10px;
+	background-color: #FFFFEB;
+	text-align: left;
+	font-size: 12px;
 	width: 250px;
 	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
-	z-index:2;
+	z-index: 2;
 }
 
 .enlarge {
 	text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
 	transform: scale(1.1);
+}
+
+#landing-blockcontent {
+	padding-top: 25px;
+	padding-left: 10px;
+	padding-right: 20px;
+}
+
+#landing-blockcontent h3, h4, a {
+	color: #0C5C97;
+}
+
+.tools-owner-title {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	background-color: #F5FAFF;
+}
+
+.tools-section {
+	padding-left: 20px;
+	padding-right: 20px;
+	text-align: justify;
 }
