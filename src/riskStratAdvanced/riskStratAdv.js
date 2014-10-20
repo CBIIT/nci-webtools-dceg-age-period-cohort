@@ -272,7 +272,7 @@ function createPopupDefinitionElement(elementId, termId, dataTerm) {
 							+ termId
 							+ "' data-term='"
 							+ dataTerm
-							+ "'><img src='/common/images/info.png'></div><div class='popupDefinition' id='"
+							+ "'><img src='/common/images/info.png' alt='pop up definition'></div><div class='popupDefinition' id='"
 							+ termId + "Definition'></div>");
 }
 
@@ -823,7 +823,7 @@ function getColumnHeaderData(columnHeadings) {
 function loadImage(tabNumber, tabValue, uniqueId, graphNamePreFix) {
 	$('#graphic-' + graphNamePreFix + tabNumber).append(
 			"<img style='height: 400px; text-align: right;' class='center' src='./tmp/"
-					+ graphNamePreFix + uniqueId + "-" + tabValue + ".png'>");
+					+ graphNamePreFix + uniqueId + "-" + tabValue + ".png' alt='output image'>");
 }
 
 function isNumberBetweenZeroAndOne(n) {
