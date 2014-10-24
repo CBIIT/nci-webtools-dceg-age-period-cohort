@@ -1,4 +1,4 @@
 nci-analysis-tools-web-presence
 ===============================
 
-Contains both the framework for exposing R functions as web services and websites and the R code itself
+Contains lightweight web applications and RESTful services for analysis tools written by the NCI intramural scientists.
