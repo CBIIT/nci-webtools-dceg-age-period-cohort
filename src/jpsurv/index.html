@@ -1,0 +1,35 @@
+<HTML>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="jpsurv.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.js"></script>
+<script type="text/javascript" src="jpsurv.js"></script>
+	
+<table class="container">
+	<tr>
+	  <td class="upload-pane">
+	   	<P><label for='file_control'>Data Dictionary File: </label>
+	   			<A style='font-size:small' href='jpsurv.json' download='example.json'>(example)</A>
+	   			<input type="file" id="file_control"></P>
+	   	<P><label for='file_data'>Data File: </label><input type="file" id="file_data"></P>
+	   	<P><INPUT type='submit' id='upload_file_submit' value='Upload Files' ></P>
+	  </td>
+		<td class="output-pane" rowspan='2'>
+		</td>
+	</tr>
+ 	<tr>
+  	<td class="parameters-pane">
+   		<div id='parameters' style='display:none'>
+   			<P id='diagnosis_title'><P> 
+   			<P> Range of Diagnosis:<BR><SELECT id='year_of_diagnosis_start'></SELECT> to <SELECT id='year_of_diagnosis_end'></SELECT></P>
+   			<P>Cohort Variables:<BR><SELECT id='cohort_select' multiple ></SELECT></P>
+   			<P id='cohort_sub_select'></P>
+   			<P style="clear:both; padding-top:10px;">Covariate Variables:<BR><SELECT id='covariate_select' multiple></SELECT></P>
+   			<P id='covariate_sub_select'></P>
+   			<P style="clear:both; padding-top:10px;">Join Points: <SELECT id='join_point_select'><OPTION>1</OPTION><OPTION>2</OPTION><OPTION>3</OPTION><OPTION>4</OPTION></SELECT></P>
+   			<P><INPUT type='submit' id='calculate' value='Calculate' ></P>
+   		</div>
+   </td>
+ </tr>
+</table>
+
+</HTML>

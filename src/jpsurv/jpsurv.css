@@ -1,0 +1,41 @@
+table {
+	border-collapse:collapse;
+}
+
+.upload-pane{ 
+	background-color:#DDD;
+	width: 250px; 
+	height:auto;
+	padding:5px;
+}
+.parameters-pane{ 
+	background-color:#DDD;
+	width: 250px;
+	min-height:400px;
+	height:auto; 
+	padding:5px;
+}
+.output-pane{
+	vertical-align:top; 
+	background-color:#EEE;
+	width:auto;
+	min-width:400px;
+	min-height:400px;
+	height:auto; 
+	padding:5px;
+}
+
+H2 {
+	font-size:large;
+	text-align:center;
+}
+
+.sub_select {
+	float:left;
+	padding:2px;
+}
+
+.table_title {
+	padding:0px;
+	margin:0px;
+}
