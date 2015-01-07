@@ -138,3 +138,9 @@ a.help {
 	padding-right: 20px;
 	text-align: justify;
 }
+
+.main-div {
+	 width: 1200px;
+	 margin-left: auto; 
+	 margin-right: auto;'
+}
