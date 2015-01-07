@@ -33,7 +33,14 @@ H3.input_accordion {
 
 
 .graph_panel {
-	height:99%;
+	height: 99%;
+}
+
+.output_graph {
+  max-width:38%;
+  display:block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .key_output_panel {
