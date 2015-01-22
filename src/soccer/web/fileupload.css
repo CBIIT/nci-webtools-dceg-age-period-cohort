@@ -1,0 +1,50 @@
+body{
+    /*margin: 5px;*/
+    /* line-height: 200%; */
+}
+
+.logo {
+    width: 200px;
+}
+
+.glyphicon {
+    font-size: 12px;
+}
+
+#wrapper {
+    margin-top: 10px;
+    border: 1px #e4e4e4 solid;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 6px #ccc;
+    background-color: #fff;
+}
+
+#fileSelect {
+    border: 1px #e4e4e4 solid;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 2px #ccc;
+    line-height: 160%;
+    width: 100%;
+}
+
+#progressDiv {
+    margin-top: 10px;
+    display: none;
+}
+
+#resultDiv {    
+    margin-top: 10px;
+    display: none;
+}
+
+#emailForm {
+    margin-top: 10px;
+    display: none;
+}
+
+#queueResultDiv {
+    margin-top: 10px;
+    display: none;
+}
