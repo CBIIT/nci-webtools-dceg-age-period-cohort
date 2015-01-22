@@ -7,9 +7,12 @@ package gov.nih.nci.soccer;
 
 import gov.nih.cit.soccer.Soccer;
 import gov.nih.cit.soccer.input.InputFormatException;
-import gov.nih.nci.queue.utils.FileUtil;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,6 +55,24 @@ public class SoccerServiceHelper {
         // TODO: This is just a simulation for now.
         // Invoke algorithm or invoke command line.
         //
-        new FileUtil().copyFileTo(absoluteInputFileName, absoluteOutputFileName);
+        InputStream inStream;
+        OutputStream outStream;
+
+        try {
+            inStream = new FileInputStream(new File(absoluteInputFileName));
+            outStream = new FileOutputStream(new File(absoluteOutputFileName));
+
+            byte[] buffer = new byte[1024];
+            int length;
+            //copy the file content in bytes 
+            while ((length = inStream.read(buffer)) > 0) {
+                outStream.write(buffer, 0, length);
+            }
+
+            inStream.close();
+            outStream.close();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Caught IOException! {0}", new Object[]{e.getMessage()});
+        }
     }
 }
