@@ -24,18 +24,33 @@ $(document).ready(function() {
 
 	$("#cohort_select").on("change", change_cohort_select);
 	$("#covariate_select").on("change", change_covariate_select);
-	
+	$("#calculate").on("click", show_graph);
+
 });
+
+
+function show_graph() {
+
+	$("#spinner").show();
+
+	setTimeout(function(){
+			$("#spinner").hide();
+			$("#plot").fadeIn();
+
+
+	}, 3000);
+
+}
 
 function load_files() {
 	parameter_data = read_dic_file();
-	
+
 }
 
 function read_dic_file() {
 	var file_control = document.getElementById('file_control').files[0];
 	var reader = new FileReader();
-	
+
 	reader.onload = function(e) {
 	  var text = reader.result;
 	  control_data = JSON.parse(text);
@@ -44,12 +59,12 @@ function read_dic_file() {
 	  parse_cohort_covariance_variables();
 	  build_parameter_column();
 	}
-	
+
 	reader.readAsText(file_control, "UTF-8");
 }
 
 function build_parameter_column() {
-	
+
 	set_year_of_diagnosis_select();
 	set_cohort_select(Object.keys(cohort_covariance_variables));
 	var covariate_options = Object.keys(cohort_covariance_variables);
@@ -65,21 +80,21 @@ function parse_diagnosis_years() {
 
 	// Then we need to read the label for the previous row, this will be the name used for the title,
 	// it will ALSO be the value in the array needed to find the years
-	
+
 	var diagnosis_label = 'unknown';
 	if (diagnosis_row > 2) {
 		diagnosis_label = control_data.VarAllInfo.ItemValueInDic[diagnosis_row-1];
-	}	
-	
+	}
+
 	year_of_diagnosis_title = diagnosis_label;
 	years = control_data.VarFormatSecList[diagnosis_label].ItemValueInDic;
-	
-//	alert(JSON.stringify(years));	
+
+//	alert(JSON.stringify(years));
 //	alert (control_data.VarAllInfo.ItemNameInDic[0]+"->"+control_data.VarAllInfo.ItemValueInDic[0]);
 }
 
 function parse_cohort_covariance_variables() {
-	
+
 	// First find the variables
 	//  They are everything between the Page type and Year Of Diagnosis Label (noninclusive) with the VarName attribute
 
@@ -100,7 +115,7 @@ function get_cohort_covariance_variable_names() {
 
 	var regex_base = /^Var\d*Base/;
 	var regex_name = /^Var\d*Name/;
-	
+
 	for (var i=0; i<names.length; i++) {
 		if (regex_base.test(names[i]) && values[i] == "Year of diagnosis") break;
 		if (!regex_name.test(names[i])) continue;
@@ -126,7 +141,7 @@ function find_year_of_diagnosis_row() {
 
 function set_year_of_diagnosis_select() {
 	$("#diagnosis_title").empty().append(year_of_diagnosis_title);
-	
+
 	for (i=0;i<years.length;i++) {
 		$("#year_of_diagnosis_start").append("<OPTION>"+years[i]+"</OPTION>");
 		$("#year_of_diagnosis_end").append("<OPTION>"+years[i]+"</OPTION>");
@@ -136,7 +151,7 @@ function set_cohort_select(cohort_options) {
 	var max_size = 4;
 	if (cohort_options.length < 4) max_size = cohort_options.length
 	$("#cohort_select").attr("size", max_size);
-	
+
 	$("#cohort_select").empty();
 	for (i=0;i<cohort_options.length;i++) {
 		$("#cohort_select").append("<OPTION>"+cohort_options[i]+"</OPTION>");
@@ -147,7 +162,7 @@ function set_covariate_select(covariate_options) {
 	var max_size = 4;
 	if (covariate_options.length < 4) max_size = covariate_options.length
 	$("#covariate_select").attr("size", max_size);
-	
+
 	$("#covariate_select").empty();
 	for (i=0;i<covariate_options.length;i++) {
 		$("#covariate_select").append("<OPTION>"+covariate_options[i]+"</OPTION>");
@@ -159,7 +174,7 @@ function change_cohort_select() {
 	var all_selected = $("#cohort_select").val();
 
 	var keys =  Object.keys(cohort_covariance_variables);
-	
+
 	$("#cohort_sub_select").empty();
 	if (all_selected != null) {
 		for (var i=0;i<all_selected.length;i++) {
@@ -174,17 +189,17 @@ function change_cohort_select() {
 	}
 	covariate_options.unshift("None");
 	set_covariate_select(covariate_options);
-	
+
 }
 
 function remove_items_from_set(big_set, removed_set) {
 	var new_set = [];
-	
+
 	for (i=0;i<big_set.length;i++) {
 		if ($.inArray(big_set[i], removed_set) == -1) new_set.push(big_set[i]);
 	}
-	
-//	alert ("BigSet: " + JSON.stringify(big_set) 
+
+//	alert ("BigSet: " + JSON.stringify(big_set)
 //		 + "\nRemoved Set: " + JSON.stringify(removed_set)
 //		 + "\nNew Set: " + JSON.stringify(new_set)
 //		);
@@ -195,8 +210,8 @@ function change_covariate_select() {
 	var all_selected = $("#covariate_select").val();
 	var keys =  Object.keys(cohort_covariance_variables);
 
-	$("#covariate_sub_select").empty();	
-	
+	$("#covariate_sub_select").empty();
+
 	for (var i=0;i<all_selected.length;i++) {
 		for (var j=0;j<keys.length;j++) {
 			if (all_selected[i] == keys[j])
@@ -212,7 +227,7 @@ function add_cohort_covariance_variable_select(field, variable_name, variable_ti
 	}
 	field.append($("<DIV class='sub_select'>")
 		.append("&nbsp;&nbsp;" + variable_title + " : ")
-		.append(variable_select));	
+		.append(variable_select));
 
 }
 

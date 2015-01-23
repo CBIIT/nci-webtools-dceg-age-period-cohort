@@ -2,27 +2,23 @@ table {
 	border-collapse:collapse;
 }
 
-.upload-pane{ 
-	background-color:#DDD;
-	width: 250px; 
+.upload-pane{
+	width: 250px;
+	height:auto;
+}
+
+.parameters-pane{
+	width: 250px;
+	min-height:400px;
 	height:auto;
 	padding:5px;
 }
-.parameters-pane{ 
-	background-color:#DDD;
-	width: 250px;
-	min-height:400px;
-	height:auto; 
-	padding:5px;
-}
 .output-pane{
-	vertical-align:top; 
-	background-color:#EEE;
+	vertical-align:top;
 	width:auto;
-	min-width:400px;
+	min-width:300px;
 	min-height:400px;
-	height:auto; 
-	padding:5px;
+	height:auto;
 }
 
 H2 {
@@ -38,4 +34,40 @@ H2 {
 .table_title {
 	padding:0px;
 	margin:0px;
+}
+
+#banners {
+		margin-top:15px;
+}
+
+.jumbotron {
+		background-color: white;
+}
+
+body {
+    color: #444;
+    font-family: arial;
+		line-height: 1.1;
+		font-size: 12px;
+		font-family: Arial,Helvetica,sans-serif;
+}
+
+.jumbotron p {
+		font-size: 14px;
+}
+
+.plot-container {
+		padding:200px 25px;
+		margin-left:40px;
+}
+.tab-content {
+    background: none repeat scroll 0 0 white;
+    border-color: #d9d9d9;
+    border-radius: 0 0 4px 4px;
+    border-style: solid;
+    border-width: 0 1px 1px;
+    min-height: 600px;
+    overflow: hidden;
+    padding: 10px;
+    width: 100%;
 }
