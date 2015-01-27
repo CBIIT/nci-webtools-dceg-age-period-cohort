@@ -9,6 +9,7 @@ DrawCompRecVarkSensSpec <- function(k,sens,spec,prev,N) {
   LTY <- Iterations
   
   for(i in Iterations){
+    
     dppvdsens <- prev*(1-spec)*(1-prev)/(sens[i]*prev+(1-spec)*(1-prev))^2
     dppvdspec <- prev*(1-prev)*sens[i]/(sens[i]*prev+(1-spec)*(1-prev))^2
     varsens <- sens[i]*(1-sens[i])/(K*N)
@@ -17,11 +18,27 @@ DrawCompRecVarkSensSpec <- function(k,sens,spec,prev,N) {
     varppvk <- dppvdsens^2*(sens[i]*(1-sens[i])/(0.5*N))+dppvdspec^2*(spec*(1-spec)/((1-0.5)*N))
     compare <- ((1/varppv)/(1/varppvk))^2-1
     
-    for(n in 1:length(compare)) {
-      if(compare[n] == max(compare)) {
-        vals[i] <- K[n]
-        list[i] <- compare[n]
-      }
+    if((sens[i]+spec-1) == 0) {
+      vals[i] <- 0.5
+      dppvdsens[i] <- prev*(1-spec)*(1-prev)/(sens[i]*prev+(1-spec)*(1-prev))^2
+      dppvdspec[i] <- prev*(1-prev)*sens[i]/(sens[i]*prev+(1-spec)*(1-prev))^2
+      varsens[i] <- sens[i]*(1-sens[i])/(vals[i]*N)
+      varspec[i] <- spec*(1-spec)/((1-vals[i])*N)
+      varppv[i] <- dppvdsens[i]^2*varsens[i]+dppvdspec[i]^2*varspec[i]
+      varppvk[i] <- dppvdsens[i]^2*(sens[i]*(1-sens[i])/(0.5*N))+dppvdspec[i]^2*(spec*(1-spec)/((1-0.5)*N))
+      list[i] <- ((1/varppv[i])/(1/varppvk[i]))^2-1
+    }
+    
+    else {    
+      vals[i] <- (1-sens[i])*(1-spec)*(-1+sqrt(1+(sens[i]+spec-1)/((1-sens[i])*(1-spec))))/(sens[i]+spec-1)
+      vals[i] <- round(vals[i],5)
+      dppvdsens[i] <- prev*(1-spec)*(1-prev)/(sens[i]*prev+(1-spec)*(1-prev))^2
+      dppvdspec[i] <- prev*(1-prev)*sens[i]/(sens[i]*prev+(1-spec)*(1-prev))^2
+      varsens[i] <- sens[i]*(1-sens[i])/(vals[i]*N)
+      varspec[i] <- spec*(1-spec)/((1-vals[i])*N)
+      varppv[i] <- dppvdsens[i]^2*varsens[i]+dppvdspec[i]^2*varspec[i]
+      varppvk[i] <- dppvdsens[i]^2*(sens[i]*(1-sens[i])/(0.5*N))+dppvdspec[i]^2*(spec*(1-spec)/((1-0.5)*N))
+      list[i] <- ((1/varppv[i])/(1/varppvk[i]))^2-1
     }
     
     if(i==1) {
@@ -35,7 +52,7 @@ DrawCompRecVarkSensSpec <- function(k,sens,spec,prev,N) {
       points(y=list[i],x=vals[i],pch=LTY[i],col=LTY[i],cex=1.5,lwd=2)
   }
   legend(pch=LTY,legend=vals,"topright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="o",inset=c(-0.5,0),xpd = TRUE,title="Optimal k values")
-  legend(lty=LTY,legend=sens,"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,title="Sensitivity")
+  legend(lty=LTY,legend=sens,"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="o",inset=c(-0.5,0),xpd = TRUE,title="Sensitivity")
 }
 
 DrawCompRecVarkSpecSens <- function(k,spec,sens,prev,N) {
@@ -49,6 +66,7 @@ DrawCompRecVarkSpecSens <- function(k,spec,sens,prev,N) {
   LTY <- Iterations
   
   for(i in Iterations){
+    
     dppvdsens <- prev*(1-spec[i])*(1-prev)/(sens*prev+(1-spec[i])*(1-prev))^2
     dppvdspec <- prev*(1-prev)*sens/(sens*prev+(1-spec[i])*(1-prev))^2
     varsens <- sens*(1-sens)/(K*N)
@@ -57,11 +75,27 @@ DrawCompRecVarkSpecSens <- function(k,spec,sens,prev,N) {
     varppvk <- dppvdsens^2*(sens*(1-sens)/(0.5*N))+dppvdspec^2*(spec[i]*(1-spec[i])/((1-0.5)*N))
     compare <- ((1/varppv)/(1/varppvk))^2-1
     
-    for(n in 1:length(compare)) {
-      if(compare[n] == max(compare)) {
-        vals[i] <- K[n]
-        list[i] <- compare[n]
-      }
+    if((sens+spec[i]-1) == 0) {
+      vals[i] <- 0.5
+      dppvdsens[i] <- prev*(1-spec[i])*(1-prev)/(sens*prev+(1-spec[i])*(1-prev))^2
+      dppvdspec[i] <- prev*(1-prev)*sens/(sens*prev+(1-spec[i])*(1-prev))^2
+      varsens[i] <- sens*(1-sens)/(vals[i]*N)
+      varspec[i] <- spec[i]*(1-spec[i])/((1-vals[i])*N)
+      varppv[i] <- dppvdsens[i]^2*varsens[i]+dppvdspec[i]^2*varspec[i]
+      varppvk[i] <- dppvdsens[i]^2*(sens*(1-sens)/(0.5*N))+dppvdspec[i]^2*(spec[i]*(1-spec[i])/((1-0.5)*N))
+      list[i] <- ((1/varppv[i])/(1/varppvk[i]))^2-1
+    }
+    
+    else {    
+      vals[i] <- (1-sens)*(1-spec[i])*(-1+sqrt(1+(sens+spec[i]-1)/((1-sens)*(1-spec[i]))))/(sens+spec[i]-1)
+      vals[i] <- round(vals[i],5)
+      dppvdsens[i] <- prev*(1-spec[i])*(1-prev)/(sens*prev+(1-spec[i])*(1-prev))^2
+      dppvdspec[i] <- prev*(1-prev)*sens/(sens*prev+(1-spec[i])*(1-prev))^2
+      varsens[i] <- sens*(1-sens)/(vals[i]*N)
+      varspec[i] <- spec[i]*(1-spec[i])/((1-vals[i])*N)
+      varppv[i] <- dppvdsens[i]^2*varsens[i]+dppvdspec[i]^2*varspec[i]
+      varppvk[i] <- dppvdsens[i]^2*(sens*(1-sens)/(0.5*N))+dppvdspec[i]^2*(spec[i]*(1-spec[i])/((1-0.5)*N))
+      list[i] <- ((1/varppv[i])/(1/varppvk[i]))^2-1
     }
     
     
@@ -90,6 +124,7 @@ DrawCompRecVarcNPVkSpecSens <- function(k,spec,sens,prev,N) {
   LTY <- Iterations
   
   for(i in Iterations){
+    
     dcnpvdsens <-(prev/(1-prev))*(-1/spec[i])/(1+(prev/(1-prev))*(1-sens)/spec[i])^2 
     dcnpvdspec <-(prev/(1-prev))*(-(1-sens)/spec[i]^2)/(1+(prev/(1-prev))*(1-sens)/spec[i])^2 
     varsens <- sens*(1-sens)/(K*N)
@@ -98,11 +133,27 @@ DrawCompRecVarcNPVkSpecSens <- function(k,spec,sens,prev,N) {
     varcnpvk <- dcnpvdsens^2*(sens*(1-sens)/(0.5*N))+dcnpvdspec^2*(spec[i]*(1-spec[i])/((1-0.5)*N))
     compare <- ((1/varcnpv)/(1/varcnpvk))^2-1
     
-    for(n in 1:length(compare)) {
-      if(compare[n] == max(compare)) {
-        vals[i] <- K[n]
-        list[i] <- compare[n]
-      }
+    if((sens+spec[i]-1) == 0) {
+      vals[i] <- 0.5
+      dcnpvdsens[i] <-(prev/(1-prev))*(-1/spec[i])/(1+(prev/(1-prev))*(1-sens)/spec[i])^2 
+      dcnpvdspec[i] <-(prev/(1-prev))*(-(1-sens)/spec[i]^2)/(1+(prev/(1-prev))*(1-sens)/spec[i])^2 
+      varsens[i] <- sens*(1-sens)/(vals[i]*N)
+      varspec[i] <- spec[i]*(1-spec[i])/((1-vals[i])*N)
+      varcnpv[i] <- dcnpvdsens[i]^2*varsens[i]+dcnpvdspec[i]^2*varspec[i]
+      varcnpvk[i] <- dcnpvdsens[i]^2*(sens*(1-sens)/(0.5*N))+dcnpvdspec[i]^2*(spec[i]*(1-spec[i])/((1-0.5)*N))
+      list[i] <- ((1/varcnpv[i])/(1/varcnpvk[i]))^2-1
+    }
+    
+    else {    
+      vals[i] <- sens*spec[i]*(1-sqrt(1-(sens+spec[i]-1)/(sens*spec[i])))/(sens+spec[i]-1)
+      vals[i] <- round(vals[i],5)
+      dcnpvdsens[i] <-(prev/(1-prev))*(-1/spec[i])/(1+(prev/(1-prev))*(1-sens)/spec[i])^2 
+      dcnpvdspec[i] <-(prev/(1-prev))*(-(1-sens)/spec[i]^2)/(1+(prev/(1-prev))*(1-sens)/spec[i])^2 
+      varsens[i] <- sens*(1-sens)/(vals[i]*N)
+      varspec[i] <- spec[i]*(1-spec[i])/((1-vals[i])*N)
+      varcnpv[i] <- dcnpvdsens[i]^2*varsens[i]+dcnpvdspec[i]^2*varspec[i]
+      varcnpvk[i] <- dcnpvdsens[i]^2*(sens*(1-sens)/(0.5*N))+dcnpvdspec[i]^2*(spec[i]*(1-spec[i])/((1-0.5)*N))
+      list[i] <- ((1/varcnpv[i])/(1/varcnpvk[i]))^2-1
     }
     
     if(i==1) {
@@ -116,7 +167,7 @@ DrawCompRecVarcNPVkSpecSens <- function(k,spec,sens,prev,N) {
       points(y=list[i],x=vals[i],pch=LTY[i],col=LTY[i],cex=1.5,lwd=2)
   }
   legend(pch=LTY,legend=vals,"topright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="o",inset=c(-0.5,0),xpd = TRUE,title="Optimal k values")
-  legend(lty=LTY,legend=spec,"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,title="Specificity")
+  legend(lty=LTY,legend=spec,"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="o",inset=c(-0.5,0),xpd = TRUE,title="Specificity")
 }
 
 DrawCompRecVarcNPVkSensSpec <- function(k,sens,spec,prev,N) {
@@ -130,6 +181,7 @@ DrawCompRecVarcNPVkSensSpec <- function(k,sens,spec,prev,N) {
   LTY <- Iterations
   
   for(i in Iterations){
+    
     dcnpvdsens <-(prev/(1-prev))*(-1/spec)/(1+(prev/(1-prev))*(1-sens[i])/spec)^2 
     dcnpvdspec <-(prev/(1-prev))*(-(1-sens[i])/spec^2)/(1+(prev/(1-prev))*(1-sens[i])/spec)^2 
     varsens <- sens[i]*(1-sens[i])/(K*N)
@@ -138,12 +190,29 @@ DrawCompRecVarcNPVkSensSpec <- function(k,sens,spec,prev,N) {
     varcnpvk <- dcnpvdsens^2*(sens[i]*(1-sens[i])/(0.5*N))+dcnpvdspec^2*(spec*(1-spec)/((1-0.5)*N))
     compare <- ((1/varcnpv)/(1/varcnpvk))^2-1
     
-    for(n in 1:length(compare)) {
-      if(compare[n] == max(compare)) {
-        vals[i] <- K[n]
-        list[i] <- compare[n]
-      }
+    if((sens[i]+spec-1) == 0) {
+      vals[i] <- 0.5
+      dcnpvdsens[i] <-(prev/(1-prev))*(-1/spec)/(1+(prev/(1-prev))*(1-sens[i])/spec)^2 
+      dcnpvdspec[i] <-(prev/(1-prev))*(-(1-sens[i])/spec^2)/(1+(prev/(1-prev))*(1-sens[i])/spec)^2 
+      varsens[i] <- sens[i]*(1-sens[i])/(vals[i]*N)
+      varspec[i] <- spec*(1-spec)/((1-vals[i])*N)
+      varcnpv[i] <- dcnpvdsens[i]^2*varsens[i]+dcnpvdspec[i]^2*varspec[i]
+      varcnpvk[i] <- dcnpvdsens[i]^2*(sens[i]*(1-sens[i])/(0.5*N))+dcnpvdspec[i]^2*(spec*(1-spec)/((1-0.5)*N))
+      list[i] <- ((1/varcnpv[i])/(1/varcnpvk[i]))^2-1
     }
+    
+    else {
+      vals[i] <- sens[i]*spec*(1-sqrt(1-(sens[i]+spec-1)/(sens[i]*spec)))/(sens[i]+spec-1)
+      vals[i] <- round(vals[i],5)
+      dcnpvdsens[i] <-(prev/(1-prev))*(-1/spec)/(1+(prev/(1-prev))*(1-sens[i])/spec)^2 
+      dcnpvdspec[i] <-(prev/(1-prev))*(-(1-sens[i])/spec^2)/(1+(prev/(1-prev))*(1-sens[i])/spec)^2 
+      varsens[i] <- sens[i]*(1-sens[i])/(vals[i]*N)
+      varspec[i] <- spec*(1-spec)/((1-vals[i])*N)
+      varcnpv[i] <- dcnpvdsens[i]^2*varsens[i]+dcnpvdspec[i]^2*varspec[i]
+      varcnpvk[i] <- dcnpvdsens[i]^2*(sens[i]*(1-sens[i])/(0.5*N))+dcnpvdspec[i]^2*(spec*(1-spec)/((1-0.5)*N))
+      list[i] <- ((1/varcnpv[i])/(1/varcnpvk[i]))^2-1
+    }
+    
     
     if(i==1) {
       par(mar=c(5.1, 4.1, 5.1, 9.5))
@@ -156,5 +225,5 @@ DrawCompRecVarcNPVkSensSpec <- function(k,sens,spec,prev,N) {
       points(y=list[i],x=vals[i],pch=LTY[i],col=LTY[i],cex=1.5,lwd=2)
   }
   legend(pch=LTY,legend=vals,"topright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="o",inset=c(-0.5,0),xpd = TRUE,title="Optimal k values")
-  legend(lty=LTY,legend=sens,"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="o",inset=c(-0.4,0),xpd = TRUE,title="Sensitivity")
+  legend(lty=LTY,legend=sens,"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="o",inset=c(-0.5,0),xpd = TRUE,title="Sensitivity")
 }
