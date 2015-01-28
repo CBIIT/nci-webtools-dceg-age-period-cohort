@@ -51,7 +51,7 @@ DrawCompRecVarkSensSpec <- function(k,sens,spec,prev,N) {
       lines(y=compare, x=K,lty=LTY[i], lwd=3,col = LTY[i])
       points(y=list[i],x=vals[i],pch=LTY[i],col=LTY[i],cex=1.5,lwd=2)
   }
-  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(LTY,rep(NA,length(LTY))),legend=c(vals,sens),"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="n",inset=c(-1.05,0),xpd = TRUE,title="Optimal k    Sensitivity",ncol=2)
+  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(LTY,rep(NA,length(LTY))),legend=c(sens,round(vals,2)),"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="n",inset=c(-0.8,0),xpd = TRUE,title="Sensitivity    Optimal k",ncol=2)
 }
 
 DrawCompRecVarkSpecSens <- function(k,spec,sens,prev,N) {
@@ -108,7 +108,7 @@ DrawCompRecVarkSpecSens <- function(k,spec,sens,prev,N) {
       lines(y=compare, x=K,lty=LTY[i], col = LTY[i],lwd=3)
       points(y=list[i],x=vals[i],pch=LTY[i],col=LTY[i],cex=1.5,lwd=2)
   }
-  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(LTY,rep(NA,length(LTY))),legend=c(vals,spec),"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="n",inset=c(-1.05,0),xpd = TRUE,title="Optimal k    Specificity",ncol=2)
+  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(LTY,rep(NA,length(LTY))),legend=c(spec,round(vals,2)),"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="n",inset=c(-0.8,0),xpd = TRUE,title="Specificity    Optimal k",ncol=2)
 }
 
 DrawCompRecVarcNPVkSpecSens <- function(k,spec,sens,prev,N) {
@@ -164,7 +164,7 @@ DrawCompRecVarcNPVkSpecSens <- function(k,spec,sens,prev,N) {
       lines(y=compare, x=K,lty=LTY[i], col = LTY[i],lwd=3)
       points(y=list[i],x=vals[i],pch=LTY[i],col=LTY[i],cex=1.5,lwd=2)
   }
-  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(LTY,rep(NA,length(LTY))),legend=c(vals,spec),"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="n",inset=c(-1.05,0),xpd = TRUE,title="Optimal k    Specificity",ncol=2)
+  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(LTY,rep(NA,length(LTY))),legend=c(spec,round(vals,2)),"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="n",inset=c(-0.8,0),xpd = TRUE,title="Specificity    Optimal k",ncol=2)
 }
 
 DrawCompRecVarcNPVkSensSpec <- function(k,sens,spec,prev,N) {
@@ -221,5 +221,5 @@ DrawCompRecVarcNPVkSensSpec <- function(k,sens,spec,prev,N) {
       lines(y=compare, x=K,lty=LTY[i], col = LTY[i],lwd=3)
       points(y=list[i],x=vals[i],pch=LTY[i],col=LTY[i],cex=1.5,lwd=2)
   }
-  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(LTY,rep(NA,length(LTY))),legend=c(vals,sens),"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="n",inset=c(-1.05,0),xpd = TRUE,title="Optimal k    Sensitivity",ncol=2)
+  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(LTY,rep(NA,length(LTY))),legend=c(sens,round(vals,2)),"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="n",inset=c(-0.8,0),xpd = TRUE,title="Sensitivity    Optimal k",ncol=2)
 }
