@@ -1,5 +1,5 @@
 library('RJSONIO');
-library(JPSurv);
+library('JPSurv');
 
 # Make sure the working directory is set to where the dictionary file is saved.
 
