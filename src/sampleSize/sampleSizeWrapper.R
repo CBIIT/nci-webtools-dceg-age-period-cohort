@@ -1,4 +1,4 @@
-source ('./DrawCompReVark.R')
+source ('./DrawCompRecVark.R')
 
 #example input values
 k=c(0,1)
