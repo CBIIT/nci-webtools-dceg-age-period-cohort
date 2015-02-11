@@ -109,6 +109,14 @@ function get_cohort_covariance_variable_names() {
 	//var names = control_data.VarAllInfo.ItemNameInDic;
 	var form_data = get_form_data();
 	var names = form_data[0].VarAllInfo.ItemNameInDic;
+
+	//Put answer in footer
+	/*
+	$('#footer_output')
+			.append(
+				$('<div>').append(JSON.stringify(form_data[0]))
+			);
+	*/
 	var values = form_data[0].VarAllInfo.ItemValueInDic;
 	var regex_base = /^Var\d*Base/;
 	var regex_name = /^Var\d*Name/;

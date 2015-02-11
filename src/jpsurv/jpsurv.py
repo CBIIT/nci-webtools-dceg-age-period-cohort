@@ -215,6 +215,31 @@ def test():
     else:
         return "415 Unsupported Media Type ;)"
 
+@app.route('/jpsurvRest/upload', methods=['GET', 'POST'])
+def upload():
+    print "Processing upload"
+    path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp"
+    print dir(request)
+
+    if request.method == 'POST':
+        file = request.files['file_control']
+        if file and file.filename:
+            filename = secure_filename(file.filename)
+            print filename
+            file.save(os.path.join(path, filename))
+            #return redirect(url_for('uploaded_file', filename=filename))
+            #return "<h2>File Uploaded</h2>"
+
+    #rSource = robjects.r('source')
+    #rSource('./JPSurvWrapper.R')
+    #r_getname_getData = robjects.globalenv['getDataJSON']
+
+    #rec = Photo(filename=filename, user=g.user.id)
+    #rec.store()
+    #flash("Photo saved.")
+    #return redirect(url_for('show', id=rec.id))
+    #return render_template('upload.html')
+    return redirect("http://analysistools-dev.nci.nih.gov/jpsurv-ck/")
 
 import argparse
 if __name__ == '__main__':
