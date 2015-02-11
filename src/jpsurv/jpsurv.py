@@ -1,248 +1,229 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
+#!flask/bin/python
+from flask import Flask, render_template, Response, abort, request, make_response, url_for, jsonify, redirect
+from functools import wraps
+from flask import current_app
 
-<html class="no-js">
-<!--<![endif]-->
+import cgi
+import shutil
+#!flask/bin/python
+from flask import Flask, render_template, Response, abort, request, make_response, url_for, jsonify, redirect
+from functools import wraps
+from flask import current_app
 
-<head>
-<meta name="generator"
-  content="HTML Tidy for Windows (vers 18 June 2008), see www.w3.org">
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="author" content="">
+import cgi
+import shutil
+import os
+from xml.sax.saxutils import escape, unescape
+from socket import gethostname
+import json
+import pandas as pd
+import numpy as np
+from pandas import DataFrame
+import urllib
+#from LDpair import calculate_pair
+#from LDproxy import calculate_proxy
+#from LDmatrix import calculate_matrix
+#from LDhap import calculate_hap
 
-<title>JPSurv</title>
-<!--
-<link rel="/LDlink/shortcut icon" href="LD.ico" >
--->
-<link rel="stylesheet"
-  href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"
-  type="text/css">
-<!--
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ladda-bootstrap/0.9.4/ladda-themeless.min.css" type="text/css">
- -->
- <!--
-<link rel="stylesheet"
-  href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"
-  type="text/css">
-  -->
-<link rel="stylesheet" href="../common/css/font-awesome.css"
-  type="text/css">
-<link rel="stylesheet" href="../common/css/style.css" type="text/css">
-<link rel="stylesheet" href="jpsurv.css" type="text/css">
+#import os
+#from flask import Flask, request, redirect, url_for
+from werkzeug import secure_filename
 
-</head>
+tmp_dir = "./tmp/"
 
-<body role="document">
-    <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
+app = Flask(__name__, static_folder='', static_url_path='/')
+#app.debug = True
 
-  <div id="logos">
-    <div id="left">
-      <a href="http://www.cancer.gov" target="_blank"><img
-        src="/common/images/nci.jpg" width="286" height="40" border="0"
-        alt="National Cancer Institute" title="National Cancer Institute"></a>
-    </div>
+#app = Flask(__name__, static_folder='static', static_url_path='/static')
 
-    <div id="right">
-      <a href="http://www.cancer.gov" target="_blank"><img
-        src="/common/images/nih.jpg" width="322" height="40" border="0"
-        alt="at the National Institutes of Health"
-        title="at the National Institutes of Health"></a>
-    </div>
-  </div>
+@app.route('/')
+def hello_world():
+    return 'Hello World!'
 
-  <div class="container theme-showcase" role="main">
+# copy output files from tools' tmp directory to apache tmp directory
+def copy_output_files(reference):
+    apache_root = "/analysistools/"
+    # check if URL contains the keyword sandbox
+    if 'sandbox' in request.url_root:
+        apache_root = "/analysistools-sandbox/"
 
-    <div id="banners">
-      <div id="left">
-          <a href="http://cancercontrol.cancer.gov/" target="_blank">
-            <img height="90" alt="Banner for Cancer Control and Population Sciences" src="ccpc-banner.png">
-          </a>
+    apache_tmp_dir = apache_root+"public_html/apps/LDlink/tmp/"
 
-      </div>
-      <div id="right">
-          <a href="http://seer.cancer.gov/" target="_blank">
-            <img height="90" alt="SEER" src="seer_logo.png" class="logo">
-          </a>
-      </div>
-    </div>
-    <div style="clear:both;"></div>
+    # Ensure apache tmp directory exists
+    if not os.path.exists(apache_tmp_dir):
+	os.makedirs(apache_tmp_dir)
 
-    <br><br>
-    <!-- Main Menu Tabs -->
+    #copy *<reference_no>.* to htodocs
+    os.system("cp "+ tmp_dir+"*"+reference+".* "+apache_tmp_dir);
 
-    <ul id="jpsurv-tabs" class="nav nav-tabs responsive">
-      <li class="active"><a href="#home" data-toggle="tab">Home</a></li>
+def index():
+    return render_template('index.html')
 
-      <li><a href="#help-tab" data-toggle="tab">Help</a></li>
+def jsonp(func):
+    """Wraps JSONified output for JSONP requests."""
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        callback = request.args.get('callback', False)
+        if callback:
+            data = str(func(*args, **kwargs).data)
+            content = str(callback) + '(' + data + ')'
+            #mimetype = 'application/javascript'
+            mimetype = 'application/json'
+            return current_app.response_class(content, mimetype=mimetype)
+        else:
+            return func(*args, **kwargs)
+    return decorated_function
 
-    </ul>
-    <!-- Tab Content -->
+@app.route('/jpsurvRest/get_form', methods = ['GET'])
+def get_upload():
+    # python LDpair.py rs2720460 rs11733615 EUR 38
+    mimetype = 'application/json'
 
-    <div class="tab-content">
-      <div class="tab-pane active" id="home">
-<div class="jumbotron">
-        <h3>Welcome to JPSurv!</h3>
-        <p>Upload Data Files to begin.</p>
-<div class="well" style="float:left;width:300px;">
-<table class="container">
-  <tr style="width:250px;">
-    <td class="upload-pane">
-      <P><label for='file_control'>Data Dictionary File: </label>
-          <A style='font-size:small' href='jpsurv.json' download='example.json'>(example)</A>
-          <input type="file" id="file_control"></P>
-      <P><label for='file_data'>Data File: </label><input type="file" id="file_data"></P>
-      <P><INPUT type='submit' id='upload_file_submit' value='Upload Files' ></P>
-    </td>
-  </tr>
-  <tr>
-    <td class="parameters-pane">
-      <div id='parameters' style='display:none'>
-        <P id='diagnosis_title'><P>
-        <P> Range of Diagnosis:<BR>
-        <SELECT id='year_of_diagnosis_start'></SELECT> to <SELECT id='year_of_diagnosis_end'></SELECT></P>
-        <P>Cohort Variables:<BR>
-        <SELECT id='cohort_select' multiple ></SELECT></P>
-        <P id='cohort_sub_select'></P>
-        <P style="clear:both; padding-top:10px;">Covariate Variables:<BR>
-        <SELECT id='covariate_select' multiple></SELECT></P>
-        <P id='covariate_sub_select'></P>
-        <P style="clear:both; padding-top:10px;">Join Points: <SELECT id='join_point_select'><OPTION>1</OPTION><OPTION>2</OPTION><OPTION>3</OPTION><OPTION>4</OPTION></SELECT></P>
-        <P><INPUT type='submit' id='calculate' value='Calculate' ></P>
-      </div>
-   </td>
- </tr>
-</table>
-</div>
+    print
+    print 'Execute jpsurvRest/get_form'
+    print 'Gathering Variables from url'
+    print
+    #out_json = json.dumps(["foo", {"bar":["baz", null, 1.0, 2]}])
+    #my_json = json.dumps([{"Age groups": ["0-49","50-65s","65+"], "Breast stage": ["Localized","Regional","Distant"],"Test group": ["val1","ValTwo","AnotherValue"]}])
+    data =[{'Age groups': ['0-49','50-65s','65+'], 'Breast stage': ['Localized','Regional','Distant'],'Test group': ['val1','ValTwo','AnotherValue']}]
+    data2 = [{"SystemInfo":{"ItemNameInDic":["Output filename","Matrix filename","Database name"],"ItemValueInDic":["h:\\JPsurv\\DataTest\\Breast_RelativeSurvival.txt","h:\\JPsurv\\DataTest\\Breast_RelativeSurvival.ssm","Incidence - SEER 18 Regs Research Data + Hurricane Katrina Impacted Louisiana Cases, Nov 2013 Sub (1973-2011 varying) - Linked To County Attributes - Total U.S., 1969-2012 Counties"]},"SessionOptionInfo":{"ItemNameInDic":["Type","Rate filename","Statistic","SurvivalMethod","SurvivalBeginMonth","SurvivalBeginYear","SurvivalEndMonth","SurvivalEndYear","SurvivalVitalStatus","StudyCutoffDate","LostToFollowupDate","NumberOfIntervals","MonthsPerInterval","RatesDisplayedAs"],"ItemValueInDic":["Survival","U.S. 1970-2009 by individual year (White, Black, Other (AI/API), Ages 0-99, All races for Other Unspec 1991+ and Unknown)","Relative Survival","Actuarial","Month of diagnosis recode","Year of diagnosis","Month of follow-up recode","Year of follow-up recode","Vital status recode (study cutoff used)","12/2011","12/2011","36","12","Percents"]},"ExportOptionInfo":{"ItemNameInDic":["GZipped","Variable format","File format","Field delimiter","Missing character","Fields with delimiter in quotes","Remove thousands separators","Flags included","Variable names included","Column Variables as Stats"],"ItemValueInDic":["false","numeric","DOS/Windows","tab","period","false","true","false","false","false"]},"VarAllInfo":{"ItemNameInDic":["Var1Name","Var2Name","Var2Base","Var3Name","Var3Base","Var4Name","Var4Base","Var5Name","Var6Name","Var7Name","Var8Name","Var9Name","Var10Name","Var11Name","Var12Name","Var13Name","Var14Name","Var15Name","Var16Name","Var17Name","Var18Name"],"ItemValueInDic":["Page type","Age groups","Age recode with <1 year olds","Breast stage","SEER historic stage A","Year of diagnosis 1975+","Year of diagnosis","Interval","Alive at Start","Died","Lost to Followup","Observed Survival (Interval)","Observed Survival (Cum)","Expected Survival (Interval)","Expected Survival (Cum)","Relative Survival (Interval)","Relative Survival (Cum)","Observed SE (Interval)","Observed SE (Cum)","Relative SE (Interval)","Relative SE (Cum)"]},"VarFormatSecList":{"Page type":{"ItemNameInDic":["0","1","2","3","4"],"ItemValueInDic":["Life Page","Summary Page","Z-Statistics Page","Period Life Page","Period Summary Page"]},"Age groups":{"ItemNameInDic":["0","1","2"],"ItemValueInDic":["00-49","45-65s","65+"]},"Breast stage":{"ItemNameInDic":["0","1","2"],"ItemValueInDic":["Localized","Regional","Distant"]},"Year of diagnosis 1975+":{"ItemNameInDic":["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36"],"ItemValueInDic":["1975","1976","1977","1978","1979","1980","1981","1982","1983","1984","1985","1986","1987","1988","1989","1990","1991","1992","1993","1994","1995","1996","1997","1998","1999","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011"]},"Interval":{"ItemNameInDic":["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36"],"ItemValueInDic":["<1 yr","1-<2 yr","2-<3 yr","3-<4 yr","4-<5 yr","5-<6 yr","6-<7 yr","7-<8 yr","8-<9 yr","9-<10 yr","10-<11 yr","11-<12 yr","12-<13 yr","13-<14 yr","14-<15 yr","15-<16 yr","16-<17 yr","17-<18 yr","18-<19 yr","19-<20 yr","20-<21 yr","21-<22 yr","22-<23 yr","23-<24 yr","24-<25 yr","25-<26 yr","26-<27 yr","27-<28 yr","28-<29 yr","29-<30 yr","30-<31 yr","31-<32 yr","32-<33 yr","33-<34 yr","34-<35 yr","35-<36 yr"]}},"VarLabelInfo":{"FirstPart":["Var","Var","Var","Var","Var","Var","Var","Var","Var","Var","Var","Var","Var","Var","Var","Var","Var","Var","Var","Var","Var"],"VarIndex":["1","2","2","3","3","4","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18"],"SecondPart":["Name","Name","Base","Name","Base","Name","Base","Name","Name","Name","Name","Name","Name","Name","Name","Name","Name","Name","Name","Name","Name"],"LabelValue":["Page type","Age groups","Age recode with <1 year olds","Breast stage","SEER historic stage A","Year of diagnosis 1975+","Year of diagnosis","Interval","Alive at Start","Died","Lost to Followup","Observed Survival (Interval)","Observed Survival (Cum)","Expected Survival (Interval)","Expected Survival (Cum)","Relative Survival (Interval)","Relative Survival (Cum)","Observed SE (Interval)","Observed SE (Cum)","Relative SE (Interval)","Relative SE (Cum)"]},"VarWithoutFormatItem":["Alive at Start","Died","Lost to Followup","Observed Survival (Interval)","Observed Survival (Cum)","Expected Survival (Interval)","Expected Survival (Cum)","Relative Survival (Interval)","Relative Survival (Cum)","Observed SE (Interval)","Observed SE (Cum)","Relative SE (Interval)","Relative SE (Cum)"]}]
+    data3 = [{  "SystemInfo": {    "ItemNameInDic": [      "Output filename",      "Matrix filename",      "Database name"    ],    "ItemValueInDic": [      "h:\\JPsurv\\DataTest\\Breast_RelativeSurvival.txt",      "h:\\JPsurv\\DataTest\\Breast_RelativeSurvival.ssm",      "Incidence - SEER 18 Regs Research Data + Hurricane Katrina Impacted Louisiana Cases, Nov 2013 Sub (1973-2011 varying) - Linked To County Attributes - Total U.S., 1969-2012 Counties"    ]  },  "SessionOptionInfo": {    "ItemNameInDic": [      "Type",      "Rate filename",      "Statistic",      "SurvivalMethod",      "SurvivalBeginMonth",      "SurvivalBeginYear",      "SurvivalEndMonth",      "SurvivalEndYear",      "SurvivalVitalStatus",      "StudyCutoffDate",      "LostToFollowupDate",      "NumberOfIntervals",      "MonthsPerInterval",      "RatesDisplayedAs"    ],    "ItemValueInDic": [      "Survival",      "U.S. 1970-2009 by individual year (White, Black, Other (AI\/API), Ages 0-99, All races for Other Unspec 1991+ and Unknown)",      "Relative Survival",      "Actuarial",      "Month of diagnosis recode",      "Year of diagnosis",      "Month of follow-up recode",      "Year of follow-up recode",      "Vital status recode (study cutoff used)",      "12\/2011",      "12\/2011",      "36",      "12",      "Percents"    ]  },  "ExportOptionInfo": {    "ItemNameInDic": [      "GZipped",      "Variable format",      "File format",      "Field delimiter",      "Missing character",      "Fields with delimiter in quotes",      "Remove thousands separators",      "Flags included",      "Variable names included",      "Column Variables as Stats"    ],    "ItemValueInDic": [      "false",      "numeric",      "DOS\/Windows",      "tab",      "period",      "false",      "true",      "false",      "false",      "false"    ]  },  "VarAllInfo": {    "ItemNameInDic": [      "Var1Name",      "Var2Name",      "Var2Base",      "Var3Name",      "Var3Base",      "Var4Name",      "Var4Base",      "Var5Name",      "Var6Name",      "Var7Name",      "Var8Name",      "Var9Name",      "Var10Name",      "Var11Name",      "Var12Name",      "Var13Name",      "Var14Name",      "Var15Name",      "Var16Name",      "Var17Name",      "Var18Name"    ],    "ItemValueInDic": [      "Page type",      "Age groups",      "Age recode with <1 year olds",      "Breast stage",      "SEER historic stage A",      "Year of diagnosis 1975+",      "Year of diagnosis",      "Interval",      "Alive at Start",      "Died",      "Lost to Followup",      "Observed Survival (Interval)",      "Observed Survival (Cum)",      "Expected Survival (Interval)",      "Expected Survival (Cum)",      "Relative Survival (Interval)",      "Relative Survival (Cum)",      "Observed SE (Interval)",      "Observed SE (Cum)",      "Relative SE (Interval)",      "Relative SE (Cum)"    ]  },  "VarFormatSecList": {    "Page type": {      "ItemNameInDic": [        "0",        "1",        "2",        "3",        "4"      ],      "ItemValueInDic": [        "Life Page",        "Summary Page",        "Z-Statistics Page",        "Period Life Page",        "Period Summary Page"      ]    },    "Age groups": {      "ItemNameInDic": [        "0",        "1",        "2"      ],      "ItemValueInDic": [        "00-49",        "45-65s",        "65+"      ]    },    "Breast stage": {      "ItemNameInDic": [        "0",        "1",        "2"      ],      "ItemValueInDic": [        "Localized",        "Regional",        "Distant"      ]    },    "Year of diagnosis 1975+": {      "ItemNameInDic": [        "0",        "1",        "2",        "3",        "4",        "5",        "6",        "7",        "8",        "9",        "10",        "11",        "12",        "13",        "14",        "15",        "16",        "17",        "18",        "19",        "20",        "21",        "22",        "23",        "24",        "25",        "26",        "27",        "28",        "29",        "30",        "31",        "32",        "33",        "34",        "35",        "36"      ],      "ItemValueInDic": [        "1975",        "1976",        "1977",        "1978",        "1979",        "1980",        "1981",        "1982",        "1983",        "1984",        "1985",        "1986",        "1987",        "1988",        "1989",        "1990",        "1991",        "1992",        "1993",        "1994",        "1995",        "1996",        "1997",        "1998",        "1999",        "2000",        "2001",        "2002",        "2003",        "2004",        "2005",        "2006",        "2007",        "2008",        "2009",        "2010",        "2011"      ]    },    "Interval": {      "ItemNameInDic": [        "1",        "2",        "3",        "4",        "5",        "6",        "7",        "8",        "9",        "10",        "11",        "12",        "13",        "14",        "15",        "16",        "17",        "18",        "19",        "20",        "21",        "22",        "23",        "24",        "25",        "26",        "27",        "28",        "29",        "30",        "31",        "32",        "33",        "34",        "35",        "36"      ],      "ItemValueInDic": [        "<1 yr",        "1-<2 yr",        "2-<3 yr",        "3-<4 yr",        "4-<5 yr",        "5-<6 yr",        "6-<7 yr",        "7-<8 yr",        "8-<9 yr",        "9-<10 yr",        "10-<11 yr",        "11-<12 yr",        "12-<13 yr",        "13-<14 yr",        "14-<15 yr",        "15-<16 yr",        "16-<17 yr",        "17-<18 yr",        "18-<19 yr",        "19-<20 yr",        "20-<21 yr",        "21-<22 yr",        "22-<23 yr",        "23-<24 yr",        "24-<25 yr",        "25-<26 yr",        "26-<27 yr",        "27-<28 yr",        "28-<29 yr",        "29-<30 yr",        "30-<31 yr",        "31-<32 yr",        "32-<33 yr",        "33-<34 yr",        "34-<35 yr",        "35-<36 yr"      ]    }  },  "VarLabelInfo": {    "FirstPart": [      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var",      "Var"    ],    "VarIndex": [      "1",      "2",      "2",      "3",      "3",      "4",      "4",      "5",      "6",      "7",      "8",      "9",      "10",      "11",      "12",      "13",      "14",      "15",      "16",      "17",      "18"    ],    "SecondPart": [      "Name",      "Name",      "Base",      "Name",      "Base",      "Name",      "Base",      "Name",      "Name",      "Name",      "Name",      "Name",      "Name",      "Name",      "Name",      "Name",      "Name",      "Name",      "Name",      "Name",      "Name"    ],    "LabelValue": [      "Page type",      "Age groups",      "Age recode with <1 year olds",      "Breast stage",      "SEER historic stage A",      "Year of diagnosis 1975+",      "Year of diagnosis",      "Interval",      "Alive at Start",      "Died",      "Lost to Followup",      "Observed Survival (Interval)",      "Observed Survival (Cum)",      "Expected Survival (Interval)",      "Expected Survival (Cum)",      "Relative Survival (Interval)",      "Relative Survival (Cum)",      "Observed SE (Interval)",      "Observed SE (Cum)",      "Relative SE (Interval)",      "Relative SE (Cum)"    ]  },  "VarWithoutFormatItem": [    "Alive at Start",    "Died",    "Lost to Followup",    "Observed Survival (Interval)",    "Observed Survival (Cum)",    "Expected Survival (Interval)",    "Expected Survival (Cum)",    "Relative Survival (Interval)",    "Relative Survival (Cum)",    "Observed SE (Interval)",    "Observed SE (Cum)",    "Relative SE (Interval)",    "Relative SE (Cum)"  ]}]
+    out_json = json.dumps(data3)
 
-<div style="float:left;margin-left:30px;" id="plot-container">
+    return current_app.response_class(out_json, mimetype=mimetype)
 
-    <p id="spinner" style="padding:200px 100px;display:none;"><i class="fa fa-spinner fa-spin fa-2x"></i>
-    <span style="font-weight:bold;font-size:150%;margin-left:15px;">Calculating</span>
-    </p>
-    <div id="plot" style="display:none;">
-        <h2 style="font-size:30px;">Relative Survival</h2>
-        <img src="ExampleJPSurvPlot.png" alt="Uploaded" class="logo" style="width:600px;padding:10px;border:1px solid;margin-top:15px;">
-    </div>
-</div>
+@app.route('/jpsurvRest/hello', methods = ['GET'])
 
-<div style="clear:both;"></div>
-<div id="footer_output" style="border: 1px bold grey">
-  <div>Input Data:</div>
-</div>
+def hello():
+    print
+    print 'Execute hello'
+    print 'Got it work.  How fun.'
+    print 'Get Variables from url'
+    print
 
-</div>
-    </div>
+    return 'Hello, We are the world.'
 
-      <!-- Help -->
-      <div class="tab-pane fade" id="help-tab">
-      <div class="jumbotron">
-<h2>Introduction</h2>
-<p>JPSurv version 2.0 R package is a tool for estimating and presenting survival trend.  It can be used to predict survival in any given year and any time interval.  The tool is built on JPSurv version 1.0 (currently in CRAN).  Version 2.0.1 is still under development thus its function calls can still change and be revised based on the user interface design.</p>
-<p>
-Two statistical methods are implemented:</p>
-<ul>
-<li>joinpoint survival model</li>
-<li>trend measures.</li>
-</ul>
+@app.route('/LDlinkRest/ldmatrix', methods = ['GET'])
+def ldmatrix():
+    # python LDmatrix.py snps.txt EUR 5
+    #http://analysistools-sandbox.nci.nih.gov/LDlinkRest/ldmatrix?pop=EUR&reference=5&snp=sr3
+    #http://analysistools-sandbox.nci.nih.gov/LDlinkRest/ldmatrix?filename=get+from+input&pop=LWK%2BGWD&reference=76178
+    print
+    print 'Execute ldmatrix'
+    print 'Gathering Variables from url'
+
+    snps = request.args.get('snps', False)
+    pop = request.args.get('pop', False)
+    reference = request.args.get('reference', False)
+    print 'snps: ' + snps
+    print 'pop: ' + pop
+    print 'request: ' + reference
+
+    snplst = tmp_dir+'snps'+reference+'.txt'
+    print 'snplst: '+snplst
+
+    f = open(snplst, 'w')
+    f.write(snps)
+    f.close()
+
+    out_script,out_div = calculate_matrix(snplst,pop,reference)
+
+    copy_output_files(reference)
+    return out_script+"\n "+out_div
 
 
-<p>Five types of trend measures are supported:</p>
-<ul>
-<li>Annual percentage changes of hazard</li>
-<li>Annual percentage changes of cumulative relative survival</li>
-<li>Annual changes of cumulative relative survival</li>
-<li>Average annual absolute percent changes</li>
-<li>Average annual relative percent changes</li>
-</ul>
-
-<p>The tool takes in raw data out of SEER*Stat or user defined raw data (not yet supported), maps the raw data into the model data expected by the tool.  The following model data are expected:</p>
-<ul>
-<li>Year of diagnosis: e.g. 1975-2009</li>
-<li>Time Interval: e.g. one year, 2 year, …</li>
-<li>The number of events (e.g. death): for each time interval</li>
-<li>The number of alive: for each time interval</li>
-<li>The number of lost to follow-up: for each time interval</li>
-<li>The expected survival rate: for each time interval</li>
-<li>The observed relative survival rate: for each time interval</li>
-</ul>
-
-</div>
-      </div>
-    </div>
+@app.route('/jpsurvRest/loadform', methods = ['GET'])
+def load():
+    jsondata = '{"Age groups": ["0-49","50-65s","65+"],"Breast stage": ["Localized","Regional","Distant"],"Test group": ["val1","ValTwo","AnotherValue"]}'
+    return json.dump(jsondata)
 
 
-    <div id="portal-footer">
-      <div class="footerLinks">
-        <a href="http://www.cancer.gov/" title="Home" data-toggle="tooltip"
-          data-placement="left">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-          href="mailto:jpsurv-admin@mail.nih.gov?subject=JP Surv"
-          target="_top" title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="http://www.cancer.gov/global/web/policies/accessibility"
-          title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-          href="http://cancer.gov/global/viewing-files" target="_blank"
-          title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-          href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br>
-        <br> <a href="http://www.dhhs.gov/">Department of Health
-          and Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-          href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
-          href="http://www.usa.gov/">USA.gov</a>
-      </div>
-      <br> <br> NIH...Turning Discovery Into Health<sup>&#174;</sup>
-    </div>
-  </div>
+@app.route('/src-ck/jpsurv/form_upload', methods = ['GET'])
+def ldhap():
 
-  <script
-    src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"
-    type="text/javascript">
-  </script>
-  <script
-    src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"
-    type="text/javascript">
+    print
+    print 'Execute ldhap'
 
-    </script>
-  <!-- Modernizr not in use
+    print 'Gathering Variables from url'
 
-Temporarily removing to see if it effects anything.
+    snps = request.args.get('snps', False)
+    pop = request.args.get('pop', False)
+    reference = request.args.get('reference', False)
+    print 'snps: ' + snps
+    print 'pop: ' + pop
+    print 'request: ' + reference
 
-<script
-  src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"
-  type="text/javascript">
-</script>
--->
-  <script
-    src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"
-    type="text/javascript">
+    snplst = tmp_dir+'snps'+reference+'.txt'
+    print 'snplst: '+snplst
 
-    </script>
-  <script
-    src="http://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"
-    type="text/javascript">
+    f = open(snplst, 'w')
+    f.write(snps)
+    f.close()
 
-    </script>
-  <script type="text/javascript"
-    src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js">
+    out_json = calculate_hap(snplst,pop,reference)
+    copy_output_files(reference)
 
-    </script>
+    return out_json
 
-  <script src="jpsurv.js" type="text/javascript">
 
-    </script>
+@app.route('/LDlinkRest/test', methods=['GET', 'POST'])
+def test():
+    print 'In /LDlinkRest/test'
+    print 'request.headers[Content-Type]'
+    print request.headers['Content-Type']
+    print ''
+    print 'request.data'
+    print request.data
+    print 'request.args'
+    print json.dumps(request.args)
 
-<!--
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ladda-bootstrap/0.9.4/ladda.min.js"></script>
+    print 'request.files'
+    print request.files
 
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ladda-bootstrap/0.9.4/spin.min.js"></script>
--->
-  </body>
-</html>
+    print 'request.method'
+    print request.method
+
+    print
+    print 'Execute ldmatrix'
+    print 'Gathering Variables from url'
+    snps = request.args.get('snps', False)
+    #filename = request.args.get('filename', False)
+    pop = request.args.get('pop', False)
+    reference = request.args.get('reference', False)
+    print 'snp: ' + snp
+    print 'pop: ' + pop
+    print 'request: ' + reference
+    print
+    snplst = 'snps2.txt'
+
+    if request.headers['Content-Type'] == 'text/plain':
+        return "Text Message: " + request.data
+
+    elif request.headers['Content-Type'] == 'application/json':
+        return "JSON Message: " + json.dumps(request.json)
+
+    elif request.headers['Content-Type'] == 'application/octet-stream':
+        f = open('./binary', 'wb')
+        f.write(request.data)
+        f.close()
+        return "Binary message written!"
+    elif request.headers['Content-Type'] == 'multipart/form-data':
+        return 'multipart/form-data'
+    elif request.headers['Content-Type'] == 'application/x-www-form-urlencoded':
+        return 'application/x-www-form-urlencoded'
+
+    else:
+        return "415 Unsupported Media Type ;)"
+
+
+import argparse
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", dest="port_number", default="9982", help="Sets the Port")
+    # Default port is production value; prod,stage,dev = 9982, sandbox=9983
+    args = parser.parse_args()
+    port_num = int(args.port_number);
+
+    hostname = gethostname()
+    app.run(host='0.0.0.0', port=port_num, debug = True)
 
