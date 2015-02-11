@@ -10,14 +10,12 @@ var years;
 //	"2010","2011"
 //];
 
-/*
+
 var cohort_covariance_variables = {
 	"Age groups": ["0-49","50-65s","65+"],
 	"Breast stage": ["Localized","Regional","Distant"],
 	"Test group": ["val1","ValTwo","AnotherValue"]
 }
-*/
-var cohort_covariance_variables;
 
 $(document).ready(function() {
 
@@ -43,12 +41,6 @@ function show_graph() {
 
 function load_files() {
 	parameter_data = read_dic_file();
-	cohort_covariance_variables = get_form_data();
-	//Put answer in footer
-	$('#footer_output')
-			.append(
-				$('<div>').append(JSON.stringify(cohort_covariance_variables))
-			);
 }
 
 function read_dic_file() {
@@ -114,9 +106,17 @@ function parse_cohort_covariance_variables() {
 function get_cohort_covariance_variable_names() {
 	var cohort_covariance_variable_names = [];
 
-	var names = control_data.VarAllInfo.ItemNameInDic;
-	var values = control_data.VarAllInfo.ItemValueInDic;
+	//var names = control_data.VarAllInfo.ItemNameInDic;
+	var form_data = get_form_data();
+	var names = form_data[0].VarAllInfo.ItemNameInDic;
 
+	//Put answer in footer
+	$('#footer_output')
+			.append(
+				$('<div>').append(JSON.stringify(form_data[0]))
+			);
+
+	var values = form_data[0].VarAllInfo.ItemValueInDic;
 	var regex_base = /^Var\d*Base/;
 	var regex_name = /^Var\d*Name/;
 
