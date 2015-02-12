@@ -10,12 +10,12 @@ var years;
 //	"2010","2011"
 //];
 
+
 var cohort_covariance_variables = {
 	"Age groups": ["0-49","50-65s","65+"],
 	"Breast stage": ["Localized","Regional","Distant"],
 	"Test group": ["val1","ValTwo","AnotherValue"]
 }
-
 
 $(document).ready(function() {
 
@@ -28,23 +28,19 @@ $(document).ready(function() {
 
 });
 
-
 function show_graph() {
 
 	$("#spinner").show();
+	$("#plot").hide();
 
 	setTimeout(function(){
 			$("#spinner").hide();
 			$("#plot").fadeIn();
-
-
 	}, 3000);
-
 }
 
 function load_files() {
 	parameter_data = read_dic_file();
-
 }
 
 function read_dic_file() {
@@ -110,9 +106,18 @@ function parse_cohort_covariance_variables() {
 function get_cohort_covariance_variable_names() {
 	var cohort_covariance_variable_names = [];
 
-	var names = control_data.VarAllInfo.ItemNameInDic;
-	var values = control_data.VarAllInfo.ItemValueInDic;
+	//var names = control_data.VarAllInfo.ItemNameInDic;
+	var form_data = get_form_data();
+	var names = form_data[0].VarAllInfo.ItemNameInDic;
 
+	//Put answer in footer
+	/*
+	$('#footer_output')
+			.append(
+				$('<div>').append(JSON.stringify(form_data[0]))
+			);
+	*/
+	var values = form_data[0].VarAllInfo.ItemValueInDic;
 	var regex_base = /^Var\d*Base/;
 	var regex_name = /^Var\d*Name/;
 
@@ -233,4 +238,24 @@ function add_cohort_covariance_variable_select(field, variable_name, variable_ti
 
 function build_output_format_column() {
 	$("#output_format").fadeIn();
+}
+
+function get_form_data() {
+
+	var json = (function () {
+    var json = null;
+    var url = '/jpsurvRest/get_form';
+    $.ajax({
+	      'async': false,
+	      'global': false,
+	      'url': url,
+	      'dataType': "json",
+	      'success': function (data) {
+	        json = data;
+	      }
+	    });
+	    return json;
+		})();
+
+		return json;
 }

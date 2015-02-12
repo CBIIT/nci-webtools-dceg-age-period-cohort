@@ -35,7 +35,6 @@
   type="text/css">
 <link rel="stylesheet" href="../common/css/style.css" type="text/css">
 <link rel="stylesheet" href="jpsurv.css" type="text/css">
-<link rel="stylesheet" href="shiny.css" type="text/css">
 
 </head>
 
@@ -96,11 +95,13 @@
 <table class="container">
   <tr style="width:250px;">
     <td class="upload-pane">
-      <P><label for='file_control'>Data Dictionary File: </label>
-          <A style='font-size:small' href='jpsurv.json' download='example.json'>(example)</A>
-          <input type="file" id="file_control"></P>
-      <P><label for='file_data'>Data File: </label><input type="file" id="file_data"></P>
-      <P><INPUT type='submit' id='upload_file_submit' value='Upload Files' ></P>
+      <!-- <form method=POST enctype=multipart/form-data action="/jpsurvRest/upload"> -->
+        <P><label for='file_control'>Data Dictionary File: </label>
+            <A style='font-size:small' href='jpsurv.json' download='example.json'>(example)</A>
+            <input type="file" id="file_control" name="file_control"></P>
+        <P><label for='file_data'>Data File: </label><input type="file" id="file_data"></P>
+        <P><INPUT type='submit' id='upload_file_submit' value='Upload Files' ></P>
+      <!-- </form> -->
     </td>
   </tr>
   <tr>
@@ -135,6 +136,11 @@
 </div>
 
 <div style="clear:both;"></div>
+<!--
+<div id="footer_output" style="border: 1px bold grey">
+  <div>Input Data:</div>
+</div>
+-->
 
 </div>
     </div>
