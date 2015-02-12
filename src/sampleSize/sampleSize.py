@@ -5,6 +5,7 @@ import os
 from flask import Flask, render_template, request, jsonify
 from rpy2.robjects.packages import SignatureTranslatedAnonymousPackage
 from rpy2.robjects.vectors import IntVector, FloatVector
+from socket import gethostname
 
 with open ('sampleSizeWrapper.R') as fh:
         rcode = os.linesep.join(fh.readlines())
@@ -55,9 +56,21 @@ def sampleSizeRest():
 
     return jsonify(data)
 
+#if __name__ == '__main__':
+#    app.debug = True
+#    app.run(
+#        host="0.0.0.0",
+#        port=int("9120")
+#    )
+
+
+import argparse
 if __name__ == '__main__':
-    app.debug = True
-    app.run(
-        host="0.0.0.0",
-        port=int("9120")
-    )
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", dest="port_number", default="9982", help="Sets the Port")
+    # Default port is production value; prod,stage,dev = 9982, sandbox=9983
+    args = parser.parse_args()
+    port_num = int(args.port_number);
+
+    hostname = gethostname()
+    app.run(host='0.0.0.0', port=port_num, debug = True)

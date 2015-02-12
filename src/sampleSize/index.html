@@ -25,9 +25,10 @@ $(function(){
         // Post json to server
         $('.post').click(function(){
           $("#output_graph").empty();
-          spinner = $("<div class='spin' data-spin />");
+          //spinner = $("<div class='spin' data-spin />");
+	  spinner = "<IMG SRC='ajax-loader.gif'>";
           $("#output_graph").append(spinner);
-	  $('.spin').spin('show');
+	  //$('.spin').spin('show');
           $.ajax({
             type: 'POST',
             // Provide correct Content-Type, so that Flask will know how to process it.
@@ -46,7 +47,7 @@ $(function(){
             dataType: 'json',
             url: '/sampleSizeRest/',
             success: function (ret) {
-	      $('.spin').spin('hide');
+	      //$('.spin').spin('hide');
 	      $("#output_graph").empty();
               generate_tabs($("#fixed").val(),$("#randomnumber").text());
               random_gen();
@@ -194,7 +195,7 @@ function random_gen(){
 
 		<div id='main'>
 			<br>
-			<h2 class="title" align="center">Biomarker Comparison Tool</h2>
+			<h2 class="title" align="center">Sample Size</h2>
 			<div id="helpGlossaryLinks">
 				<a href="#"
 					onclick="openHelpWindow('/common/html/meansToRiskGlossary.html')">Glossary</a>
@@ -204,7 +205,7 @@ function random_gen(){
 			<div style='clear: left; padding-top: 10px;'>
 <table>
 				<tr>
-					<td class='label'><label for="independent_dropdown">Independent Variable</label></td>
+					<td class='label' align="right"><label for="independent_dropdown">Independent Variable</label></td>
 					<td><select id="independent_dropdown"
 						name="independent_dropdown" width="100%">
 							<option value="k" selected>k</option>
@@ -218,7 +219,7 @@ function random_gen(){
 					</label></td>
 				</tr>
 				<tr>
-					<td class='label'><label for="contour_dropdown">Contour</label></td>
+					<td class='label' align="right"><label for="contour_dropdown">Contour</label></td>
 					<td><select id="contour_dropdown" name="contour_dropdown" onchange="lock_fixed_options();">
 							<option value="" selected></option>
 							<option value="specificity">Specificity</option>
@@ -245,8 +246,6 @@ function random_gen(){
 							title="An array of floating point numbers seperated by commas"
 							onkeyup="change_hidden('fixed')" required>
 					</label></td>
-					<td><div id="fvDef"></div></td>
-					<td><span class="variable-example"></span></td>
 				</tr>
 								<tr>
 					<td class='label'><label for="prevalence">Prevalence</label></td>
@@ -264,15 +263,26 @@ function random_gen(){
 							required>
 					</label></td>
 				</tr>
+				<tr><td></td><td></td><td></td></tr>
+   				<tr>
+					<td class="label spacer">
+                                		<button class="post">Calculate</button>
+					</td>
+					<td class="spacer">
+ 						<button id="reset_button" onclick="reset_code();">Reset</button>
+
+</td>
+					<td class="spacer">
+					 <A HREF="javascript:example_code()">Example</a>
+					</td>
+				</tr>
+
 			</table>
 			<br />
 				<div id="specificity_val" style="display:none"></div>
 				<div id="sensitivity_val"style="display:none"></div>
                                 <div id="fixed_flag"style="display:none"></div>
 			      	<div id="randomnumber"style="display:none"></div>
-				<button class="post">Calculate</button>
-				<button id="reset_button" onclick="reset_code();">Reset</button>
-				<A HREF="javascript:example_code()">Example</a> 
         <br /><br />
 
 

@@ -14,8 +14,8 @@
 	background-color: yellow;
 }
 
-td {
-	text-align: center;
+td.label {
+	text-align: right;
 }
 
 .top-header {
