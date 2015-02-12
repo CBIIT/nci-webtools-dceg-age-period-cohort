@@ -22,11 +22,18 @@ def calculate_hap(snplst,pop,request):
 	
 	
 	# Open SNP list file
-	snps=open(snplst).readlines()
-	if len(snps)>30:
-		output["error"]="Maximum SNP list is 30 RS numbers. Your list contains "+str(len(snps))+" entries."
+	snps_raw=open(snplst).readlines()
+	if len(snps_raw)>30:
+		output["error"]="Maximum SNP list is 30 RS numbers. Your list contains "+str(len(snps_raw))+" entries."
 		return(json.dumps(output, sort_keys=True, indent=2))
 		raise
+	
+	# Remove duplicate RS numbers
+	snps=[]
+	for snp_raw in snps_raw:
+		snp=snp_raw.strip().split()
+		if snp not in snps:
+			snps.append(snp)
 	
 	
 	# Select desired ancestral populations
@@ -60,8 +67,7 @@ def calculate_hap(snplst,pop,request):
 	snp_coords=[]
 	warn=[]
 	tabix_coords=""
-	for i in range(len(snps)):
-		snp_i=snps[i].strip().split()
+	for snp_i in snps:
 		if len(snp_i)>0:
 			if len(snp_i[0])>2:
 				if snp_i[0][0:2]=="rs":
@@ -80,7 +86,7 @@ def calculate_hap(snplst,pop,request):
 		output["warning"]="The following RS numbers were not found in dbSNP 141: "+",".join(warn)
 	
 	if len(rs_nums)==0:
-		output["error"]="Input SNP list does not contain any vaild RS numbers that are in dbSNP 141."
+		output["error"]="Input SNP list does not contain any valid RS numbers that are in dbSNP 141."
 		return(json.dumps(output, sort_keys=True, indent=2))
 		raise
 	
@@ -88,7 +94,14 @@ def calculate_hap(snplst,pop,request):
 	# Check SNPs are all on the same chromosome
 	for i in range(len(snp_coords)):
 		if snp_coords[0][1]!=snp_coords[i][1]:
-			output["error"]="Not all input SNPs are on the same chromosome"
+			output["error"]="Not all input SNPs are on the same chromosome."
+			return(json.dumps(output, sort_keys=True, indent=2))
+			raise
+	
+	chr_lst=[str(i) for i in range(1,22+1)]
+	for i in range(len(snp_coords)):
+		if snp_coords[i][1] not in chr_lst:
+			output["error"]="Not all input SNPs are autosomal."
 			return(json.dumps(output, sort_keys=True, indent=2))
 			raise
 	
