@@ -14,7 +14,8 @@
 <script src="jquery.spin.js" type="text/javascript"></script>
 <link href="jquery.spin.css" rel="stylesheet" type="text/css" />
 
-
+<link rel="stylesheet" href="../common/css/font-awesome.css"
+  type="text/css">
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
 <link rel="stylesheet" href="/common/css/style.css" />
 <link rel="stylesheet" href="sampleSize.css" />
@@ -25,10 +26,7 @@ $(function(){
         // Post json to server
         $('.post').click(function(){
           $("#output_graph").empty();
-          //spinner = $("<div class='spin' data-spin />");
-	  spinner = "<IMG SRC='ajax-loader.gif'>";
-          $("#output_graph").append(spinner);
-	  //$('.spin').spin('show');
+          $("#spinner").show();
           $.ajax({
             type: 'POST',
             // Provide correct Content-Type, so that Flask will know how to process it.
@@ -47,7 +45,7 @@ $(function(){
             dataType: 'json',
             url: '/sampleSizeRest/',
             success: function (ret) {
-	      //$('.spin').spin('hide');
+	      $("#spinner").hide();
 	      $("#output_graph").empty();
               generate_tabs($("#fixed").val(),$("#randomnumber").text());
               random_gen();
@@ -77,7 +75,7 @@ function generate_tabs(iterate,randomnumber){
            console.log(fixedvals[i]);
 	   tabheaders += '<li><a href="#tabs-'+(i+1)+'">'+fixedvals[i]+'</a></li>';
            //tabcontent += '<div id="tabs-'+(i+1)+'"><p>IMAGE'+fixedvals[i]+'</p></div>';
-           tabcontent += '<div id="tabs-'+(i+1)+'"><p><IMG SRC="/sampleSize/tmp/'+pimagename+randomnumber+'-'+fixedvals[i]+'.png"><IMG SRC="/sampleSize/tmp/'+cimagename+randomnumber+'-'+fixedvals[i]+'.png"></p></div>';	   
+           tabcontent += '<div id="tabs-'+(i+1)+'"><p><IMG SRC="/sampleSize/tmp/'+pimagename+randomnumber+'-'+fixedvals[i]+'.png">&nbsp;&nbsp;<IMG SRC="/sampleSize/tmp/'+cimagename+randomnumber+'-'+fixedvals[i]+'.png"></p></div>';	   
     //Do something
       }    
       tabheaders += "</ul>";
@@ -195,7 +193,7 @@ function random_gen(){
 
 		<div id='main'>
 			<br>
-			<h2 class="title" align="center">Sample Size</h2>
+			<h2 class="title" align="center">Power and Sample Size for Biomarker Case Control Studies</h2>
 			<div id="helpGlossaryLinks">
 				<a href="#"
 					onclick="openHelpWindow('/common/html/meansToRiskGlossary.html')">Glossary</a>
@@ -287,6 +285,10 @@ function random_gen(){
 
 
 			</div>
+			<div>
+					<p id="spinner">
+					<i class="fa fa-spinner fa-spin fa-2x"></i> <span id="spinnerText">Calculating</span>
+				</p></div>
 			</div>
 				<div id="output_graph">
                                 </div>
