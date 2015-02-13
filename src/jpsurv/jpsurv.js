@@ -1,4 +1,5 @@
 var year_of_diagnosis_title = "Year fo Diagnosis 1975+";
+//var year_of_diagnosis_title = "Year of Diagnosis:  Year fo Diagnosis 1975+";
 var control_data;
 
 var years;
@@ -54,6 +55,10 @@ function read_dic_file() {
 	  parse_diagnosis_years();
 	  parse_cohort_covariance_variables();
 	  build_parameter_column();
+	  // The following is for demo purpose only.
+	  //Temp change a title
+	  $('#diagnosis_title').empty().append("Year of Diagnosis: Year of diagnosis 1975+");
+	  $('#year_of_diagnosis_end option:contains("2011")').attr('selected', 'selected');
 	}
 
 	reader.readAsText(file_control, "UTF-8");

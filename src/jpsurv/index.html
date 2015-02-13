@@ -95,20 +95,24 @@
 <table class="container">
   <tr style="width:250px;">
     <td class="upload-pane">
-      <!-- <form method=POST enctype=multipart/form-data action="/jpsurvRest/upload"> -->
-        <P><label for='file_control'>Data Dictionary File: </label>
+      <form method=POST enctype=multipart/form-data action="/jpsurvRest/upload2">
+        <P>
+            <label for='file_control'>Data Dictionary File: </label>
             <A style='font-size:small' href='jpsurv.json' download='example.json'>(example)</A>
             <input type="file" id="file_control" name="file_control"></P>
-        <P><label for='file_data'>Data File: </label><input type="file" id="file_data"></P>
+        <P>
+            <label for='file_data'>Data File: </label>
+            <input type="file" id="file_data"  name="file_data">
+        </P>
         <P><INPUT type='submit' id='upload_file_submit' value='Upload Files' ></P>
-      <!-- </form> -->
+      </form>
     </td>
   </tr>
   <tr>
     <td class="parameters-pane">
       <div id='parameters' style='display:none'>
         <P id='diagnosis_title'><P>
-        <P> Range of Diagnosis:<BR>
+        <P> Year of Diagnosis Range:<BR>
         <SELECT id='year_of_diagnosis_start'></SELECT> to <SELECT id='year_of_diagnosis_end'></SELECT></P>
         <P>Cohort Variables:<BR>
         <SELECT id='cohort_select' multiple ></SELECT></P>
