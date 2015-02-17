@@ -3,14 +3,9 @@ from flask import Flask, render_template, Response, abort, request, make_respons
 from functools import wraps
 from flask import current_app
 
-import cgi
-import shutil
-import os
 
-#!flask/bin/python
-from flask import Flask, render_template, Response, abort, request, make_response, url_for, jsonify, redirect
-from functools import wraps
-from flask import current_app
+import rpy2.robjects as robjects
+#from rpy2.robjects import r
 
 import cgi
 import shutil
@@ -22,27 +17,44 @@ import pandas as pd
 import numpy as np
 from pandas import DataFrame
 import urllib
-#import urlparse
-
-#from load import *
-
-#from LDpair import calculate_pair
-#from LDproxy import calculate_proxy
-#from LDmatrix import calculate_matrix
-#from LDhap import calculate_hap
-
-#import os
-#from flask import Flask, request, redirect, url_for
 from werkzeug import secure_filename
+from random import randint
 
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), 'tmp')
-
-tmp_dir = "./tmp/"
+print UPLOAD_DIR
 
 app = Flask(__name__, static_folder='', static_url_path='/')
 #app.debug = True
 
+#TESTING AREA
+
+#exit()
+#END TESTING AREA
+
 #app = Flask(__name__, static_folder='static', static_url_path='/static')
+
+def what_is_this(sv):
+    print "what_is_this?"
+    print type(sv)
+    print dir(sv)
+    print ""
+    print sv
+    print type(sv)
+    print sv[0]
+    print str(sv)
+    print len(sv)
+    print format(tuple(sv))
+    print type(tuple(sv))
+    print "".join(tuple(sv))
+
+sv = robjects.StrVector('output-92383.json')
+what_is_this(sv)
+
+
+def random_with_N_digits(n):
+    range_start = 10**(n-1)
+    range_end = (10**n)-1
+    return randint(range_start, range_end)
 
 @app.route('/')
 def hello_world():
@@ -295,8 +307,43 @@ def upload2():
             file.save(os.path.join(path, filename))
             file_data_filename = filename
             print "Saving file_data: %s" % file_data_filename
+    print request.files['file_control']
+    print request.files['file_data']
 
-    return_url = "%s/jpsurv?file_control_filename=%s&file_data_filename=%s&status=OK" % (request.url_root, file_control_filename, file_data_filename )
+    if(request.files['file_control'] == ''):
+        print "file_control not assigned"
+    if(request.files['file_data'] == ''):
+        print "file_data not assigned"
+
+    #Now that the files are on the server RUN the RCode
+    rSource = robjects.r('source')
+
+    print "****** STARTING HERE ***** "
+
+    path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv"
+    out_path = os.path.join(path, 'tmp')
+    #Use next line to
+    #out_path = "%s/tmp/" % UPLOAD_DIR
+
+    #Init the R Source
+    rSource = robjects.r('source')
+    rSource('./JPSurvWrapper.R')
+
+    # Next two lines execute the R Program
+    getDictionary = robjects.globalenv['getDictionary']
+    rStrVector = getDictionary(file_control_filename, out_path)
+    #Convert R StrVecter to tuple to str
+    output_file = "".join(tuple(rStrVector))
+
+    print output_file
+
+    print "CLOSE FILE %s" % output_file
+    print "************ EXIT ********"
+
+    #print "json string >> "+str(jsondata[0]);
+    status = "OK"
+
+    return_url = "%s/jpsurv?file_control_filename=%s&file_data_filename=%s&output_file=%s&status=%s" % (request.url_root, file_control_filename, file_data_filename, output_file, status)
     print return_url
     return redirect(return_url)
 
