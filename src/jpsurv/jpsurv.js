@@ -1,5 +1,5 @@
 var year_of_diagnosis_title = "Year fo Diagnosis 1975+";
-//var year_of_diagnosis_title = "Year of Diagnosis:  Year fo Diagnosis 1975+";
+
 var control_data;
 
 var years;
@@ -10,7 +10,7 @@ var years;
 //	"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
 //	"2010","2011"
 //];
-
+//Constant series of events.   On a daily events.
 
 var cohort_covariance_variables = {
 	"Age groups": ["0-49","50-65s","65+"],
@@ -20,8 +20,52 @@ var cohort_covariance_variables = {
 
 $(document).ready(function() {
 
-	$("#upload_file_submit").on("click", load_files);
-	$("#parameter_submit").on("click", build_output_format_column);
+	var status = getUrlParameter('status');
+	if(status == "OK") {
+		$('#file_control_container')
+				.empty()
+				.append($('<div>')
+					.append('<b>Data Dictionary File:</b> ' +getUrlParameter('file_control_filename'))
+					);
+		$('#file_data_container')
+				.empty()
+				.append($('<div>')
+					.append('<b>Data File:</b> ' +getUrlParameter('file_data_filename'))
+					);
+		$('#upload_file_submit_container').remove();
+		var file_control_output = load_ajax(getUrlParameter('file_control_filename'));
+		//console.log(file_control_output	);
+
+		var file_data_output = load_ajax(getUrlParameter('file_data_filename'));
+		//console.log(file_data_output);
+		var output_file = load_ajax(getUrlParameter('output_file'));
+		//console.log(output_file);
+//		alert('Updating R Output');
+
+		$( "<a>" )
+			.append('Reset')
+			.attr('href', '/jpsurv')
+			.insertBefore('#file_control_output');
+		load_form(file_control_output);
+		$( "<hr>" ).insertBefore('#file_control_output');
+		$('#file_control_output').empty()
+			.append($('<h2>').append('File Control Output').addClass('pull-left'))
+			.append($('<div>').css('clear', 'both'))
+			.append($('<div>').append(JSON.stringify(file_control_output)));
+
+		$('#file_data_output').empty()
+			.append($('<h2>').append('File Data Output').addClass('pull-left'))
+			.append($('<div>').css('clear', 'both'))
+			.append($('<div>').append(JSON.stringify(file_data_output)));
+
+		$('#r_output').empty()
+			.append($('<h2>').append('R Output File').addClass('pull-left'))
+			.append($('<div>').css('clear', 'both'))
+			.append($('<div>').append(JSON.stringify(output_file)));
+
+	} else {
+			$("#parameter_submit").on("click", build_output_format_column);
+	}
 
 	$("#cohort_select").on("change", change_cohort_select);
 	$("#covariate_select").on("change", change_covariate_select);
@@ -40,16 +84,21 @@ function show_graph() {
 	}, 3000);
 }
 
-function load_files() {
-	parameter_data = read_dic_file();
+function load_form(file_control_output) {
+	parameter_data = read_dic_file(file_control_output);
 }
 
-function read_dic_file() {
-	var file_control = document.getElementById('file_control').files[0];
-	var reader = new FileReader();
+function read_dic_file(file_control_output) {
+	//Removing File Reader, because file is on server
+	//
+	//var file_control = document.getElementById('file_control').files[0];
+	//var reader = new FileReader();
 
-	reader.onload = function(e) {
-	  var text = reader.result;
+	//reader.onload = function(e) {
+	  var text = file_control_output;
+	  console.log("This may not be JSON!!!!");
+	  console.log(text);
+	  //alert(JSON.stringify(text));
 	  control_data = JSON.parse(text);
 	  console.dir(control_data);
 	  parse_diagnosis_years();
@@ -59,9 +108,9 @@ function read_dic_file() {
 	  //Temp change a title
 	  $('#diagnosis_title').empty().append("Year of Diagnosis: Year of diagnosis 1975+");
 	  $('#year_of_diagnosis_end option:contains("2011")').attr('selected', 'selected');
-	}
+	//}
 
-	reader.readAsText(file_control, "UTF-8");
+	//reader.readAsText(file_control, "UTF-8");
 }
 
 function build_parameter_column() {
@@ -263,4 +312,40 @@ function get_form_data() {
 		})();
 
 		return json;
+}
+
+function load_ajax(filename) {
+
+	console.log(filename);
+
+	var json = (function () {
+    var json = null;
+    var url = '/jpsurv/tmp/'+filename;
+    $.ajax({
+	      'async': false,
+	      'global': false,
+	      'url': url,
+	      //'dataType': "json",
+	      'success': function (data) {
+	        json = data;
+	      }
+	    });
+	    return json;
+	})();
+
+	return json;
+
+}
+
+function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++)
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam)
+        {
+            return sParameterName[1];
+        }
+    }
 }

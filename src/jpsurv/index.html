@@ -96,15 +96,17 @@
   <tr style="width:250px;">
     <td class="upload-pane">
       <form method=POST enctype=multipart/form-data action="/jpsurvRest/upload2">
-        <P>
+        <P id="file_control_container">
             <label for='file_control'>Data Dictionary File: </label>
             <A style='font-size:small' href='jpsurv.json' download='example.json'>(example)</A>
             <input type="file" id="file_control" name="file_control"></P>
-        <P>
+        <P id="file_data_container">
             <label for='file_data'>Data File: </label>
             <input type="file" id="file_data"  name="file_data">
         </P>
-        <P><INPUT type='submit' id='upload_file_submit' value='Upload Files' ></P>
+        <P id="upload_file_submit_container">
+            <INPUT type='submit' id='upload_file_submit' value='Upload Files' >
+        </P>
       </form>
     </td>
   </tr>
@@ -139,12 +141,17 @@
     </div>
 </div>
 
-<div style="clear:both;"></div>
-<!--
-<div id="footer_output" style="border: 1px bold grey">
-  <div>Input Data:</div>
-</div>
--->
+  <div style="clear:both;"></div>
+  <div>
+    <div id="file_control_output"></div>
+  </div>
+  <div>
+    <div id="file_data_output"></div>
+  </div>
+  <div>
+    <div id="r_output"></div>
+  </div>
+  <div style="clear:both;"></div>
 
 </div>
     </div>
