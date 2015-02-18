@@ -14,6 +14,16 @@
 	background-color: yellow;
 }
 
+#maindiv {
+	width: 1100px; 
+	margin-left: auto; 
+	margin-right: auto;
+}
+
+.dom_valref {
+	display:none;
+}
+
 td.label {
 	text-align: right;
 }
@@ -50,13 +60,46 @@ h2 {
 	padding: 2px 25px 2px 25px;
 }
 
-#spinner {
-	 padding: 50px 100px; 
-	 display: none;
+.bibliography {
+	width: 950px;
+	clear: both;
+	float: left;
+	margin: 50px;
 }
 
-#spinnerText {
-	font-weight: bold; 
-	font-size: 150%; 
-	margin-left: 15px;
+.bib-author {
+	float: left;
+}
+
+.bib-year {
+	float: left;
+}
+
+.bib-title {
+	float: left;
+	font-style: italic;
+}
+
+.bib-journal {
+	float: left;
+}
+
+.bib-ref {
+	float: left;
+}
+
+.bib-pages {
+	float: left;
+}
+
+.bib-doi {
+	float: left;
+}
+
+.bibliography_entry {
+	width: 300px;
+}
+
+.bibliography_link {
+	width: 50px;
 }
