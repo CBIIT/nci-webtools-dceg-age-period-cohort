@@ -2,12 +2,15 @@ $(function(){
 	
 	random_gen();
 	disable_calculate();
+	$("#spinner").hide();
 
         // Post json to server
         $('.post').click(function(){
+	  //var start = new Date();
           $("#output_graph").empty();
-	  spinner = $('<div><p id="spinner"><i class="fa fa-spinner fa-spin fa-2x"></i><span id="spinnerText">Calculating</span></p></div>');
-	  $("#output_graph").append(spinner); 
+//	  spinner = $('<div><p id="spinner"><i class="fa fa-spinner fa-spin fa-2x"></i><span id="spinnerText">Calculating</span></p></div>');
+//	  $("#output_graph").append(spinner); 
+	  $("#spinner").show();
           $.ajax({
             type: 'POST',
             // Provide correct Content-Type, so that Flask will know how to process it.
@@ -15,8 +18,8 @@ $(function(){
             // Encode data as JSON.
             data: JSON.stringify({
               k: $("#independent").val(),
-              sens: $("#sensitivity_val").text(),
-	      spec: $("#specificity_val").text(),
+              sens: trim_spaces($("#sensitivity_val").text()),
+	      spec: trim_spaces($("#specificity_val").text()),
               prev: $("#prevalence").val(),
               N: $("#n_value").val(),
               unique_id: $("#randomnumber").text(),
@@ -26,9 +29,13 @@ $(function(){
             dataType: 'json',
             url: '/sampleSizeRest/',
             success: function (ret) {
+	      $("#spinner").hide();
 	      $("#output_graph").empty();
               generate_tabs($("#fixed").val(),$("#randomnumber").text());
               random_gen();
+ 	      //var end = new Date();
+              //var secondsOpen = Math.floor((end - start) / 1000);
+              //$("#benchmark").text(secondsOpen);
             }
           });
         });
@@ -39,8 +46,15 @@ $(function(){
 
 	$("#add-test-data").click(function() {
 		example_code();
+	});	
+
+	$("#contour").keyup(function(){
+		change_hidden('contour');
 	});
-	
+
+	$("#fixed").keyup(function(){
+		change_hidden('fixed');
+	});
 
 });
 
@@ -53,6 +67,7 @@ function enable_calculate(){
 }
 
 function generate_tabs(iterate,randomnumber){
+      var fixed_flag = $("#fixed_flag").text();
       var fixedvals=iterate.split(',');
       var arrayLength = fixedvals.length;
       $("#output_graph").empty();
@@ -70,9 +85,9 @@ function generate_tabs(iterate,randomnumber){
 	
       for (var i = 0; i < arrayLength; i++) {
            console.log(fixedvals[i]);
-	   tabheaders += '<li><a href="#tabs-'+(i+1)+'">'+fixedvals[i]+'</a></li>';
+	   tabheaders += '<li><a href="#tabs-'+(i+1)+'">'+fixed_flag+'<br />'+fixedvals[i]+'</a></li>';
            //tabcontent += '<div id="tabs-'+(i+1)+'"><p>IMAGE'+fixedvals[i]+'</p></div>';
-           tabcontent += '<div id="tabs-'+(i+1)+'"><p><IMG SRC="/sampleSize/tmp/'+pimagename+randomnumber+'-'+fixedvals[i]+'.png">&nbsp;&nbsp;<IMG SRC="/sampleSize/tmp/'+cimagename+randomnumber+'-'+fixedvals[i]+'.png"></p></div>';	   
+           tabcontent += '<div id="tabs-'+(i+1)+'"><p><IMG SRC="/sampleSize/tmp/'+pimagename+randomnumber+'-'+(i+1)+'.png">&nbsp;&nbsp;<IMG SRC="/sampleSize/tmp/'+cimagename+randomnumber+'-'+(i+1)+'.png"></p></div>';	   
     //Do something
       }    
       tabheaders += "</ul>";
@@ -97,10 +112,14 @@ function lock_fixed_options(){
 	if (contour === "Specificity"){
                 $("#fixed_dropdown").append('<option value="specificity" disabled="disabled">Specificity</a>');
 		$("#fixed_dropdown").append('<option value="sensitivity" selected>Sensitivity</a>');
+		$("#specificity_val").text($("#contour").val());
+                $("#sensitivity_val").text($("#fixed").val());
 	}
         if (contour === "Sensitivity"){
                 $("#fixed_dropdown").append('<option value="specificity" selected>Specificity</a>');
                 $("#fixed_dropdown").append('<option value="sensitivity" disabled="disabled">Sensitivity</a>');
+		$("#sensitivity_val").text($("#contour").val());
+		$("#specificity_val").text($("#fixed").val());
         }
 	change_ff();
 }
@@ -110,16 +129,20 @@ function lock_fixed_options(){
 
 function change_hidden(callingbox){
 		if (((callingbox == "contour")) && ($("#contour_dropdown option:selected").text() == "Specificity")) {   
-             	  $("#specificity_val").text($("#contour").val());
+             	  $("#specificity_val").text(trim_spaces($("#contour").val()));
 		}else if (((callingbox == "contour")) && ($("#contour_dropdown option:selected").text() == "Sensitivity")){
-		  $("#sensitivity_val").text($("#contour").val());
+		  $("#sensitivity_val").text(trim_spaces($("#contour").val()));
                 }else if (((callingbox == "fixed")) && ($("#fixed_dropdown option:selected").text() == "Sensitivity")){
-                  $("#sensitivity_val").text($("#fixed").val());
+                  $("#sensitivity_val").text(trim_spaces($("#fixed").val()));
                 }else if (((callingbox == "fixed")) && ($("#fixed_dropdown option:selected").text() == "Specificity")){
-                  $("#specificity_val").text($("#fixed").val());
+                  $("#specificity_val").text(trim_spaces($("#fixed").val()));
 	        }else{
 		  return 0;
 		}
+}
+
+function trim_spaces(varstring){
+		return varstring.replace(/\s/g, '');	
 }
 
 function example_code(){
