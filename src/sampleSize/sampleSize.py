@@ -2,6 +2,7 @@
 # output json, and it will take care of the right string
 # data conversion, the headers for the response, etc
 import os
+import time
 from flask import Flask, render_template, request, jsonify
 from rpy2.robjects.packages import SignatureTranslatedAnonymousPackage
 from rpy2.robjects.vectors import IntVector, FloatVector
@@ -31,38 +32,22 @@ def sampleSizeRest():
     N=data["N"]
     unique_id=data["unique_id"]
     fixed_flag=data["fixed_flag"]
-
+    sens=data["sens"].split(',')
+    spec=data["spec"].split(',')
+    
+    start = time.time()
+    print "Starting Benchmark"
+  
     if fixed_flag == "Specificity":
-	sens=data["sens"].split(',')
-        spec=data["spec"]
-        tabs=spec.split(",")
-        print "calling saveSensContours"
-	for tab in tabs:
-		wrapper.saveSensContours(IntVector(k), FloatVector(sens), float(tab), float(prev), IntVector(N), unique_id, tab)
+	wrapper.saveAllSensGraphs(IntVector(k), FloatVector(sens), FloatVector(spec), float(prev), IntVector(N), unique_id)
     else:
-        spec=data["spec"].split(',')
-        sens=data["sens"]
-	tabs=sens.split(",")
-        print "calling saveSpecContours"
-	for tab in tabs:
- 		wrapper.saveSpecContours(IntVector(k), float(tab), FloatVector(spec), float(prev), IntVector(N), unique_id, tab)
+        wrapper.saveAllSpecGraphs(IntVector(k), FloatVector(sens), FloatVector(spec), float(prev), IntVector(N), unique_id)
 
-
-    #for tab in tabs:
-    	#wrapper.saveSensContours(IntVector(k), FloatVector(sens), float(tab), float(prev), IntVector(N), unique_id, tab)
-
-#saveSensContours 
-#saveSpecContours
+    end=time.time()
+    print "Seconds"
+    print end - start
 
     return jsonify(data)
-
-#if __name__ == '__main__':
-#    app.debug = True
-#    app.run(
-#        host="0.0.0.0",
-#        port=int("9120")
-#    )
-
 
 import argparse
 if __name__ == '__main__':
