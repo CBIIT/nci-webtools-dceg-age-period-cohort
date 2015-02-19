@@ -6,7 +6,7 @@ $(function(){
 
         // Post json to server
         $('.post').click(function(){
-	  var start = new Date();
+	  //var start = new Date();
           $("#output_graph").empty();
 //	  spinner = $('<div><p id="spinner"><i class="fa fa-spinner fa-spin fa-2x"></i><span id="spinnerText">Calculating</span></p></div>');
 //	  $("#output_graph").append(spinner); 
@@ -33,9 +33,9 @@ $(function(){
 	      $("#output_graph").empty();
               generate_tabs($("#fixed").val(),$("#randomnumber").text());
               random_gen();
- 	      var end = new Date();
-              var secondsOpen = Math.floor((end - start) / 1000);
-              $("#benchmark").text(secondsOpen);
+ 	      //var end = new Date();
+              //var secondsOpen = Math.floor((end - start) / 1000);
+              //$("#benchmark").text(secondsOpen);
             }
           });
         });
@@ -87,7 +87,7 @@ function generate_tabs(iterate,randomnumber){
            console.log(fixedvals[i]);
 	   tabheaders += '<li><a href="#tabs-'+(i+1)+'">'+fixed_flag+'<br />'+fixedvals[i]+'</a></li>';
            //tabcontent += '<div id="tabs-'+(i+1)+'"><p>IMAGE'+fixedvals[i]+'</p></div>';
-           tabcontent += '<div id="tabs-'+(i+1)+'"><p><IMG SRC="/sampleSize/tmp/'+pimagename+randomnumber+'-'+fixedvals[i]+'.png">&nbsp;&nbsp;<IMG SRC="/sampleSize/tmp/'+cimagename+randomnumber+'-'+fixedvals[i]+'.png"></p></div>';	   
+           tabcontent += '<div id="tabs-'+(i+1)+'"><p><IMG SRC="/sampleSize/tmp/'+pimagename+randomnumber+'-'+(i+1)+'.png">&nbsp;&nbsp;<IMG SRC="/sampleSize/tmp/'+cimagename+randomnumber+'-'+(i+1)+'.png"></p></div>';	   
     //Do something
       }    
       tabheaders += "</ul>";

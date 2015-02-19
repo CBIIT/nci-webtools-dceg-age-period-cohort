@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="sampleSize.css" />
 </head>
 
-<body onload="random_gen()">
+<body>
 	<div id="maindiv">
 		<!-- blockcontent was here -->
 		<div id="wrapper">
@@ -68,8 +68,8 @@
 					</select></td>
 					<td><label for="independent"> <input type="text"
 							size="30" id="independent" pattern="([0-9,. \-])+"
-							title="An array of floating point numbers seperated by commas."
-							title="An array of floating point numbers seperated by commas"
+							title="A comma separated pair that refers to the minimum and maximum respectively"
+							title="A comma separated pair that refers to the minimum and maximum respectively"
 							value="0,1" required>
 					</label></td>
 				</tr>
@@ -82,9 +82,9 @@
 					</select></td>
 					<td><label for="contour"> <input type="text" size="30"
 							id="contour" pattern="([0-9,. \-])+"
-							title="An array of floating point numbers seperated by commas."
-							title="An array of floating point numbers seperated by commas"
-							onkeyup="change_hidden('contour')" required>
+							title="An array of floating point numbers separated by commas.  Numbers must be between 0 and 1"
+							title="An array of floating point numbers separated by commas  Numbers must be between 0 and 1"
+							required>
 					</label></td>
 				</tr>
 				<tr>
@@ -98,23 +98,23 @@
 					</select></td>
 					<td><label for="fixed"> <input type="text" size="30"
 							id="fixed" pattern="([0-9,. \-])+"
-							title="An array of floating point numbers seperated by commas"
-							onkeyup="change_hidden('fixed')" required>
+							title="An array of floating point numbers separated by commas. Numbers must be between 0 and 1"
+							required>
 					</label></td>
 				</tr>
 								<tr>
 					<td class='label'><label for="prevalence">Prevalence</label></td>
 					<td><label for="prevalence"> <input type="text" size="10"
 							id="prevalence" value="0.001"
-							title="An array of floating point numbers seperated by commas"
+							title="A floating point number between 0 and 1"
 							required>
 					</label></td>
 				</tr>
 								<tr>
 					<td class='label'><label for="n_value">N</label></td>
-					<td><label for="fixed"> <input type="text" size="10"
+					<td><label for="n_value"> <input type="text" size="10"
 							id="n_value" value="1" pattern="([0-9,. \-])+"
-							title="An array of floating point numbers seperated by commas"
+							title="Number must be an integer"
 							required>
 					</label></td>
 				</tr>
@@ -138,10 +138,17 @@
 				<div id="sensitivity_val" class="dom_valref"></div>
                                 <div id="fixed_flag" class="dom_valref"></div>
 			      	<div id="randomnumber" class="dom_valref"></div>
+				<div id="benchmark"></div>
         <br /><br />
 
 
 			</div>
+		
+				<div>
+				<p id="spinner">
+				<i class="fa fa-spinner fa-spin fa-2x"></i> <span id="spinnerText">Calculating</span>
+				</p></div>
+
 			</div>
 				<div id="output_graph">
                                 </div>
