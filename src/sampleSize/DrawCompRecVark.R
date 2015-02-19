@@ -1,7 +1,7 @@
 DrawCompRecVarkSensSpec <- function(k,sens,spec,prev,N) {
   
   K <- seq(from=min(k),to=max(k),by=0.00001)
-  Y <- seq(from=-0.5,to=3,by=0.00001)
+  Y <- seq(from=-1,to=3,by=0.00001)
   list <- 1:length(sens)
   vals <-  1:length(sens)
   
@@ -43,7 +43,7 @@ DrawCompRecVarkSensSpec <- function(k,sens,spec,prev,N) {
     
     if(i==1) {
       par(mar=c(5.1, 4.1, 5.1, 12.75))
-      plot(compare~K,type="l",main=c("Efficiency for tests of PPV by", "proportion of total assays in cases",paste("Specificity =",spec,", Prevalence =",prev)),xlab="k: the proportion of assays in cases",ylab=c("Relative efficiency gain or loss compared", "to equal numbers of cases and controls"),ylim=c(-0.5,3),lwd=3,lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+      plot(compare~K,type="l",main=c("Efficiency for tests of PPV by", "percent of total assays in cases",paste("Specificity =",spec,", Prevalence =",prev,", N =",N)),xlab="k: the percent of assays in cases",ylab=c("Relative efficiency gain or loss compared", "to equal numbers of cases and controls"),ylim=c(-1,3),lwd=3,lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
       lines(y=K*0,x=K,lty=1,col=1)
       lines(y=Y,x=0.5*(Y*0+1),lty=2,col=1)
     }
@@ -51,7 +51,7 @@ DrawCompRecVarkSensSpec <- function(k,sens,spec,prev,N) {
       lines(y=compare, x=K,lty=LTY[i], lwd=3,col = LTY[i])
       points(y=list[i],x=vals[i],pch=LTY[i],col=LTY[i],cex=1.5,lwd=2)
   }
-  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(LTY,rep(NA,length(LTY))),legend=c(sens,round(vals,2)),"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="n",inset=c(-0.75,0),xpd = TRUE,title="Sensitivity    Optimal k",ncol=2)
+  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(rep(LTY,2)),legend=c(vals,sens),"bottomright",cex=1.15, lwd=3,col= rep(LTY,2),text.font=2,bty="n",inset=c(-1.05,0),xpd = TRUE,title="Optimal k    Sensitivity",ncol=2)
 }
 
 DrawCompRecVarkSpecSens <- function(k,spec,sens,prev,N) {
@@ -100,7 +100,7 @@ DrawCompRecVarkSpecSens <- function(k,spec,sens,prev,N) {
     
     if(i==1) {
       par(mar=c(5.1, 4.1, 5.1, 12.75))
-      plot(compare~K,type="l",main=c("Efficiency for tests of PPV by", "proportion of total assays in cases",paste("Sensitivity =",sens,", Prevalence =",prev)),xlab="k: the proportion of assays in cases",ylab=c("Relative efficiency gain or loss compared", "to equal numbers of cases and controls"),ylim=c(-0.5,3),lwd=3,lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+      plot(compare~K,type="l",main=c("Efficiency for tests of PPV by", "percent of total assays in cases",paste("Sensitivity =",sens,", Prevalence =",prev,", N =",N)),xlab="k: the percent of assays in cases",ylab=c("Relative efficiency gain or loss compared", "to equal numbers of cases and controls"),ylim=c(-1,3),lwd=3,lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
       lines(y=K*0,x=K,lty=1,col=1)
       lines(y=Y,x=0.5*(Y*0+1),lty=2,col=1)
     }
@@ -108,7 +108,7 @@ DrawCompRecVarkSpecSens <- function(k,spec,sens,prev,N) {
       lines(y=compare, x=K,lty=LTY[i], col = LTY[i],lwd=3)
       points(y=list[i],x=vals[i],pch=LTY[i],col=LTY[i],cex=1.5,lwd=2)
   }
-  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(LTY,rep(NA,length(LTY))),legend=c(spec,round(vals,2)),"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="n",inset=c(-0.75,0),xpd = TRUE,title="Specificity    Optimal k",ncol=2)
+  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(rep(LTY,2)),legend=c(vals,spec),"bottomright",cex=1.15, lwd=3,col= rep(LTY,2),text.font=2,bty="n",inset=c(-1.05,0),xpd = TRUE,title="Optimal k    Specificity",ncol=2)
 }
 
 DrawCompRecVarcNPVkSpecSens <- function(k,spec,sens,prev,N) {
@@ -156,7 +156,7 @@ DrawCompRecVarcNPVkSpecSens <- function(k,spec,sens,prev,N) {
     
     if(i==1) {
       par(mar=c(5.1, 4.1, 5.1, 12.75))
-      plot(compare~K,type="l",main=c("Efficiency for tests of cNPV by", "proportion of total assays in cases",paste("Sensitivity =",sens,", Prevalence =",prev)),xlab="k: the proportion of assays in cases",ylab=c("Relative efficiency gain or loss compared", "to equal numbers of cases and controls"),ylim=c(-0.5,3),lwd=3,lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+      plot(compare~K,type="l",main=c("Efficiency for tests of cNPV by", "percent of total assays in cases",paste("Sensitivity =",sens,", Prevalence =",prev,", N =",N)),xlab="k: the percent of assays in cases",ylab=c("Relative efficiency gain or loss compared", "to equal numbers of cases and controls"),ylim=c(-1,3),lwd=3,lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
       lines(y=K*0,x=K,lty=1,col=1)
       lines(y=Y,x=0.5*(Y*0+1),lty=2,col=1)
     }
@@ -164,7 +164,7 @@ DrawCompRecVarcNPVkSpecSens <- function(k,spec,sens,prev,N) {
       lines(y=compare, x=K,lty=LTY[i], col = LTY[i],lwd=3)
       points(y=list[i],x=vals[i],pch=LTY[i],col=LTY[i],cex=1.5,lwd=2)
   }
-  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(LTY,rep(NA,length(LTY))),legend=c(spec,round(vals,2)),"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="n",inset=c(-0.75,0),xpd = TRUE,title="Specificity    Optimal k",ncol=2)
+  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(rep(LTY,2)),legend=c(vals,spec),"bottomright",cex=1.15, lwd=3,col= rep(LTY,2),text.font=2,bty="n",inset=c(-1.05,0),xpd = TRUE,title="Optimal k    Specificity",ncol=2)
 }
 
 DrawCompRecVarcNPVkSensSpec <- function(k,sens,spec,prev,N) {
@@ -213,7 +213,7 @@ DrawCompRecVarcNPVkSensSpec <- function(k,sens,spec,prev,N) {
     
     if(i==1) {
       par(mar=c(5.1, 4.1, 5.1, 12.75))
-      plot(compare~K,type="l",main=c("Efficiency for tests of cNPV by", "proportion of total assays in cases",paste("Specificity =",spec,", Prevalence =",prev)),xlab="k: the proportion of assays in cases",ylab=c("Relative efficiency gain or loss compared", "to equal numbers of cases and controls"),ylim=c(-0.5,3),lwd=3,lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+      plot(compare~K,type="l",main=c("Efficiency for tests of cNPV by", "percent of total assays in cases",paste("Specificity =",spec,", Prevalence =",prev,", N =",N)),xlab="k: the percent of assays in cases",ylab=c("Relative efficiency gain or loss compared", "to equal numbers of cases and controls"),ylim=c(-1,3),lwd=3,lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
       lines(y=K*0,x=K,lty=1,col=1)
       lines(y=Y,x=0.5*(Y*0+1),lty=2,col=1)
     }
@@ -221,5 +221,5 @@ DrawCompRecVarcNPVkSensSpec <- function(k,sens,spec,prev,N) {
       lines(y=compare, x=K,lty=LTY[i], col = LTY[i],lwd=3)
       points(y=list[i],x=vals[i],pch=LTY[i],col=LTY[i],cex=1.5,lwd=2)
   }
-  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(LTY,rep(NA,length(LTY))),legend=c(sens,round(vals,2)),"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="n",inset=c(-0.75,0),xpd = TRUE,title="Sensitivity    Optimal k",ncol=2)
+  legend(pch=c(LTY,rep(NA,length(LTY))),lty=c(rep(LTY,2)),legend=c(vals,sens),"bottomright",cex=1.15, lwd=3,col= rep(LTY,2),text.font=2,bty="n",inset=c(-1.05,0),xpd = TRUE,title="Optimal k    Sensitivity",ncol=2)
 }
