@@ -2,6 +2,22 @@ source ('./DrawCompRecVark.R')
 
 imageDirectory="./tmp/" 
 
+
+saveAllSensGraphs <- function(k, sens, spec, prev, N, uniqueId) {
+  specTabs=1:length(spec)
+  for (i in specTabs) {
+    saveSensContours(k, sens, spec[i], prev, N, uniqueId, i)
+  }
+}
+
+saveAllSpecGraphs <- function(k, sens, spec, prev, N, uniqueId) {
+  sensTabs=1:length(sens)
+  for (i in sensTabs) {
+    saveSpecContours(k, sens[i], spec, prev, N, uniqueId, i)
+  }
+}
+
+
 #example input values
 #k=c(0,1)
 #sens=c(0.8, 0.9, 0.95, 0.995)
