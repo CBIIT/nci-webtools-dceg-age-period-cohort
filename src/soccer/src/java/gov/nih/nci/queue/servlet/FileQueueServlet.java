@@ -34,7 +34,8 @@ public class FileQueueServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        final String repositoryPath = PropertiesUtil.getProperty("gov.nih.nci.queue.repository.dir");
+        final String repositoryPath = PropertiesUtil.getProperty("gov.nih.nci.queue.repository.dir").trim();
+        final String outputDir = PropertiesUtil.getProperty("gov.nih.cit.soccer.output.dir").trim();
         // Create path components to save the file
         final String emailAddress = request.getParameter("emailAddress");
         final String inputFileId = request.getParameter("inputFileId");
@@ -44,6 +45,7 @@ public class FileQueueServlet extends HttpServlet {
         qm.setFileName(inputFileId);
         qm.setPath(repositoryPath);
         qm.setEmail(emailAddress);
+        qm.setOutputDir(outputDir);
         new QueueProducerUtil().sendToQueue(qm);
         LOGGER.log(Level.INFO, "File <{0}> has been queued. ", new Object[]{inputFileId});
 
@@ -53,7 +55,7 @@ public class FileQueueServlet extends HttpServlet {
         // all good. Prepare the json output.
         rm.setStatus("pass");
         rm.setEmailAddress(emailAddress);
-        rm.setMessage("Congratulations! Your file has been added into queue successfully! We will send you an email notification to " + emailAddress + " once the file is processed!");
+        rm.setMessage("Congratulations! Your file has been added into queue successfully! We will send you an email notification at " + emailAddress + " once the file is processed!");
 
         // Set response type to json
         response.setContentType("application/json");
