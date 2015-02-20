@@ -50,7 +50,7 @@ public class PropertiesUtil {
      * loads properties file from classpath
      *
      * @param propFileName
-     * @return
+     * @return Properties
      * @throws IOException
      */
     private Properties getPropertiesFromClasspath(String propFileName)
