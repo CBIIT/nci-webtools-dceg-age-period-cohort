@@ -43,8 +43,8 @@ public class QueueProducerUtil {
     public void sendToQueue(QueueModel qm) {
         try {
             context = new InitialContext();            
-            connectionFactory = (ConnectionFactory) context.lookup("openejb:Resource/MyJmsConnectionFactory");
-            fileQueue = (Queue) context.lookup("openejb:Resource/FooQueue");
+            connectionFactory = (ConnectionFactory) context.lookup("openejb:Resource/TomiJmsConnectionFactory");
+            fileQueue = (Queue) context.lookup("openejb:Resource/TomiQueue");
 
             // Connect to Queue.
             Connection connection = connectionFactory.createConnection();

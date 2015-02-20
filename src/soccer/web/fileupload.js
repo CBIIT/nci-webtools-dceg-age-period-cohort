@@ -1,8 +1,3 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 "use strict";
 
 $(function () {
@@ -64,10 +59,10 @@ $(function () {
      * or trigger that event on an element.
      */
     $('#fileForm').submit(function (event) {
-        console.log("fileForm.submit() invoked.");
+        console.log("fileForm.submit() invoked.");        
         event.preventDefault();
 
-        // hide upload button.
+        // hide upload button.        
         $('#fileSubmit').attr('disabled', 'disabled');
 
         // Prepare formData and submit data.
@@ -112,7 +107,7 @@ $(function () {
         var responseText = event.target.responseText;
 
         // Hide progressDiv
-        $('#progressDiv').hide();
+        //$('#progressDiv').hide();
 
         var obj = $.parseJSON(responseText);
         console.log(obj.status);
@@ -122,7 +117,7 @@ $(function () {
             $('#resultDiv').removeClass();
             $('#resultDiv').addClass('alert alert-success');
             $('#resultDiv').empty().append('<b>' + obj.message + '</b><br><br>');
-            $('#resultDiv').append('<a target="_blank" href="' + obj.outputFileUrl + '">Click here to view result page</a>.');
+            $('#resultDiv').append('<a target="_blank" href="soccerouput.html?fileid=' + obj.outputFileUrl + '">Click here to view SOCcer output</a>.');
         }
         if (obj.status === 'queue') {
             // Display continue message. 
@@ -134,9 +129,9 @@ $(function () {
             $('#emailForm').show();
             $('#emailForm').removeAttr('disabled');
         }
-        if (obj.status === 'fail') {
+        if (obj.status === 'invalid') {
             $('#resultDiv').removeClass();
-            $('#resultDiv').addClass('alert alert-danger');
+            $('#resultDiv').addClass('alert alert-warning');
             // refine resultDiv by adding validation errors.
             $('#resultDiv').empty().append('<b>' + obj.message + '</b><ul>');
             var arr = obj.details;
@@ -145,6 +140,12 @@ $(function () {
                 $('#resultDiv').append('<li>' + arr[i] + '</li>');
             $('#resultDiv').append('</ul>');
             $('#resultDiv').append('<br><b>Please modify your data file and re-upload.</b>');
+        }
+        if (obj.status === 'fail') {
+            $('#resultDiv').removeClass();
+            $('#resultDiv').addClass('alert alert-danger');
+            // refine resultDiv by adding validation errors.
+            $('#resultDiv').empty().append('<b>' + obj.message + '</b><ul>');            
         }
     }
 

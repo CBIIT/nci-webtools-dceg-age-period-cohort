@@ -7,12 +7,12 @@ package gov.nih.nci.soccer;
 
 import gov.nih.cit.soccer.Soccer;
 import gov.nih.cit.soccer.input.InputFormatException;
+import gov.nih.cit.soccer.input.SOCcerException;
+import gov.nih.cit.soccer.misc.RunTimer;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,25 +24,13 @@ public class SoccerServiceHelper {
 
     private final static Logger LOGGER = Logger.getLogger(SoccerServiceHelper.class.getCanonicalName());
 
-    public static double getEstimatedProcessingTime(final String absoluteFileName) {
-        Soccer s = new Soccer();
-        File file = new File(absoluteFileName);
+    private final Soccer soc;
+    private final String outputDir;
+    private final String outputFilePre = "SoccerResults-";
 
-        double estimatedTime;
-        try {
-            estimatedTime = s.getEstimatedTime(file);
-
-            s.getEstimatedTime(file);   // currently this has to be a file (will soon accept a filename)
-            s.codeFile(file);                  // this can be a filename or a file
-        } catch (IOException ie) {
-            LOGGER.log(Level.SEVERE, "Caught IOException! Exit -1.");
-            return -1;
-        } catch (InputFormatException ife) {
-            LOGGER.log(Level.SEVERE, "Caught InputFormatException! Exit -1.");
-            return -1;
-        }
-
-        return estimatedTime;
+    public SoccerServiceHelper(Soccer _soc, String outputDir) {
+        this.soc = _soc;
+        this.outputDir = outputDir;
     }
 
     /*
@@ -50,29 +38,48 @@ public class SoccerServiceHelper {
      * OR
      * Invoke shell command(s) to process the input file.
      */
-    public static void ProcessingFile(String absoluteInputFileName, String absoluteOutputFileName) {
-        //
-        // TODO: This is just a simulation for now.
-        // Invoke algorithm or invoke command line.
-        //
-        InputStream inStream;
-        OutputStream outStream;
+    public boolean ProcessingFile(File _fileIn, File _fileOut) {
+        boolean bRet = false;
 
         try {
-            inStream = new FileInputStream(new File(absoluteInputFileName));
-            outStream = new FileOutputStream(new File(absoluteOutputFileName));
+            int numLines = getNumberLines(_fileIn);
+            // If not validation error.
+            System.out.println((new StringBuilder("Number of lines = ")).append(numLines).toString());
+            System.out.println((new StringBuilder("Estimated time to finish = ")).append(soc.getEstimatedTime(_fileIn)).append(" sec").toString());
+            RunTimer timer = new RunTimer();
+            soc.codeFile(_fileIn);
+            timer.stop();
+            System.out.println((new StringBuilder("Elapsed time = ")).append(timer.elapsedTime()).append(" sec").toString());
+            System.out.println((new StringBuilder("Average time / line = ")).append(timer.elapsedTime() / (float) numLines).append(" sec").toString());
 
-            byte[] buffer = new byte[1024];
-            int length;
-            //copy the file content in bytes 
-            while ((length = inStream.read(buffer)) > 0) {
-                outStream.write(buffer, 0, length);
+            // Rename output file (SoccerResults-soccer_dataset0.csv) to _fileOutput.
+            System.out.println("Output File: " + outputDir + File.separator + outputFilePre + _fileIn.getName());
+            File fileOutput = new File(outputDir + File.separator + outputFilePre + _fileIn.getName());
+            if (fileOutput.exists() && _fileOut != null) {
+                System.out.println(outputFilePre + _fileIn.getName() + " -> " + _fileOut.getName());
+                boolean success = fileOutput.renameTo(_fileOut);
+                if (success) {
+                    bRet = true;
+                }
             }
-
-            inStream.close();
-            outStream.close();
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Caught IOException! {0}", new Object[]{e.getMessage()});
+        } catch (InputFormatException e) {
+            LOGGER.log(Level.SEVERE, "Exception: {0}", e.getMessage());
+        } catch (IOException | SOCcerException e) {
+            LOGGER.log(Level.SEVERE, "Exception: {0}", e.getMessage());
         }
+
+        return bRet;
     }
+
+    @SuppressWarnings("empty-statement")
+    private int getNumberLines(File file)
+            throws IOException {
+        int numLines;
+        try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+            in.readLine();
+            for (numLines = 0; in.readLine() != null; numLines++);
+        }
+        return numLines;
+    }
+
 }
