@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Help - under construction</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/JavaScript">
+            function download(filename, text) {
+            alert('download');
+            var pom = document.createElement('a');
+            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            pom.setAttribute('download', filename);
+
+            if (document.createEvent) {
+            var event = document.createEvent('MouseEvents');
+            event.initEvent('click', true, true);
+            pom.dispatchEvent(event);
+            }
+            else {
+            pom.click();
+            }
+            }
+
+            function httpGet(theUrl)
+            {
+            var xmlHttp = null;
+
+            xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", theUrl, false );
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
+            }
+
+        </script>
+    </head>
+    <body>
+        <div>Help - under construction</div>
+        <button onclick='download("result.csv", httpGet("files/oe9967158-1478-41f3-a8f8-5ce7d337fc50"))'>Download</button>
+    </body>
+</html>
