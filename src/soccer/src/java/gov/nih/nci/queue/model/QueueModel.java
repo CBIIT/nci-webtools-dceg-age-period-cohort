@@ -18,6 +18,7 @@ public class QueueModel implements Serializable {
     private String path;
     private String email;
     private String timeStamp;
+    private String outputDir;
 
     public String getFileName() {
         return fileName;
@@ -51,4 +52,12 @@ public class QueueModel implements Serializable {
         this.timeStamp = timeStamp;
     }
 
+    public String getOutputDir() {
+        return outputDir;
+    }
+
+    public void setOutputDir(String outputDir) {
+        this.outputDir = outputDir;
+    } 
+    
 }

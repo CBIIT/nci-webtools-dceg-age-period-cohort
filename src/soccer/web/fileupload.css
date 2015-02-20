@@ -4,7 +4,7 @@ body{
 }
 
 .logo {
-    width: 200px;
+    width: 400px;
 }
 
 .glyphicon {
@@ -22,11 +22,11 @@ body{
 
 #fileSelect {
     border: 1px #e4e4e4 solid;
-    padding: 20px;
-    border-radius: 4px;
+    border-radius: 2px;
     box-shadow: 0 0 2px #ccc;
     line-height: 160%;
-    width: 100%;
+    width: 50%;
+    background-color: #fff;
 }
 
 #progressDiv {
@@ -47,4 +47,139 @@ body{
 #queueResultDiv {
     margin-top: 10px;
     display: none;
+}
+
+/*style.css*/
+#logos {
+    height: 43px;
+    background-color: #A90101;
+}
+
+#logos #left {
+    float: left;
+}
+
+#logos #right {
+    height: 43px;
+    float: right;
+}
+
+#banners {
+    height: 66px;
+}
+
+#banners #left {
+    float: left;
+}
+
+#banners #right {   
+    height: 43px;
+    float: right;
+}
+
+#login {
+    width: 935px;
+    margin: 0 auto;
+    border: solid 1px #322e82;
+    margin-top: 30px;
+}
+
+#portal-footer {
+    line-height: 1.2em;
+    margin: 2em 0em 1em 0em;
+    padding: 1em 0em 1em 0em;
+    text-align: center;
+    background-color: #FFF;
+    color: #333333;
+    font-size: 79%;
+}
+
+#portal-footer a {
+    text-decoration: none;
+    color: #333333;
+    border: none;
+}
+
+#portal-footer a:visited {
+    color: #333333;
+}
+
+#portal-footer a:hover {
+    text-decoration: underline;
+}
+
+.footerLinks {
+    padding: .5em 0em 0em 0em;
+}
+
+body {
+    background-image: url('http://cbiit.nci.nih.gov/page_bg.jpg');
+    background-repeat: repeat-x;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #444;
+    margin: 0px;
+}
+
+a.help {
+    background-image: url('/common/images/help.png');
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    padding-left: 22px;
+    padding-bottom: 5px;
+    text-decoration: none;
+}
+
+#helpGlossaryLinks {
+    float: right;
+}
+
+.termToDefine {
+    text-decoration: underline;
+    cursor: help;
+}
+
+.popupDefinition {
+    display: none;
+    position: absolute;
+    border: solid #C4C4C0 1px;
+    padding: 10px;
+    background-color: #FFFFEB;
+    text-align: left;
+    font-size: 12px;
+    width: 250px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+}
+
+.enlarge {
+    text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+    transform: scale(1.1);
+}
+
+#landing-blockcontent {
+    padding-top: 25px;
+    padding-left: 10px;
+    padding-right: 20px;
+}
+
+#landing-blockcontent h3, h4, a {
+    color: #0C5C97;
+}
+
+.tools-owner-title {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #F5FAFF;
+}
+
+.tools-section {
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: justify;
+}
+
+.main-div {
+    width: 1200px;
+    margin-left: auto; 
+    margin-right: auto;
 }
