@@ -76,3 +76,52 @@ getDictionaryAsJson <- function (fullPathDictionaryFile) {
   return(dictionaryJSON)
 }
 }
+
+
+#seerdata = joinpoint.seerdata(seerfilename="C:/devel/R/Breast_RelativeSurvival", 
+#                             newvarnames=c("Age groups","Breast stage","Year of diagnosis 1975+"),NoFit=T,
+#                             UseVarLabelsInData=c("Age_groups","Breast_stage", "Year_of_diagnosis_1975")
+#                             );
+
+# fit the joinpoint model with joinpoin.surv
+#fit.result = joinpoint(seerdata, subset = Age_groups == "65+" & Year_of_diagnosis_1975 >=2001,
+#                       year="Year_of_diagnosis_1975",observedrelsurv="Relative_Survival_Cum",
+#                       model.form = ~-1+factor(Breast_stage),
+#                       maxnum.jp = 1);
+
+getFittedResult <- function (filePath, seerFilePrefix, varNames, subsetStr, factorStr) {
+ 
+  varNames=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
+  filePath="C:/devel/R"
+  seerFilePrefix="Breast_RelativeSurvival"
+  #subsetString='Age_groups == "65+" & Year_of_diagnosis_1975 >=2001'
+  subsetStr="Year_of_diagnosis_1975 >=2001"
+  factorStr="Breast_stage"
+  yearOfDiagnosisVarName="Year_of_diagnosis_1975"
+  numJP=1
+  
+  file=paste(filePath, seerFilePrefix, sep="/" )
+  varLabels=gsub(" ", "_", gsub(" $", "", gsub("[^[:alnum:]]", " ", varNames)))
+  
+  seerdata = joinpoint.seerdata(seerfilename=file, 
+                                newvarnames=varNames,
+                                NoFit=T,
+                                UseVarLabelsInData=varLabels,
+                                yearOfDiagnosisVarLabel)
+  
+  #fit.result = joinpoint(seerdata, subset = subsetStr,
+  #                       year=yearOfDiagnosisVarName,
+  #                       observedrelsurv="Relative_Survival_Cum",
+  #                       model.form = ~-1+factor(factorStr),
+  #                       maxnum.jp = numJP);
+  
+  
+  fit.result=joinpoint(seerdata,
+                       subset = Age_groups == "65+" & Year_of_diagnosis_1975 >=2001,
+                       year=yearOfDiagnosisVarName,
+                       observedrelsurv="Relative_Survival_Cum",
+                       model.form = ~-1+factor(Breast_stage),
+                       maxnum.jp = 1);
+                       
+  return (fit.result)
+}
