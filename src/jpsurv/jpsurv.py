@@ -27,7 +27,14 @@ app = Flask(__name__, static_folder='', static_url_path='/')
 #app.debug = True
 
 #TESTING AREA
-
+HEADER = '\033[95m'
+OKBLUE = '\033[94m'
+OKGREEN = '\033[92m'
+WARNING = '\033[93m'
+FAIL = '\033[91m'
+BOLD = '\033[1m'
+UNDERLINE = '\033[4m'
+ENDC = '\033[0m'
 #exit()
 #END TESTING AREA
 
@@ -318,12 +325,29 @@ def upload2():
     #Now that the files are on the server RUN the RCode
     rSource = robjects.r('source')
 
-    print "****** STARTING HERE ***** "
-
+    print HEADER + "****** STARTING HERE ***** " + ENDC
     path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv"
     out_path = os.path.join(path, 'tmp')
     #Use next line to
-    #out_path = "%s/tmp/" % UPLOAD_DIR
+
+    #PRINT FILE_CONTROL
+    file_control = os.path.join(out_path, file_control_filename)
+    print "file_control"
+    fo = open(file_control, "r+")
+    str = fo.read(250);
+    print OKBLUE+"Read String is : ", str
+    print ENDC
+    print
+    fo.close()
+
+    #PRINT FILE_DATA
+    file_data = os.path.join(out_path, file_data_filename)
+    print "file_data"
+    fo = open(file_control, "r+")
+    str = fo.read(500);
+    print WARNING+"Read String is : ", str
+    print ENDC
+    fo.close()
 
     #Init the R Source
     rSource = robjects.r('source')
@@ -336,9 +360,17 @@ def upload2():
     output_file = "".join(tuple(rStrVector))
 
     print output_file
+    #PRINT output_file
+    r_output_file = os.path.join(out_path, output_file)
+    print "R output_file"
+    fo = open(r_output_file, "r+")
+    str = fo.read(500);
+    print BOLD+"Read String is : ", str
+    print ENDC
+    fo.close()
 
     print "CLOSE FILE %s" % output_file
-    print "************ EXIT ********"
+    print OKGREEN +"************ END HERE EXIT ********" + ENDC
 
     #print "json string >> "+str(jsondata[0]);
     status = "OK"
@@ -346,6 +378,12 @@ def upload2():
     return_url = "%s/jpsurv?file_control_filename=%s&file_data_filename=%s&output_file=%s&status=%s" % (request.url_root, file_control_filename, file_data_filename, output_file, status)
     print return_url
     return redirect(return_url)
+
+@app.route('/jpsurvRest/calculate', methods=['GET'])
+def calculate():
+    print "Processing calculate"
+
+    return "Hello"
 
 import argparse
 if __name__ == '__main__':
