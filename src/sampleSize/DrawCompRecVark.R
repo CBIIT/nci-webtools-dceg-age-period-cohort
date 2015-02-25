@@ -239,6 +239,63 @@ DrawCompRecVarkSpecSens <- function(k,spec,sens,prev,N) {
   legend(pch=LTY,lty=LTY,legend=spec,"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="o",inset=c(-0.3,0),xpd = TRUE,title="Specificity")
 }
 
+DrawCompRecVarkSensSpec <- function(k,sens,spec,prev,N) {
+  
+  K <- seq(from=min(k),to=max(k),by=0.00001)
+  Y <- seq(from=-1,to=3,by=0.00001)
+  list <- 1:length(sens)
+  vals <-  1:length(sens)
+  
+  Iterations <- 1:length(sens)
+  LTY <- Iterations
+  
+  for(i in Iterations){
+    
+    dppvdsens <- prev*(1-spec)*(1-prev)/(sens[i]*prev+(1-spec)*(1-prev))^2
+    dppvdspec <- prev*(1-prev)*sens[i]/(sens[i]*prev+(1-spec)*(1-prev))^2
+    varsens <- sens[i]*(1-sens[i])/(K*N)
+    varspec <- spec*(1-spec)/((1-K)*N)
+    varppv <- dppvdsens^2*varsens+dppvdspec^2*varspec
+    varppvk <- dppvdsens^2*(sens[i]*(1-sens[i])/(0.5*N))+dppvdspec^2*(spec*(1-spec)/((1-0.5)*N))
+    compare <- ((1/varppv)/(1/varppvk))^2-1
+    
+    if((sens[i]+spec-1) == 0) {
+      vals[i] <- 0.5
+      dppvdsens[i] <- prev*(1-spec)*(1-prev)/(sens[i]*prev+(1-spec)*(1-prev))^2
+      dppvdspec[i] <- prev*(1-prev)*sens[i]/(sens[i]*prev+(1-spec)*(1-prev))^2
+      varsens[i] <- sens[i]*(1-sens[i])/(vals[i]*N)
+      varspec[i] <- spec*(1-spec)/((1-vals[i])*N)
+      varppv[i] <- dppvdsens[i]^2*varsens[i]+dppvdspec[i]^2*varspec[i]
+      varppvk[i] <- dppvdsens[i]^2*(sens[i]*(1-sens[i])/(0.5*N))+dppvdspec[i]^2*(spec*(1-spec)/((1-0.5)*N))
+      list[i] <- ((1/varppv[i])/(1/varppvk[i]))^2-1
+    }
+    
+    else {    
+      vals[i] <- (1-sens[i])*(1-spec)*(-1+sqrt(1+(sens[i]+spec-1)/((1-sens[i])*(1-spec))))/(sens[i]+spec-1)
+      vals[i] <- round(vals[i],5)
+      dppvdsens[i] <- prev*(1-spec)*(1-prev)/(sens[i]*prev+(1-spec)*(1-prev))^2
+      dppvdspec[i] <- prev*(1-prev)*sens[i]/(sens[i]*prev+(1-spec)*(1-prev))^2
+      varsens[i] <- sens[i]*(1-sens[i])/(vals[i]*N)
+      varspec[i] <- spec*(1-spec)/((1-vals[i])*N)
+      varppv[i] <- dppvdsens[i]^2*varsens[i]+dppvdspec[i]^2*varspec[i]
+      varppvk[i] <- dppvdsens[i]^2*(sens[i]*(1-sens[i])/(0.5*N))+dppvdspec[i]^2*(spec*(1-spec)/((1-0.5)*N))
+      list[i] <- ((1/varppv[i])/(1/varppvk[i]))^2-1
+    }
+    
+    
+    if(i==1) {
+      par(mar=c(5.1, 4.1, 5.1, 9.5))
+      plot(compare~K,type="l",main=c("Efficiency for tests of PPV by", "proportion of total assays in cases",paste("Specificity =",spec,", Prevalence =",prev)),xlab="k: the proportion of assays in cases",ylab=c("Relative efficiency gain or loss compared", "to equal numbers of cases and controls"),ylim=c(-0.5,3),lwd=3,lty=LTY[i], col = LTY[i],font.lab=2,font=2,cex.axis=1.15,cex.lab=1.15)
+      lines(y=K*0,x=K,lty=1,col=1)
+      lines(y=Y,x=0.5*(Y*0+1),lty=2,col=1)
+    }
+    else
+      lines(y=compare, x=K,lty=LTY[i], col = LTY[i],lwd=3)
+    points(y=list[i],x=vals[i],pch=LTY[i],col=LTY[i],cex=1.5,lwd=2)
+  }
+  legend(pch=LTY,lty=LTY,legend=sens,"bottomright",cex=1.15, lwd=3,col= LTY,text.font=2,bty="o",inset=c(-0.3,0),xpd = TRUE,title="Sensitivity")
+}
+
 DrawCompRecVarcNPVkSpecSens <- function(k,spec,sens,prev,N) {
   
   K <- seq(from=min(k),to=max(k),by=0.00001)
