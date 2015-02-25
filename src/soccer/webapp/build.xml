@@ -1,75 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- You may freely edit this file. See commented blocks below for -->
-<!-- some examples of how to customize the build. -->
-<!-- (If you delete it and reopen the project it will be recreated.) -->
-<!-- By default, only the Clean and Build commands use this build script. -->
-<!-- Commands such as Run, Debug, and Test only use this build script if -->
-<!-- the Compile on Save feature is turned off for the project. -->
-<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
-<!-- in the project's Project Properties dialog box.-->
 <project name="soccer" default="default" basedir=".">
-    <description>Builds, tests, and runs the project soccer</description>
     <property file="build.properties"/>
-    <import file="nbproject/build-impl.xml"/>
-    <!--
-
-    There exist several targets which are by default empty and which can be 
-    used for execution of your tasks. These targets are usually executed 
-    before and after some main targets. They are: 
-
-      -pre-init:                 called before initialization of project properties 
-      -post-init:                called after initialization of project properties 
-      -pre-compile:              called before javac compilation 
-      -post-compile:             called after javac compilation 
-      -pre-compile-single:       called before javac compilation of single file
-      -post-compile-single:      called after javac compilation of single file
-      -pre-compile-test:         called before javac compilation of JUnit tests
-      -post-compile-test:        called after javac compilation of JUnit tests
-      -pre-compile-test-single:  called before javac compilation of single JUnit test
-      -post-compile-test-single: called after javac compilation of single JUunit test
-      -pre-dist:                 called before archive building 
-      -post-dist:                called after archive building 
-      -post-clean:               called after cleaning build products 
-      -pre-run-deploy:           called before deploying
-      -post-run-deploy:          called after deploying
-
-    Example of pluging an obfuscator after the compilation could look like 
-
-        <target name="-post-compile">
-            <obfuscate>
-                <fileset dir="${build.classes.dir}"/>
-            </obfuscate>
-        </target>
-
-    For list of available properties check the imported 
-    nbproject/build-impl.xml file. 
-
-
-    Other way how to customize the build is by overriding existing main targets.
-    The target of interest are: 
-
-      init-macrodef-javac:    defines macro for javac compilation
-      init-macrodef-junit:   defines macro for junit execution
-      init-macrodef-debug:    defines macro for class debugging
-      do-dist:                archive building
-      run:                    execution of project 
-      javadoc-build:          javadoc generation 
-
-    Example of overriding the target for project execution could look like 
-
-        <target name="run" depends="<PROJNAME>-impl.jar">
-            <exec dir="bin" executable="launcher.exe">
-                <arg file="${dist.jar}"/>
-            </exec>
-        </target>
-
-    Notice that overridden target depends on jar target and not only on 
-    compile target as regular run target does. Again, for list of available 
-    properties which you can use check the target you are overriding in 
-    nbproject/build-impl.xml file. 
-
-    -->
-    <target name="-pre-init">
+    <fail message="Please build using Ant 1.7.1 or higher.">
+        <condition>
+            <not>
+                <antversion atleast="1.7.1"/>
+            </not>
+        </condition>
+    </fail>
+    <target name="pre-init">
         <propertyfile
             file="src/java/applicationQueue.properties" comment="Application properties">
             <entry  key="gov.nih.nci.queue.repository.dir" value="${gov.nih.nci.queue.repository.dir}"/>
@@ -77,4 +16,68 @@
             <entry  key="gov.nih.cit.soccer.wordnet.dir" value="${gov.nih.cit.soccer.wordnet.dir}"/>
         </propertyfile>
     </target>
+    <target name="init" depends="pre-init">
+        <mkdir dir="build/classes"/>
+        <mkdir dir="dist" />
+    </target>    
+    <target name="setting" depends="init">
+        <echoxml file="dist/tomee.xml">
+            <tomee>
+                <Resource id="TomiJmsResourceAdapter" type="ActiveMQResourceAdapter">
+                    BrokerXmlConfig =  broker:(tcp://${queue.broker.server}:61616)
+                    ServerUrl       =  tcp://${queue.broker.server}:61616
+                </Resource>
+
+                <Resource id="TomiJmsConnectionFactory" type="javax.jms.ConnectionFactory">
+                    ResourceAdapter = TomiJmsResourceAdapter
+                </Resource>
+
+                <Container id="TomiJmsMdbContainer" ctype="MESSAGE">
+                    ResourceAdapter = TomiJmsResourceAdapter
+                </Container>
+
+                <Resource id="TomiQueue" type="javax.jms.Queue"/>
+                <Resource id="TomiTopic" type="javax.jms.Topic"/>
+            </tomee>
+        </echoxml>
+    </target>    
+    <path id="compile.classpath">
+        <fileset dir="web/WEB-INF/lib">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${tomee.dir}/lib">
+            <include name="*.jar"/>
+            <!--Solve the warning: Supported source version 'RELEASE_6' from annotation processor 'org.apache.openjpa.persistence.meta.AnnotationProcessor6' less than -source '1.7'-->
+            <exclude name="openjpa-2.4.0-nonfinal-1598334.jar"/>
+        </fileset>
+    </path>
+    <target name="compile" depends="init" >
+        <javac srcdir="src/java"
+               destdir="build/classes"  
+               debug="false" 
+               includeantruntime="false" 
+               source="1.7"
+               target="1.7"
+               encoding="utf-8">
+            <classpath refid="compile.classpath"/>
+        </javac>
+        <copy file="src/java/applicationQueue.properties" todir="build/classes"/>
+    </target>
+    <target name="war" depends="compile" >
+        <war needxmlfile="false"
+             destfile="dist/${ant.project.name}.war">
+            <fileset dir="web"/>
+            <lib dir="web/WEB-INF/lib"/>
+            <classes dir="build/classes"/>
+        </war>
+    </target>
+    <target name="clean">
+        <delete includeEmptyDirs="true" quiet="true" dir="build"/>
+        <delete includeEmptyDirs="true" quiet="true" dir="dist"/>
+    </target>   
+    <target name="deploy" depends="clean, setting, war">
+        <copy file="dist/${ant.project.name}.war" todir="${tomee.dir}/webapps"/>
+        <copy file="dist/tomee.xml" todir="${tomee.dir}/conf"/>
+    </target>
+    <target name="default" depends="clean, war, setting"/>
 </project>
