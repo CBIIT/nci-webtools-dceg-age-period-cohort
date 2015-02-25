@@ -89,25 +89,34 @@ getDictionaryAsJson <- function (fullPathDictionaryFile) {
 #                       model.form = ~-1+factor(Breast_stage),
 #                       maxnum.jp = 1);
 
-getFittedResult <- function (filePath, seerFilePrefix, varNames, subsetStr, factorStr) {
+getFittedResult <- function (filePath, seerFilePrefix, varNames, yearOfDiagnosisVarName, subsetStrs, factorStrs, numJP, outputFileName) {
  
-  varNames=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
-  filePath="C:/devel/R"
-  seerFilePrefix="Breast_RelativeSurvival"
-  #subsetString='Age_groups == "65+" & Year_of_diagnosis_1975 >=2001'
-  subsetStr="Year_of_diagnosis_1975 >=2001"
-  factorStr="Breast_stage"
-  yearOfDiagnosisVarName="Year_of_diagnosis_1975"
-  numJP=1
+  #varNames=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
+  #filePath="C:/devel/R"
+  #seerFilePrefix="Breast_RelativeSurvival"
+  #subsetStrs=c("Age_groups == "65+", "Year_of_diagnosis_1975 >=2001")
+  #factorStrs=c("Breast_stage")
+  #yearOfDiagnosisVarName="Year_of_diagnosis_1975"
+  #numJP=1
+  
+  print(filePath)
+  print(seerFilePrefix)
+  print(varNames)
+  print(yearOfDiagnosisVarName)
+  print(subsetStrs)
+  print(factorStrs)
+  print(numJP)
+  print(outputFileName)
   
   file=paste(filePath, seerFilePrefix, sep="/" )
+  
   varLabels=gsub(" ", "_", gsub(" $", "", gsub("[^[:alnum:]]", " ", varNames)))
   
   seerdata = joinpoint.seerdata(seerfilename=file, 
                                 newvarnames=varNames,
                                 NoFit=T,
                                 UseVarLabelsInData=varLabels,
-                                yearOfDiagnosisVarLabel)
+                                yearOfDiagnosisVarName)
   
   #fit.result = joinpoint(seerdata, subset = subsetStr,
   #                       year=yearOfDiagnosisVarName,
@@ -121,7 +130,9 @@ getFittedResult <- function (filePath, seerFilePrefix, varNames, subsetStr, fact
                        year=yearOfDiagnosisVarName,
                        observedrelsurv="Relative_Survival_Cum",
                        model.form = ~-1+factor(Breast_stage),
-                       maxnum.jp = 1);
+                       maxnum.jp=numJP);
                        
   return (fit.result)
 }
+
+
