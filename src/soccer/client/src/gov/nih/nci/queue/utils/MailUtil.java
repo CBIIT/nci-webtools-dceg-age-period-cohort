@@ -21,18 +21,9 @@ public class MailUtil {
 
     public boolean mailTo(String destEmail, String _title, String _message) {
         // Recipient's email ID needs to be mentioned.
-        String to = destEmail;
-
-        // Sender's email ID needs to be mentioned
-        String user = System.getenv("USER");
-        String hostname = System.getenv("HOSTNAME");
-        String from = "ncianalysis@ncias-d1373-v.nci.nih.gov";
-        if(user!= null && user.length() > 0 && hostname != null && hostname.length() > 0) {
-            from = user + "@" + hostname;
-        }
-
-        // Assuming you are sending email from localhost
-        String host = "localhost";
+        String to = destEmail; 
+        String host = "mailfwd.nih.gov";   
+        String from = "SOCcer <do.not.reply@mail.nih.gov>";
 
         // Get system properties
         Properties properties = System.getProperties();
