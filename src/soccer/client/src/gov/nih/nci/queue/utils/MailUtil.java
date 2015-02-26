@@ -19,11 +19,10 @@ import javax.mail.internet.MimeMessage;
  */
 public class MailUtil {
 
-    public boolean mailTo(String destEmail, String _title, String _message) {
+    public boolean mailTo(String from, String destEmail, String _title, String _message) {
         // Recipient's email ID needs to be mentioned.
         String to = destEmail; 
-        String host = "mailfwd.nih.gov";   
-        String from = "SOCcer <do.not.reply@mail.nih.gov>";
+        String host = "mailfwd.nih.gov";           
 
         // Get system properties
         Properties properties = System.getProperties();

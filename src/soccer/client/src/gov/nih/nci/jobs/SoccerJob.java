@@ -70,7 +70,8 @@ public class SoccerJob implements Job {
                 renameFileName(outputFile, outputFile2);
 
                 // Send email. 
-                boolean isMailSent = new MailUtil().mailTo(email, composeMailTitle(), composeMailBody(timeStamp, outputFileId));
+                String from = "SOCcer <do.not.reply@mail.nih.gov>";
+                boolean isMailSent = new MailUtil().mailTo(from, email, composeMailTitle(), composeMailBody(timeStamp, outputFileId));
                 if (isMailSent) {
                     LOGGER.info("Message has been sent to " + email + " successfully.");
                 } else {
@@ -139,7 +140,7 @@ public class SoccerJob implements Job {
             hostname = System.getenv("COMPUTERNAME"); // Windows. 
         }
 
-        return new StringBuilder("((This email is automatically generated. - Under Construction))\r\n\r\n")
+        return new StringBuilder("( Please do not reply to this email. If you need assistance, please contact ncicbiit@mail.nih.gov )\r\n\r\n")
                 .append("The file you uploaded on ")
                 .append(timeStamp)
                 .append(" has been processed. ")
