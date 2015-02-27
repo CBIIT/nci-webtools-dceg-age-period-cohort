@@ -89,24 +89,18 @@ getDictionaryAsJson <- function (fullPathDictionaryFile) {
 #                       model.form = ~-1+factor(Breast_stage),
 #                       maxnum.jp = 1);
 
-getFittedResult <- function (filePath, seerFilePrefix, varNames, yearOfDiagnosisVarName, subsetStrs, factorStrs, numJP, outputFileName) {
+getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
  
-  #varNames=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
   #filePath="C:/devel/R"
   #seerFilePrefix="Breast_RelativeSurvival"
-  #subsetStrs=c("Age_groups == "65+", "Year_of_diagnosis_1975 >=2001")
-  #factorStrs=c("Breast_stage")
   #yearOfDiagnosisVarName="Year_of_diagnosis_1975"
+  #yearofDiagnosisRange=c(1975, 2011)
+  #allVar=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
+  #cohortVars=c("Age_groups")
+  #cohortValues=c("\"65+\"")
+  #covariateVars=c("Breast_stage") 
   #numJP=1
-  
-  print(filePath)
-  print(seerFilePrefix)
-  print(varNames)
-  print(yearOfDiagnosisVarName)
-  print(subsetStrs)
-  print(factorStrs)
-  print(numJP)
-  print(outputFileName)
+  #outputFileName="Breast_RelativeSurvival.output"
   
   file=paste(filePath, seerFilePrefix, sep="/" )
   
@@ -124,15 +118,34 @@ getFittedResult <- function (filePath, seerFilePrefix, varNames, yearOfDiagnosis
   #                       model.form = ~-1+factor(factorStr),
   #                       maxnum.jp = numJP);
   
+  startYearStr=paste(yearOfDiagnosisVarName, ">=", yearofDiagnosisRange[1])
+  endYearStr=paste(yearOfDiagnosisVarName, "<=", yearofDiagnosisRange[2])
+  yearStr=paste(startYearStr, endYearStr, sep='&')
+  subsetStr=paste(paste(cohortVars, cohortValues, sep="=="), collapse='&')
+  subsetStr=paste(subsetStr, yearStr, sep='&')
   
   fit.result=joinpoint(seerdata,
-                       subset = Age_groups == "65+" & Year_of_diagnosis_1975 >=2001,
+                       subset = eval(parse(text=subsetStr)),
                        year=yearOfDiagnosisVarName,
                        observedrelsurv="Relative_Survival_Cum",
                        model.form = ~-1+factor(Breast_stage),
                        maxnum.jp=numJP);
-                       
-  return (fit.result)
+  
+  #save fit.result as RData
+  saveRDS(fit.result, outputFileName)
+  
+  apcJson=cat(toJSON(fit.result$apc), .escapeEscapes=TRUE)
+  return (apcJson)
 }
 
 
+filePath="C:/devel/R"
+seerFilePrefix="Breast_RelativeSurvival"
+yearOfDiagnosisVarName="Year_of_diagnosis_1975"
+yearofDiagnosisRange=c(1975, 2011)
+allVar=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
+cohortVars=c("Age_groups")
+cohortValues=c("\"65+\"")
+covariateVars=c("Breast_stage") 
+numJP=1
+outputFileName="Breast_RelativeSurvival.output"
