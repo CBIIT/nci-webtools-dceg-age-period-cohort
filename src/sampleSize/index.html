@@ -19,6 +19,8 @@
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
 <link rel="stylesheet" href="/common/css/style.css" />
 <link rel="stylesheet" href="sampleSize.css" />
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" type="text/css">
+
 </head>
 
 <body>
@@ -57,24 +59,25 @@
 					onclick="openHelpWindow('/common/html/meansToRiskGlossary.html')">Glossary</a>
 			</div>
 			<br>
+			<form id="ss">
 			<div style='clear: left; padding-top: 10px;'>
 <table>
 				<tr>
-					<td class='label' align="right"><label for="independent_dropdown">Independent Variable</label></td>
+					<td align="right"><label for="independent_dropdown">Independent Variable</label></td>
 					<td><select id="independent_dropdown"
 						name="independent_dropdown" width="100%">
 							<option value="k" selected>k</option>
 
 					</select></td>
 					<td><label for="independent"> <input type="text"
-							size="30" id="independent" pattern="([0-9,. \-])+"
+							size="30" id="independent" pattern="([0-9],[0-9])"
 							title="A comma separated pair that refers to the minimum and maximum respectively"
 							title="A comma separated pair that refers to the minimum and maximum respectively"
-							value="0,1" required>
+							value="0,1" class="fontnormal" required>
 					</label></td>
 				</tr>
 				<tr>
-					<td class='label' align="right"><label for="contour_dropdown">Contour</label></td>
+					<td align="right"><label for="contour_dropdown">Contour</label></td>
 					<td><select id="contour_dropdown" name="contour_dropdown" onchange="lock_fixed_options();">
 							<option value="" selected></option>
 							<option value="specificity">Specificity</option>
@@ -84,11 +87,11 @@
 							id="contour" pattern="([0-9,. \-])+"
 							title="An array of floating point numbers separated by commas.  Numbers must be between 0 and 1"
 							title="An array of floating point numbers separated by commas  Numbers must be between 0 and 1"
-							required>
+							 class="fontnormal" required>
 					</label></td>
 				</tr>
 				<tr>
-					<td class='label'><label for="fixed_dropdown">Fixed Values</label></td>
+					<td align="right"><label for="fixed_dropdown">Fixed Values</label></td>
 					<td><select id="fixed_dropdown" name="fixed_dropdown"
 						id='fixed_dropdown'>
 							<option value="" selected></option>
@@ -99,29 +102,29 @@
 					<td><label for="fixed"> <input type="text" size="30"
 							id="fixed" pattern="([0-9,. \-])+"
 							title="An array of floating point numbers separated by commas. Numbers must be between 0 and 1"
-							required>
+							 class="fontnormal" required>
 					</label></td>
 				</tr>
 								<tr>
-					<td class='label'><label for="prevalence">Prevalence</label></td>
+					<td align="right"><label for="prevalence">Prevalence</label></td>
 					<td><label for="prevalence"> <input type="text" size="10"
 							id="prevalence" value="0.001"
 							title="A floating point number between 0 and 1"
-							required>
+							 class="fontnormal"  required>
 					</label></td>
 				</tr>
 								<tr>
-					<td class='label'><label for="n_value">N</label></td>
+					<td align="right"><label for="n_value">N</label></td>
 					<td><label for="n_value"> <input type="text" size="10"
-							id="n_value" value="1" pattern="([0-9,. \-])+"
+							id="n_value" value="1" pattern="(^[0-9]$)+"
 							title="Number must be an integer"
-							required>
+							 class="fontnormal" required>
 					</label></td>
 				</tr>
 				<tr><td></td><td></td><td></td></tr>
    				<tr>
-					<td class="label spacer">
-                                		<button class="post">Calculate</button>
+					<td class="spacer">
+                                		<button class="post" type="submit">Calculate</button>
 					</td>
 					<td class="spacer">
  						<button class="reset">Reset</button>
@@ -133,17 +136,21 @@
 				</tr>
 
 			</table>
-			<br />
 				<div id="specificity_val" class="dom_valref"></div>
 				<div id="sensitivity_val" class="dom_valref"></div>
                                 <div id="fixed_flag" class="dom_valref"></div>
 			      	<div id="randomnumber" class="dom_valref"></div>
-				<div id="benchmark"></div>
-        <br /><br />
-
 
 			</div>
-		
+			</form>
+
+						<div class="col-sm-7 col-sm-offset-2" id="message">
+							<div class="panel panel-danger">
+								<div class="panel-heading">Error</div>
+								<div class="panel-body" id="message-content">Howdy</div>
+							</div>
+						</div>
+				<br />
 				<div>
 				<p id="spinner">
 				<i class="fa fa-spinner fa-spin fa-2x"></i> <span id="spinnerText">Calculating</span>

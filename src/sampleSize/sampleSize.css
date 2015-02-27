@@ -20,6 +20,10 @@
 	margin-right: auto;
 }
 
+.fontnormal {
+	font-weight: normal;
+}
+
 .dom_valref {
 	display:none;
 }

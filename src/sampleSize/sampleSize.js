@@ -3,6 +3,7 @@ $(function(){
 	random_gen();
 	disable_calculate();
 	$("#spinner").hide();
+        $("#message").hide();
 
         // Post json to server
         $('.post').click(function(){
@@ -10,6 +11,9 @@ $(function(){
           $("#output_graph").empty();
 //	  spinner = $('<div><p id="spinner"><i class="fa fa-spinner fa-spin fa-2x"></i><span id="spinnerText">Calculating</span></p></div>');
 //	  $("#output_graph").append(spinner); 
+
+	  $("#message-content").empty();
+          $("#message").hide();
 	  $("#spinner").show();
           $.ajax({
             type: 'POST',
@@ -36,7 +40,15 @@ $(function(){
  	      //var end = new Date();
               //var secondsOpen = Math.floor((end - start) / 1000);
               //$("#benchmark").text(secondsOpen);
-            }
+            },
+	    error: function(jqXHR, textStatus, errorThrown) {
+		console.log("header: " + jqXHR + "\n" + "Status: " + textStatus + "\n\nThe server is temporarily unable to service your request due to maintenance downtime or capacity problems. Please try again later.");
+		message = 'Service Unavailable: ' + textStatus + "<br>";
+		message += "The server is temporarily unable to service your request due to maintenance downtime or capacity problems. Please try again later.<br>";
+		$("#message-content").empty().append(message);	   
+		$("#message").show();    
+	        $("#spinner").hide();
+	    },
           });
         });
 
@@ -157,6 +169,8 @@ function example_code(){
 		change_hidden("contour");
 		change_hidden("fixed");
 		enable_calculate();
+                $("#message-content").empty();
+                $("#message").hide();
 }
 
 function reset_code(){
@@ -169,6 +183,9 @@ function reset_code(){
                 $("#n_value").val("");
                 $("#fixed_flag").text("");
 		$("#output_graph").empty();
+		$("#message").empty();
+          	$("#message-content").empty();
+          	$("#message").hide();
 		disable_calculate();
         //        change_hidden("contour");
         //        change_hidden("fixed");
