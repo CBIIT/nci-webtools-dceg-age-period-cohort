@@ -11,6 +11,7 @@ var years;
 //	"2010","2011"
 //];
 //Constant series of events.   On a daily events.
+//var cohort_covariance_variable_names
 var cohort_covariance_variables;
 /*
 var cohort_covariance_variables = {
@@ -89,12 +90,50 @@ $(document).ready(function() {
 });
 
 function show_graph() {
+	/*  EXAMPLE()...
+
+getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
+
+  #filePath="C:/devel/R"
+  #seerFilePrefix="Breast_RelativeSurvival"
+  #yearOfDiagnosisVarName="Year_of_diagnosis_1975"
+  #yearofDiagnosisRange=c(1975, 2011)
+  #allVar=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
+  #cohortVars=c("Age_groups")
+  #cohortValues=c("65+")
+  #covariateVars=c("Breast_stage")
+  #numJP=1
+  #outputFileName="Breast_RelativeSurvival.output"
+
+	*/
 	var inputAnswers = $('#parameters').serialize();
+  var yearOfDiagnosisVarName="Year_of_diagnosis_1975";
+
 	console.log('inputAnswers');
 	console.log(inputAnswers);
+	var obj = {
+		"seerFilePrefix" :"Breast_RelativeSurvival",
+		"yearOfDiagnosisVarName" : "Year_of_diagnosis_1975",
+		"yearofDiagnosisRange" : [1975, 2011],
+		"allVar" : ["Age_groups","Breast_stage","Year_of_diagnosis_1975"],
+		"cohortVars" : ["Age_groups"],
+		"cohortValues" : ["00-49"],
+		"covariateVars" : ["Breast_stage"],
+		"numJP" : 1,
+		"outputFileName" : "Breast_RelativeSurvival.output"
+ };
+	console.log("What is obj????");
+	console.dir(obj);
 
-	alert('Form Answers: '+inputAnswers);
-	jpsurvRest('calculate', inputAnswers);
+	var cohort_covariance_variable_names = get_cohort_covariance_variable_names();
+	var params = inputAnswers +"&allVars="+ JSON.stringify(encodeURIComponent(cohort_covariance_variable_names));
+
+	//alert('Form Answers:\n'+params.replace(/&/g, "\n"));
+	//var newobj = 'obj='+JSON.stringify(encodeURIComponent(obj));
+	var newobj = 'obj='+JSON.stringify(obj);
+
+	jpsurvRest('calculate', newobj);
+
 
 	$("#spinner").show();
 	$("#plot").hide();
@@ -115,6 +154,7 @@ function jpTrim(str, len) {
 
 	return newstr;
 }
+
 function load_form() {
 	console.log('load_form()');
 	//Removing File Reader, because file is on server
@@ -135,7 +175,6 @@ function load_form() {
 	  // The following is for demo purpose only.
 	  //Temp change a title
 	  $('#diagnosis_title').empty().append("Year of Diagnosis: Year of diagnosis 1975+");
-	  $('#year_of_diagnosis_end option:contains("2011")').attr('selected', 'selected');
 	//}
 
 	//reader.readAsText(file_control, "UTF-8");
@@ -149,6 +188,7 @@ function build_parameter_column() {
 	covariate_options.unshift("None");
 	set_covariate_select(covariate_options);
 	$("#parameters").fadeIn();
+
 }
 
 
@@ -238,6 +278,7 @@ function find_year_of_diagnosis_row() {
 }
 
 function set_year_of_diagnosis_select() {
+
 	$("#diagnosis_title").empty()
 		.append(year_of_diagnosis_title);
 
@@ -245,7 +286,17 @@ function set_year_of_diagnosis_select() {
 		$("#year_of_diagnosis_start").append("<OPTION>"+years[i]+"</OPTION>");
 		$("#year_of_diagnosis_end").append("<OPTION>"+years[i]+"</OPTION>");
 	}
+	//
+	//Set last entry in year_of_diagnosis_end
+	//
+	//
+	//Count the number of options in #year_of_diagnosis_end and select the last one.
+	//
+	var numberOfOptions = $('select#year_of_diagnosis_end option').length;
+	$('#year_of_diagnosis_end option')[numberOfOptions-1].selected = true;
+
 }
+
 function set_cohort_select(cohort_options) {
 	var max_size = 4;
 	if (cohort_options.length < 4) max_size = cohort_options.length
@@ -279,7 +330,7 @@ function change_cohort_select() {
 		for (var i=0;i<all_selected.length;i++) {
 			for (var j=0;j<keys.length;j++) {
 				if (all_selected[i] == keys[j])
-					add_cohort_covariance_variable_select($("#cohort_sub_select"), "val_"+i, keys[j], cohort_covariance_variables[keys[j]]);
+					add_cohort_covariance_variable_select($("#cohort_sub_select"), "cohort_value_"+i, keys[j], cohort_covariance_variables[keys[j]]);
 			}
 		}
 		var covariate_options = remove_items_from_set(keys, all_selected);
@@ -306,8 +357,12 @@ function remove_items_from_set(big_set, removed_set) {
 }
 
 function change_covariate_select() {
+	console.log('change_covariate_select');
+
 	var all_selected = $("#covariate_select").val();
 	var keys =  Object.keys(cohort_covariance_variables);
+	console.log("inspect keys");
+	inspect(keys);
 
 	$("#covariate_sub_select").empty();
 
@@ -317,10 +372,16 @@ function change_covariate_select() {
 				add_cohort_covariance_variable_select($("#covariate_sub_select"), "val_"+i, keys[j], cohort_covariance_variables[keys[j]]);
 		}
 	}
+	//
+	//Just clear for now....
+	//
+	$("#covariate_sub_select").empty();
+
 }
 
 function add_cohort_covariance_variable_select(field, variable_name, variable_title, values) {
-	var variable_select = $("<SELECT id='"+variable_name+"_select'>");
+
+	var variable_select = $("<SELECT id='"+variable_name+"_select' name='"+variable_name+"_select'>");
 	for (i=0;i<values.length;i++) {
 		variable_select.append("<OPTION>"+values[i]+"</OPTION>");
 	}
@@ -390,3 +451,46 @@ function getUrlParameter(sParam) {
         }
     }
 }
+
+function 	inspect(object) {
+	console.log(typeof object);
+	console.dir(object);
+
+}
+
+/**
+ * objectInspector digs through a Javascript object
+ * to display all its properties
+ *
+ * @param object - a Javascript object to inspect
+ * @param result - a string of properties with datatypes
+ *
+ * @return result - the concatenated description of all object properties
+ */
+function objectInspector(object, result) {
+    if (typeof object != "object")
+        return "Invalid object";
+    if (typeof result == "undefined")
+        result = '';
+
+    if (result.length > 50)
+        return "[RECURSION TOO DEEP. ABORTING.]";
+
+    var rows = [];
+    for (var property in object) {
+        var datatype = typeof object[property];
+
+        var tempDescription = result+'"'+property+'"';
+        tempDescription += ' ('+datatype+') => ';
+        if (datatype == "object")
+            tempDescription += 'object: '+objectInspector(object[property],result+'  ');
+        else
+            tempDescription += object[property];
+
+        rows.push(tempDescription);
+    }//Close for
+
+    return rows.join(result+"\n");
+}//End objectInspector
+
+
