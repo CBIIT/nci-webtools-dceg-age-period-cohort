@@ -99,9 +99,3 @@ prepareSaveGraph <- function(imgDir, graphPrefix, uniqueId, tabvalue) {
   graph=paste(imgDir, graphPrefix, uniqueId, "-", as.numeric(tabvalue),".png", sep='')
   png(file=graph)
 }
-
-k=c(0,1)
-sens=c(0.8, 0.9, 0.95, 0.995)
-spec=c(0.8, 0.95)
-prev=0.001
-N=1
