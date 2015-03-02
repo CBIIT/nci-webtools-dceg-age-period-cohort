@@ -105,12 +105,6 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
   #numJP=1
   #outputFileName="Breast_RelativeSurvival.output"
 
-	*/
-	var inputAnswers = $('#parameters').serialize();
-  var yearOfDiagnosisVarName="Year_of_diagnosis_1975";
-
-	console.log('inputAnswers');
-	console.log(inputAnswers);
 	var obj = {
 		"seerFilePrefix" :"Breast_RelativeSurvival",
 		"yearOfDiagnosisVarName" : "Year_of_diagnosis_1975",
@@ -122,6 +116,50 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 		"numJP" : 1,
 		"outputFileName" : "Breast_RelativeSurvival.output"
  };
+
+	*/
+
+	var inputAnswers = $('#parameters').serialize();
+  var yearOfDiagnosisVarName="Year_of_diagnosis_1975";
+
+
+  var seerFilePrefix = "";
+	var yearOfDiagnosisVarName = "";
+	var yearofDiagnosisRange = [];
+	var allVar = [];
+	var cohortVars = [];
+	var cohortValues = [];
+	var covariateVars = [];
+	var numJP = 1;
+
+  seerFilePrefix = getUrlParameter('file_control_filename');
+  console.info('seerFilePrefix: '+ seerFilePrefix);
+
+  //Find first . and trim to the left
+  var seerFilePrefixIndex = seerFilePrefix.indexOf(".");
+  console.log(seerFilePrefixIndex);
+  if(seerFilePrefixIndex != -1) {
+  		seerFilePrefix = seerFilePrefix.substring(0, seerFilePrefixIndex);
+  }
+  console.log(seerFilePrefix);
+
+	yearofDiagnosisRange[0] = parseInt($('#year_of_diagnosis_start').val());
+	yearofDiagnosisRange[1] = parseInt($('#year_of_diagnosis_end').val());
+
+	console.log('inputAnswers');
+	console.log(inputAnswers);
+	var obj = {
+		"seerFilePrefix" : seerFilePrefix,
+		"yearOfDiagnosisVarName" : "Year_of_diagnosis_1975",
+		"yearofDiagnosisRange" : yearofDiagnosisRange,
+		"allVar" : JSON.stringify(get_cohort_covariance_variable_names()),
+		"cohortVars" : ["Age_groups"],
+		"cohortValues" : ["00-49"],
+		"covariateVars" : ["Breast_stage"],
+		"numJP" : parseInt($('#join_point_select').val()),
+		"outputFileName" : seerFilePrefix + ".output"
+ };
+
 	console.log("What is obj????");
 	console.dir(obj);
 
@@ -188,7 +226,6 @@ function build_parameter_column() {
 	covariate_options.unshift("None");
 	set_covariate_select(covariate_options);
 	$("#parameters").fadeIn();
-
 }
 
 
@@ -222,7 +259,7 @@ function parse_cohort_covariance_variables() {
 
 	cohort_covariance_variables = new Object();
 	for (var i=0; i< cohort_covariance_variable_names.length;i++) {
-		console.log("cohort_covariance_variable_names[i] where i ="+i+" and value is "+cohort_covariance_variable_names[i])
+		//console.log("cohort_covariance_variable_names[i] where i ="+i+" and value is "+cohort_covariance_variable_names[i])
 		var cohort_covariance_variable_values = get_cohort_covariance_variable_values(cohort_covariance_variable_names[i]);
 		cohort_covariance_variables[cohort_covariance_variable_names[i]] = cohort_covariance_variable_values;
 	}
@@ -249,7 +286,7 @@ function get_cohort_covariance_variable_names() {
   //Go through Item Value and look for "Year of diagnosis"
   //Push variable names on to a list called cohort_covariance_variable_names.
 	for (var i=0; i<names.length; i++) {
-		console.log('names['+i+'] = '+names[i]+', values['+i+'] = '+values[i]);
+		//console.log('names['+i+'] = '+names[i]+', values['+i+'] = '+values[i]);
 		if (regex_base.test(names[i]) && values[i] == "Year of diagnosis") break;
 		if (!regex_name.test(names[i])) continue;
 		if (values[i] == "Page type") continue; // Skip the Page type
@@ -257,7 +294,7 @@ function get_cohort_covariance_variable_names() {
 	}
 	cohort_covariance_variable_names.pop();
 	//alert (JSON.stringify(cohort_covariance_variable_names));
-	console.dir(cohort_covariance_variable_names);
+	//console.dir(cohort_covariance_variable_names);
 	return cohort_covariance_variable_names;
 }
 
@@ -309,6 +346,11 @@ function set_cohort_select(cohort_options) {
 }
 
 function set_covariate_select(covariate_options) {
+
+	if(covariate_options.length == 0 ) {
+		console.log("covariate is length");
+	}
+
 	var max_size = 4;
 	if (covariate_options.length < 4) max_size = covariate_options.length
 	$("#covariate_select").attr("size", max_size);

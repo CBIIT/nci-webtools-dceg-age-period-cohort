@@ -357,8 +357,9 @@ def upload2():
     getDictionary = robjects.globalenv['getDictionary']
     rStrVector = getDictionary(file_control_filename, out_path)
     #Convert R StrVecter to tuple to str
-    output_file = "".join(tuple(rStrVector))
 
+    key_id = "".join(tuple(rStrVector))
+    output_file = "output-%s.json" % key_id
     print output_file
     #PRINT output_file
     r_output_file = os.path.join(out_path, output_file)
@@ -375,7 +376,7 @@ def upload2():
     #print "json string >> "+str(jsondata[0]);
     status = "OK"
 
-    return_url = "%s/jpsurv?file_control_filename=%s&file_data_filename=%s&output_file=%s&status=%s" % (request.url_root, file_control_filename, file_data_filename, output_file, status)
+    return_url = "%s/jpsurv?file_control_filename=%s&file_data_filename=%s&output_file=%s&key_id=%s&status=%s" % (request.url_root, file_control_filename, file_data_filename, output_file, key_id, status)
     print return_url
     return redirect(return_url)
 
