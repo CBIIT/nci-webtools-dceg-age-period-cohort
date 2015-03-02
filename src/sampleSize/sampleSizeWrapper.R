@@ -1,20 +1,30 @@
+library('RJSONIO')
 source ('./DrawCompRecVark.R')
 
-imageDirectory="./tmp/" 
+imageDirectory="./tmp" 
 
 
 saveAllSensGraphs <- function(k, sens, spec, prev, N, uniqueId) {
   specTabs=1:length(spec)
+  allSensData= list()
   for (i in specTabs) {
-    saveSensContours(k, sens, spec[i], prev, N, uniqueId, i)
+    data=saveSensContours(k, sens, spec[i], prev, N, uniqueId, i)
+    tab=paste('tab', i, sep='')
+    allSensData[[tab]]=data
   }
+  return (cat(toJSON(allSensData, .escapeEscape=TRUE)))
 }
+
 
 saveAllSpecGraphs <- function(k, sens, spec, prev, N, uniqueId) {
   sensTabs=1:length(sens)
+  allSpecData= list()
   for (i in sensTabs) {
-    saveSpecContours(k, sens[i], spec, prev, N, uniqueId, i)
+    data=saveSpecContours(k, sens[i], spec, prev, N, uniqueId, i)
+    tab=paste('tab', i, sep='')
+    allSpecData[[tab]]=data
   }
+  return (cat(toJSON(allSpecData, .escapeEscape=TRUE)))
 }
 
 
@@ -39,10 +49,18 @@ saveSensContours <- function(k, sens, spec, prev, N, uniqueId, tabvalue)
   DrawCompRecVarkSensSpec(k, sens, spec, prev, N)
   dev.off()
   
+  ppvData=CompRecVarkSensSpec(sens, spec, prev, N)
+  
   #save the cNPV graph
   prepareSaveGraph(imageDirectory, "cNPVkSensSpec-", uniqueId, tabvalue)
   DrawCompRecVarcNPVkSensSpec(k, sens, spec, prev, N)
   dev.off()
+  
+  cnpvData=CompRecVarcNPVkSensSpec(sens, spec, prev, N)
+
+  data=list(PPVData=ppvData, cNPVData=cnpvData)
+  
+  return (data)
 }
 
 #example input values
@@ -59,15 +77,31 @@ saveSpecContours <- function(k, sens, spec, prev, N, uniqueId, tabvalue)
   DrawCompRecVarkSpecSens(k, spec, sens, prev, N)
   dev.off()
   
+  ppvData=CompRecVarkSpecSens(spec, sens, prev, N)
+    
   #save the cNPV graph
   prepareSaveGraph(imageDirectory, "cNPVkSpecSens-", uniqueId, tabvalue)
   DrawCompRecVarcNPVkSpecSens(k, spec, sens, prev, N)
   dev.off();
+  
+  cnpvData=CompRecVarcNPVkSpecSens(spec, sens, prev, N)
+  
+  data=list(PPVData=ppvData, cNPVData=cnpvData)
+  
+  return (data)
 }
 
 #preparation needed to save a graph as a file
 prepareSaveGraph <- function(imgDir, graphPrefix, uniqueId, tabvalue) {
-  dir.create(imgDir)
+  if (!file.exists(imgDir)) {
+    dir.create(imgDir)  
+  }
   graph=paste(imgDir, graphPrefix, uniqueId, "-", as.numeric(tabvalue),".png", sep='')
   png(file=graph)
 }
+
+k=c(0,1)
+sens=c(0.8, 0.9, 0.95, 0.995)
+spec=c(0.8, 0.95)
+prev=0.001
+N=1
