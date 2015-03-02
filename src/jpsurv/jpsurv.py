@@ -381,7 +381,32 @@ def upload2():
 
 @app.route('/jpsurvRest/calculate', methods=['GET'])
 def calculate():
+
+    app.logger.debug('A value for debugging')
+    #app.logger.warning('A warning occurred (%d apples)', 42)
+    #app.logger.error('An error occurred')
+    print UNDERLINE+HEADER + "****** CALCULATE BUTTON ***** " + ENDC
     print "Processing calculate"
+    print "What does REQUEST LOOK LIKE?"
+    print "What can we do with it?"
+    print dir(request);
+    print dir(request.args);
+    print type(request.args);
+
+    for k, v in request.args.iteritems():
+        print "var: %s = %s" % (k, v)
+    obj = request.args.get('obj', False);
+    print BOLD+"**** obj ****"+ENDC
+    print type(obj)
+    print dir(obj)
+
+    #jdata = json.loads(obj.decode(encoding='UTF-8'))
+    jdata = json.loads(obj)
+    print BOLD+"**** jdata ****"+ENDC
+    print type(jdata)
+    print dir(jdata)
+    for key, value in jdata.iteritems():
+        print "var: %s = %s" % (key, value)
 
     return "Hello"
 
