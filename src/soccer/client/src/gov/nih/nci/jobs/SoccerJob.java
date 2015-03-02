@@ -140,8 +140,7 @@ public class SoccerJob implements Job {
             hostname = System.getenv("COMPUTERNAME"); // Windows. 
         }
 
-        return new StringBuilder("( Please do not reply to this email. If you need assistance, please contact ncicbiit@mail.nih.gov )\r\n\r\n")
-                .append("The file you uploaded on ")
+        return new StringBuilder("\r\nThe file you uploaded on ")
                 .append(timeStamp)
                 .append(" has been processed. ")
                 .append("\r\nYou can view the result page at: http://")
@@ -150,7 +149,7 @@ public class SoccerJob implements Job {
                 .append(PORT)
                 .append("/soccer/soccerouput.html?fileid=")
                 .append(outputFileId)
-                .append("\r\n\r\n - SOCcer Team")
+                .append("\r\n\r\n - SOCcer Team\r\n(Note:  Please do not reply to this email. If you need assistance, please contact ncicbiit@mail.nih.gov)")
                 .toString();
     }
 
