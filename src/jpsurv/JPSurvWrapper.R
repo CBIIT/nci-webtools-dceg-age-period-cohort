@@ -54,8 +54,8 @@ getDictionary <- function (inputFile, path) {
   #Write json data to outputfile
   #
   cat(toJSON(seerFormData), file = fqOutputFileName)
-  #Return the outputFileName
-  return(outputFileName)
+  #Return the randomNumber
+  return(randomNumber)
 }
 
 if(FALSE) {
@@ -78,7 +78,7 @@ getDictionaryAsJson <- function (fullPathDictionaryFile) {
 }
 
 
-#seerdata = joinpoint.seerdata(seerfilename="C:/devel/R/Breast_RelativeSurvival", 
+#seerdata = joinpoint.seerdata(seerfilename="C:/devel/R/Breast_RelativeSurvival",
 #                             newvarnames=c("Age groups","Breast stage","Year of diagnosis 1975+"),NoFit=T,
 #                             UseVarLabelsInData=c("Age_groups","Breast_stage", "Year_of_diagnosis_1975")
 #                             );
@@ -90,7 +90,7 @@ getDictionaryAsJson <- function (fullPathDictionaryFile) {
 #                       maxnum.jp = 1);
 
 getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
- 
+
   #filePath="C:/devel/R"
   #seerFilePrefix="Breast_RelativeSurvival"
   #yearOfDiagnosisVarName="Year_of_diagnosis_1975"
@@ -98,42 +98,42 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
   #allVar=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
   #cohortVars=c("Age_groups")
   #cohortValues=c("\"65+\"")
-  #covariateVars=c("Breast_stage") 
+  #covariateVars=c("Breast_stage")
   #numJP=1
   #outputFileName="Breast_RelativeSurvival.output"
-  
+
   file=paste(filePath, seerFilePrefix, sep="/" )
-  
+
   varLabels=gsub(" ", "_", gsub(" $", "", gsub("[^[:alnum:]]", " ", varNames)))
-  
-  seerdata = joinpoint.seerdata(seerfilename=file, 
+
+  seerdata = joinpoint.seerdata(seerfilename=file,
                                 newvarnames=varNames,
                                 NoFit=T,
                                 UseVarLabelsInData=varLabels,
                                 yearOfDiagnosisVarName)
-  
+
   #fit.result = joinpoint(seerdata, subset = subsetStr,
   #                       year=yearOfDiagnosisVarName,
   #                       observedrelsurv="Relative_Survival_Cum",
   #                       model.form = ~-1+factor(factorStr),
   #                       maxnum.jp = numJP);
-  
+
   startYearStr=paste(yearOfDiagnosisVarName, ">=", yearofDiagnosisRange[1])
   endYearStr=paste(yearOfDiagnosisVarName, "<=", yearofDiagnosisRange[2])
   yearStr=paste(startYearStr, endYearStr, sep='&')
   subsetStr=paste(paste(cohortVars, cohortValues, sep="=="), collapse='&')
   subsetStr=paste(subsetStr, yearStr, sep='&')
-  
+
   fit.result=joinpoint(seerdata,
                        subset = eval(parse(text=subsetStr)),
                        year=yearOfDiagnosisVarName,
                        observedrelsurv="Relative_Survival_Cum",
                        model.form = ~-1+factor(Breast_stage),
                        maxnum.jp=numJP);
-  
+
   #save fit.result as RData
   saveRDS(fit.result, outputFileName)
-  
+
   apcJson=cat(toJSON(fit.result$apc), .escapeEscapes=TRUE)
   return (apcJson)
 }
