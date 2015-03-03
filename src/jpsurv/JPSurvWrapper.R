@@ -35,12 +35,12 @@ getDictionary <- function (inputFile, path) {
   cat(fqFileName)
   cat("\n")
 
-  randomNumber = paste( sample( 0:9, 6, replace=TRUE ), collapse="" )
-  cat("\nrandomNumber\n")
-  cat(randomNumber)
+  keyId = paste( sample( 0:9, 6, replace=TRUE ), collapse="" )
+  cat("\nkeyId\n")
+  cat(keyId)
   cat("\n")
 
-  outputFileName = paste("output-", randomNumber, ".json", sep="")
+  outputFileName = paste("output-", keyId, ".json", sep="")
   cat("\noutputFileName\n")
   cat(outputFileName)
   cat("\n")
@@ -54,8 +54,8 @@ getDictionary <- function (inputFile, path) {
   #Write json data to outputfile
   #
   cat(toJSON(seerFormData), file = fqOutputFileName)
-  #Return the randomNumber
-  return(randomNumber)
+  #Return the keyId
+  return(keyId)
 }
 
 if(FALSE) {
@@ -101,13 +101,43 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
   #covariateVars=c("Breast_stage")
   #numJP=1
   #outputFileName="Breast_RelativeSurvival.output"
+  cat("*filePath\n")
+  cat(filePath)
+  cat("\n")
+  cat("*seerFilePrefix\n")
+  cat(seerFilePrefix)
+  cat("\n")
+  cat("*yearOfDiagnosisVarName\n")
+  cat(yearOfDiagnosisVarName)
+  cat("\n")
+  print("*yearOfDiagnosisRange")
+  print(yearOfDiagnosisRange, row.names=FALSE)
+  cat("\n")
+  cat("*allVars\n")
+  print(allVars, row.names=FALSE)
+  cat("*cohortVars\n")
+  print(cohortVars, row.names=FALSE)
+  cat("*cohortValues\n")
+  print(cohortValues, row.names=FALSE)
+  cat("*covariateVars\n")
+  print(covariateVars, row.names=FALSE)
+  cat("*numJP\n")
+  print(numJP, row.names=FALSE)
+  cat("*outputFileName\n")
+  print(outputFileName, row.names=FALSE)
+  cat("\n****\n")
 
   file=paste(filePath, seerFilePrefix, sep="/" )
-
-  varLabels=gsub(" ", "_", gsub(" $", "", gsub("[^[:alnum:]]", " ", varNames)))
+  cat("*file\n")
+  cat(file)
+  cat("\n\n")
+  varLabels=gsub(" ", "_", gsub(" $", "", gsub("[^[:alnum:]]", " ", allVars)))
+  cat("*varLabels\n")
+  cat(varLabels)
+  cat("\n\n")
 
   seerdata = joinpoint.seerdata(seerfilename=file,
-                                newvarnames=varNames,
+                                newvarnames=allVars,
                                 NoFit=T,
                                 UseVarLabelsInData=varLabels,
                                 yearOfDiagnosisVarName)

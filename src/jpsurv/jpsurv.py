@@ -358,8 +358,8 @@ def upload2():
     rStrVector = getDictionary(file_control_filename, out_path)
     #Convert R StrVecter to tuple to str
 
-    key_id = "".join(tuple(rStrVector))
-    output_file = "output-%s.json" % key_id
+    keyId = "".join(tuple(rStrVector))
+    output_file = "output-%s.json" % keyId
     print output_file
     #PRINT output_file
     r_output_file = os.path.join(out_path, output_file)
@@ -376,7 +376,7 @@ def upload2():
     #print "json string >> "+str(jsondata[0]);
     status = "OK"
 
-    return_url = "%s/jpsurv?file_control_filename=%s&file_data_filename=%s&output_file=%s&key_id=%s&status=%s" % (request.url_root, file_control_filename, file_data_filename, output_file, key_id, status)
+    return_url = "%s/jpsurv?file_control_filename=%s&file_data_filename=%s&output_file=%s&keyId=%s&status=%s" % (request.url_root, file_control_filename, file_data_filename, output_file, keyId, status)
     print return_url
     return redirect(return_url)
 
@@ -408,6 +408,18 @@ def calculate():
     print dir(jdata)
     for key, value in jdata.iteritems():
         print "var: %s = %s" % (key, value)
+
+    path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv"
+    filePath = os.path.join(path, 'tmp')
+
+    #Init the R Source
+    rSource = robjects.r('source')
+    rSource('./JPSurvWrapper.R')
+
+    print BOLD+OKBLUE+"**** Calling getFittedResult ****"+ENDC
+    # Next two lines execute the R Program
+    getFittedResult = robjects.globalenv['getFittedResult']
+    rStrVector = getFittedResult(filePath, jdata['seerFilePrefix'], jdata['yearOfDiagnosisVarName'], jdata['yearOfDiagnosisRange'], jdata['allVars'], jdata['cohortVars'], jdata['cohortValues'], jdata['covariateVars'], jdata['numJP'], jdata['keyId'])
 
     return "Hello"
 
