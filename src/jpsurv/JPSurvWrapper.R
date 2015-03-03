@@ -77,25 +77,24 @@ getDictionaryAsJson <- function (fullPathDictionaryFile) {
 }
 }
 
-
-#seerdata = joinpoint.seerdata(seerfilename="C:/devel/R/Breast_RelativeSurvival",
-#                             newvarnames=c("Age groups","Breast stage","Year of diagnosis 1975+"),NoFit=T,
-#                             UseVarLabelsInData=c("Age_groups","Breast_stage", "Year_of_diagnosis_1975")
-#                             );
-
-# fit the joinpoint model with joinpoin.surv
-#fit.result = joinpoint(seerdata, subset = Age_groups == "65+" & Year_of_diagnosis_1975 >=2001,
-#                       year="Year_of_diagnosis_1975",observedrelsurv="Relative_Survival_Cum",
-#                       model.form = ~-1+factor(Breast_stage),
-#                       maxnum.jp = 1);
+filePath="C:/devel/R"
+seerFilePrefix="Breast_RelativeSurvival"
+yearOfDiagnosisVarName="Year_of_diagnosis_1975"
+yearOfDiagnosisRange=c(1975, 2011)
+allVars=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
+cohortVars=c("Age_groups")
+cohortValues=c("\"65+\"")
+covariateVars=c("Breast_stage")
+numJP=1
+outputFileName="Breast_RelativeSurvival.output"
 
 getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
 
   #filePath="C:/devel/R"
   #seerFilePrefix="Breast_RelativeSurvival"
   #yearOfDiagnosisVarName="Year_of_diagnosis_1975"
-  #yearofDiagnosisRange=c(1975, 2011)
-  #allVar=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
+  #yearOfDiagnosisRange=c(1975, 2011)
+  #allVars=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
   #cohortVars=c("Age_groups")
   #cohortValues=c("\"65+\"")
   #covariateVars=c("Breast_stage")
@@ -142,18 +141,16 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
                                 UseVarLabelsInData=varLabels,
                                 yearOfDiagnosisVarName)
 
+  subsetStr=getSubsetStr(yearOfDiagnosisRange, cohortVars, cohortValues)
+  #assign subsetStr in the global in order for eval(parse(text=)) to work 
+  assign("subsetStr", subsetStr, envir = .GlobalEnv) 
+
   #fit.result = joinpoint(seerdata, subset = subsetStr,
   #                       year=yearOfDiagnosisVarName,
   #                       observedrelsurv="Relative_Survival_Cum",
   #                       model.form = ~-1+factor(factorStr),
   #                       maxnum.jp = numJP);
-
-  startYearStr=paste(yearOfDiagnosisVarName, ">=", yearofDiagnosisRange[1])
-  endYearStr=paste(yearOfDiagnosisVarName, "<=", yearofDiagnosisRange[2])
-  yearStr=paste(startYearStr, endYearStr, sep='&')
-  subsetStr=paste(paste(cohortVars, cohortValues, sep="=="), collapse='&')
-  subsetStr=paste(subsetStr, yearStr, sep='&')
-
+  
   fit.result=joinpoint(seerdata,
                        subset = eval(parse(text=subsetStr)),
                        year=yearOfDiagnosisVarName,
@@ -166,4 +163,17 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 
   apcJson=cat(toJSON(fit.result$apc), .escapeEscapes=TRUE)
   return (apcJson)
+}
+
+getSubsetStr <- function (yearOfDiagnosisRange, cohortVars, cohortValues) {
+  startYearStr=paste(yearOfDiagnosisVarName, ">=", yearofDiagnosisRange[1])
+  endYearStr=paste(yearOfDiagnosisVarName, "<=", yearofDiagnosisRange[2])
+  yearStr=paste(startYearStr, endYearStr, sep='&')
+  subsetStr=paste(paste(cohortVars, cohortValues, sep="=="), collapse='&')
+  subsetStr=paste(subsetStr, yearStr, sep='&')
+  
+  cat("*subsetStr\n")
+  cat(subsetStr)
+  cat("\n\n")
+  return (subsetStr)
 }
