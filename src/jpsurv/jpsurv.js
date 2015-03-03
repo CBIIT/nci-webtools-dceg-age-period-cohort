@@ -151,13 +151,14 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 	var obj = {
 		"seerFilePrefix" : seerFilePrefix,
 		"yearOfDiagnosisVarName" : "Year_of_diagnosis_1975",
-		"yearofDiagnosisRange" : yearofDiagnosisRange,
-		"allVar" : JSON.stringify(get_cohort_covariance_variable_names()),
+		"yearOfDiagnosisRange" : yearofDiagnosisRange,
+		"allVars" : JSON.stringify(get_cohort_covariance_variable_names()),
 		"cohortVars" : ["Age_groups"],
 		"cohortValues" : ["00-49"],
 		"covariateVars" : ["Breast_stage"],
 		"numJP" : parseInt($('#join_point_select').val()),
-		"outputFileName" : seerFilePrefix + ".output"
+		"outputFileName" : seerFilePrefix + ".output",
+		"keyId" : getUrlParameter('keyId')
  };
 
 	console.log("What is obj????");
