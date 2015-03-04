@@ -95,12 +95,12 @@ $(document).ready(function() {
 function show_graph_temp() {
 
 		var apc_json = jpsurvRest('apc', "");
-
+/*
 		$('#apc_json_output').empty()
 			.append($('<h2>').append('APC json').addClass('pull-left'))
 			.append($('<div>').css('clear', 'both'))
 			.append($('<div>').append(JSON.stringify(apc_json)));
-
+*/
 	console.log('apc_json')
 	console.dir(apc_json)
 	$('#startYear0').append(apc_json['start.year'][0]);
