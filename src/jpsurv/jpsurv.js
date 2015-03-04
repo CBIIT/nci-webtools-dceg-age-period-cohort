@@ -44,11 +44,12 @@ $(document).ready(function() {
 							.attr('title', getUrlParameter('file_data_filename'))
 						)
 					);
+
 		$('#upload_file_submit_container').remove();
-		var file_control_output = load_ajax(getUrlParameter('file_control_filename'));
+		//var file_control_output = load_ajax(getUrlParameter('file_control_filename'));
 		//console.log(file_control_output	);
 
-		var file_data_output = load_ajax(getUrlParameter('file_data_filename'));
+		//var file_data_output = load_ajax(getUrlParameter('file_data_filename'));
 		//console.log(file_data_output);
 		var output_file = load_ajax(getUrlParameter('output_file'));
 		control_data = output_file;
@@ -59,11 +60,13 @@ $(document).ready(function() {
 		$( "<a>" )
 			.append('Reset')
 			.attr('href', '/jpsurv')
-			.insertBefore('#file_control_output');
+			.css('padding-left', '25px')
+			.insertAfter('#calculate');
 
 		load_form();
-
+		/*
 		$( "<hr>" ).insertBefore('#file_control_output');
+
 		$('#file_control_output').empty()
 			.append($('<h2>').append('File Control Output').addClass('pull-left'))
 			.append($('<div>').css('clear', 'both'))
@@ -78,16 +81,44 @@ $(document).ready(function() {
 			.append($('<h2>').append('R Output File').addClass('pull-left'))
 			.append($('<div>').css('clear', 'both'))
 			.append($('<div>').append(JSON.stringify(output_file)));
-
+		*/
 	} else {
 			$("#parameter_submit").on("click", build_output_format_column);
 	}
 
 	$("#cohort_select").on("change", change_cohort_select);
 	$("#covariate_select").on("change", change_covariate_select);
-	$("#calculate").on("click", show_graph);
+	//$("#calculate").on("click", show_graph);
+	$("#calculate").on("click", show_graph_temp);
 
 });
+function show_graph_temp() {
+
+		var apc_json = jpsurvRest('apc', "");
+
+		$('#apc_json_output').empty()
+			.append($('<h2>').append('APC json').addClass('pull-left'))
+			.append($('<div>').css('clear', 'both'))
+			.append($('<div>').append(JSON.stringify(apc_json)));
+
+	console.log('apc_json')
+	console.dir(apc_json)
+	$('#startYear0').append(apc_json['start.year'][0]);
+	$('#startYear1').append(apc_json['start.year'][1]);
+	$('#endYear0').append(apc_json['end.year'][0]);
+	$('#endYear1').append(apc_json['end.year'][1]);
+	$('#estimate0').append(apc_json.estimate[0]);
+	$('#estimate1').append(apc_json.estimate[1]);
+
+
+	$("#spinner").show();
+	$("#plot").hide();
+	setTimeout(function(){
+			$("#spinner").hide();
+			$("#plot").fadeIn();
+	}, 3000);
+
+}
 
 function show_graph() {
 	/*  EXAMPLE()...
