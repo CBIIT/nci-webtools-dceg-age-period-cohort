@@ -423,6 +423,15 @@ def calculate():
 
     return "Hello"
 
+@app.route('/jpsurvRest/apc', methods=['GET'])
+def apc():
+    print "apc called"
+    print "output"
+    print json.dumps({"start.year":[1975,2001],"end.year":[2001,2011],"estimate":[-0.0167891169889346,-0.00326786762190838]})
+
+    return json.dumps({"start.year":[1975,2001],"end.year":[2001,2011],"estimate":[-0.0167891169889346,-0.00326786762190838]})
+
+
 import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
