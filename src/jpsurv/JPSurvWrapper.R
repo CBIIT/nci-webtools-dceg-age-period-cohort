@@ -77,17 +77,6 @@ getDictionaryAsJson <- function (fullPathDictionaryFile) {
 }
 }
 
-filePath="C:/devel/R"
-seerFilePrefix="Breast_RelativeSurvival"
-yearOfDiagnosisVarName="Year_of_diagnosis_1975"
-yearOfDiagnosisRange=c(1975, 2011)
-allVars=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
-cohortVars=c("Age_groups")
-cohortValues=c("\"65+\"")
-covariateVars=c("Breast_stage")
-numJP=1
-outputFileName="Breast_RelativeSurvival.output"
-
 getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
 
   #filePath="C:/devel/R"
