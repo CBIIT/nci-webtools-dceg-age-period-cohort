@@ -141,7 +141,7 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
                                 UseVarLabelsInData=varLabels,
                                 yearOfDiagnosisVarName)
 
-  subsetStr=getSubsetStr(yearOfDiagnosisRange, cohortVars, cohortValues)
+  subsetStr=getSubsetStr(yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVars, cohortValues)
   #assign subsetStr in the global in order for eval(parse(text=)) to work 
   assign("subsetStr", subsetStr, envir = .GlobalEnv) 
 
@@ -151,11 +151,13 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
   #                       model.form = ~-1+factor(factorStr),
   #                       maxnum.jp = numJP);
   
+  factorStr=getFactorStr(covariateVars)
+  assign("factorStr", factorStr, envir= .GlobalEnv)
   fit.result=joinpoint(seerdata,
                        subset = eval(parse(text=subsetStr)),
                        year=yearOfDiagnosisVarName,
                        observedrelsurv="Relative_Survival_Cum",
-                       model.form = ~-1+factor(Breast_stage),
+                       model.form = eval(parse(text=factorStr)),
                        maxnum.jp=numJP);
 
   #save fit.result as RData
@@ -165,9 +167,9 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
   return (apcJson)
 }
 
-getSubsetStr <- function (yearOfDiagnosisRange, cohortVars, cohortValues) {
-  startYearStr=paste(yearOfDiagnosisVarName, ">=", yearofDiagnosisRange[1])
-  endYearStr=paste(yearOfDiagnosisVarName, "<=", yearofDiagnosisRange[2])
+getSubsetStr <- function (yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVars, cohortValues) {
+  startYearStr=paste(yearOfDiagnosisVarName, ">=", yearOfDiagnosisRange[1])
+  endYearStr=paste(yearOfDiagnosisVarName, "<=", yearOfDiagnosisRange[2])
   yearStr=paste(startYearStr, endYearStr, sep='&')
   subsetStr=paste(paste(cohortVars, cohortValues, sep="=="), collapse='&')
   subsetStr=paste(subsetStr, yearStr, sep='&')
@@ -176,4 +178,15 @@ getSubsetStr <- function (yearOfDiagnosisRange, cohortVars, cohortValues) {
   cat(subsetStr)
   cat("\n\n")
   return (subsetStr)
+}
+
+getFactorStr <- function (covariateVars) {
+  factorStr=NULL
+  if (length(covariateVars!=0L)) {
+    factorStr=paste("~-1+", paste(gsub("$", ")", gsub("^", "factor(", covariateVars)), collapse="+"), sep='')
+  }
+  cat("*factorStr\n")
+  cat(factorStr)
+  cat("\n\n")
+  return (factorStr)
 }
