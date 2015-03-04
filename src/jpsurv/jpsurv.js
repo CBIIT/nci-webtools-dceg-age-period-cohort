@@ -103,12 +103,12 @@ function show_graph_temp() {
 */
 	console.log('apc_json')
 	console.dir(apc_json)
-	$('#startYear0').append(apc_json['start.year'][0]);
-	$('#startYear1').append(apc_json['start.year'][1]);
-	$('#endYear0').append(apc_json['end.year'][0]);
-	$('#endYear1').append(apc_json['end.year'][1]);
-	$('#estimate0').append(apc_json.estimate[0]);
-	$('#estimate1').append(apc_json.estimate[1]);
+	$('#startYear0').empty().append(apc_json['start.year'][0]);
+	$('#startYear1').empty().append(apc_json['start.year'][1]);
+	$('#endYear0').empty().append(apc_json['end.year'][0]);
+	$('#endYear1').empty().append(apc_json['end.year'][1]);
+	$('#estimate0').empty().append(apc_json.estimate[0]);
+	$('#estimate1').empty().append(apc_json.estimate[1]);
 
 
 	$("#spinner").show();
