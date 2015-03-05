@@ -90,12 +90,12 @@
       <div class="tab-pane active" id="home">
 <div class="jumbotron">
         <h3>Welcome to JPSurv!</h3>
-        <p>Upload Data Files to begin.</p>
+        <p>Up Data Files to begin.</p>
 <div class="well" style="float:left;width:300px;">
 <table class="container">
   <tr style="width:250px;">
     <td class="upload-pane">
-      <form method=POST enctype=multipart/form-data action="/jpsurvRest/upload2">
+      <form method=POST enctype=multipart/form-data action="/jpsurvRest/upload">
         <P id="file_control_container">
             <label for='file_control'>Data Dictionary File: </label>
             <A style='font-size:small' href='SEER9_Survival_6CancerSitesByStage_1975_2007.dic' download='SEER9_Survival_6CancerSitesByStage_1975_2007.dic'>(example dictionary)</A>
@@ -122,7 +122,7 @@
         <SELECT id='cohort_select' name='cohort_select' multiple ></SELECT></P>
         <P id='cohort_sub_select'></P>
         <P style="clear:both; padding-top:10px;">Covariate Variables:<BR>
-        <SELECT id='covariate_select' name='covariate_select' multiple></SELECT></P>
+        <SELECT id='covariate_select' name='covariate_select'></SELECT></P>
         <P id='covariate_sub_select'></P>
         <P style="clear:both; padding-top:10px;">Join Points:
         <SELECT id='join_point_select' name='join_point_select'><OPTION>1</OPTION><OPTION>2</OPTION><OPTION>3</OPTION><OPTION>4</OPTION></SELECT></P>

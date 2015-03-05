@@ -1,5 +1,5 @@
 var year_of_diagnosis_title = "Year fo Diagnosis 1975+";
-
+var yearOfDiagnosisVarName = "Year_of_diagnosis_1975";
 var control_data;
 
 var years;
@@ -144,12 +144,12 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 
 	*/
 
-	var inputAnswers = $('#parameters').serialize();
-  var yearOfDiagnosisVarName="Year_of_diagnosis_1975";
+	var inputAnswers;
+	// = $('#parameters').serialize();
+  var yearOfDiagnosisVarName="Year_of_diagnosis_1975";  //HARD CODED...Why?
 
 
   var seerFilePrefix = "";
-	var yearOfDiagnosisVarName = "";
 	var yearofDiagnosisRange = [];
 	var allVar = [];
 	var cohortVars = [];
@@ -168,19 +168,30 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
   }
   console.log(seerFilePrefix);
 
+	cohortVars = $.map($("#cohort_select option:selected"), function(elem){
+	    return $(elem).text();
+	});
+	$.each(cohortVars, function( index, value ) {
+		cohortValues.push($('#cohort_value_'+index+'_select').val());
+	});
+
 	yearofDiagnosisRange[0] = parseInt($('#year_of_diagnosis_start').val());
 	yearofDiagnosisRange[1] = parseInt($('#year_of_diagnosis_end').val());
 
 	console.log('inputAnswers');
 	console.log(inputAnswers);
+
+	allVars = get_cohort_covariance_variable_names();
+	allVars.push(yearOfDiagnosisVarName);
+
 	var obj = {
 		"seerFilePrefix" : seerFilePrefix,
-		"yearOfDiagnosisVarName" : "Year_of_diagnosis_1975",
+		"yearOfDiagnosisVarName" : yearOfDiagnosisVarName,
 		"yearOfDiagnosisRange" : yearofDiagnosisRange,
-		"allVars" : JSON.stringify(get_cohort_covariance_variable_names()),
-		"cohortVars" : ["Age_groups"],
-		"cohortValues" : ["00-49"],
-		"covariateVars" : ["Breast_stage"],
+		"allVars" : JSON.stringify(allVars),
+		"cohortVars" : cohortVars,
+		"cohortValues" : cohortValues,
+		"covariateVars" : $('#covariate_select').val(),
 		"numJP" : parseInt($('#join_point_select').val()),
 		"outputFileName" : seerFilePrefix + ".output",
 		"keyId" : getUrlParameter('keyId')
@@ -376,11 +387,11 @@ function set_covariate_select(covariate_options) {
 	if(covariate_options.length == 0 ) {
 		console.log("covariate is length");
 	}
-
+/*
 	var max_size = 4;
 	if (covariate_options.length < 4) max_size = covariate_options.length
 	$("#covariate_select").attr("size", max_size);
-
+*/
 	$("#covariate_select").empty();
 	for (i=0;i<covariate_options.length;i++) {
 		$("#covariate_select").append("<OPTION>"+covariate_options[i]+"</OPTION>");
