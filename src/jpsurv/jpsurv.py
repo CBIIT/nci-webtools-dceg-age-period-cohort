@@ -20,11 +20,9 @@ import urllib
 from werkzeug import secure_filename
 from random import randint
 
-UPLOAD_DIR = os.path.join(os.path.dirname(__file__), 'tmp')
-print UPLOAD_DIR
-
 app = Flask(__name__, static_folder='', static_url_path='/')
 #app.debug = True
+UPLOAD_DIR = os.path.join(os.getcwd(), 'tmp')
 
 #TESTING AREA
 HEADER = '\033[95m'
@@ -35,6 +33,9 @@ FAIL = '\033[91m'
 BOLD = '\033[1m'
 UNDERLINE = '\033[4m'
 ENDC = '\033[0m'
+
+print BOLD+UPLOAD_DIR+ENDC
+
 #exit()
 #END TESTING AREA
 
@@ -246,7 +247,7 @@ def test():
 @app.route('/jpsurvRest/upload', methods=['POST'])
 def upload():
     print "Processing upload"
-    path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp"
+    #path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp"
     path = UPLOAD_DIR
     print path
     print dir(request)
@@ -299,19 +300,17 @@ def upload2():
     print request.headers['Host']  # prints "domain1.com"
 
     #path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp"
-    path = UPLOAD_DIR
-    print "Upload path: %s" % path
     if request.method == 'POST':
         file = request.files['file_control']
         if file and file.filename:
             filename = secure_filename(file.filename)
-            file.save(os.path.join(path, filename))
+            file.save(os.path.join(UPLOAD_DIR, filename))
             file_control_filename = filename
             print "Saving file_control: %s" % file_control_filename
         file = request.files['file_data']
         if file and file.filename:
             filename = secure_filename(file.filename)
-            file.save(os.path.join(path, filename))
+            file.save(os.path.join(UPLOAD_DIR, filename))
             file_data_filename = filename
             print "Saving file_data: %s" % file_data_filename
     print request.files['file_control']
@@ -326,12 +325,11 @@ def upload2():
     rSource = robjects.r('source')
 
     print HEADER + "****** STARTING HERE ***** " + ENDC
-    path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv"
-    out_path = os.path.join(path, 'tmp')
+   # path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv"
     #Use next line to
 
     #PRINT FILE_CONTROL
-    file_control = os.path.join(out_path, file_control_filename)
+    file_control = os.path.join(UPLOAD_DIR, file_control_filename)
     print "file_control"
     fo = open(file_control, "r+")
     str = fo.read(250);
@@ -341,7 +339,7 @@ def upload2():
     fo.close()
 
     #PRINT FILE_DATA
-    file_data = os.path.join(out_path, file_data_filename)
+    file_data = os.path.join(UPLOAD_DIR, file_data_filename)
     print "file_data"
     fo = open(file_control, "r+")
     str = fo.read(500);
@@ -355,14 +353,14 @@ def upload2():
 
     # Next two lines execute the R Program
     getDictionary = robjects.globalenv['getDictionary']
-    rStrVector = getDictionary(file_control_filename, out_path)
+    rStrVector = getDictionary(file_control_filename, UPLOAD_DIR)
     #Convert R StrVecter to tuple to str
 
     keyId = "".join(tuple(rStrVector))
     output_file = "output-%s.json" % keyId
     print output_file
     #PRINT output_file
-    r_output_file = os.path.join(out_path, output_file)
+    r_output_file = os.path.join(UPLOAD_DIR, output_file)
     print "R output_file"
     fo = open(r_output_file, "r+")
     str = fo.read(500);
