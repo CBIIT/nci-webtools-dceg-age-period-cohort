@@ -110,13 +110,7 @@ function show_graph_temp() {
 	$('#estimate0').empty().append(apc_json.estimate[0]);
 	$('#estimate1').empty().append(apc_json.estimate[1]);
 
-
-	$("#spinner").show();
-	$("#plot").hide();
-	setTimeout(function(){
-			$("#spinner").hide();
-			$("#plot").fadeIn();
-	}, 3000);
+	show_graph();
 
 }
 
