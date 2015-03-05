@@ -243,63 +243,12 @@ def test():
     else:
         return "415 Unsupported Media Type ;)"
 
-
 @app.route('/jpsurvRest/upload', methods=['POST'])
 def upload():
-    print "Processing upload"
-    #path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp"
-    path = UPLOAD_DIR
-    print path
-    print dir(request)
-    print "About to call upload(), how cool."
-    print "*********************************"
-    print dir(request.files)
-    print "type(requset.files)"
-    print type(request.files)
-
-    for key, value in request.files.iteritems() :
-        print key
-        print value
-        print type(value)
-    print ""
-    for key in request.files:
-        val = '%('+key+')s'
-        print key, val % request.files
-
-    print "request.args[name]"
-    #print request.files[0]
-    print "*********************************"
-    return "hello"
-    #return upload(request)
-
-    if request.method == 'POST':
-        file = request.files['file_control']
-        if file and file.filename:
-            filename = secure_filename(file.filename)
-            print filename
-            file.save(os.path.join(path, filename))
-            #return redirect(url_for('uploaded_file', filename=filename))
-            #return "<h2>File Uploaded</h2>"
-
-    #rSource = robjects.r('source')
-    #rSource('./JPSurvWrapper.R')
-    #r_getname_getData = robjects.globalenv['getDataJSON']
-
-    #rec = Photo(filename=filename, user=g.user.id)
-    #rec.store()
-    #flash("Photo saved.")
-    #return redirect(url_for('show', id=rec.id))
-    #return render_template('upload.html')
-    return redirect("http://analysistools-dev.nci.nih.gov/jpsurv-ck/")
-
-@app.route('/jpsurvRest/upload2', methods=['POST'])
-def upload2():
     print "Processing upload"
 
     print request.url_root  # prints "http://domain1.com/"
     print request.headers['Host']  # prints "domain1.com"
-
-    #path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp"
     if request.method == 'POST':
         file = request.files['file_control']
         if file and file.filename:
@@ -407,9 +356,6 @@ def calculate():
     for key, value in jdata.iteritems():
         print "var: %s = %s" % (key, value)
 
-    path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv"
-    filePath = os.path.join(path, 'tmp')
-
     #Init the R Source
     rSource = robjects.r('source')
     rSource('./JPSurvWrapper.R')
@@ -417,7 +363,7 @@ def calculate():
     print BOLD+OKBLUE+"**** Calling getFittedResult ****"+ENDC
     # Next two lines execute the R Program
     getFittedResult = robjects.globalenv['getFittedResult']
-    rStrVector = getFittedResult(filePath, jdata['seerFilePrefix'], jdata['yearOfDiagnosisVarName'], jdata['yearOfDiagnosisRange'], jdata['allVars'], jdata['cohortVars'], jdata['cohortValues'], jdata['covariateVars'], jdata['numJP'], jdata['keyId'])
+    rStrVector = getFittedResult(UPLOAD_DIR, jdata['seerFilePrefix'], jdata['yearOfDiagnosisVarName'], jdata['yearOfDiagnosisRange'], jdata['allVars'], jdata['cohortVars'], jdata['cohortValues'], jdata['covariateVars'], jdata['numJP'], jdata['keyId'])
 
     return "Hello"
 

@@ -3,24 +3,6 @@ library('JPSurv')
 
 imageDirectory="./tmp/"
 
-getDictionaryAsJson2 <- function () {
-  #e.g.
-  cat("From R:  getDictionaryAsJson2\n")
-  cat("dictionary:\n")
-  dictionary = dictionary.overview("/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp/example1.txt")
-  cat(toJSON(dictionary), .escapeEscapes=FALSE)
-  cat("Print dictionary:\n")
-  cat("\n\n")
-  #translate to JSON as is
-  dictionaryJSON=cat(toJSON(dictionary), .escapeEscapes=TRUE)
-
-  #transpose so that the var names are the column headers
-  #varInfo=setNames(data.frame(t(dictionary$VarAllInfo[, -1])), dictionary$VarAllInfo[,1])
-  #this is not being used right now
-
-  return(dictionary)
-}
-
 getDictionary <- function (inputFile, path) {
   #e.g.
   cat("\nFrom R:  getDictionary\n")
@@ -82,8 +64,8 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
   #filePath="C:/devel/R"
   #seerFilePrefix="Breast_RelativeSurvival"
   #yearOfDiagnosisVarName="Year_of_diagnosis_1975"
-  #yearOfDiagnosisRange=c(1975, 2011)
-  #allVars=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
+  yearOfDiagnosisRange=c(1975, 2011)
+  allVars=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
   #cohortVars=c("Age_groups")
   #cohortValues=c("\"65+\"")
   #covariateVars=c("Breast_stage")
@@ -131,15 +113,15 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
                                 yearOfDiagnosisVarName)
 
   subsetStr=getSubsetStr(yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVars, cohortValues)
-  #assign subsetStr in the global in order for eval(parse(text=)) to work 
-  assign("subsetStr", subsetStr, envir = .GlobalEnv) 
+  #assign subsetStr in the global in order for eval(parse(text=)) to work
+  assign("subsetStr", subsetStr, envir = .GlobalEnv)
 
   #fit.result = joinpoint(seerdata, subset = subsetStr,
   #                       year=yearOfDiagnosisVarName,
   #                       observedrelsurv="Relative_Survival_Cum",
   #                       model.form = ~-1+factor(factorStr),
   #                       maxnum.jp = numJP);
-  
+
   factorStr=getFactorStr(covariateVars)
   assign("factorStr", factorStr, envir= .GlobalEnv)
   fit.result=joinpoint(seerdata,
@@ -162,7 +144,7 @@ getSubsetStr <- function (yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVa
   yearStr=paste(startYearStr, endYearStr, sep='&')
   subsetStr=paste(paste(cohortVars, cohortValues, sep="=="), collapse='&')
   subsetStr=paste(subsetStr, yearStr, sep='&')
-  
+
   cat("*subsetStr\n")
   cat(subsetStr)
   cat("\n\n")
