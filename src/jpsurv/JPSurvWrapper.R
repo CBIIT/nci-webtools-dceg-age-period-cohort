@@ -3,6 +3,24 @@ library('JPSurv')
 
 imageDirectory="./tmp/"
 
+getDictionaryAsJson2 <- function () {
+  #e.g.
+  cat("From R:  getDictionaryAsJson2\n")
+  cat("dictionary:\n")
+  dictionary = dictionary.overview("/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp/example1.txt")
+  cat(toJSON(dictionary), .escapeEscapes=FALSE)
+  cat("Print dictionary:\n")
+  cat("\n\n")
+  #translate to JSON as is
+  dictionaryJSON=cat(toJSON(dictionary), .escapeEscapes=TRUE)
+
+  #transpose so that the var names are the column headers
+  #varInfo=setNames(data.frame(t(dictionary$VarAllInfo[, -1])), dictionary$VarAllInfo[,1])
+  #this is not being used right now
+
+  return(dictionary)
+}
+
 getDictionary <- function (inputFile, path) {
   #e.g.
   cat("\nFrom R:  getDictionary\n")
@@ -59,18 +77,29 @@ getDictionaryAsJson <- function (fullPathDictionaryFile) {
 }
 }
 
-getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
+#filePath="C:/devel/R"
+#seerFilePrefix="SEER9_Survival_6CancerSitesByStage_1975_2007"
+#yearOfDiagnosisVarName="Year of diagnosis (75-07 individual)"
+#yearOfDiagnosisRange=c(1975, 2011)
+#allVars=c("Sites: CR LB B O P T","Sex Male or Female","SEER historic stage A (All/loc/reg/dist)", "Year of diagnosis (75-07 individual)")
+#cohortVars=c("Sites: CR LB B O P T")
+#cohortValues=c("\"Colon and Rectum\"")
+#covariateVars=c("Sex Male or Female")
+#numJP=1
+#outputFileName="SEER9_Survival_6CancerSitesByStage_1975_2007.output"
 
-  #filePath="C:/devel/R"
-  #seerFilePrefix="Breast_RelativeSurvival"
-  yearOfDiagnosisVarName="Year_of_diagnosis_1975"
-  yearOfDiagnosisRange=c(1975, 2011)
-  allVars=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
-  cohortVars=c("Age_groups")
-  cohortValues=c("\"65+\"")
-  covariateVars=c("Breast_stage")
-  numJP=1
-  outputFileName="Breast_RelativeSurvival.output"
+#filePath="C:/devel/R"
+#seerFilePrefix="Breast_RelativeSurvival"
+#yearOfDiagnosisVarName="Year of diagnosis 1975"
+#yearOfDiagnosisRange=c(1975, 2011)
+#allVars=c("Age groups","Breast stage","Year of diagnosis 1975")
+#cohortVars=c("Age groups")
+#cohortValues=c("\"65+\"")
+#covariateVars=c("Breast stage")
+#numJP=1
+#outputFileName="Breast_RelativeSurvival.output"
+
+getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
   cat("*filePath\n")
   cat(filePath)
   cat("\n")
@@ -101,32 +130,28 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
   cat("*file\n")
   cat(file)
   cat("\n\n")
-  varLabels=gsub(" ", "_", gsub(" $", "", gsub("[^[:alnum:]]", " ", allVars)))
+
+  varLabels=getCorrectFormat(allVars)
+ 
   cat("*varLabels\n")
-  cat(varLabels)
+  cat(allVars)
   cat("\n\n")
 
   seerdata = joinpoint.seerdata(seerfilename=file,
-                                newvarnames=allVars,
+                                newvarnames=varLabels,
                                 NoFit=T,
-                                UseVarLabelsInData=varLabels,
-                                yearOfDiagnosisVarName)
+                                UseVarLabelsInData=varLabels)
 
   subsetStr=getSubsetStr(yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVars, cohortValues)
-  #assign subsetStr in the global in order for eval(parse(text=)) to work
-  assign("subsetStr", subsetStr, envir = .GlobalEnv)
-
-  #fit.result = joinpoint(seerdata, subset = subsetStr,
-  #                       year=yearOfDiagnosisVarName,
-  #                       observedrelsurv="Relative_Survival_Cum",
-  #                       model.form = ~-1+factor(factorStr),
-  #                       maxnum.jp = numJP);
+  #assign subsetStr in the global in order for eval(parse(text=)) to work 
+  assign("subsetStr", subsetStr, envir = .GlobalEnv) 
 
   factorStr=getFactorStr(covariateVars)
   assign("factorStr", factorStr, envir= .GlobalEnv)
+  
   fit.result=joinpoint(seerdata,
                        subset = eval(parse(text=subsetStr)),
-                       year=yearOfDiagnosisVarName,
+                       year=getCorrectFormat(yearOfDiagnosisVarName),
                        observedrelsurv="Relative_Survival_Cum",
                        model.form = eval(parse(text=factorStr)),
                        maxnum.jp=numJP);
@@ -139,12 +164,15 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 }
 
 getSubsetStr <- function (yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVars, cohortValues) {
+  yearOfDiagnosisVarName=getCorrectFormat(yearOfDiagnosisVarName)
   startYearStr=paste(yearOfDiagnosisVarName, ">=", yearOfDiagnosisRange[1])
   endYearStr=paste(yearOfDiagnosisVarName, "<=", yearOfDiagnosisRange[2])
   yearStr=paste(startYearStr, endYearStr, sep='&')
+  cohortVars=getCorrectFormat(cohortVars)
+  
   subsetStr=paste(paste(cohortVars, cohortValues, sep="=="), collapse='&')
   subsetStr=paste(subsetStr, yearStr, sep='&')
-
+  
   cat("*subsetStr\n")
   cat(subsetStr)
   cat("\n\n")
@@ -154,10 +182,17 @@ getSubsetStr <- function (yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVa
 getFactorStr <- function (covariateVars) {
   factorStr=NULL
   if (length(covariateVars!=0L)) {
+    covariateVars=getCorrectFormat(covariateVars)
     factorStr=paste("~-1+", paste(gsub("$", ")", gsub("^", "factor(", covariateVars)), collapse="+"), sep='')
   }
   cat("*factorStr\n")
   cat(factorStr)
   cat("\n\n")
   return (factorStr)
+}
+
+#replace empty space with _, strip anything other than alphanumeric _ /
+getCorrectFormat <-function(variable) {
+  variable=gsub("[^[:alnum:]_/]", "", gsub(" ", "_", variable))
+  return (variable)
 }
