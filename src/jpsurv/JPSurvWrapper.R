@@ -196,3 +196,18 @@ getCorrectFormat <-function(variable) {
   variable=gsub("[^[:alnum:]_/]", "", gsub(" ", "_", variable))
   return (variable)
 }
+
+#filePath="."
+#fittedResultFile="Breast_RelativeSurvival.output"
+#intervals=c(5,10)
+#covariateValues=c("Localized", "Distant")
+#outputGraphFile="./Breast_RelativeSurvival123.png"
+
+getGraph <- function (filePath, fittedResultFile, intervals, covariateValues, outputGraphFile) {
+  outFile=paste(filePath, fittedResultFile, sep="/" )
+  fit.result=readRDS(outFile)
+  continousVector=rep(NA, length(covariateValues))  
+  png(file=outputGraphFile)
+  plot(fit.result,Intervals=intervals,covar.continuous=continousVector,covar.cat=covariateValues);
+  dev.off()
+}
