@@ -147,7 +147,7 @@ public class SoccerJob implements Job {
                 .append(hostname)
                 .append(":")
                 .append(PORT)
-                .append("/soccer/soccerouput.html?fileid=")
+                .append("/soccer/index.html?fileid=")
                 .append(outputFileId)
                 .append("\r\n\r\n - SOCcer Team\r\n(Note:  Please do not reply to this email. If you need assistance, please contact ncicbiit@mail.nih.gov)")
                 .toString();
