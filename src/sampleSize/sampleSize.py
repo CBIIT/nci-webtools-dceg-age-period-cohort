@@ -2,7 +2,9 @@
 # output json, and it will take care of the right string
 # data conversion, the headers for the response, etc
 import os
+import re
 import time
+import json
 from flask import Flask, render_template, request, jsonify
 from rpy2.robjects.packages import SignatureTranslatedAnonymousPackage
 from rpy2.robjects.vectors import IntVector, FloatVector
@@ -39,15 +41,29 @@ def sampleSizeRest():
     print "Starting Benchmark"
   
     if fixed_flag == "Specificity":
-	wrapper.saveAllSensGraphs(IntVector(k), FloatVector(sens), FloatVector(spec), float(prev), IntVector(N), unique_id)
+	jsonrtn = (wrapper.saveAllSensGraphs(IntVector(k), FloatVector(sens), FloatVector(spec), float(prev), IntVector(N), unique_id))
     else:
-        wrapper.saveAllSpecGraphs(IntVector(k), FloatVector(sens), FloatVector(spec), float(prev), IntVector(N), unique_id)
+        jsonrtn = (wrapper.saveAllSpecGraphs(IntVector(k), FloatVector(sens), FloatVector(spec), float(prev), IntVector(N), unique_id))
 
     end=time.time()
     print "Seconds"
     print end - start
 
-    return jsonify(data)
+    jsonlist=list(jsonrtn)
+
+    print "--------------------------------------------------"
+    print json.dumps(jsonlist)
+    print "--------------------------------------------------"
+
+    renderjson = json.dumps(jsonlist)
+    return renderjson
+ 
+#TEST DATA
+    #with open ("testjson.txt", "r") as myfile:
+    #	testjson=myfile.read().replace('\n', '')
+
+    #return testjson
+
 
 import argparse
 if __name__ == '__main__':

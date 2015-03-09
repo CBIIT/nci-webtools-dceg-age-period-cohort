@@ -35,12 +35,16 @@ $(function(){
             success: function (ret) {
 	      $("#spinner").hide();
 	      $("#output_graph").empty();
-              generate_tabs($("#fixed").val(),$("#randomnumber").text());
-              random_gen();
- 	      //var end = new Date();
-              //var secondsOpen = Math.floor((end - start) / 1000);
-              //$("#benchmark").text(secondsOpen);
-            },
+	      sanitized = JSON.parse(ret);
+	      console.log("SANITIZED");
+              console.log(sanitized);
+	      console.log("END");
+
+          generate_tabs($("#fixed").val(),$("#randomnumber").text());
+	        generate_tables(sanitized);
+          random_gen();
+
+      },
 	    error: function(jqXHR, textStatus, errorThrown) {
 		console.log("header: " + jqXHR + "\n" + "Status: " + textStatus + "\n\nThe server is temporarily unable to service your request due to maintenance downtime or capacity problems. Please try again later.");
 		message = 'Service Unavailable: ' + textStatus + "<br>";
@@ -70,6 +74,30 @@ $(function(){
 
 });
 
+function generate_tables(jsonrtn){
+for(var i in jsonrtn) {
+    console.log(i);
+    var tablesvar = "<TABLE class='table_data'><TBODY>";
+    tablesvar += "<TR><TH class='table_data header'>Sensitivity</TH><TH class='table_data header'>Optimal K</TH><TH class='table_data header'>Relative efficiency gain or loss compared to k = 0.5</TH></TR>";
+    ppvtabledata = tablesvar;
+    cnpvtabledata = tablesvar;
+    for (n=0; n<jsonrtn[i]["PPVData"].length; n++) {
+    	console.log("PPVData");
+    	ppvtabledata += "<TR><TD>"+jsonrtn[i]["PPVData"][n]["Sensitivity"]+"</TD>";
+    	ppvtabledata += "<TD>"+jsonrtn[i]["PPVData"][n]["Optimal k"]+"</TD>";
+    	ppvtabledata += "<TD>"+jsonrtn[i]["PPVData"][n]['Relative efficiency gain or loss compared to k = 0.5']+"</TD>";
+    	console.log("cNPVData");
+    	cnpvtabledata += "<TD>"+jsonrtn[i]["cNPVData"][n]["Sensitivity"]+"</TD>";
+    	cnpvtabledata += "<TD>"+jsonrtn[i]["cNPVData"][n]["Optimal k"]+"</TD>";
+    	cnpvtabledata += "<TD>"+jsonrtn[i]["cNPVData"][n]['Relative efficiency gain or loss compared to k = 0.5']+"</TD></TR>";
+    }
+    ppvtabledata += "</TBODY></TABLE>";
+    cnpvtabledata += "</TBODY></TABLE>";
+    $("#"+i+"ppvdata").append(ppvtabledata);
+    $("#"+i+"cnpvdata").append(cnpvtabledata);
+}
+}
+
 function disable_calculate(){
 	$('.post').prop("disabled", true);
 }
@@ -97,9 +125,10 @@ function generate_tabs(iterate,randomnumber){
 	
       for (var i = 0; i < arrayLength; i++) {
            console.log(fixedvals[i]);
-	   tabheaders += '<li><a href="#tabs-'+(i+1)+'">'+fixed_flag+'<br />'+fixedvals[i]+'</a></li>';
+	   tabheaders += '<li><a href="#tab'+(i+1)+'">'+fixed_flag+'<br />'+fixedvals[i]+'</a></li>';
            //tabcontent += '<div id="tabs-'+(i+1)+'"><p>IMAGE'+fixedvals[i]+'</p></div>';
-           tabcontent += '<div id="tabs-'+(i+1)+'"><p><IMG SRC="/sampleSize/tmp/'+pimagename+randomnumber+'-'+(i+1)+'.png">&nbsp;&nbsp;<IMG SRC="/sampleSize/tmp/'+cimagename+randomnumber+'-'+(i+1)+'.png"></p></div>';	   
+           tabcontent += '<div id="tab'+(i+1)+'"> <TABLE><TR><TD> <TABLE><TR><TD><IMG SRC="/sampleSize/tmp/'+pimagename+randomnumber+'-'+(i+1)+'.png"></TD></TR> <TR><TD><div id="tab'+(i+1)+'ppvdata"><div></TD></TR></TABLE> </TD><TD> <TABLE><TR><TD><IMG SRC="/sampleSize/tmp/'+cimagename+randomnumber+'-'+(i+1)+'.png"></TD></TR> <TR><TD><div id="tab'+(i+1)+'cnpvdata"></div></TD></TR></TABLE> </TD></TR></TABLE> </div>';	  
+ 
     //Do something
       }    
       tabheaders += "</ul>";
@@ -158,6 +187,7 @@ function trim_spaces(varstring){
 }
 
 function example_code(){
+                $("#message").hide();
 		$("#independent").val("0,1");
 		$("#contour").val("0.8,0.9,0.95,0.995");
 		$("#contour_dropdown").val("sensitivity");
@@ -169,8 +199,6 @@ function example_code(){
 		change_hidden("contour");
 		change_hidden("fixed");
 		enable_calculate();
-                $("#message-content").empty();
-                $("#message").hide();
 }
 
 function reset_code(){
