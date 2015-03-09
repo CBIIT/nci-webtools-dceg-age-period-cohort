@@ -3,6 +3,10 @@ body{
     /* line-height: 200%; */
 }
 
+i {
+    font-size: 10px;
+}
+
 .logo {
     width: 400px;
 }
@@ -21,11 +25,8 @@ body{
 }
 
 #fileSelect {
-    border: 1px #e4e4e4 solid;
-    border-radius: 2px;
-    box-shadow: 0 0 2px #ccc;
-    line-height: 160%;
-    width: 50%;
+    border: 1px #fff solid;
+    width: 100%;
     background-color: #fff;
 }
 

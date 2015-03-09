@@ -32,11 +32,12 @@
 
         <!--Project logo-->
         <div class="container" role="main">
+            <!-- Banners -->
             <div id="banners">
                 <div id="left">
                     <img src="SOCcer_logo.png" height="66" 
-					alt="Standardized Occupation Coding for Computer-assisted Epidemiologic Research"					
-					title="Standardized Occupation Coding for Computer-assisted Epidemiologic Research">
+                         alt="Standardized Occupation Coding for Computer-assisted Epidemiologic Research"					
+                         title="Standardized Occupation Coding for Computer-assisted Epidemiologic Research">
                 </div>
 
                 <div id="right">
@@ -46,7 +47,7 @@
                     <a href="http://dceg.cancer.gov" target="_blank">
                         <img src="DCEG-LTG_banner.png"
                              alt="Banner for NCI Division of Cancer Epidemiology &amp; Genetics, Laboratory of Translational Genomics"
-							 title="Banner for NCI Division of Cancer Epidemiology &amp; Genetics, Laboratory of Translational Genomics"
+                             title="Banner for NCI Division of Cancer Epidemiology &amp; Genetics, Laboratory of Translational Genomics"
                              class="logo">
                     </a>
                 </div>
@@ -54,65 +55,75 @@
 
             <!--Main --> 
             <div id="wrapper" >  
-                <!--Upload File-->
-                <!--File Upload Form-->
-                <form id="fileForm" action="upload" method="post" enctype="multipart/form-data" >
-                    <fieldset>     
-                        <div class="row">
-                            <div class="col-sm-10">
-                                <label>Select a File to Upload:</label>&nbsp;&nbsp;<i>
-                                <a href="example1.csv" download="example1.csv">Example 1</a>
-                                <a href="example2.csv" download="example2.csv">Example 2</a>
-                                <a href="example3.csv" download="example3.csv">Example 3</a></i>
-                            </div>
-                            <div class="col-sm-2" align="right">
-                                <label><a href="help.html">Help</a></label>
-                            </div>
-                        </div>
-                        <div class="row"><div class="col-sm-10">
-                        <input id="fileSelect" name="fileSelect" type="file" required/>
-                        </div><div class="col-sm-2"></div></div>
-                        <span id="fileMetaDiv" class="help-block"></span>
-                        
-                        <!--SOC system-->
-                        <p>
-                            <label>SOC System: </label>
-                            <select id="socSystem" disabled>
-                                <option value = "1">SOCcer</option>
-                                <option value = "2">SOC System Two</option>
-                                <option value = "3">SOC System Three</option>
-                                <option value = "4">SOC System Four</option>
-                            </select>
-                        </p>                       
-
-                        <button id="fileSubmit" class="btn btn-success" type="submit">Upload</button>
-                    </fieldset>
-                </form>
-
-                <!-- Progress Bar -->
-                <div id="progressDiv">                
-                    <div class="progress">
-                        <div id="progressBar" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-                    </div>                
+                <div class="row">                    
+                    <div class="col-sm-12" align="right">
+                        <a href="help.html">Help</a>
+                    </div>
                 </div>
 
-                <!-- Summary -->
-                <div id="resultDiv" role="alert"></div>
+                 <div class="row">
+                    <div class="col-sm-4">
+                        <!--Upload File-->
+                        <!--File Upload Form-->
+                        <form id="fileForm" action="upload" method="post" enctype="multipart/form-data" >
+                             
+                            <label for="fileSelect">Select a File to Upload:</label>
+                            <i>
+                            <a href="example1.csv" download="example1.csv">Example 1</a>
+                            <a href="example2.csv" download="example2.csv">Example 2</a>
+                            <a href="example3.csv" download="example3.csv">Example 3</a>
+                            </i> 
 
-                <!-- Email Form -->
-                <form id="emailForm" action="queue" method="post">
-                    <fieldset>
-                        <legend>Please type in your email address: </legend>  
-                        <label>Email</label>
-                        <input type="email" id="emailAddress" name="emailAddress" placeholder="Your email here" required>     
-                        <input type="hidden" id="inputFileId" name="inputFileId" value="">
-                        <span class="help-block"></span>
-                        <button id="emailSubmit" class="btn btn-success" type="submit">Submit</button>
-                    </fieldset>
-                </form>
-                <!-- Summary -->
-                <div id="queueResultDiv" role="alert"></div>
+                            <input id="fileSelect" name="fileSelect" type="file" required/>
+                            <span id="fileMetaDiv" class="help-block"></span>
 
+                            <!--SOC system-->
+                            <p>
+                                <label for="socSystem">SOC System: </label>
+                                <select id="socSystem" disabled>
+                                    <option value = "1">SOCcer</option>
+                                    <option value = "2">SOC System Two</option>
+                                    <option value = "3">SOC System Three</option>
+                                    <option value = "4">SOC System Four</option>
+                                </select>
+                            </p>                       
+
+                            <button id="fileSubmit" class="btn btn-success" type="submit">Calculate</button>                     
+                            
+                        </form>
+                
+                        <!-- Progress Bar -->
+                        <div id="progressDiv">                
+                            <div class="progress">
+                                <div id="progressBar" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+                            </div>                
+                        </div>
+
+                        <!-- Summary -->
+                        <div id="resultDiv" role="alert"></div>
+
+                        <!-- Email Form -->
+                        <form id="emailForm" action="queue" method="post">
+                            <fieldset>
+                                <legend>Please type in your email address: </legend>  
+                                <label>Email</label>
+                                <input type="email" id="emailAddress" name="emailAddress" placeholder="Your email here" required>     
+                                <input type="hidden" id="inputFileId" name="inputFileId" value="">
+                                <span class="help-block"></span>
+                                <button id="emailSubmit" class="btn btn-success" type="submit">Submit</button>
+                            </fieldset>
+                        </form>
+                        <!-- Summary -->
+                        <div id="queueResultDiv" role="alert"></div>
+                    </div> 
+
+                    <div id="resultArea" class="col-sm-8">                        
+                        <pre id="fileContent">Result Content</pre>             
+                        <div class="row" align="center">                
+                            <a id="downloadHref" href="#"><i>Click here to download output file</i></a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!--Footer-->

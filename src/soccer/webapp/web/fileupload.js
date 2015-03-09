@@ -5,8 +5,23 @@ $(function () {
     // Restriction. // TODO - adjust this file extenstion restriction.
     $('#fileSelect').attr('accept', '.csv, text/plain');
 
-    // Initilize    
-    init_state();
+// Initilize  
+    init();
+    function init()
+    {
+        var parameters = location.search.substring(1).split("&");
+        console.log(parameters[0]);
+        if(parameters[0]) {
+            var temp = parameters[0].split("=");
+            var fileId = unescape(temp[1]); 
+            showResult(fileId);              
+        }
+        else {
+            init_state();
+        } 
+    }
+
+    // Initilize page state. 
     function init_state() {
         $('#progressBar').css('width', '0%');
         // Hide email Form.
@@ -21,6 +36,8 @@ $(function () {
         $('#fileSubmit').removeAttr('disabled');
         // Enable email submit button if disabled.
         $('#emailSubmit').removeAttr('disabled');
+        // Hide result portion.
+        $("#resultArea").hide();        
     }
 
     /*
@@ -43,7 +60,7 @@ $(function () {
                 fileSize = file.size + ' Bytes';
 
             // Display meta data of the file.
-            $('#fileMetaDiv').html("<strong>File Name: <i>" + file.name + "</i>;    File Size: <i>" + fileSize + "</i></strong> ");
+            $('#fileMetaDiv').html("<i><strong>File Name: " + file.name + ";    File Size: " + fileSize + "</strong></i>");
             // Show progress bar div
             $('#progressDiv').show();
             $('#progressBar').text('0%');
@@ -117,7 +134,8 @@ $(function () {
             $('#resultDiv').removeClass();
             $('#resultDiv').addClass('alert alert-success');
             $('#resultDiv').empty().append('<b>' + obj.message + '</b><br><br>');
-            $('#resultDiv').append('<a target="_blank" href="soccerouput.html?fileid=' + obj.outputFileUrl + '">Click here to view SOCcer output</a>.');
+            //$('#resultDiv').append('<a target="_blank" href="soccerouput.html?fileid=' + obj.outputFileUrl + '">Click here to view SOCcer output</a>.');
+            showResult(obj.outputFileUrl);            
         }
         if (obj.status === 'queue') {
             // Display continue message. 
@@ -165,6 +183,27 @@ $(function () {
      */
     function uploadCanceled(event) {
         alert("The upload has been canceled by the user or the browser dropped the connection.");
+    }
+
+    /*
+     * @description Handle upload cancellation event.
+     * @param {type} event
+     * @returns {undefined}
+     */
+    function showResult(fileId) {
+        var fileUrl = "files/" + fileId;
+        var xmlHttpResult = new XMLHttpRequest();
+        xmlHttpResult.open("GET", fileUrl, false);
+        xmlHttpResult.send(null);    
+        if(xmlHttpResult.status == 404) {
+            $("#fileContent").text('The requested resource is not available.');
+            $("#downloadHref").text('');  
+        }
+        else {
+            $("#resultArea").show();
+            $("#fileContent").text(xmlHttpResult.responseText);
+            $("#downloadHref").prop("href", fileUrl);            
+        }
     }
 
     /*
