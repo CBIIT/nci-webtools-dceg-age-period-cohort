@@ -3,7 +3,6 @@ from flask import Flask, render_template, Response, abort, request, make_respons
 from functools import wraps
 from flask import current_app
 
-
 import rpy2.robjects as robjects
 #from rpy2.robjects import r
 
@@ -19,6 +18,8 @@ from pandas import DataFrame
 import urllib
 from werkzeug import secure_filename
 from random import randint
+import subprocess
+
 
 app = Flask(__name__, static_folder='', static_url_path='/')
 #app.debug = True
@@ -38,51 +39,6 @@ print BOLD+UPLOAD_DIR+ENDC
 
 #exit()
 #END TESTING AREA
-
-#app = Flask(__name__, static_folder='static', static_url_path='/static')
-
-def what_is_this(sv):
-    print "what_is_this?"
-    print type(sv)
-    print dir(sv)
-    print ""
-    print sv
-    print type(sv)
-    print sv[0]
-    print str(sv)
-    print len(sv)
-    print format(tuple(sv))
-    print type(tuple(sv))
-    print "".join(tuple(sv))
-
-sv = robjects.StrVector('output-92383.json')
-what_is_this(sv)
-
-
-def random_with_N_digits(n):
-    range_start = 10**(n-1)
-    range_end = (10**n)-1
-    return randint(range_start, range_end)
-
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-
-# copy output files from tools' tmp directory to apache tmp directory
-def copy_output_files(reference):
-    apache_root = "/analysistools/"
-    # check if URL contains the keyword sandbox
-    if 'sandbox' in request.url_root:
-        apache_root = "/analysistools-sandbox/"
-
-    apache_tmp_dir = apache_root+"public_html/apps/LDlink/tmp/"
-
-    # Ensure apache tmp directory exists
-    if not os.path.exists(apache_tmp_dir):
-	os.makedirs(apache_tmp_dir)
-
-    #copy *<reference_no>.* to htodocs
-    os.system("cp "+ tmp_dir+"*"+reference+".* "+apache_tmp_dir);
 
 def index():
     return render_template('index.html')
@@ -120,128 +76,10 @@ def get_upload():
 
     return current_app.response_class(out_json, mimetype=mimetype)
 
-@app.route('/jpsurvRest/hello', methods = ['GET'])
-
-def hello():
-    print
-    print 'Execute hello'
-    print 'Got it work.  How fun.'
-    print 'Get Variables from url'
-    print
-
-    return 'Hello, We are the world.'
-
-@app.route('/LDlinkRest/ldmatrix', methods = ['GET'])
-def ldmatrix():
-    # python LDmatrix.py snps.txt EUR 5
-    #http://analysistools-sandbox.nci.nih.gov/LDlinkRest/ldmatrix?pop=EUR&reference=5&snp=sr3
-    #http://analysistools-sandbox.nci.nih.gov/LDlinkRest/ldmatrix?filename=get+from+input&pop=LWK%2BGWD&reference=76178
-    print
-    print 'Execute ldmatrix'
-    print 'Gathering Variables from url'
-
-    snps = request.args.get('snps', False)
-    pop = request.args.get('pop', False)
-    reference = request.args.get('reference', False)
-    print 'snps: ' + snps
-    print 'pop: ' + pop
-    print 'request: ' + reference
-
-    snplst = tmp_dir+'snps'+reference+'.txt'
-    print 'snplst: '+snplst
-
-    f = open(snplst, 'w')
-    f.write(snps)
-    f.close()
-
-    out_script,out_div = calculate_matrix(snplst,pop,reference)
-
-    copy_output_files(reference)
-    return out_script+"\n "+out_div
-
-
 @app.route('/jpsurvRest/loadform', methods = ['GET'])
 def load():
     jsondata = '{"Age groups": ["0-49","50-65s","65+"],"Breast stage": ["Localized","Regional","Distant"],"Test group": ["val1","ValTwo","AnotherValue"]}'
     return json.dump(jsondata)
-
-
-@app.route('/src-ck/jpsurv/form_upload', methods = ['GET'])
-def ldhap():
-
-    print
-    print 'Execute ldhap'
-
-    print 'Gathering Variables from url'
-
-    snps = request.args.get('snps', False)
-    pop = request.args.get('pop', False)
-    reference = request.args.get('reference', False)
-    print 'snps: ' + snps
-    print 'pop: ' + pop
-    print 'request: ' + reference
-
-    snplst = tmp_dir+'snps'+reference+'.txt'
-    print 'snplst: '+snplst
-
-    f = open(snplst, 'w')
-    f.write(snps)
-    f.close()
-
-    out_json = calculate_hap(snplst,pop,reference)
-    copy_output_files(reference)
-
-    return out_json
-
-
-@app.route('/LDlinkRest/test', methods=['GET', 'POST'])
-def test():
-    print 'In /LDlinkRest/test'
-    print 'request.headers[Content-Type]'
-    print request.headers['Content-Type']
-    print ''
-    print 'request.data'
-    print request.data
-    print 'request.args'
-    print json.dumps(request.args)
-
-    print 'request.files'
-    print request.files
-
-    print 'request.method'
-    print request.method
-
-    print
-    print 'Execute ldmatrix'
-    print 'Gathering Variables from url'
-    snps = request.args.get('snps', False)
-    #filename = request.args.get('filename', False)
-    pop = request.args.get('pop', False)
-    reference = request.args.get('reference', False)
-    print 'snp: ' + snp
-    print 'pop: ' + pop
-    print 'request: ' + reference
-    print
-    snplst = 'snps2.txt'
-
-    if request.headers['Content-Type'] == 'text/plain':
-        return "Text Message: " + request.data
-
-    elif request.headers['Content-Type'] == 'application/json':
-        return "JSON Message: " + json.dumps(request.json)
-
-    elif request.headers['Content-Type'] == 'application/octet-stream':
-        f = open('./binary', 'wb')
-        f.write(request.data)
-        f.close()
-        return "Binary message written!"
-    elif request.headers['Content-Type'] == 'multipart/form-data':
-        return 'multipart/form-data'
-    elif request.headers['Content-Type'] == 'application/x-www-form-urlencoded':
-        return 'application/x-www-form-urlencoded'
-
-    else:
-        return "415 Unsupported Media Type ;)"
 
 @app.route('/jpsurvRest/upload', methods=['POST'])
 def upload():
@@ -367,13 +205,37 @@ def calculate():
 
     return "Hello"
 
+@app.route('/jpsurvRest/stage2', methods=['GET'])
+def stage2():
+    print "Stage 2:  Calling getFittedResult"
+    command = "Rscript getFittedResult.R"
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+    process.wait()
+    print process.returncode
+    with open ("Breast_RelativeSurvival.output.json", "r") as myfile:
+        data=myfile.read().replace('\n', '')
+
+    return json.dumps(data)
+
 @app.route('/jpsurvRest/apc', methods=['GET'])
 def apc():
     print "apc called"
     print "output"
+
     print json.dumps({"start.year":[1975,2001],"end.year":[2001,2011],"estimate":[-0.0167891169889346,-0.00326786762190838]})
 
     return json.dumps({"start.year":[1975,2001],"end.year":[2001,2011],"estimate":[-0.0167891169889346,-0.00326786762190838]})
+
+@app.route('/jpsurvRest/path', methods=['GET'])
+def path():
+    #Init the R Source
+    print "Python about to execute some R code"
+    rSource = robjects.r('source')
+    rSource('./path.R')
+    printLibPath = robjects.globalenv['printLibPath']
+    printLibPath()
+
+    return "TaDa"
 
 
 import argparse

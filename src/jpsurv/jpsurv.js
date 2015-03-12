@@ -88,29 +88,27 @@ $(document).ready(function() {
 
 	$("#cohort_select").on("change", change_cohort_select);
 	$("#covariate_select").on("change", change_covariate_select);
-	//$("#calculate").on("click", show_graph);
-	$("#calculate").on("click", show_graph_temp);
+	$("#calculate").on("click", show_graph);
+	//$("#calculate").on("click", show_graph_temp);
 
 });
-function show_graph_temp() {
+function show_graph_temp(params) {
 
-		var apc_json = jpsurvRest('apc', "");
+		var apc_json = JSON.parse(jpsurvRest('stage2', params));
 /*
 		$('#apc_json_output').empty()
 			.append($('<h2>').append('APC json').addClass('pull-left'))
 			.append($('<div>').css('clear', 'both'))
 			.append($('<div>').append(JSON.stringify(apc_json)));
 */
-	console.log('apc_json')
-	console.dir(apc_json)
+	console.log('apc_json');
+	console.log(apc_json);
 	$('#startYear0').empty().append(apc_json['start.year'][0]);
 	$('#startYear1').empty().append(apc_json['start.year'][1]);
 	$('#endYear0').empty().append(apc_json['end.year'][0]);
 	$('#endYear1').empty().append(apc_json['end.year'][1]);
 	$('#estimate0').empty().append(apc_json.estimate[0]);
 	$('#estimate1').empty().append(apc_json.estimate[1]);
-
-	show_graph();
 
 }
 
@@ -207,18 +205,20 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 	//var newobj = 'obj='+JSON.stringify(encodeURIComponent(obj));
 	var newobj = 'obj='+JSON.stringify(obj);
 
-	jpsurvRest('calculate', newobj);
-
-
+	//jpsurvRest('calculate', newobj);
 	$("#spinner").show();
 	$("#plot").hide();
 
+	//jpsurvRest('stage2', newobj);
+
+	show_graph_temp(newobj);
+
 
 	setTimeout(function(){
-			$("#spinner").hide();
-			$("#plot").fadeIn();
-	}, 3000);
-}
+		$("#spinner").hide();
+		$("#plot").fadeIn();
+		}, 100);
+	}
 
 function jpTrim(str, len) {
 	//Trim to the right if too long...

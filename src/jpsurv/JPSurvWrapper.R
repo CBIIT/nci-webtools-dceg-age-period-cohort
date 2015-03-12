@@ -1,24 +1,13 @@
 library('rjson')
 library('JPSurv')
 
-imageDirectory="./tmp/"
+.libPaths()
 
-getDictionaryAsJson2 <- function () {
-  #e.g.
-  cat("From R:  getDictionaryAsJson2\n")
-  cat("dictionary:\n")
-  dictionary = dictionary.overview("/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp/example1.txt")
-  cat(toJSON(dictionary), .escapeEscapes=FALSE)
-  cat("Print dictionary:\n")
-  cat("\n\n")
-  #translate to JSON as is
-  dictionaryJSON=cat(toJSON(dictionary), .escapeEscapes=TRUE)
-
-  #transpose so that the var names are the column headers
-  #varInfo=setNames(data.frame(t(dictionary$VarAllInfo[, -1])), dictionary$VarAllInfo[,1])
-  #this is not being used right now
-
-  return(dictionary)
+printLibPath <- function () {
+  cat("From R:  getPath\n")
+  cat("BEFORE\n")
+  .libPaths()
+  paths<-.libPaths( c( .libPaths(), "~/userLibrary") )
 }
 
 getDictionary <- function (inputFile, path) {
@@ -58,25 +47,6 @@ getDictionary <- function (inputFile, path) {
   return(keyId)
 }
 
-if(FALSE) {
-getDictionaryAsJson <- function (fullPathDictionaryFile) {
-  #e.g.
-  #dictionary = dictionary.overview("C:/devel/R/Breast_RelativeSurvival.dic");
-  cat("From R:  getDictionaryAsJson\n")
-  cat(fullPathDictionaryFile)
-  dictionary = dictionary.overview(fullPathDictionaryFile)
-
-  #translate to JSON as is
-  dictionaryJSON=cat(toJSON(dictionary), .escapeEscapes=TRUE)
-
-  #transpose so that the var names are the column headers
-  #varInfo=setNames(data.frame(t(dictionary$VarAllInfo[, -1])), dictionary$VarAllInfo[,1])
-  #this is not being used right now
-
-  return(dictionaryJSON)
-}
-}
-
 #filePath="C:/devel/R"
 #seerFilePrefix="SEER9_Survival_6CancerSitesByStage_1975_2007"
 #yearOfDiagnosisVarName="Year of diagnosis (75-07 individual)"
@@ -100,6 +70,21 @@ getDictionaryAsJson <- function (fullPathDictionaryFile) {
 #outputFileName="Breast_RelativeSurvival.output"
 
 getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
+
+  print("R: getFittedResult")
+  print("Here are the current paths to library")
+  .libPaths()
+
+#seerFilePrefix="Breast_RelativeSurvival"
+#yearOfDiagnosisVarName="Year of diagnosis 1975"
+#yearOfDiagnosisRange=c(1975, 2011)
+allVars=c("Age groups","Breast stage","Year of diagnosis 1975")
+cohortVars=c("Age groups")
+cohortValues=c("\"65+\"")
+covariateVars=c("Breast stage")
+numJP=1
+#outputFileName="Breast_RelativeSurvival.output"
+
   cat("*filePath\n")
   cat(filePath)
   cat("\n")
@@ -132,7 +117,7 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
   cat("\n\n")
 
   varLabels=getCorrectFormat(allVars)
- 
+
   cat("*varLabels\n")
   cat(allVars)
   cat("\n\n")
@@ -143,12 +128,12 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
                                 UseVarLabelsInData=varLabels)
 
   subsetStr=getSubsetStr(yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVars, cohortValues)
-  #assign subsetStr in the global in order for eval(parse(text=)) to work 
-  assign("subsetStr", subsetStr, envir = .GlobalEnv) 
+  #assign subsetStr in the global in order for eval(parse(text=)) to work
+  assign("subsetStr", subsetStr, envir = .GlobalEnv)
 
   factorStr=getFactorStr(covariateVars)
   assign("factorStr", factorStr, envir= .GlobalEnv)
-  
+
   fit.result=joinpoint(seerdata,
                        subset = eval(parse(text=subsetStr)),
                        year=getCorrectFormat(yearOfDiagnosisVarName),
@@ -169,10 +154,10 @@ getSubsetStr <- function (yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVa
   endYearStr=paste(yearOfDiagnosisVarName, "<=", yearOfDiagnosisRange[2])
   yearStr=paste(startYearStr, endYearStr, sep='&')
   cohortVars=getCorrectFormat(cohortVars)
-  
+
   subsetStr=paste(paste(cohortVars, cohortValues, sep="=="), collapse='&')
   subsetStr=paste(subsetStr, yearStr, sep='&')
-  
+
   cat("*subsetStr\n")
   cat(subsetStr)
   cat("\n\n")
@@ -206,7 +191,7 @@ getCorrectFormat <-function(variable) {
 getGraph <- function (filePath, fittedResultFile, intervals, covariateValues, outputGraphFile) {
   outFile=paste(filePath, fittedResultFile, sep="/" )
   fit.result=readRDS(outFile)
-  continousVector=rep(NA, length(covariateValues))  
+  continousVector=rep(NA, length(covariateValues))
   png(file=outputGraphFile)
   plot(fit.result,Intervals=intervals,covar.continuous=continousVector,covar.cat=covariateValues);
   dev.off()
