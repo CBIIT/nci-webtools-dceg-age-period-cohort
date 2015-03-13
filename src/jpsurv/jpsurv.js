@@ -57,12 +57,13 @@ $(document).ready(function() {
 		console.dir(control_data);
 //		alert('Updating R Output');
 
+/*
 		$( "<a>" )
 			.append('Reset')
 			.attr('href', '/jpsurv')
 			.css('padding-left', '25px')
 			.insertAfter('#calculate');
-
+*/
 		load_form();
 		/*
 		$( "<hr>" ).insertBefore('#file_control_output');
@@ -88,13 +89,18 @@ $(document).ready(function() {
 
 	$("#cohort_select").on("change", change_cohort_select);
 	$("#covariate_select").on("change", change_covariate_select);
-	$("#calculate").on("click", show_graph);
+	$("#calculate").on("click", get_apc);
+	$("#plot").on("click", get_plot);
 	//$("#calculate").on("click", show_graph_temp);
 
 });
-function show_graph_temp(params) {
+function get_plot() {
+		alert('get_plot');
+}
 
-		var apc_json = JSON.parse(jpsurvRest('stage2', params));
+function show_apc_table(params) {
+
+		var apc_json = JSON.parse(jpsurvRest('stage2_calculate', params));
 /*
 		$('#apc_json_output').empty()
 			.append($('<h2>').append('APC json').addClass('pull-left'))
@@ -112,7 +118,7 @@ function show_graph_temp(params) {
 
 }
 
-function show_graph() {
+function get_apc() {
 	/*  EXAMPLE()...
 
 getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
@@ -176,6 +182,7 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 	yearofDiagnosisRange[0] = parseInt($('#year_of_diagnosis_start').val());
 	yearofDiagnosisRange[1] = parseInt($('#year_of_diagnosis_end').val());
 
+	append_plot_intervals(yearofDiagnosisRange[1]-yearofDiagnosisRange[0]);
 	console.log('inputAnswers');
 	console.log(inputAnswers);
 
@@ -203,22 +210,29 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 
 	//alert('Form Answers:\n'+params.replace(/&/g, "\n"));
 	//var newobj = 'obj='+JSON.stringify(encodeURIComponent(obj));
-	var newobj = 'obj='+JSON.stringify(obj);
+	var newobj = 'obj='+JSON.stringify(obj)+'&key_id='+getUrlParameter('key_id');
 
 	//jpsurvRest('calculate', newobj);
 	$("#spinner").show();
-	$("#plot").hide();
+	$("#apc-container").hide();
+	$("#plot-container").hide();
+	$("#plot-form").hide();
+	//show_graph_temp(newobj);
+	show_apc_table(newobj);
+	$("#spinner").hide();
+	$("#plot-form").show();
+	$("#apc-container").fadeIn();
+}
 
-	//jpsurvRest('stage2', newobj);
-
-	show_graph_temp(newobj);
-
-
-	setTimeout(function(){
-		$("#spinner").hide();
-		$("#plot").fadeIn();
-		}, 100);
+function append_plot_intervals(max_interval) {
+	$("#plot-intervals").empty();
+	for(i=1;i<=max_interval;i++) {
+		$("#plot-intervals").append(
+			$('<option>').val(i).html(i)
+			);
 	}
+
+}
 
 function jpTrim(str, len) {
 	//Trim to the right if too long...
@@ -393,8 +407,10 @@ function set_covariate_select(covariate_options) {
 	$("#covariate_select").attr("size", max_size);
 */
 	$("#covariate_select").empty();
+	$("#covariate_select_plot").empty();
 	for (i=0;i<covariate_options.length;i++) {
 		$("#covariate_select").append("<OPTION>"+covariate_options[i]+"</OPTION>");
+		$("#covariate_select_plot").append("<OPTION>"+covariate_options[i]+"</OPTION>");
 	}
 	$("#covariate_sub_select").empty();
 }
