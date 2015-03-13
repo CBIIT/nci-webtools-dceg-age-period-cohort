@@ -126,21 +126,51 @@
         <P id='covariate_sub_select'></P>
         <P style="clear:both; padding-top:10px;">Join Points:
         <SELECT id='join_point_select' name='join_point_select'><OPTION>1</OPTION><OPTION>2</OPTION><OPTION>3</OPTION><OPTION>4</OPTION></SELECT></P>
-        <P><INPUT type='button' id='calculate' value='Calculate' ></P>
+        <P>
+          <INPUT type='button' id='calculate' value='Calculate' >
+          <INPUT type='button'  onclick="window.location.href='/jpsurv'" value="Reset" class="pull-right">
+        </P>
+      </form>
+   </td>
+ </tr>
+  <tr>
+    <td class="parameters-pane">
+      <form id='plot-form' style='display:none'>
+        <h2>Plot Parameters</h2>
+        <p>
+          <label for="plot-intervals">Select Plot Intervals (in Years)</label>
+          <select id="plot-intervals" name="plot-intervals" multiple>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </p>
+        <P style="clear:both; padding-top:10px;">Covariate Variables:<BR>
+        <SELECT id='covariate_select_plot' name='covariate_select_plot'></SELECT></P>
+        <P id='covariate_sub_select'></P>
+        <P>
+          <INPUT type='button' id='plot' value='Plot' >
+          <!--
+          <INPUT type='button'  onclick="window.location.href='/jpsurv'" value="Reset" class="pull-right">
+          -->
+        </P>
       </form>
    </td>
  </tr>
 </table>
 </div>
 
-<div style="float:left;margin-left:30px;" id="plot-container">
+<div style="float:left;margin-left:30px;">
 
     <p id="spinner" style="padding:200px 100px;display:none;"><i class="fa fa-spinner fa-spin fa-2x"></i>
     <span style="font-weight:bold;font-size:150%;margin-left:15px;">Calculating</span>
     </p>
-    <div id="plot" style="display:none;">
+    <div>
+
+        <div id="apc-container" style="display:none;">
         <h2 style="font-size:20px;">APC</h2>
-        <div id="apc_table">
 
 <table class="tg" style="margin-bottom:30px;margin-left:140px;">
   <tr>
@@ -161,8 +191,11 @@
 </table>
 
         </div>
-        <h2 style="font-size:20px;">Relative Survival</h2>
-        <img src="ExampleJPSurvPlot.png" alt="Uploaded" class="logo" style="width:600px;padding:10px;border:1px solid;">
+        <div id="plot-container" style="display:none;">
+          <h2 style="font-size:20px;">Relative Survival</h2>
+          <!-- <img src="ExampleJPSurvPlot.png" alt="Uploaded" class="logo" style="width:600px;padding:10px;border:1px solid;"> -->
+          <img id="plot-image" alt="Uploaded" class="logo" style="width:600px;padding:10px;border:1px solid;">
+        </div>
     </div>
 </div>
 
@@ -261,8 +294,9 @@ Temporarily removing to see if it effects anything.
   src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"
   type="text/javascript">
 </script>
--->
+
   <script
+
     src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"
     type="text/javascript">
 
@@ -274,12 +308,10 @@ Temporarily removing to see if it effects anything.
     </script>
   <script type="text/javascript"
     src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js">
-
     </script>
+-->
 
-  <script src="jpsurv.js" type="text/javascript">
-
-    </script>
+  <script src="jpsurv.js" type="text/javascript"></script>
 
 <!--
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ladda-bootstrap/0.9.4/ladda.min.js"></script>
