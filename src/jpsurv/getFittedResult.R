@@ -130,7 +130,8 @@ numJP=1
   saveRDS(fit.result, outputFileName)
   outputFileNameJson = paste(outputFileName, "json", sep=".")
 
-  apcJson<-toJSON(fit.result$apc, .escapeEscapes = FALSE, pretty=TRUE)
+  apcJson<-toJSON(fit.result$apc)
+  #, .escapeEscapes = FALSE, pretty=TRUE)
 
   cat("apc\n")
   cat(apcJson)

@@ -94,8 +94,20 @@ $(document).ready(function() {
 	//$("#calculate").on("click", show_graph_temp);
 
 });
+
 function get_plot() {
-		alert('get_plot');
+	alert('get_plot');
+
+	var obj = {
+		"covariateVars" : $('#covariate_select_polt').val(),
+		"numJP" : parseInt($('#join_point_select').val()),
+		"outputFileName" : seerFilePrefix + ".output",
+		"keyId" : getUrlParameter('keyId')
+	};
+
+	var newobj = 'obj='+JSON.stringify(obj)+'&key_id='+getUrlParameter('key_id');
+	var plot_json = JSON.parse(jpsurvRest('stage3_plot', params));
+
 }
 
 function show_apc_table(params) {
@@ -200,7 +212,7 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 		"numJP" : parseInt($('#join_point_select').val()),
 		"outputFileName" : seerFilePrefix + ".output",
 		"keyId" : getUrlParameter('keyId')
- };
+	};
 
 	console.log("What is obj????");
 	console.dir(obj);
