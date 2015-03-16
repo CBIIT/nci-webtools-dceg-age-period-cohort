@@ -182,14 +182,14 @@ def calculate():
     for k, v in request.args.iteritems():
         print "var: %s = %s" % (k, v)
     obj = request.args.get('obj', False);
-    key_id = request.args.get('key_id', False);
+    keyId = request.args.get('keyId', False);
 
     print BOLD+"**** obj ****"+ENDC
     print type(obj)
     print dir(obj)
     print BOLD+OKBLUE+"**** key_id ****"+ENDC
-    print type(key_id)
-    print dir(key_id)
+    print type(keyId)
+    print dir(keyId)
 
     #jdata = json.loads(obj.decode(encoding='UTF-8'))
     jdata = json.loads(obj)
@@ -221,6 +221,33 @@ def stage2_calculate():
         data=myfile.read().replace('\n', '')
 
     return json.dumps(data)
+
+@app.route('/jpsurvRest/stage3_plot', methods=['GET'])
+def stage3_plot():
+    print UNDERLINE+HEADER + "****** PLOT BUTTON ***** " + ENDC
+    print "Plotting ..."
+    #print dir(request.args);
+    #print type(request.args);
+    obj = request.args.get('obj', False);
+    keyId = request.args.get('keyId', False);
+    jdata = json.loads(obj)
+    print BOLD+"**** jdata ****"+ENDC
+    print type(jdata)
+    print dir(jdata)
+    for key, value in jdata.iteritems():
+        print "var: %s = %s" % (key, value)
+
+    #Init the R Source
+    rSource = robjects.r('source')
+    rSource('./JPSurvWrapper.R')
+
+    print BOLD+OKBLUE+"**** Calling getGraph ****"+ENDC
+    # Next two lines execute the R Program
+    getGraphNoParam = robjects.globalenv['getGraphNoParam']
+
+    getGraphNoParam(keyId)
+
+    return keyId
 
 @app.route('/jpsurvRest/apc', methods=['GET'])
 def apc():
