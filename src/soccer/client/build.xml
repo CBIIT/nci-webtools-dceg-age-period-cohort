@@ -54,7 +54,6 @@
         </copy>
         <copy file="config.properties" todir="dist"/>
         <copy file="jcmd.sh" todir="dist"/>
-        <copy file="jcmd.bat" todir="dist"/>
     </target>
     <target name="clean">
         <delete includeEmptyDirs="true" quiet="true" dir="build"/>
