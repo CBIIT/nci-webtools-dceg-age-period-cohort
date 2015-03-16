@@ -14,16 +14,18 @@
 
     </head>
     <body>
-        <!--NCI Logo-->
+        <!--NCI Logo-->        
         <div id="logos">
             <div id="left">
-                <a href="http://www.cancer.gov" target="_blank"><img
+                <a href="http://www.cancer.gov" target="_blank">
+                    <img
                         src="nci.jpg" width="286" height="40" border="0"
                         alt="National Cancer Institute" title="National Cancer Institute"></a>
             </div>
 
             <div id="right">
-                <a href="http://www.cancer.gov" target="_blank"><img
+                <a href="http://www.cancer.gov" target="_blank">
+                    <img
                         src="nih.jpg" width="322" height="40" border="0"
                         alt="at the National Institutes of Health"
                         title="at the National Institutes of Health"></a>
@@ -57,7 +59,7 @@
             <div id="wrapper" >  
                 <div class="row">                    
                     <div class="col-sm-12" align="right">
-                        <a href="help.html">Help</a>
+                        <a class="help" href="help.html">Help</a>
                     </div>
                 </div>
 
@@ -88,7 +90,7 @@
                                 </select>
                             </p>                       
 
-                            <button id="fileSubmit" class="btn btn-success" type="submit">Calculate</button>                     
+                            <button id="fileSubmit" class="btn btn-success" type="submit">Upload</button>                     
                             
                         </form>
                 
@@ -102,29 +104,48 @@
                         <!-- Summary -->
                         <div id="resultDiv" role="alert"></div>
 
+                        <!-- Calculate Form -->
+                        <form id="calcForm" action="calc" method="post">                                
+                            <button id="calcSubmit" class="btn btn-success" type="submit">Calculate</button>  
+                            <button id="cancelCalc" class="btn btn-success" type="reset">Cancel</button>                          
+                        </form>
+
                         <!-- Email Form -->
                         <form id="emailForm" action="queue" method="post">
                             <fieldset>
                                 <legend>Please type in your email address: </legend>  
                                 <label>Email</label>
-                                <input type="email" id="emailAddress" name="emailAddress" placeholder="Your email here" required>     
-                                <input type="hidden" id="inputFileId" name="inputFileId" value="">
+                                <input type="email" id="emailAddress" name="emailAddress" placeholder="Your email here" required>
                                 <span class="help-block"></span>
                                 <button id="emailSubmit" class="btn btn-success" type="submit">Submit</button>
+                                <button id="cancelSubmit" class="btn btn-success" type="reset">Cancel</button>
                             </fieldset>
                         </form>
+
                         <!-- Summary -->
                         <div id="queueResultDiv" role="alert"></div>
+
+                        <!-- To pass inputFileId between pages. -->
+                        <input type="hidden" id="inputFileId" name="inputFileId" value="">
                     </div> 
 
-                    <div id="resultArea" class="col-sm-8">                        
-                        <pre id="fileContent">Result Content</pre>             
-                        <div class="row" align="center">                
-                            <a id="downloadHref" href="#"><i>Click here to download output file</i></a>
+                    <div id="rightSide" class="col-sm-8">
+                        <div id="validationErrorArea"></div>
+                        <div id="resultArea" >
+                            <div class="row" align="center">
+                                <a id="downloadHref1" href="#"> <i>Click here to download output file</i>
+                                </a>
+                            </div>
+                            <pre id="resultContent">No Results</pre>
+                            <div class="row" align="center">
+                                <a id="downloadHref2" href="#"> <i>Click here to download output file</i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
             <!--Footer-->
             <div id="portal-footer">

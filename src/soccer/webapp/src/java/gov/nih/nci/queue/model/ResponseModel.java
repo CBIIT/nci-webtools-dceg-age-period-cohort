@@ -11,13 +11,13 @@ import java.util.List;
 public class ResponseModel implements Serializable {
 
     private String status;
-    private String message;
+    private String estimatedTime;
+    private String errorMessage;
     private String fileName;
     private String fileType;
     private String fileSize;
     private String inputFileId;
-    private String inputFileUrl;
-    private String outputFileUrl;
+    private String outputFileId;
     private String repositoryPath;    
     private String emailAddress;     
     private List<String> details;
@@ -30,12 +30,20 @@ public class ResponseModel implements Serializable {
         this.status = status;
     }
 
-    public String getMessage() {
-        return message;
+    public String getEstimatedTime() {
+        return estimatedTime;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setEstimatedTime(String estimatedTime) {
+        this.estimatedTime = estimatedTime;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public String getFileName() {
@@ -70,23 +78,13 @@ public class ResponseModel implements Serializable {
         this.inputFileId = inputFileId;
     }
 
-    public String getInputFileUrl() {
-        return inputFileUrl;
+    public String getOutputFileId() {
+        return outputFileId;
     }
 
-    public void setInputFileUrl(String inputFileUrl) {
-        this.inputFileUrl = inputFileUrl;
+    public void setOutputFileId(String outputFileId) {
+        this.outputFileId = outputFileId;
     }
-
-    public String getOutputFileUrl() {
-        return outputFileUrl;
-    }
-
-    public void setOutputFileUrl(String outputFileUrl) {
-        this.outputFileUrl = outputFileUrl;
-    }
-
-
 
     public String getRepositoryPath() {
         return repositoryPath;

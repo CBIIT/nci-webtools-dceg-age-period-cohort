@@ -14,11 +14,14 @@ import java.io.Serializable;
  */
 public class QueueModel implements Serializable {
 
+    // InputFile for Processing
     private String fileName;
-    private String path;
+    // Path to the inputfile.
+    private String path;    
+    // Where to save the output file.
+    private String outputDir;   
     private String email;
     private String timeStamp;
-    private String outputDir;
 
     public String getFileName() {
         return fileName;

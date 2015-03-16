@@ -13,21 +13,32 @@ import java.util.UUID;
  */
 public class UniqueIdUtil {
 
+    private String fileExt;
+    
+    // Extract the file Extenetion always.
+    public UniqueIdUtil(String fileName) {
+       fileExt = ""; 
+        int i = fileName.lastIndexOf('.');
+        if (i > 0) {
+            fileExt = fileName.substring(i);
+        }
+    }
+    
     /*
      * Generate a unique Id for the file uploaded. 
      * put prefix "i" to identify this is a input file
      * to be processed.
     */
-    public static String getInputUniqueID() {
-        return "i" + UUID.randomUUID();
+    public String getInputUniqueID() {
+        return new StringBuilder("i").append(UUID.randomUUID()).append(fileExt).toString();
     }
     
     /*
      * Generate a unique Id for the file uploaded. 
      * put prefix "o" to identify this is a output file.     
     */
-    public static String getOutputUniqueID() {
-        return "o" + UUID.randomUUID();
+    public String getOutputUniqueID() {
+        return new StringBuilder("o").append(UUID.randomUUID()).append(fileExt).toString();
     }
 
 }

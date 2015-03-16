@@ -13,7 +13,9 @@
             file="src/java/applicationQueue.properties" comment="Application properties">
             <entry  key="gov.nih.nci.queue.repository.dir" value="${gov.nih.nci.queue.repository.dir}"/>
             <entry  key="gov.nih.cit.soccer.output.dir" value="${gov.nih.cit.soccer.output.dir}"/>
-            <entry  key="gov.nih.cit.soccer.wordnet.dir" value="${gov.nih.cit.soccer.wordnet.dir}"/>
+            <entry  key="gov.nih.cit.soccer.wordnet.dir" value="${gov.nih.cit.soccer.wordnet.dir}"/>            
+            <entry  key="resource.queue.connectionfactory" value="${resource.queue.connectionfactory}"/>
+            <entry  key="resource.queue.name" value="${resource.queue.name}"/>
         </propertyfile>
     </target>
     <target name="init" depends="pre-init">
@@ -35,8 +37,9 @@
                 <Container id="TomiJmsMdbContainer" ctype="MESSAGE">
                     ResourceAdapter = TomiJmsResourceAdapter
                 </Container>
-
-                <Resource id="TomiQueue" type="javax.jms.Queue"/>
+                
+                <Resource id="soccerqueue" type="javax.jms.Queue"/>
+                <Resource id="jpsurvqueue" type="javax.jms.Queue"/>
                 <Resource id="TomiTopic" type="javax.jms.Topic"/>
             </tomee>
         </echoxml>

@@ -24,12 +24,11 @@ public class SoccerServiceHelper {
 
     private final static Logger LOGGER = Logger.getLogger(SoccerServiceHelper.class.getCanonicalName());
 
-    private final Soccer soc;
+    private final Soccer soc = new Soccer();
     private final String outputDir;
     private final String outputFilePre = "SoccerResults-";
 
-    public SoccerServiceHelper(Soccer _soc, String outputDir) {
-        this.soc = _soc;
+    public SoccerServiceHelper(String outputDir) {        
         this.outputDir = outputDir;
     }
 
@@ -38,48 +37,42 @@ public class SoccerServiceHelper {
      * OR
      * Invoke shell command(s) to process the input file.
      */
-    public boolean ProcessingFile(File _fileIn, File _fileOut) {
-        boolean bRet = false;
+    public void ProcessingFile(File _fileIn, File _fileOut) throws InputFormatException, IOException, SOCcerException   {
+                
+        // Process the input file and generate a new output file. 
+        // By soccer, the output file name would be: SoccerResults-<input_file_name> 
+        RunTimer timer = new RunTimer();
+        soc.codeFile(_fileIn);
+        timer.stop();
 
-        try {
-            int numLines = getNumberLines(_fileIn);
-            // If not validation error.
-            System.out.println((new StringBuilder("Number of lines = ")).append(numLines).toString());
-            System.out.println((new StringBuilder("Estimated time to finish = ")).append(soc.getEstimatedTime(_fileIn)).append(" sec").toString());
-            RunTimer timer = new RunTimer();
-            soc.codeFile(_fileIn);
-            timer.stop();
-            System.out.println((new StringBuilder("Elapsed time = ")).append(timer.elapsedTime()).append(" sec").toString());
-            System.out.println((new StringBuilder("Average time / line = ")).append(timer.elapsedTime() / (float) numLines).append(" sec").toString());
-
-            // Rename output file (SoccerResults-soccer_dataset0.csv) to _fileOutput.
-            System.out.println("Output File: " + outputDir + File.separator + outputFilePre + _fileIn.getName());
-            File fileOutput = new File(outputDir + File.separator + outputFilePre + _fileIn.getName());
-            if (fileOutput.exists() && _fileOut != null) {
-                System.out.println(outputFilePre + _fileIn.getName() + " -> " + _fileOut.getName());
-                boolean success = fileOutput.renameTo(_fileOut);
-                if (success) {
-                    bRet = true;
-                }
-            }
-        } catch (InputFormatException e) {
-            LOGGER.log(Level.SEVERE, "Exception: {0}", e.getMessage());
-        } catch (IOException | SOCcerException e) {
-            LOGGER.log(Level.SEVERE, "Exception: {0}", e.getMessage());
+        // Rename output file (SoccerResults-soccer_dataset0.csv) to _fileOutput.
+        // Removing Prefix "SoccerResults-". 
+        String generatedFilePath = outputDir + File.separator + outputFilePre + _fileIn.getName();
+        LOGGER.log(Level.INFO, "SOCcer ouput File: {0}", generatedFilePath);
+        File fileOutput = new File(generatedFilePath);
+        if (fileOutput.exists() && _fileOut != null) {           
+            fileOutput.renameTo(_fileOut);
+        }   
+        else {
+            LOGGER.log(Level.SEVERE, "{0} does not exist!", generatedFilePath);
         }
-
-        return bRet;
     }
 
+    // Get number of lines of the input file.
     @SuppressWarnings("empty-statement")
-    private int getNumberLines(File file)
+    public int getNumberLines(File _file)
             throws IOException {
         int numLines;
-        try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader in = new BufferedReader(new FileReader(_file))) {
             in.readLine();
             for (numLines = 0; in.readLine() != null; numLines++);
         }
         return numLines;
+    }
+    
+    // Get Estimate Processing Time
+    public double getEstimatedTime(String _absoluteInputFileName) throws IOException {
+        return Math.round(soc.getEstimatedTime(_absoluteInputFileName) * 100.0) / 100.0;
     }
 
 }

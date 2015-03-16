@@ -5,12 +5,12 @@
  */
 package gov.nih.nci.queue.servlet;
 
-import gov.nih.cit.soccer.Soccer;
 import gov.nih.nci.queue.model.ResponseModel;
+import gov.nih.nci.queue.utils.MetadataFileUtil;
 import gov.nih.nci.queue.utils.PropertiesUtil;
-import gov.nih.nci.soccer.SoccerServiceHelper;
 import gov.nih.nci.queue.utils.UniqueIdUtil;
 import gov.nih.nci.soccer.InputFileValidator;
+import gov.nih.nci.soccer.SoccerServiceHelper;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -55,24 +53,16 @@ public class FileUploadServlet extends HttpServlet {
         // Set response type to json
         response.setContentType("application/json");
         PrintWriter writer = response.getWriter();
-
+                
         // Get property values.        
         // SOCcer related.
         final Double estimatedThreshhold = Double.valueOf(PropertiesUtil.getProperty("gov.nih.nci.soccer.computing.time.threshhold").trim());
         // FileUpload Settings.
         final String repositoryPath = PropertiesUtil.getProperty("gov.nih.nci.queue.repository.dir");
-//        final long fileSizeMax = Long.valueOf(PropertiesUtil.getProperty("gov.nih.nci.queue.filesize.max"));
-        final long fileSizeMax = 10000000000L; // 10G
         final String strOutputDir = PropertiesUtil.getProperty("gov.nih.cit.soccer.output.dir").trim();
-        System.setProperty("gov.nih.cit.soccer.output.dir", strOutputDir);
-        System.setProperty("gov.nih.cit.soccer.wordnet.dir", PropertiesUtil.getProperty("gov.nih.cit.soccer.wordnet.dir").trim());
-        LOGGER.log(Level.INFO, "repository.dir: {0}, filesize.max: {1}, time.threshhold: {2}, output.dir: {3}",
-                new Object[]{repositoryPath, fileSizeMax, estimatedThreshhold, strOutputDir});
-        if (System.getProperty("gov.nih.cit.soccer.output.dir", "na").equals("na")
-                || System.getProperty("gov.nih.cit.soccer.wordnet.dir", "na").equals("na")) {
-            LOGGER.log(Level.SEVERE, "Internal Error: Cannot find system variables.");
-            writer.print("Internal Error: Cannot find system variables. Please contact Technical Support.");
-        }
+        final long fileSizeMax = 10000000000L; // 10G
+        LOGGER.log(Level.INFO, "repository.dir: {0}, filesize.max: {1}, time.threshhold: {2}",
+                new Object[]{repositoryPath, fileSizeMax, estimatedThreshhold});
 
         // Check that we have a file upload request
         // Check that we have a file upload request
@@ -107,9 +97,9 @@ public class FileUploadServlet extends HttpServlet {
                         String contentType = item.getContentType();
                         rm.setFileType(contentType);
                         long sizeInBytes = item.getSize();
-                        rm.setFileSize(String.valueOf(sizeInBytes));
+                        rm.setFileSize(String.valueOf(sizeInBytes));                        
 
-                        String inputFileId = UniqueIdUtil.getInputUniqueID();
+                        String inputFileId = new UniqueIdUtil(fileName).getInputUniqueID();
                         rm.setInputFileId(inputFileId);
                         String absoluteInputFileName = repositoryPath + File.separator + inputFileId;
                         rm.setRepositoryPath(repositoryPath);
@@ -118,42 +108,25 @@ public class FileUploadServlet extends HttpServlet {
                         File inputFile = new File(absoluteInputFileName);
                         item.write(inputFile);
 
-                        // Validation.
-                        Soccer soccer = new Soccer();
-                        InputFileValidator validator = new InputFileValidator(soccer);
+                        // Validation.                        
+                        InputFileValidator validator = new InputFileValidator();
                         List<String> validationErrors = validator.validateFile(inputFile);
 
                         if (validationErrors == null) { // Pass validation
                             // check estimatedProcessingTime.
-                            Double estimatedTime = Math.round(soccer.getEstimatedTime(absoluteInputFileName) * 100.0) / 100.0;
+                            SoccerServiceHelper soccerHelper = new SoccerServiceHelper(strOutputDir);
+                            Double estimatedTime = soccerHelper.getEstimatedTime(absoluteInputFileName);
+                            rm.setEstimatedTime(String.valueOf(estimatedTime));
                             if (estimatedTime > estimatedThreshhold) { // STATUS: QUEUE (Ask client for email)
                                 // Construct Response String in JSON format.
-//                                    obj.put("status", "queue");
-                                rm.setStatus("queue");
-                                rm.setMessage("Your file has been uploaded successfully and is ready for processing. While the estimated processing time is "
-                                        + estimatedTime
-                                        + "seconds, we would like you to provide us with your email address, and once we finish processing your file, we will let you know instantly via email.");
-                            } else { // STATUS: PASS
+                                rm.setStatus("queue");  
+                            } else { // STATUS: PASS (Ask client to confirm calculate)
                                 // all good. Process the output and Go to result page directly.
-                                rm.setStatus("pass");
-                                rm.setMessage("Your file has been uploaded and processed successfully. (Processing time: " + estimatedTime + " seconds)");
-
-                                // Process the input file and generate output result file.
-                                LOGGER.log(Level.INFO, "Start processing input file <{0}>.", new Object[]{absoluteInputFileName});
-                                String outputFileId = UniqueIdUtil.getOutputUniqueID();
-                                String absoluteOutputFileName = repositoryPath + File.separator + outputFileId;
-                                SoccerServiceHelper ssh = new SoccerServiceHelper(soccer, strOutputDir);
-                                if (ssh.ProcessingFile(new File(absoluteInputFileName), new File(absoluteOutputFileName))) {
-                                    LOGGER.log(Level.INFO, "The output file <{0}> has been generated successfully.", absoluteOutputFileName);
-                                    rm.setOutputFileUrl(outputFileId); 
-                                } else {
-                                    LOGGER.log(Level.SEVERE, "Failed to generate output file <{0}>.", absoluteOutputFileName);
-                                }
+                                rm.setStatus("pass");                                  
                             }
                         } else {  // STATUS: FAIL // Did not pass validation. 
                             // Construct Response String in JSON format.
                             rm.setStatus("invalid");
-                            rm.setMessage("Your file did not pass validation.");
                             rm.setDetails(validationErrors);
                         }
                     } else { // TODO: Handel Form Fields such as SOC_SYSTEM.
@@ -164,19 +137,18 @@ public class FileUploadServlet extends HttpServlet {
                          */
                     } // End of isFormField
                 }
-            } catch (FileUploadException | FileNotFoundException  e) {                
+            } catch (Exception e) {  
                 LOGGER.log(Level.SEVERE, "FileUploadException or FileNotFoundException. Error Message: {0}", new Object[]{e.getMessage()});
                 rm.setStatus("fail");
-                rm.setMessage("Oops! We met with problems when uploading your file. Error Message: " + e.getMessage());
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Exception. Error: {0}", new Object[]{e.getMessage()});
-                rm.setStatus("fail");
-                rm.setMessage("Oops! File has been uploaded successfully, however, we met with problems when processing your file. Error Message: " + e.getMessage());
+                rm.setErrorMessage("Oops! We met with problems when uploading your file. Error Message: " + e.getMessage());
             }
 
             // Send the response.
             ObjectMapper jsonMapper = new ObjectMapper();
             LOGGER.log(Level.INFO, "Response: {0}", new Object[]{jsonMapper.writeValueAsString(rm)});
+            // Generate metadata file
+            new MetadataFileUtil(rm.getInputFileId(), repositoryPath).generateMetadataFile(jsonMapper.writeValueAsString(rm));
+            // Responde to the client. 
             writer.print(jsonMapper.writeValueAsString(rm));
 
         } else { // The request is NOT actually a file upload request

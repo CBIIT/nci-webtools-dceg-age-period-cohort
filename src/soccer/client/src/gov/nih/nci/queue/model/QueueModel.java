@@ -59,5 +59,17 @@ public class QueueModel implements Serializable {
     public void setOutputDir(String outputDir) {
         this.outputDir = outputDir;
     } 
+
+    @Override
+    public String toString() {
+        return new StringBuilder("")
+                    .append("\r\nPath: ").append(path)
+                    .append("\r\nFileName: ").append(fileName)
+                    .append("\r\nEmail: ").append(email)
+                    .append("\r\nOutputDir: ").append(outputDir)
+                    .append("\r\nTimeStamp: ").append(timeStamp)
+                    .toString();
+    }
     
+   
 }

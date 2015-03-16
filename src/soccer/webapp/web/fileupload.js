@@ -14,6 +14,7 @@ $(function () {
         if(parameters[0]) {
             var temp = parameters[0].split("=");
             var fileId = unescape(temp[1]); 
+            showMetadata(fileId);
             showResult(fileId);              
         }
         else {
@@ -26,16 +27,22 @@ $(function () {
         $('#progressBar').css('width', '0%');
         // Hide email Form.
         $('#emailForm').hide();
+        // Hide calc Form. 
+        $('#calcForm').hide();
         // Hide *ResultDiv.
         $('#resultDiv').hide();
         // Hide *QueueResultdiv
         $('#queueResultDiv').hide();
         // Clean file meta div
         $('#fileMetaDiv').text('');
+        // hide validation Error Area.
+        $('#validationErrorArea').hide();
         // Enable upload button if disabled.
         $('#fileSubmit').removeAttr('disabled');
         // Enable email submit button if disabled.
         $('#emailSubmit').removeAttr('disabled');
+        // Enable calc submit button if disabled.
+        $('#calcSubmit').removeAttr('disabled');
         // Hide result portion.
         $("#resultArea").hide();        
     }
@@ -127,43 +134,56 @@ $(function () {
         //$('#progressDiv').hide();
 
         var obj = $.parseJSON(responseText);
-        console.log(obj.status);
-        $('#resultDiv').html('<b>' + obj.message + '</b>');
+        console.log(obj.status);        
         $('#resultDiv').show();
         if (obj.status === 'pass') {
             $('#resultDiv').removeClass();
             $('#resultDiv').addClass('alert alert-success');
-            $('#resultDiv').empty().append('<b>' + obj.message + '</b><br><br>');
-            //$('#resultDiv').append('<a target="_blank" href="soccerouput.html?fileid=' + obj.outputFileUrl + '">Click here to view SOCcer output</a>.');
-            showResult(obj.outputFileUrl);            
+            // set inputFileId Field value
+            $('#inputFileId').attr('value', obj.inputFileId);
+             // Show the calc Form and enable if disabled.
+            $('#calcForm').show();
+            $('#calcSubmit').removeAttr('disabled');
+            $('#resultDiv').empty().append('Your file has been uploaded successfully.<br>Estimated processing time: <b>'+obj.estimatedTime+' seconds</b>');             
         }
-        if (obj.status === 'queue') {
+        else if (obj.status === 'queue') {
             // Display continue message. 
             $('#resultDiv').removeClass();
             $('#resultDiv').addClass('alert alert-warning');
+            $('#resultDiv').empty().append('Your file has been uploaded successfully and is ready for processing. <br><br>'
+                +'Estimated processing time: <b>'+obj.estimatedTime+' seconds</b> <br><br>'
+                + 'We would like you to provide us with your email address, once we finish processing your file, you will get an email notification.');
             // set inputFileId Field value
             $('#inputFileId').attr('value', obj.inputFileId);
             // Show the email Form and enable if disabled.
             $('#emailForm').show();
             $('#emailForm').removeAttr('disabled');
         }
-        if (obj.status === 'invalid') {
-            $('#resultDiv').removeClass();
-            $('#resultDiv').addClass('alert alert-warning');
+        else if (obj.status === 'invalid') {
+            $('#resultDiv').hide();
+            $('#validationErrorArea').show();
+            $('#validationErrorArea').removeClass();
+            $('#validationErrorArea').addClass('alert alert-warning');
             // refine resultDiv by adding validation errors.
-            $('#resultDiv').empty().append('<b>' + obj.message + '</b><ul>');
+            $('#validationErrorArea').empty().append('<b>Your file has been uploaded successfully but contains the following errors:</b><ul>');
             var arr = obj.details;
             console.log(arr);
             for (var i = 0; i < arr.length; i++)
-                $('#resultDiv').append('<li>' + arr[i] + '</li>');
-            $('#resultDiv').append('</ul>');
-            $('#resultDiv').append('<br><b>Please modify your data file and re-upload.</b>');
+                $('#validationErrorArea').append('<li>' + arr[i] + '</li>');
+            $('#validationErrorArea').append('</ul>');
+            $('#validationErrorArea').append('<br><b>Please modify your data file and re-upload.</b>');
         }
-        if (obj.status === 'fail') {
+        else if (obj.status === 'fail') {
             $('#resultDiv').removeClass();
             $('#resultDiv').addClass('alert alert-danger');
             // refine resultDiv by adding validation errors.
-            $('#resultDiv').empty().append('<b>' + obj.message + '</b><ul>');            
+            $('#resultDiv').empty().append('<b>' + obj.errorMessage + '</b>');            
+        }
+        else {
+            $('#resultDiv').removeClass();
+            $('#resultDiv').addClass('alert alert-danger');
+            // refine resultDiv by adding validation errors.
+            $('#resultDiv').empty().append('<b>Oops! Internal error.</b>');   
         }
     }
 
@@ -186,9 +206,7 @@ $(function () {
     }
 
     /*
-     * @description Handle upload cancellation event.
-     * @param {type} event
-     * @returns {undefined}
+     * Given fileId, show the content.
      */
     function showResult(fileId) {
         var fileUrl = "files/" + fileId;
@@ -196,13 +214,52 @@ $(function () {
         xmlHttpResult.open("GET", fileUrl, false);
         xmlHttpResult.send(null);    
         if(xmlHttpResult.status == 404) {
-            $("#fileContent").text('The requested resource is not available.');
-            $("#downloadHref").text('');  
+            $("#resultContent").text('The requested resource is not available.');
+            $("#downloadHref1").text('');  
+            $("#downloadHref2").text('');
         }
         else {
             $("#resultArea").show();
-            $("#fileContent").text(xmlHttpResult.responseText);
-            $("#downloadHref").prop("href", fileUrl);            
+            $("#resultContent").text(xmlHttpResult.responseText);
+            $("#downloadHref1").prop("href", fileUrl);   
+            $("#downloadHref2").prop("href", fileUrl);          
+        }
+    }
+
+    /*
+     * Given fileId, show the metadata.
+     */
+    function showMetadata(fileId) {
+        var fileUrl1 = "files/" + fileId + '.json';
+        console.log(fileUrl1);
+        var xmlHttpResult1 = new XMLHttpRequest();
+        xmlHttpResult1.open("GET", fileUrl1, false);
+        xmlHttpResult1.send(null);    
+        if(xmlHttpResult1.status != 404) {           
+            var obj1 = $.parseJSON(xmlHttpResult1.responseText);
+
+            if(obj1.fileName) {
+                var fileUrl2 = "files/" + obj1.fileName + '.json';
+                console.log(fileUrl2);
+                var xmlHttpResult2 = new XMLHttpRequest();
+                xmlHttpResult2.open("GET", fileUrl2, false);
+                xmlHttpResult2.send(null);    
+                if(xmlHttpResult2.status == 404) {
+                   ; // do nothing.
+                }
+                else {
+                    var obj2 = $.parseJSON(xmlHttpResult2.responseText);                    
+
+                    $('#queueResultDiv').removeClass();
+                    $('#queueResultDiv').addClass('alert alert-success');   
+                    $('#queueResultDiv').empty().append('Your file has been processed successfully.<br>'
+                        + '<br>File Name: ' + obj2.fileName 
+                        + '<br>File Size: ' + obj2.fileSize + ' Bytes'                        
+                        + '<br>Processing Time: ' + obj2.estimatedTime  + ' Seconds'
+                        + '<br>Uploaded on: ' + obj1.timeStamp);
+                    $('#queueResultDiv').show();
+                }      
+            }      
         }
     }
 
@@ -213,9 +270,9 @@ $(function () {
     $('#emailForm').submit(function (event) {
         console.log("emailForm.submit() invoked.");
         event.preventDefault();
-
-        // hide upload button.
-        $('#emailSubmit').attr('disabled', 'disabled');
+       
+        // Hide emailForm
+        $('#emailForm').hide();
 
         // Prepare formData and submit data.
         var emailFormData = new FormData();
@@ -226,22 +283,32 @@ $(function () {
             /* This event is raised when the server send back a response */
             console.log('emailForm load is completed. Response Text: ' + event.target.responseText);
             var responseText = event.target.responseText;
-
-            // Hide emailForm
-            $('#emailForm').hide();
-
+            
             var obj = $.parseJSON(responseText);
-            console.log(obj.status);
-            $('#queueResultDiv').html('<b>' + obj.message + '</b>');
+            console.log(obj.status);            
             $('#queueResultDiv').show();
             if (obj.status === 'pass') {
                 // Change result Div to success status.
                 $('#resultDiv').removeClass();
                 $('#resultDiv').addClass('alert alert-success');
+                $('#resultDiv').hide();
                 // Set ququeResultDiv to success status.
                 $('#queueResultDiv').removeClass();
                 $('#queueResultDiv').addClass('alert alert-success');
-                $('#queueResultDiv').empty().append('<b>' + obj.message + '</b><br><br>');
+                $('#queueResultDiv').empty().append('Congratulations! Your file has been added into our queue successfully! '
+                    + 'Once the file is processed, you will get an email notification at <b>' + obj.emailAddress 
+                    + '</b>. <br><br>You can close this window or upload other files now.'); 
+            } else if (obj.status === 'fail') {
+                $('#queueResultDiv').removeClass();
+                $('#queueResultDiv').addClass('alert alert-danger');
+                // refine queueResultDiv by adding validation errors.
+                $('#queueResultDiv').empty().append('<b>' + obj.errorMessage + '</b>');            
+            }
+            else {
+                $('#queueResultDiv').removeClass();
+                $('#queueResultDiv').addClass('alert alert-danger');
+                // refine resultDiv by adding validation errors.
+                $('#queueResultDiv').empty().append('<b>Oops! Internal error.</b>');   
             }
         }, false);
         xhr.addEventListener("error", uploadFailed, false);
@@ -251,6 +318,70 @@ $(function () {
 
         // Stay on the same page.
         return false;
+    });
+
+    /*
+     * Bind an event handler to the “calcSubmit” JavaScript event, 
+     * or trigger that event on an element.
+     */
+    $('#calcForm').submit(function (event) {
+        console.log("calcForm.submit() invoked.");
+        event.preventDefault();
+
+        // Hide calcForm
+        $('#calcForm').hide(); 
+
+        $('#queueResultDiv').show();
+        $('#queueResultDiv').html('<img width="28px" src="processing.gif">processing...');  
+
+        // Prepare formData and submit data.
+        var calcFormData = new FormData();       
+        calcFormData.append("inputFileId", $('#inputFileId').val());
+        var xhr = new XMLHttpRequest();
+        xhr.addEventListener("load", function (event) {
+            /* This event is raised when the server send back a response */
+            console.log('calcForm load is completed. Response Text: ' + event.target.responseText);
+            var responseText = event.target.responseText;
+
+            var obj = $.parseJSON(responseText);
+            console.log(obj.status);             
+            $('#queueResultDiv').show();
+            if (obj.status === 'pass') {              
+                // Set ququeResultDiv to success status.
+                $('#queueResultDiv').removeClass();
+                $('#queueResultDiv').addClass('alert alert-success');
+                $('#queueResultDiv').empty().append('Your file has been processed successfully.');  
+                // show result
+                showResult(obj.outputFileId);
+            } else if (obj.status === 'fail') {
+                $('#queueResultDiv').removeClass();
+                $('#queueResultDiv').addClass('alert alert-danger');
+                // refine queueResultDiv by adding validation errors.
+                $('#queueResultDiv').empty().append('<b>' + obj.errorMessage + '</b>');            
+            }
+            else {
+                $('#queueResultDiv').removeClass();
+                $('#queueResultDiv').addClass('alert alert-danger');
+                // refine resultDiv by adding validation errors.
+                $('#queueResultDiv').empty().append('<b>Oops! Internal error.</b>');   
+            }
+
+        }, false);
+        xhr.addEventListener("error", uploadFailed, false);
+        xhr.addEventListener("abort", uploadCanceled, false);
+        xhr.open("POST", "calc");
+        xhr.send(calcFormData);
+
+        // Stay on the same page.
+        return false;
+    });
+
+    // Cancel actions.
+    $('#cancelCalc').click(function (event) {        
+        init_state(); 
+    });
+    $('#cancelSubmit').click(function (event) {        
+        init_state(); 
     });
 
 });
