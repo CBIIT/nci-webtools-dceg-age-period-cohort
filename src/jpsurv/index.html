@@ -95,6 +95,7 @@
 <table class="container">
   <tr style="width:250px;">
     <td class="upload-pane">
+      <h2 stlye="font-weight:bold;">Input Files</h2>
       <form method=POST enctype=multipart/form-data action="/jpsurvRest/upload">
         <P id="file_control_container">
             <label for='file_control'>Data Dictionary File: </label>
@@ -114,6 +115,7 @@
   <tr>
     <td class="parameters-pane">
       <form id='parameters' style='display:none'>
+        <h2 stlye="font-weight:bold;">Calculate Parameters</h2>
         <P id='diagnosis_title'><P>
         <P> Year of Diagnosis Range:<BR>
         <SELECT id='year_of_diagnosis_start' name='year_of_diagnosis_start'></SELECT> to
@@ -123,7 +125,6 @@
         <P id='cohort_sub_select'></P>
         <P style="clear:both; padding-top:10px;">Covariate Variables:<BR>
         <SELECT id='covariate_select' name='covariate_select'></SELECT></P>
-        <P id='covariate_sub_select'></P>
         <P style="clear:both; padding-top:10px;">Join Points:
         <SELECT id='join_point_select' name='join_point_select'><OPTION>1</OPTION><OPTION>2</OPTION><OPTION>3</OPTION><OPTION>4</OPTION></SELECT></P>
         <P>
@@ -136,9 +137,9 @@
   <tr>
     <td class="parameters-pane">
       <form id='plot-form' style='display:none'>
-        <h2>Plot Parameters</h2>
+        <h2 stlye="font-weight:900;">Plot Parameters</h2>
         <p>
-          <label for="plot-intervals">Select Plot Intervals (in Years)</label>
+          Plot Intervals (years):<br><br>
           <select id="plot-intervals" name="plot-intervals" multiple>
             <option>1</option>
             <option>2</option>
@@ -147,10 +148,14 @@
             <option>5</option>
           </select>
         </p>
+        <P id='covariate_sub_select'>
+        </P>
+        <br>
+<!--
         <P style="clear:both; padding-top:10px;">Covariate Variables:<BR>
         <SELECT id='covariate_select_plot' name='covariate_select_plot'></SELECT></P>
-        <P id='covariate_sub_select'></P>
-        <P>
+-->
+        <P><br>
           <INPUT type='button' id='plot' value='Plot' >
           <!--
           <INPUT type='button'  onclick="window.location.href='/jpsurv'" value="Reset" class="pull-right">
@@ -191,11 +196,15 @@
 </table>
 
         </div>
+        <p id="spinner-plotting" style="padding:200px 100px;display:none;"><i class="fa fa-spinner fa-spin fa-2x"></i>
+        <span style="font-weight:bold;font-size:150%;margin-left:15px;">Plotting</span>
+        </p>
         <div id="plot-container" style="display:none;">
           <h2 style="font-size:20px;">Relative Survival</h2>
           <!-- <img src="ExampleJPSurvPlot.png" alt="Uploaded" class="logo" style="width:600px;padding:10px;border:1px solid;"> -->
           <img id="plot-image" alt="Uploaded" class="logo" style="width:600px;padding:10px;border:1px solid;">
         </div>
+
     </div>
 </div>
 

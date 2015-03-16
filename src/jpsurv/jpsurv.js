@@ -29,7 +29,7 @@ $(document).ready(function() {
 		$('#file_control_container')
 				.empty()
 				.append($('<div>')
-					.append('<b>Data Dictionary File:</b> ')
+					.append('Data Dictionary File: ')
 					.append($('<span>')
 							.append(jpTrim(getUrlParameter('file_control_filename'), 30))
 							.attr('title', getUrlParameter('file_control_filename'))
@@ -38,7 +38,7 @@ $(document).ready(function() {
 		$('#file_data_container')
 				.empty()
 				.append($('<div>')
-					.append('<b>Data File:</b> ')
+					.append('Data File: ')
 					.append($('<span>')
 							.append(jpTrim(getUrlParameter('file_data_filename'), 30))
 							.attr('title', getUrlParameter('file_data_filename'))
@@ -96,17 +96,29 @@ $(document).ready(function() {
 });
 
 function get_plot() {
-	alert('get_plot');
+	$("#plot-container").hide();
+	$("#spinner-plotting").show();
 
 	var obj = {
 		"covariateVars" : $('#covariate_select_polt').val(),
 		"numJP" : parseInt($('#join_point_select').val()),
-		"outputFileName" : seerFilePrefix + ".output",
+		"outputFileName" : "file.output",
 		"keyId" : getUrlParameter('keyId')
 	};
 
-	var newobj = 'obj='+JSON.stringify(obj)+'&key_id='+getUrlParameter('key_id');
-	var plot_json = JSON.parse(jpsurvRest('stage3_plot', params));
+	console.log('get_plot');
+	console.dir(obj);
+
+	var newobj = 'obj='+JSON.stringify(obj)+'&keyId='+getUrlParameter('keyId');
+	console.log(newobj);
+	var plot_json = JSON.parse(jpsurvRest('stage3_plot', newobj));
+
+	console.log("plot_json");
+	console.dir(plot_json);
+
+	$("#spinner-plotting").hide();
+	$("#plot-image").attr('src', 'output-'+getUrlParameter('keyId')+'.png');
+	$("#plot-container").fadeIn();
 
 }
 
@@ -229,6 +241,7 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 	$("#apc-container").hide();
 	$("#plot-container").hide();
 	$("#plot-form").hide();
+
 	//show_graph_temp(newobj);
 	show_apc_table(newobj);
 	$("#spinner").hide();
@@ -424,7 +437,7 @@ function set_covariate_select(covariate_options) {
 		$("#covariate_select").append("<OPTION>"+covariate_options[i]+"</OPTION>");
 		$("#covariate_select_plot").append("<OPTION>"+covariate_options[i]+"</OPTION>");
 	}
-	$("#covariate_sub_select").empty();
+	//$("#covariate_sub_select").empty();
 }
 
 function change_cohort_select() {
@@ -464,7 +477,9 @@ function remove_items_from_set(big_set, removed_set) {
 }
 
 function change_covariate_select() {
+	console.log("CHANGING COVARIATE SELECT");
 	console.log('change_covariate_select');
+	console.dir(cohort_covariance_variables);
 
 	var all_selected = $("#covariate_select").val();
 	var keys =  Object.keys(cohort_covariance_variables);
@@ -472,21 +487,68 @@ function change_covariate_select() {
 	inspect(keys);
 
 	$("#covariate_sub_select").empty();
+	console.log(all_selected);
 
+	if (all_selected != null) {
+			for (var j=0;j<keys.length;j++) {
+				if (all_selected == keys[j])
+					add_cohort_covariance_variable_select($("#covariate_sub_select"), "covariate_value", keys[j], cohort_covariance_variables[keys[j]]);
+			}
+		var covariate_options = remove_items_from_set(keys, all_selected);
+	} else {
+		var covariate_options = keys;
+	}
+
+/*
+	if($('#covariate_select').val() == "None") {
+		alert('Covariate Sub Select = none');
+		$("#covariate_sub_select").empty();
+	} else {
+		alert('Covariate Sub Select = '+ $('#covariate_select').val());
+		//add_cohort_covariance_variable_select2();
+		add_cohort_covariance_variable_select($("#covariate_sub_select"), "val_"+i, keys[j], cohort_covariance_variables[keys[j]]);
+/*
+		for (var i=0;i<all_selected.length;i++) {
+			for (var j=0;j<keys.length;j++) {
+				if (all_selected[i] == keys[j])
+					add_cohort_covariance_variable_select($("#covariate_sub_select"), "val_"+i, keys[j], cohort_covariance_variables[keys[j]]);
+			}
+		}
+*/
+
+/*
 	for (var i=0;i<all_selected.length;i++) {
 		for (var j=0;j<keys.length;j++) {
 			if (all_selected[i] == keys[j])
 				add_cohort_covariance_variable_select($("#covariate_sub_select"), "val_"+i, keys[j], cohort_covariance_variables[keys[j]]);
 		}
 	}
+*/
 	//
 	//Just clear for now....
 	//
-	$("#covariate_sub_select").empty();
+	//$("#covariate_sub_select").empty();
+
+}
+
+function add_cohort_covariance_variable_select2(field, variable_name, variable_title, values) {
+
+	var variable_select = $("<SELECT id='"+variable_name+"_select' name='"+variable_name+"_select'>");
+	for (i=0;i<values.length;i++) {
+		variable_select.append("<OPTION>"+values[i]+"</OPTION>");
+	}
+	$("#covariate_sub_select").append($("<DIV class='sub_select'>")
+		.append("&nbsp;&nbsp;" + variable_title + " : ")
+		.append(variable_select));
 
 }
 
 function add_cohort_covariance_variable_select(field, variable_name, variable_title, values) {
+	console.log("ATTEMPTING TO ADD COHORT COVARIANCE VARIABLE SELECT");
+	console.log(field);
+	console.log(variable_name);
+	console.log(variable_title);
+	console.log(values);
 
 	var variable_select = $("<SELECT id='"+variable_name+"_select' name='"+variable_name+"_select'>");
 	for (i=0;i<values.length;i++) {
@@ -525,7 +587,7 @@ function jpsurvRest(action, params) {
 
 function load_ajax(filename) {
 
-	console.log(filename);
+	//console.log(filename);
 
 	var json = (function () {
     var json = null;
