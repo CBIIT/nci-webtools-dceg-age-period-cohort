@@ -11,8 +11,10 @@
     <target name="pre-init">
         <propertyfile
             file="src/computingApp.properties" comment="Application properties">
-            <entry  key="queue.remote.url" value="${queue.remote.url}"/>
-            <entry  key="queue.remote.name" value="${queue.remote.name}"/>
+            <entry key="queue.remote.url" value="${queue.remote.url}"/>
+            <entry key="queue.remote.name" value="${queue.remote.name}"/>
+            <entry key="soccer.remote.web.host" value="${soccer.remote.web.host}"/>
+            <entry key="soccer.remote.web.port" value="${soccer.remote.web.port}"/>
         </propertyfile>
     </target>
     <target name="init" depends="pre-init">
@@ -34,8 +36,7 @@
                encoding="utf-8">
             <classpath refid="compile.classpath"/>
         </javac>
-        <copy file="src/computingApp.properties" todir="build/classes"/>
-        <copy file="src/log4j.properties" todir="build/classes"/>
+        <copy file="src/computingApp.properties" todir="build/classes"/>        
     </target>
     <target name="jar" depends="compile" >
         <jar destfile="dist/${ant.project.name}.jar">
@@ -52,7 +53,8 @@
             <fileset dir="lib"/>
         </copy>
         <copy file="config.properties" todir="dist"/>
-        <copy file="jcmd.sh" todir="dist"/>        
+        <copy file="jcmd.sh" todir="dist"/>
+        <copy file="jcmd.bat" todir="dist"/>
     </target>
     <target name="clean">
         <delete includeEmptyDirs="true" quiet="true" dir="build"/>
