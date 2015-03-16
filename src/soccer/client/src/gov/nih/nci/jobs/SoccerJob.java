@@ -7,13 +7,17 @@ package gov.nih.nci.jobs;
 
 import gov.nih.nci.queue.model.QueueModel;
 import gov.nih.nci.queue.utils.MailUtil;
+import gov.nih.nci.queue.utils.MetadataFileUtil;
+import gov.nih.nci.queue.utils.PropertiesUtil;
 import gov.nih.nci.queue.utils.QueueConsumerUtil;
 import gov.nih.nci.queue.utils.UniqueIdUtil;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -28,9 +32,9 @@ public class SoccerJob implements Job {
     private static final Logger LOGGER = Logger.getLogger(SoccerJob.class.getName());
     private static final QueueConsumerUtil qcu = new QueueConsumerUtil();
     private final String outputFilePre = "SoccerResults-"; // Soccer App will add this prefix. 
-    private final String PORT = "8080";
 
     @Override
+    @SuppressWarnings("empty-statement")
     public void execute(JobExecutionContext context)
             throws JobExecutionException {
 
@@ -47,16 +51,15 @@ public class SoccerJob implements Job {
             String email = qm.getEmail();
             String timeStamp = qm.getTimeStamp();
             String outputDir = qm.getOutputDir();
-            LOGGER.info(new StringBuilder("Parsed message: ")
-                    .append("\r\nPath: ").append(path)
-                    .append("\r\nFileName: ").append(fileName)
-                    .append("\r\nEmail: ").append(email)
-                    .append("\r\nOutputDir: ").append(outputDir)
-                    .append("\r\nTimeStamp: ").append(timeStamp)
-                    .toString());
+            LOGGER.log(Level.INFO, "{0}", qm);
+            
+            String outputFileId = new UniqueIdUtil(fileName).getOutputUniqueID();
 
-            String outputFileId = UniqueIdUtil.getOutputUniqueID();
-
+            // Save metadata info.
+            try {
+                new MetadataFileUtil(outputFileId, outputDir).generateMetadataFile(new ObjectMapper().writeValueAsString(qm));
+            } catch(IOException e){;}
+            
             // Run command.  
             String fullCmd = new StringBuilder(cmd)
                     .append(" ")
@@ -73,9 +76,9 @@ public class SoccerJob implements Job {
                 String from = "SOCcer <do.not.reply@mail.nih.gov>";
                 boolean isMailSent = new MailUtil().mailTo(from, email, composeMailTitle(), composeMailBody(timeStamp, outputFileId));
                 if (isMailSent) {
-                    LOGGER.info("Message has been sent to " + email + " successfully.");
+                    LOGGER.log(Level.INFO, "Message has been sent to {0} successfully.", email);
                 } else {
-                    LOGGER.error("Failed to send email. Please check email settings or security settings.");
+                    LOGGER.log(Level.SEVERE,"Failed to send email. Please check email settings or security settings.");
                 }
             }
         } else {
@@ -102,7 +105,7 @@ public class SoccerJob implements Job {
                 bRet = true;
             }
         } catch (IOException | InterruptedException ie) {
-            LOGGER.error("Caught IOException and InterruptedException. {0}\r\n" + ie.getMessage());
+            LOGGER.log(Level.SEVERE, "Caught IOException and InterruptedException. '{'0'}'\r\n{0}", ie.getMessage());
         }
 
         return bRet;
@@ -135,10 +138,8 @@ public class SoccerJob implements Job {
     // Compose Mail Body.
     private String composeMailBody(String timeStamp, String outputFileId) {
         // get hostname automatically.
-        String hostname = System.getenv("HOSTNAME"); // Linux
-        if (hostname == null || hostname.length() < 1) {
-            hostname = System.getenv("COMPUTERNAME"); // Windows. 
-        }
+        String hostname = PropertiesUtil.getProperty("soccer.remote.web.host");
+        String port = PropertiesUtil.getProperty("soccer.remote.web.port");        
 
         return new StringBuilder("\r\nThe file you uploaded on ")
                 .append(timeStamp)
@@ -146,7 +147,7 @@ public class SoccerJob implements Job {
                 .append("\r\nYou can view the result page at: http://")
                 .append(hostname)
                 .append(":")
-                .append(PORT)
+                .append(port)
                 .append("/soccer/index.html?fileid=")
                 .append(outputFileId)
                 .append("\r\n\r\n - SOCcer Team\r\n(Note:  Please do not reply to this email. If you need assistance, please contact ncicbiit@mail.nih.gov)")

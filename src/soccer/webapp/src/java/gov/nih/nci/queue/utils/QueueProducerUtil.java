@@ -36,49 +36,51 @@ public class QueueProducerUtil {
     private Context context;
     private Queue fileQueue;
     private ConnectionFactory connectionFactory;
+    
+    private final String CONNECTION_FACTORY_JNDI;
+    private final String QUEUE_JNDI;
+    public QueueProducerUtil() {
+        CONNECTION_FACTORY_JNDI = new StringBuilder("openejb:Resource/")
+                .append(PropertiesUtil.getProperty("resource.queue.connectionfactory").trim())
+                .toString();
+        QUEUE_JNDI = new StringBuilder("openejb:Resource/")
+                .append(PropertiesUtil.getProperty("resource.queue.name").trim())
+                .toString();
+    }
 
     /*
      * Add message into Queue.
-    */
-    public void sendToQueue(QueueModel qm) {
-        try {
-            context = new InitialContext();            
-            connectionFactory = (ConnectionFactory) context.lookup("openejb:Resource/TomiJmsConnectionFactory");
-            fileQueue = (Queue) context.lookup("openejb:Resource/TomiQueue");
+     */
+    public void sendToQueue(QueueModel qm) throws NamingException, JMSException, JsonGenerationException, JsonMappingException, IOException {
 
-            // Connect to Queue.
-            Connection connection = connectionFactory.createConnection();
-            connection.start();
+        context = new InitialContext();
+        connectionFactory = (ConnectionFactory) context.lookup(CONNECTION_FACTORY_JNDI);
+        fileQueue = (Queue) context.lookup(QUEUE_JNDI);
 
-            // Create a Session and set auto acknowledge.
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        // Connect to Queue.
+        Connection connection = connectionFactory.createConnection();
+        connection.start();
 
-            // Create a MessageProducer from the Session to the Topic or Queue
-            MessageProducer producer = session.createProducer(fileQueue);
-            producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+        // Create a Session and set auto acknowledge.
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-            // Add timestamp and create a json message
-            ObjectMapper jsonMapper = new ObjectMapper();
-            qm.setTimeStamp(new Date() + "");
-            LOGGER.log(Level.INFO, "Response: {0}", new Object[]{jsonMapper.writeValueAsString(qm)});
-            TextMessage message = session.createTextMessage(jsonMapper.writeValueAsString(qm));
+        // Create a MessageProducer from the Session to the Topic or Queue
+        MessageProducer producer = session.createProducer(fileQueue);
+        producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
-            // Tell the producer to send the message
-            producer.send(message);
+        // Add timestamp and create a json message
+        ObjectMapper jsonMapper = new ObjectMapper();
+        qm.setTimeStamp(new Date() + "");
+        LOGGER.log(Level.INFO, "Response: {0}", new Object[]{jsonMapper.writeValueAsString(qm)});
+        TextMessage message = session.createTextMessage(jsonMapper.writeValueAsString(qm));
 
-            // close all.
-            producer.close();
-            session.close();
-            connection.close();
+        // Tell the producer to send the message
+        producer.send(message);
 
-        } catch (NamingException ne) {
-            LOGGER.log(Level.SEVERE, "Problems during Lookup JNDI. Error: {0}", ne.getMessage());
-        } catch (JMSException jmse) {
-            LOGGER.log(Level.SEVERE, "Problems during Queue. Error: {0}", jmse.getMessage());
-        } catch (JsonGenerationException | JsonMappingException e) {
-            LOGGER.log(Level.SEVERE, "Problems during Parsing JSON. Error: {0}", e.getMessage());
-        } catch (IOException ie) {
-            LOGGER.log(Level.SEVERE, "Problems during Parsing JSON. Error: {0}", ie.getMessage());
-        } 
+        // close all.
+        producer.close();
+        session.close();
+        connection.close();
+
     }
 }

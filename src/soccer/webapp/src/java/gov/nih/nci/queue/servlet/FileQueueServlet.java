@@ -13,12 +13,14 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import gov.nih.nci.queue.utils.QueueProducerUtil;
+import javax.jms.JMSException;
+import javax.naming.NamingException;
+import javax.servlet.annotation.MultipartConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -46,16 +48,19 @@ public class FileQueueServlet extends HttpServlet {
         qm.setPath(repositoryPath);
         qm.setEmail(emailAddress);
         qm.setOutputDir(outputDir);
-        new QueueProducerUtil().sendToQueue(qm);
-        LOGGER.log(Level.INFO, "File <{0}> has been queued. ", new Object[]{inputFileId});
-
         // Create objects for JSON response.                
         ResponseModel rm = new ResponseModel();
+        try {
+            new QueueProducerUtil().sendToQueue(qm);
+            LOGGER.log(Level.INFO, "File <{0}> has been queued. ", new Object[]{inputFileId});            
 
-        // all good. Prepare the json output.
-        rm.setStatus("pass");
-        rm.setEmailAddress(emailAddress);
-        rm.setMessage("Congratulations! Your file has been added into queue successfully! We will send you an email notification at " + emailAddress + " once the file is processed!");
+            // all good. Prepare the json output.
+            rm.setStatus("pass");
+            rm.setEmailAddress(emailAddress);
+        } catch (NamingException | JMSException | IOException e) {
+            rm.setStatus("fail");
+            rm.setErrorMessage(e.getMessage());
+        }
 
         // Set response type to json
         response.setContentType("application/json");

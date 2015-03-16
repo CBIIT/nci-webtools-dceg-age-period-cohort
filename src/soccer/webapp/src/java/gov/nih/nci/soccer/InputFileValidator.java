@@ -24,11 +24,7 @@ import java.util.logging.Logger;
 public class InputFileValidator {
 
     private final static Logger LOGGER = Logger.getLogger(InputFileValidator.class.getCanonicalName());
-    private final Soccer soc;
-
-    public InputFileValidator(Soccer soc) {
-        this.soc = soc;
-    }
+    private final Soccer soc = new Soccer();
 
     /*
      * Validate the file uploaded.

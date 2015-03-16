@@ -7,6 +7,8 @@ package gov.nih.nci.queue.utils;
 
 import gov.nih.nci.queue.model.QueueModel;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.ExceptionListener;
@@ -16,7 +18,6 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -63,7 +64,7 @@ public class QueueConsumerUtil implements ExceptionListener {
             if (message instanceof TextMessage) {
                 TextMessage textMessage = (TextMessage) message;
                 String text = textMessage.getText();
-                LOGGER.info("Received: " + text);
+                LOGGER.log(Level.INFO, "Received: {0}", text);
                 
                 // convert it to Object.
                 qm = convertJsonToObject(text);
@@ -75,7 +76,7 @@ public class QueueConsumerUtil implements ExceptionListener {
             connection.close();
 
         } catch (JMSException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.log(Level.SEVERE, e.getMessage());
         }
 
         return qm;
@@ -96,9 +97,9 @@ public class QueueConsumerUtil implements ExceptionListener {
         try {
             qm = mapper.readValue(jsonString, QueueModel.class);
         } catch (JsonGenerationException | JsonMappingException e) {
-            LOGGER.error("Caught JSON Exception. Error: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Caught JSON Exception. Error: {0}", e.getMessage());
         } catch (IOException e) {
-            LOGGER.error("Caught JsonGenerationException. Error: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Caught JsonGenerationException. Error: {0}", e.getMessage());
         }
         return qm;
     }
