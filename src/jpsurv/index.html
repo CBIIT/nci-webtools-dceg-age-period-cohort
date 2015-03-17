@@ -95,8 +95,8 @@
 <table class="container">
   <tr style="width:250px;">
     <td class="upload-pane">
-      <h2 stlye="font-weight:bold;">Input Files</h2>
       <form method=POST enctype=multipart/form-data action="/jpsurvRest/upload">
+        <div class="stage">Input Files</div>
         <P id="file_control_container">
             <label for='file_control'>Data Dictionary File: </label>
             <A style='font-size:small' href='SEER9_Survival_6CancerSitesByStage_1975_2007.dic' download='SEER9_Survival_6CancerSitesByStage_1975_2007.dic'>(example dictionary)</A>
@@ -115,19 +115,33 @@
   <tr>
     <td class="parameters-pane">
       <form id='parameters' style='display:none'>
-        <h2 stlye="font-weight:bold;">Calculate Parameters</h2>
+        <div class="stage">Calculation Parameters</div>
         <P id='diagnosis_title'><P>
-        <P> Year of Diagnosis Range:<BR>
-        <SELECT id='year_of_diagnosis_start' name='year_of_diagnosis_start'></SELECT> to
-        <SELECT id='year_of_diagnosis_end' name='year_of_diagnosis_end'></SELECT></P>
-        <P>Cohort Variables:<BR>
-        <SELECT id='cohort_select' name='cohort_select' multiple ></SELECT></P>
+        <P>Year of Diagnosis Range:<BR>
+            <label for="year_of_diagnosis_start" style="display:none">Start Year</label>
+            <SELECT id='year_of_diagnosis_start' name='year_of_diagnosis_start'></SELECT> to
+            <label for="year_of_diagnosis_end" style="display:none">End Year</label>
+            <SELECT id='year_of_diagnosis_end' name='year_of_diagnosis_end'></SELECT>
+        </P>
+        <p>
+            <label for="cohort_select">Cohort Variables:</label><br>
+            <SELECT id='cohort_select' name='cohort_select' multiple ></SELECT>
+        </P>
         <P id='cohort_sub_select'></P>
-        <P style="clear:both; padding-top:10px;">Covariate Variables:<BR>
-        <SELECT id='covariate_select' name='covariate_select'></SELECT></P>
-        <P style="clear:both; padding-top:10px;">Join Points:
-        <SELECT id='join_point_select' name='join_point_select'><OPTION>1</OPTION><OPTION>2</OPTION><OPTION>3</OPTION><OPTION>4</OPTION></SELECT></P>
+        <p>
+            <label for="covariate_select">Covariate Variables:</label><br>
+            <SELECT id='covariate_select' name='covariate_select'></SELECT>
+        </P>
         <P>
+          <label for="join_point_select">Join Points:</label>
+          <SELECT id='join_point_select' name='join_point_select'>
+              <OPTION>1</OPTION>
+              <OPTION>2</OPTION>
+              <OPTION>3</OPTION>
+              <OPTION>4</OPTION>
+          </SELECT>
+        </P>
+        <P style="clear:both;">
           <INPUT type='button' id='calculate' value='Calculate' >
           <INPUT type='button'  onclick="window.location.href='/jpsurv'" value="Reset" class="pull-right">
         </P>
@@ -137,9 +151,9 @@
   <tr>
     <td class="parameters-pane">
       <form id='plot-form' style='display:none'>
-        <h2 stlye="font-weight:900;">Plot Parameters</h2>
+        <div class="stage">Plot Parameters</div>
         <p>
-          Plot Intervals (years):<br><br>
+          <label for="plot-intervals">Intervals (years):</label>
           <select id="plot-intervals" name="plot-intervals" multiple>
             <option>1</option>
             <option>2</option>
@@ -155,12 +169,12 @@
         <P style="clear:both; padding-top:10px;">Covariate Variables:<BR>
         <SELECT id='covariate_select_plot' name='covariate_select_plot'></SELECT></P>
 -->
-        <P><br>
+        <P style="clear:both;">
           <INPUT type='button' id='plot' value='Plot' >
           <!--
           <INPUT type='button'  onclick="window.location.href='/jpsurv'" value="Reset" class="pull-right">
           -->
-        </P>
+        </p>
       </form>
    </td>
  </tr>

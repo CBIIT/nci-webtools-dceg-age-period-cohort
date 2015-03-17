@@ -1,7 +1,12 @@
 table {
 	border-collapse:collapse;
 }
-
+.stage {
+  font-weight:bold;
+  font-size:large;
+  margin-bottom: 10px;
+  font-family:Helvetica;
+}
 .upload-pane{
 	width: 250px;
 	height:auto;
