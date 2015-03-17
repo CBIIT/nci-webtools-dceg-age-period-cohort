@@ -2,24 +2,17 @@ $(function(){
 	
 	random_gen();
 	disable_calculate();
-	$("#spinner").hide();
-        $("#message").hide();
 
         // Post json to server
         $('.post').click(function(){
-	  //var start = new Date();
-          $("#output_graph").empty();
-//	  spinner = $('<div><p id="spinner"><i class="fa fa-spinner fa-spin fa-2x"></i><span id="spinnerText">Calculating</span></p></div>');
-//	  $("#output_graph").append(spinner); 
-
-	  $("#message-content").empty();
-          $("#message").hide();
-	  $("#spinner").show();
+	  $("#spinner").show(); 
+          $("#message").hide(); 
           $.ajax({
             type: 'POST',
             // Provide correct Content-Type, so that Flask will know how to process it.
             contentType: 'application/json',
             // Encode data as JSON.
+            //async:false,
             data: JSON.stringify({
               k: $("#independent").val(),
               sens: trim_spaces($("#sensitivity_val").text()),
@@ -35,29 +28,27 @@ $(function(){
             success: function (ret) {
 	      $("#spinner").hide();
 	      $("#output_graph").empty();
-	      sanitized = JSON.parse(ret);
-	      console.log("SANITIZED");
-              console.log(sanitized);
-	      console.log("END");
-
-          generate_tabs($("#fixed").val(),$("#randomnumber").text());
-	        generate_tables(sanitized);
-          random_gen();
-
+          	generate_tabs($("#fixed").val(),$("#randomnumber").text());
+	  	generate_tables(ret);
+                random_gen();
       },
 	    error: function(jqXHR, textStatus, errorThrown) {
+		$("#spinner").hide();
 		console.log("header: " + jqXHR + "\n" + "Status: " + textStatus + "\n\nThe server is temporarily unable to service your request due to maintenance downtime or capacity problems. Please try again later.");
 		message = 'Service Unavailable: ' + textStatus + "<br>";
 		message += "The server is temporarily unable to service your request due to maintenance downtime or capacity problems. Please try again later.<br>";
 		$("#message-content").empty().append(message);	   
 		$("#message").show();    
-	        $("#spinner").hide();
 	    },
           });
+	//alert("After ajax call");
+	return false;
         });
+});
 
+$(function(){
 	$('.reset').click(function(){
-		reset_code();
+		$('#ss')[0].reset();
 	});
 
 	$("#add-test-data").click(function() {
@@ -74,11 +65,12 @@ $(function(){
 
 });
 
+
 function generate_tables(jsonrtn){
 for(var i in jsonrtn) {
     console.log(i);
     var tablesvar = "<TABLE class='table_data'><TBODY>";
-    tablesvar += "<TR><TH class='table_data header'>Sensitivity</TH><TH class='table_data header'>Optimal K</TH><TH class='table_data header'>Relative efficiency gain or loss compared to k = 0.5</TH></TR>";
+    tablesvar += "<TR><TH class='table_data header'>Sensitivity</TH><TH class='table_data header'>Optimal K</TH><TH class='table_data header'>Relative efficiency gain or <br>loss compared to k = 0.5</TH></TR>";
     ppvtabledata = tablesvar;
     cnpvtabledata = tablesvar;
     for (n=0; n<jsonrtn[i]["PPVData"].length; n++) {

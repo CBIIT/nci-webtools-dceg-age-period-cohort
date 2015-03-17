@@ -18,8 +18,8 @@
   type="text/css">
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
 <link rel="stylesheet" href="/common/css/style.css" />
-<link rel="stylesheet" href="sampleSize.css" />
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="sampleSize.css" />
 
 </head>
 
@@ -32,7 +32,7 @@
 					<a href="http://www.cancer.gov" target="_blank"><img
 						src="/common/images/nci.jpg" width="286" height="40" border="0"
 						alt="National Cancer Institute" title="National Cancer Institute" /></a>
-				</div>
+				</div> 
 				<div id="right">
 					<a href="http://www.cancer.gov" target="_blank"><img
 						src="/common/images/nih.jpg" width="322" height="40" border="0"
@@ -73,7 +73,7 @@
 							size="30" id="independent" pattern="([0-9],[0-9])"
 							title="A comma separated pair that refers to the minimum and maximum respectively"
 							title="A comma separated pair that refers to the minimum and maximum respectively"
-							value="0,1" class="fontnormal" required>
+							value="0,1" class="fontnormal">
 					</label></td>
 				</tr>
 				<tr>
@@ -87,7 +87,7 @@
 							id="contour" pattern="([0-9,. \-])+"
 							title="An array of floating point numbers separated by commas.  Numbers must be between 0 and 1"
 							title="An array of floating point numbers separated by commas  Numbers must be between 0 and 1"
-							 class="fontnormal" required>
+							 class="fontnormal">
 					</label></td>
 				</tr>
 				<tr>
@@ -102,7 +102,7 @@
 					<td><label for="fixed"> <input type="text" size="30"
 							id="fixed" pattern="([0-9,. \-])+"
 							title="An array of floating point numbers separated by commas. Numbers must be between 0 and 1"
-							 class="fontnormal" required>
+							 class="fontnormal">
 					</label></td>
 				</tr>
 								<tr>
@@ -132,7 +132,7 @@
 					<td class="spacer">
 &nbsp;
 </td>
-					<td class="spacer">
+					<td class="example">
 					 <a id="add-test-data" title="Populate variables with working example" href="#">Example</a>
 					</td>
 				</tr>
@@ -145,22 +145,17 @@
 
 			</div>
 			</form>
-
-						<div class="col-sm-7 col-sm-offset-2" id="message">
-							<div class="panel panel-danger">
-								<div class="panel-heading">Error</div>
-								<div class="panel-body" id="message-content">Howdy</div>
-							</div>
-						</div>
+				<div><p id="spinner" style="display: none;"> <i class="fa fa-spinner fa-spin fa-2x"></i> <span id="spinnerText">Calculating</span></p></div>
+                                        <div class="col-sm-7 col-sm-offset-2" id="message" style="display: none;">
+                                               <div class="panel panel-danger">
+                                                   <div class="panel-heading"></div>
+                                                   <div class="panel-body" id="message-content"></div>
+                                               </div>
+                                        </div>
 				<br />
-				<div>
-				<p id="spinner">
-				<i class="fa fa-spinner fa-spin fa-2x"></i> <span id="spinnerText">Calculating</span>
-				</p></div>
 
-			</div>
-				<div id="output_graph">
-                                </div>
+				<div id="output_graph"></div>
+       		</div>
 	</div>
 	<!-- main -->
 

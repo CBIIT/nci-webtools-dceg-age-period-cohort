@@ -40,10 +40,14 @@ td.label {
 
 .header {
 	background-color: #AAA;
-	color: #444;
+	color: #000;
         font-family: sans-serif;
         font-size: 80%;
-
+        border-left: 1px solid #000;
+        border-top: 1px solid #000;
+        border-collapse: collapse;
+	border: 1px solid #000;
+	text-align: center;
 }
 
 #output {
@@ -54,10 +58,12 @@ td.label {
 	width: 500px;
 }
 
-h2 {
+.title {
 	background-color: #AAA;
 	color: #444;
 	padding: 5px;
+	font-weight: bold;
+	font-size: 20px;
 }
 
 .prevalence_label {
@@ -131,19 +137,14 @@ table.table_data td{
     text-align: center;
     font-size: 80%;
     border-bottom: 1px solid #bbb;
+    border-left: 1px solid #bbb;
     border-collapse: collapse;
 }
-table.table_data th
-    font-family: sans-serif;
-    padding: 2px;
 
+.example {
+   text-align: right;
 }
-th.header {
-    background-color: red;
-    border-bottom: 1px solid #bbb;
-    font-family: sans-serif;
-    font-size: 80%;
-}
+
 th.col1 {
     text-align: right;
 }
@@ -160,4 +161,11 @@ table.tablevars {
 .ui-tabs .ui-tabs-nav li {
     height: 50px; 
     font-size:12px; 
+    text-align: center;
+}
+
+h2, .h2 {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    font-color: red;
 }

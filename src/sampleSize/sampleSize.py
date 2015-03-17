@@ -41,25 +41,31 @@ def sampleSizeRest():
     print "Starting Benchmark"
   
     if fixed_flag == "Specificity":
-	jsonrtn = (wrapper.saveAllSensGraphs(IntVector(k), FloatVector(sens), FloatVector(spec), float(prev), IntVector(N), unique_id))
+    	jsonrtn = (wrapper.saveAllSensGraphs(IntVector(k), FloatVector(sens), FloatVector(spec), float(prev), IntVector(N), unique_id))
     else:
         jsonrtn = (wrapper.saveAllSpecGraphs(IntVector(k), FloatVector(sens), FloatVector(spec), float(prev), IntVector(N), unique_id))
 
-    end=time.time()
-    print "Seconds"
-    print end - start
+    #end=time.time()
+    #print "Seconds"
+    #print end - start
 
     jsonlist=list(jsonrtn)
 
-    print "--------------------------------------------------"
-    print json.dumps(jsonlist)
-    print "--------------------------------------------------"
+    #2
+    jsonstring=''.join(jsonlist)
+    print jsonstring
+    return jsonstring 
+    
 
-    renderjson = json.dumps(jsonlist)
-    return renderjson
+    #1print "--------------------------------------------------"
+    #1print json.dumps(jsonlist)
+    #1print "--------------------------------------------------"
+
+    #1renderjson = json.dumps(jsonlist)
+    #1return renderjson
  
 #TEST DATA
-    #with open ("testjson.txt", "r") as myfile:
+    #with open ("testjson3.txt", "r") as myfile:
     #	testjson=myfile.read().replace('\n', '')
 
     #return testjson
