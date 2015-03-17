@@ -1,8 +1,7 @@
 library('RJSONIO')
 source ('./DrawCompRecVark.R')
 
-imageDirectory="./tmp" 
-
+imageDirectory="./tmp/" 
 
 saveAllSensGraphs <- function(k, sens, spec, prev, N, uniqueId) {
   specTabs=1:length(spec)
@@ -12,7 +11,8 @@ saveAllSensGraphs <- function(k, sens, spec, prev, N, uniqueId) {
     tab=paste('tab', i, sep='')
     allSensData[[tab]]=data
   }
-  return (cat(toJSON(allSensData, .escapeEscape=TRUE)))
+#Remove cat
+  return (toJSON(allSensData, .escapeEscape=TRUE))
 }
 
 
@@ -24,7 +24,8 @@ saveAllSpecGraphs <- function(k, sens, spec, prev, N, uniqueId) {
     tab=paste('tab', i, sep='')
     allSpecData[[tab]]=data
   }
-  return (cat(toJSON(allSpecData, .escapeEscape=TRUE)))
+#Remove cat
+  return (toJSON(allSpecData, .escapeEscape=TRUE))
 }
 
 
