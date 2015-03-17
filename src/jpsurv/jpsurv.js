@@ -29,7 +29,7 @@ $(document).ready(function() {
 		$('#file_control_container')
 				.empty()
 				.append($('<div>')
-					.append('Data Dictionary File: ')
+					.append('Dictionary File: ')
 					.append($('<span>')
 							.append(jpTrim(getUrlParameter('file_control_filename'), 30))
 							.attr('title', getUrlParameter('file_control_filename'))
@@ -531,18 +531,6 @@ function change_covariate_select() {
 
 }
 
-function add_cohort_covariance_variable_select2(field, variable_name, variable_title, values) {
-
-	var variable_select = $("<SELECT id='"+variable_name+"_select' name='"+variable_name+"_select'>");
-	for (i=0;i<values.length;i++) {
-		variable_select.append("<OPTION>"+values[i]+"</OPTION>");
-	}
-	$("#covariate_sub_select").append($("<DIV class='sub_select'>")
-		.append("&nbsp;&nbsp;" + variable_title + " : ")
-		.append(variable_select));
-
-}
-
 function add_cohort_covariance_variable_select(field, variable_name, variable_title, values) {
 	console.log("ATTEMPTING TO ADD COHORT COVARIANCE VARIABLE SELECT");
 	console.log(field);
@@ -554,9 +542,24 @@ function add_cohort_covariance_variable_select(field, variable_name, variable_ti
 	for (i=0;i<values.length;i++) {
 		variable_select.append("<OPTION>"+values[i]+"</OPTION>");
 	}
+
+	var label_message = "&nbsp;&nbsp;" + variable_title + " :";
+	if(variable_title == "Breast stage") {
+		label += "<br>";
+	}
+
+	//Label
+	var label = $("<label>")
+		.append(label_message)
+		.attr('for',variable_name+'_select');
+
 	field.append($("<DIV class='sub_select'>")
-		.append("&nbsp;&nbsp;" + variable_title + " : ")
+		.append(label)
 		.append(variable_select));
+
+	if(variable_title == "Breast stage") {
+		$("#"+variable_name+"_select").attr('multiple', '');
+	}
 
 }
 
