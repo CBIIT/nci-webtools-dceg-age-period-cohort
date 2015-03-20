@@ -1,16 +1,7 @@
 library('rjson')
 library('JPSurv')
 
-.libPaths()
-
-printLibPath <- function () {
-  cat("From R:  getPath\n")
-  cat("BEFORE\n")
-  .libPaths()
-  paths<-.libPaths( c( .libPaths(), "~/userLibrary") )
-}
-
-getDictionary <- function (inputFile, path) {
+getDictionary <- function (inputFile, path, tokenId) {
   #e.g.
   cat("\nFrom R:  getDictionary\n")
   cat("inputFile\n")
@@ -24,12 +15,12 @@ getDictionary <- function (inputFile, path) {
   cat(fqFileName)
   cat("\n")
 
-  keyId = paste( sample( 0:9, 6, replace=TRUE ), collapse="" )
-  cat("\nkeyId\n")
-  cat(keyId)
+  #keyId = paste( sample( 0:9, 6, replace=TRUE ), collapse="" )
+  cat("\ntokenId\n")
+  cat(tokenId)
   cat("\n")
 
-  outputFileName = paste("output-", keyId, ".json", sep="")
+  outputFileName = paste("form-", tokenId, ".json", sep="")
   cat("\noutputFileName\n")
   cat(outputFileName)
   cat("\n")
@@ -44,7 +35,7 @@ getDictionary <- function (inputFile, path) {
   #
   cat(toJSON(seerFormData), file = fqOutputFileName)
   #Return the keyId
-  return(keyId)
+  return(tokenId)
 }
 
 #filePath="C:/devel/R"
@@ -69,22 +60,42 @@ getDictionary <- function (inputFile, path) {
 #numJP=1
 #outputFileName="Breast_RelativeSurvival.output"
 
-getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
-
+#getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
+getFittedResults <- function (filePath, jpsurvDataString) {
   print("R: getFittedResult")
-  print("Here are the current paths to library")
-  .libPaths()
+#jpsurvData <- newJSONParser()
+#jpsurvData$addData( jpsurvDataString )
+#food <- jpsurvData$getObject()
+jpsurvData = fromJSON(jpsurvDataString)
+print(jpsurvData)
+print(jpsurvData$tokenId)
+print(jpsurvData$status)
 
-#seerFilePrefix="Breast_RelativeSurvival"
-#yearOfDiagnosisVarName="Year of diagnosis 1975"
-#yearOfDiagnosisRange=c(1975, 2011)
+seerFilePrefix="Breast_RelativeSurvival"
+seerFilePrefix = jpsurvData$calculate$static$seerFilePrefix
+yearOfDiagnosisVarName="Year of diagnosis 1975"
+yearOfDiagnosisVarName = jpsurvData$calculate$static$yearOfDiagnosisVarName
+
+yearOfDiagnosisRange=c(1975, 2011)
+yearOfDiagnosisRange = jpsurvData$calculate$form$yearOfDiagnosisRange
 allVars=c("Age groups","Breast stage","Year of diagnosis 1975")
+allVars=jpsurvData$calculate$static$allVars
 cohortVars=c("Age groups")
+cohortVars=jpsurvData$calculate$form$cohortVars
 cohortValues=c("\"65+\"")
+cohortValues=jpsurvData$calculate$form$cohortValues
 covariateVars=c("Breast stage")
-numJP=1
-#outputFileName="Breast_RelativeSurvival.output"
+covariateVars=jpsurvData$calculate$form$covariateVars
+joinPoints=jpsurvData$calculate$form$joinPoints
+fileName = paste('output', jpsurvData$tokenId, sep="-" )
+fileName = paste(fileName, "txt", sep="." )
+outputFileName =paste(filePath, fileName, sep="/" )
 
+
+
+  cat("*jpsurvData\n")
+  cat(jpsurvDataString)
+  cat("\n")
   cat("*filePath\n")
   cat(filePath)
   cat("\n")
@@ -94,7 +105,8 @@ numJP=1
   cat("*yearOfDiagnosisVarName\n")
   cat(yearOfDiagnosisVarName)
   cat("\n")
-  print("*yearOfDiagnosisRange")
+  cat("*yearOfDiagnosisRange")
+  cat("\n")
   print(yearOfDiagnosisRange, row.names=FALSE)
   cat("\n")
   cat("*allVars\n")
@@ -105,9 +117,10 @@ numJP=1
   print(cohortValues, row.names=FALSE)
   cat("*covariateVars\n")
   print(covariateVars, row.names=FALSE)
-  cat("*numJP\n")
-  print(numJP, row.names=FALSE)
+  cat("*joinPoints\n")
+  print(joinPoints, row.names=FALSE)
   cat("*outputFileName\n")
+
   print(outputFileName, row.names=FALSE)
   cat("\n****\n")
 
@@ -139,7 +152,7 @@ numJP=1
                        year=getCorrectFormat(yearOfDiagnosisVarName),
                        observedrelsurv="Relative_Survival_Cum",
                        model.form = eval(parse(text=factorStr)),
-                       maxnum.jp=numJP);
+                       maxnum.jp=joinPoints);
 
   #save fit.result as RData
   saveRDS(fit.result, outputFileName)
