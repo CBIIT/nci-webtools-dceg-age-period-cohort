@@ -2,16 +2,15 @@ i {
     font-size: 10px;
 }
 
-.logo {
-    width: 400px;
+.logo {    
+    height: 66px;    
 }
 
 .glyphicon {
     font-size: 10px;
 }
 
-#wrapper {
-    margin-top: 10px;
+#wrapper {    
     border: 1px #e4e4e4 solid;
     padding: 20px;
     border-radius: 4px;
@@ -84,6 +83,8 @@ i {
 }
 
 #banners {
+    margin-top: 10px;
+    margin-bottom: 10px;
     height: 66px;
 }
 
@@ -91,8 +92,7 @@ i {
     float: left;
 }
 
-#banners #right {   
-    height: 43px;
+#banners #right {      
     float: right;
 }
 
