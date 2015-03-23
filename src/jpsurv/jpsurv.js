@@ -1,4 +1,4 @@
-var jpsurvData = {"file":{"dictionary":"Breast.dic","data":"something.txt", "form":"form-983832.json"}, "calculate":{"form": {"yearOfDiagnosisRange":[]}, "static":{}}, "plot":{"form": {} }, "tokenId":"unknown", "status":"unknown"};
+var jpsurvData = {"file":{"dictionary":"Breast.dic","data":"something.txt", "form":"form-983832.json"}, "calculate":{"form": {"yearOfDiagnosisRange":[]}, "static":{}}, "plot":{"form": {}, "static":{"imageId":0} }, "tokenId":"unknown", "status":"unknown"};
 
 var year_of_diagnosis_title = "Year fo Diagnosis 1975+";
 var yearOfDiagnosisVarName = "Year_of_diagnosis_1975";
@@ -198,10 +198,14 @@ function setCalculateData() {
 }
 
 function setPlotData() {
-	$('#data-set').attr('href', 'http://analysistools-sandbox.nci.nih.gov/jpsurv/tmp/output-'+jpsurvData.tokenId+'.rds');
+
 	jpsurvData.plot.form.intervals = $('#plot-intervals').val();
 	jpsurvData.plot.form.covariateVars = $('#covariate_value_select').val();
+	jpsurvData.plot.static.imageId++;
+	// Create a unique image id.
 	get_plot();
+	$('#plot-image').attr('src', '../jpsurv/tmp/plot-'+jpsurvData.tokenId+'-'+jpsurvData.plot.static.imageId+'.png')
+	$('#data-set').attr('href', 'http://analysistools-sandbox.nci.nih.gov/jpsurv/tmp/output-' +jpsurvData.tokenId+'.rds');
 }
 
 function file_submit() {

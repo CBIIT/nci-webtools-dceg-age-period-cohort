@@ -234,10 +234,14 @@ getGraph <- function (filePath, jpsurvDataString) {
   intervals=c(5,10)
   intervals = jpsurvData$plot$form$intervals
   covariateValues=c("Localized", "Distant")
-  intervals = jpsurvData$plot$form$covariateValues
+  covariateValues = jpsurvData$plot$form$covariateValues
 
-  outputGraphFile=paste("plot-", jpsurvData$tokenId, ".png", sep="")
-  outputGraphFile=paste(filePath, outputGraphFile, sep="/")
+  outputGraphFile = paste("plot-", jpsurvData$tokenId, "-",jpsurvData$plot$static$imageId, ".png", sep="")
+  outputGraphFile = paste(filePath, outputGraphFile, sep="/")
+  print("outputGraphFile:")
+  cat(outputGraphFile)
+  cat("\n")
+
   outFile=paste(filePath, fittedResultFile, sep="/" )
 
   fit.result=readRDS(outFile)
