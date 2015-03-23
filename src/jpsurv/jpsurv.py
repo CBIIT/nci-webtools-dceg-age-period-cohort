@@ -173,31 +173,14 @@ def stage2_calculate():
     #app.logger.error('An error occurred')
     print UNDERLINE+HEADER + "****** CALCULATE BUTTON ***** " + ENDC
     print "Processing calculate"
-    print "What does REQUEST LOOK LIKE?"
-    print "What can we do with it?"
-    print dir(request);
-    print dir(request.args);
-    print type(request.args);
 
     for k, v in request.args.iteritems():
         print "var: %s = %s" % (k, v)
     jpsurvDataString = request.args.get('jpsurvData', False);
     print BOLD+"**** jpsurvDataString ****"+ENDC
     print jpsurvDataString
-
-    #keyId = request.args.get('keyId', False);
-
-    #print type(jpsurvData)
-    #print dir(jpsurvData)
-    #print BOLD+OKBLUE+"**** key_id ****"+ENDC
-    #print type(keyId)
-    #print dir(keyId)
-
-    #jdata = json.loads(obj.decode(encoding='UTF-8'))
     jpsurvData = json.loads(jpsurvDataString)
-    print BOLD+"**** jdata ****"+ENDC
-    #print type(jpsurv)
-    #print dir(jpsurv)
+    print BOLD+"**** jpsurvData ****"+ENDC
     for key, value in jpsurvData.iteritems():
         print "var: %s = %s" % (key, value)
 
@@ -209,9 +192,16 @@ def stage2_calculate():
     # Next two lines execute the R Program
     getFittedResults = robjects.globalenv['getFittedResults']
     rStrVector = getFittedResults(UPLOAD_DIR, jpsurvDataString)
+    print type(rStrVector)
     #rStrVector = getFittedResult2(UPLOAD_DIR, jpsurvData['calculate']['static']['seerFilePrefix'],     jdata['yearOfDiagnosisVarName'],      jdata['yearOfDiagnosisRange'],       jdata['allVars'],        jdata['cohortVars'],         jdata['cohortValues'],          jdata['covariateVars'],           jdata['numJP'],            jdata['keyId'])
 
-    return  rStrVector
+    #return  json.dumps(rStrVector)
+    apcDataString = "".join(tuple(rStrVector))
+    print type(apcDataString)
+    print apcDataString
+
+    #return json.dumps("{\"start.year\":[1975,2001],\"end.year\":[2001,2011],\"estimate\":[-0.0167891169889347,-0.0032678676219079]}")
+    return json.dumps(apcDataString)
 
 @app.route('/jpsurvRest/stage99_calculate', methods=['GET'])
 def stage99_calculate():
@@ -229,15 +219,16 @@ def stage99_calculate():
 def stage3_plot():
     print UNDERLINE+HEADER + "****** PLOT BUTTON ***** " + ENDC
     print "Plotting ..."
-    #print dir(request.args);
-    #print type(request.args);
-    obj = request.args.get('obj', False);
-    keyId = request.args.get('keyId', False);
-    jdata = json.loads(obj)
-    print BOLD+"**** jdata ****"+ENDC
-    print type(jdata)
-    print dir(jdata)
-    for key, value in jdata.iteritems():
+
+
+    for k, v in request.args.iteritems():
+        print "var: %s = %s" % (k, v)
+    jpsurvDataString = request.args.get('jpsurvData', False);
+    print BOLD+"**** jpsurvDataString ****"+ENDC
+    print jpsurvDataString
+    jpsurvData = json.loads(jpsurvDataString)
+    print BOLD+"**** jpsurvData ****"+ENDC
+    for key, value in jpsurvData.iteritems():
         print "var: %s = %s" % (key, value)
 
     #Init the R Source
@@ -245,12 +236,10 @@ def stage3_plot():
     rSource('./JPSurvWrapper.R')
 
     print BOLD+OKBLUE+"**** Calling getGraph ****"+ENDC
-    # Next two lines execute the R Program
-    getGraphNoParam = robjects.globalenv['getGraphNoParam']
+    getGraph = robjects.globalenv['getGraph']
+    getGraph(UPLOAD_DIR, jpsurvDataString)
 
-    getGraphNoParam(keyId)
-
-    return keyId
+    return "done"
 
 @app.route('/jpsurvRest/apc', methods=['GET'])
 def apc():
