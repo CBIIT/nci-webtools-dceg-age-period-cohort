@@ -106,7 +106,7 @@ $(document).ready(function() {
 	$("#covariate_select").on("change", change_covariate_select);
 	$("#upload_file_submit").on("click", file_submit);
 	$("#calculate").on("click", setCalculateData);
-	$("#plot").on("click", get_plot);
+	$("#plot").on("click", setPlotData);
 	//$("#calculate").on("click", show_graph_temp);
 
 });
@@ -129,7 +129,6 @@ function setCalculateData() {
 	var inputAnswers;
 	// = $('#parameters').serialize();
   var yearOfDiagnosisVarName="Year_of_diagnosis_1975";  //HARD CODED...Why?
-
 
   var seerFilePrefix = "";
 	var yearofDiagnosisRange = [];
@@ -160,10 +159,15 @@ function setCalculateData() {
 	});
 	jpsurvData.calculate.form.cohortValues = [];
 	$.each(jpsurvData.calculate.form.cohortVars, function( index, value ) {
-		jpsurvData.calculate.form.cohortValues.push($('#cohort_value_'+index+'_select').val());
+		jpsurvData.calculate.form.cohortValues.push('"'+$('#cohort_value_'+index+'_select').val()+'"');
 	});
+
 	// covariate
 	jpsurvData.calculate.form.covariateVars = $('#covariate_select').val();
+	if(jpsurvData.calculate.form.covariateVars == "None") {
+		jpsurvData.calculate.form.covariateVars = '""';
+	}
+
 	// range
 	jpsurvData.calculate.form.yearOfDiagnosisRange = [parseInt($('#year_of_diagnosis_start').val()), parseInt($('#year_of_diagnosis_end').val())];
 	jpsurvData.calculate.form.joinPoints = parseInt($('#join_point_select').val()),
@@ -194,7 +198,10 @@ function setCalculateData() {
 }
 
 function setPlotData() {
-
+	$('#data-set').attr('href', 'http://analysistools-sandbox.nci.nih.gov/jpsurv/tmp/output-'+jpsurvData.tokenId+'.rds');
+	jpsurvData.plot.form.intervals = $('#plot-intervals').val();
+	jpsurvData.plot.form.covariateVars = $('#covariate_value_select').val();
+	get_plot();
 }
 
 function file_submit() {
@@ -221,15 +228,15 @@ function get_plot() {
 	console.log('get_plot');
 	console.dir(obj);
 
-	var newobj = 'obj='+JSON.stringify(obj)+'&keyId='+getUrlParameter('keyId');
-	console.log(newobj);
-	var plot_json = JSON.parse(jpsurvRest('stage3_plot', newobj));
+	var params = 'jpsurvData='+JSON.stringify(jpsurvData);
+	// Calling jpsurvRest
+	var plot_json = JSON.parse(jpsurvRest('stage3_plot', params));
 
 	console.log("plot_json");
 	console.dir(plot_json);
 
 	$("#spinner-plotting").hide();
-	$("#plot-image").attr('src', 'output-'+jpsurvData.tokenId+'.png');
+	$("#plot-image").attr('src', 'http://analysistools-sandbox.nci.nih.gov/jpsurv/tmp/plot-'+jpsurvData.tokenId+'.png');
 	$("#plot-container").fadeIn();
 
 }
