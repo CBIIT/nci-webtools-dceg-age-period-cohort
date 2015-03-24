@@ -205,7 +205,7 @@ function setPlotData() {
 	// Create a unique image id.
 	get_plot();
 	$('#plot-image').attr('src', '../jpsurv/tmp/plot-'+jpsurvData.tokenId+'-'+jpsurvData.plot.static.imageId+'.png')
-	$('#data-set').attr('href', 'http://analysistools-sandbox.nci.nih.gov/jpsurv/tmp/output-' +jpsurvData.tokenId+'.rds');
+	$('#data-set').attr('href', '../jpsurv/tmp/output-' +jpsurvData.tokenId+'.rds');
 }
 
 function file_submit() {
@@ -240,7 +240,7 @@ function get_plot() {
 	console.dir(plot_json);
 
 	$("#spinner-plotting").hide();
-	$("#plot-image").attr('src', 'http://analysistools-sandbox.nci.nih.gov/jpsurv/tmp/plot-'+jpsurvData.tokenId+'.png');
+	$("#plot-image").attr('src', '../jpsurv/tmp/plot-'+jpsurvData.tokenId+'.png');
 	$("#plot-container").fadeIn();
 
 }
