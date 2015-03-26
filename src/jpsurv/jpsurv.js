@@ -1,10 +1,9 @@
+var control_data;
 var jpsurvData = {"file":{"dictionary":"Breast.dic","data":"something.txt", "form":"form-983832.json"}, "calculate":{"form": {"yearOfDiagnosisRange":[]}, "static":{}}, "plot":{"form": {}, "static":{"imageId":0} }, "tokenId":"unknown", "status":"unknown"};
 
-var year_of_diagnosis_title = "Year fo Diagnosis 1975+";
-var yearOfDiagnosisVarName = "Year_of_diagnosis_1975";
-var control_data;
-
-var years;
+//var yearOfDiagnosisVarName = "Year_of_diagnosis_1975";
+//var year_of_diagnosis_title = "Year fo Diagnosis 1975+";
+//var years;
 if(getUrlParameter('tokenId')) {
 	jpsurvData.tokenId = getUrlParameter('tokenId');
 }
@@ -128,24 +127,12 @@ function setCalculateData() {
 	//Set static data
 	var inputAnswers;
 	// = $('#parameters').serialize();
-  var yearOfDiagnosisVarName="Year_of_diagnosis_1975";  //HARD CODED...Why?
+  //var yearOfDiagnosisVarName="Year_of_diagnosis_1975";  //HARD CODED...Why?
+  //Remove + from title
+  var yearOfDiagnosisVarName = jpsurvData.calculate.static.yearOfDiagnosisTitle.replace('+', '');
+  yearOfDiagnosisVarName = yearOfDiagnosisVarName.replace(new RegExp(" ", 'g'), "_");
 
-  var seerFilePrefix = "";
-	var yearofDiagnosisRange = [];
-	var allVar = [];
-	var cohortVars = [];
-	var cohortValues = [];
-	var covariateVars = [];
-	var numJP = 1;
-
-  /*seerFilePrefix = getUrlParameter('file_control_filename');
-  console.info('seerFilePrefix: '+ seerFilePrefix);
-
-  //Find first . and trim to the left
-  var seerFilePrefixIndex = seerFilePrefix.indexOf(".");
-  console.log(seerFilePrefixIndex);
-	*/
-	//static data
+  //Remove spaces and replace with underscore
 	jpsurvData.calculate.static.yearOfDiagnosisVarName = yearOfDiagnosisVarName;
 	jpsurvData.calculate.static.seerFilePrefix = jpsurvData.file.dictionary.substring(0, jpsurvData.file.dictionary.indexOf("."));
 
@@ -155,11 +142,17 @@ function setCalculateData() {
   //dynamic form data
   // cohort
 	jpsurvData.calculate.form.cohortVars = $.map($("#cohort_select option:selected"), function(elem){
-	    return $(elem).text();
+			return $(elem).text();
 	});
+
 	jpsurvData.calculate.form.cohortValues = [];
+
 	$.each(jpsurvData.calculate.form.cohortVars, function( index, value ) {
 		jpsurvData.calculate.form.cohortValues.push('"'+$('#cohort_value_'+index+'_select').val()+'"');
+	});
+	//Sample
+	$.each([ 52, 97 ], function( index, value ) {
+		console.log( index + ": " + value );
 	});
 
 	// covariate
@@ -221,17 +214,7 @@ function file_submit() {
 function get_plot() {
 	$("#plot-container").hide();
 	$("#spinner-plotting").show();
-
-	var obj = {
-		"covariateVars" : $('#covariate_select_polt').val(),
-		"numJP" : parseInt($('#join_point_select').val()),
-		"outputFileName" : "file.output",
-		"keyId" : getUrlParameter('keyId')
-	};
-
 	console.log('get_plot');
-	console.dir(obj);
-
 	var params = 'jpsurvData='+JSON.stringify(jpsurvData);
 	// Calling jpsurvRest
 	var plot_json = JSON.parse(jpsurvRest('stage3_plot', params));
@@ -439,22 +422,15 @@ function build_parameter_column() {
 
 function parse_diagnosis_years() {
 	// First we need to find the element that says "Year of Diagnosis"
-	console.log('parse_diagnosis_years');
 	var diagnosis_row = find_year_of_diagnosis_row();
-
 	// Then we need to read the label for the previous row, this will be the name used for the title,
 	// it will ALSO be the value in the array needed to find the years
 
-	var diagnosis_label = 'unknown';
 	if (diagnosis_row > 2) {
-		diagnosis_label = control_data.VarAllInfo.ItemValueInDic[diagnosis_row-1];
+		jpsurvData.calculate.static.yearOfDiagnosisTitle = control_data.VarAllInfo.ItemValueInDic[diagnosis_row-1];
 	}
+	jpsurvData.calculate.static.years = control_data.VarFormatSecList[jpsurvData.calculate.static.yearOfDiagnosisTitle].ItemValueInDic;
 
-	year_of_diagnosis_title = diagnosis_label;
-	years = control_data.VarFormatSecList[diagnosis_label].ItemValueInDic;
-
-//	alert(JSON.stringify(years));
-//	alert (control_data.VarAllInfo.ItemNameInDic[0]+"->"+control_data.VarAllInfo.ItemValueInDic[0]);
 }
 
 function parse_cohort_covariance_variables() {
@@ -520,11 +496,11 @@ function find_year_of_diagnosis_row() {
 function set_year_of_diagnosis_select() {
 
 	$("#diagnosis_title").empty()
-		.append(year_of_diagnosis_title);
+		.append(jpsurvData.calculate.static.yearOfDiagnosisTitle);
 
-	for (i=0;i<years.length;i++) {
-		$("#year_of_diagnosis_start").append("<OPTION>"+years[i]+"</OPTION>");
-		$("#year_of_diagnosis_end").append("<OPTION>"+years[i]+"</OPTION>");
+	for (i=0;i<jpsurvData.calculate.static.years.length;i++) {
+		$("#year_of_diagnosis_start").append("<OPTION>"+jpsurvData.calculate.static.years[i]+"</OPTION>");
+		$("#year_of_diagnosis_end").append("<OPTION>"+jpsurvData.calculate.static.years[i]+"</OPTION>");
 	}
 	//
 	//Set last entry in year_of_diagnosis_end
@@ -698,7 +674,10 @@ function jpsurvRest(action, params) {
 	var json = (function () {
     var json = null;
     //var url = '/jpsurvRest/'+action+'?'+params+'&jpsurvData='+JSON.stringify(jpsurvData);
-    var url = '/jpsurvRest/'+action+'?'+params;
+
+    var url = '/jpsurvRest/'+action+'?'+encodeURI(params);
+    console.warn("jpsurvRest url=");
+    console.log(url);
     $.ajax({
 	      'async': false,
 	      'global': false,
