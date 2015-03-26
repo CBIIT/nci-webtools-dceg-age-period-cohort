@@ -49,8 +49,8 @@ getDictionary <- function (inputFile, path, tokenId) {
 #numJP=1
 #outputFileName="SEER9_Survival_6CancerSitesByStage_1975_2007.output"
 
-filePath="C:/devel/R"
-jpsurvDataString = "Hello"
+#filePath="C:/devel/R"
+#jpsurvDataString = "Hello"
 #seerFilePrefix="Breast_RelativeSurvival"
 #yearOfDiagnosisVarName="Year of diagnosis 1975"
 #yearOfDiagnosisRange=c(1975, 2011)
@@ -62,7 +62,7 @@ jpsurvDataString = "Hello"
 #outputFileName="Breast_RelativeSurvival.output"
 
 #getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
-getFittedResults <- function (filePath, jpsurvDataString) {
+getFittedResultJSON <- function (filePath, jpsurvDataString) {
 #getFittedResults <- function () {
 #filePath="/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp"
 print("R: getFittedResult")
@@ -219,12 +219,12 @@ getCorrectFormat <-function(variable) {
 #covariateValues=c("Localized", "Distant")
 #outputGraphFile="./Breast_RelativeSurvival123.png"
 
-#getGraph <- function (filePath, fittedResultFile, intervals, covariateValues, outputGraphFile) {
 getGraph <- function (filePath, jpsurvDataString) {
 
   #filePath="/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp"
   print("R: getGraph")
   jpsurvData = fromJSON(jpsurvDataString)
+
   print(jpsurvData$tokenId)
   print("*jpsurvData.plot =")
   print(jpsurvData$plot)
@@ -233,12 +233,19 @@ getGraph <- function (filePath, jpsurvDataString) {
 
   intervals=c(5,10)
   intervals = jpsurvData$plot$form$intervals
-  covariateValues=c("Localized", "Distant")
-  covariateValues = jpsurvData$plot$form$covariateValues
+  covariateValues = c("Localized", "Distant")
+  covariateValues = jpsurvData$plot$form$covariateVars
 
   outputGraphFile = paste("plot-", jpsurvData$tokenId, "-",jpsurvData$plot$static$imageId, ".png", sep="")
   outputGraphFile = paste(filePath, outputGraphFile, sep="/")
-  print("outputGraphFile:")
+
+  cat("*** R variables ***")
+  cat("*intervals:\n")
+  print(intervals, row.names=FALSE)
+  cat("*covariateValues\n")
+  print(covariateValues, row.names=FALSE)
+  cat("\n")
+  cat("outputGraphFile:\n")
   cat(outputGraphFile)
   cat("\n")
 
@@ -249,30 +256,68 @@ getGraph <- function (filePath, jpsurvDataString) {
   png(file=outputGraphFile)
   plot(fit.result,Intervals=intervals,covar.continuous=continousVector,covar.cat=covariateValues);
   dev.off()
+
 }
 
-#getGraph <- function (filePath, fittedResultFile, intervals, covariateValues, outputGraphFile) {
-getGraphNoParam <- function (keyId) {
-  cat("keyId")
-  cat(keyId)
-  cat("\n")
-  #outputFileName = paste("output-", keyId, "png", sep="")
+#filePath="C:/devel/R"
+#seerFilePrefix="SEER9_Survival_6CancerSitesByStage_1975_2007"
+#yearOfDiagnosisVarName="Year of diagnosis (75-07 individual)"
+#yearOfDiagnosisRange=c(1975, 2011)
+#allVars=c("Sites: CR LB B O P T","Sex Male or Female","SEER historic stage A (All/loc/reg/dist)", "Year of diagnosis (75-07 individual)")
+#cohortVars=c("Sites: CR LB B O P T")
+#cohortValues=c("\"Colon and Rectum\"")
+#covariateVars=c("Sex Male or Female")
+#numJP=1
+#outputFileName="SEER9_Survival_6CancerSitesByStage_1975_2007.output"
 
-  filePath="."
-  fittedResultFile="Breast_RelativeSurvival.output"
-  intervals=c(5,10)
-  covariateValues=c("Localized", "Distant")
-  #outputGraphFile="./Breast_RelativeSurvival123.png"
-  outputGraphFile="./Breast_RelativeSurvival123.png"
-  outputGraphFile = paste("./output-", keyId, ".png", sep="")
-  cat("outputGraphFile")
-  cat(outputGraphFile)
-  cat("\n")
+#filePath="C:/devel/R"
+#jpsurvDataString = "Hello"
+#seerFilePrefix="Breast_RelativeSurvival"
+#yearOfDiagnosisVarName="Year of diagnosis 1975"
+#yearOfDiagnosisRange=c(1975, 2011)
+#allVars=c("Age groups","Breast stage","Year of diagnosis 1975")
+#cohortVars=c("Age groups")
+#cohortValues=c("\"65+\"")
+#covariateVars=c("Breast stage")
+#numJP=1
+#outputFileName="Breast_RelativeSurvival.output"
 
-  outFile=paste(filePath, fittedResultFile, sep="/" )
-  fit.result=readRDS(outFile)
-  continousVector=rep(NA, length(covariateValues))
-  png(file=outputGraphFile)
-  plot(fit.result,Intervals=intervals,covar.continuous=continousVector,covar.cat=covariateValues);
-  dev.off()
+getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
+#filePath="/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp"
+
+#seerFilePrefix="Breast_RelativeSurvival"
+#yearOfDiagnosisVarName="Year of diagnosis 1975"
+#yearOfDiagnosisRange=c(1975, 2011)
+#allVars=c("Age groups","Breast stage","Year of diagnosis 1975")
+#cohortVars=c("Age groups")
+#cohortValues=c("\"65+\"")
+#cohortValues=c("\"Localized\"")
+#covariateVars=c("Breast stage")
+#joinPoints=1
+#fileName = paste('output', seerFilePrefix, sep="-" )
+#fileName = paste(fileName, "rds", sep="." )
+
+  outputFileName =paste(filePath, fileName, sep="/" )
+  file=paste(filePath, seerFilePrefix, sep="/" )
+  varLabels=getCorrectFormat(allVars)
+  seerdata = joinpoint.seerdata(seerfilename=file,
+                                newvarnames=varLabels,
+                                NoFit=T,
+                                UseVarLabelsInData=varLabels)
+
+  subsetStr=getSubsetStr(yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVars, cohortValues)
+  #assign subsetStr in the global in order for eval(parse(text=)) to work
+  factorStr=getFactorStr(covariateVars)
+  fit.result=joinpoint(seerdata,
+                       subset = eval(parse(text=subsetStr)),
+                       year=getCorrectFormat(yearOfDiagnosisVarName),
+                       observedrelsurv="Relative_Survival_Cum",
+                       model.form = eval(parse(text=factorStr)),
+                       maxnum.jp=joinPoints);
+
+  #save fit.result as RData
+  saveRDS(fit.result, outputFileName)
+
+  apcJson=paste(toJSON(fit.result$apc))
+  return (apcJson)
 }

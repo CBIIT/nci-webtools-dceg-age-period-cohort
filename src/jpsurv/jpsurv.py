@@ -37,9 +37,6 @@ ENDC = '\033[0m'
 
 print BOLD+UPLOAD_DIR+ENDC
 
-#exit()
-#END TESTING AREA
-
 def index():
     return render_template('index.html')
 
@@ -168,14 +165,8 @@ def stage1_upload():
 @app.route('/jpsurvRest/stage2_calculate', methods=['GET'])
 def stage2_calculate():
 
-    #app.logger.debug('A value for debugging')
-    #app.logger.warning('A warning occurred (%d apples)', 42)
-    #app.logger.error('An error occurred')
     print UNDERLINE+HEADER + "****** CALCULATE BUTTON ***** " + ENDC
-    print "Processing calculate"
 
-    for k, v in request.args.iteritems():
-        print "var: %s = %s" % (k, v)
     jpsurvDataString = request.args.get('jpsurvData', False);
     print BOLD+"**** jpsurvDataString ****"+ENDC
     print jpsurvDataString
@@ -183,37 +174,18 @@ def stage2_calculate():
     print BOLD+"**** jpsurvData ****"+ENDC
     for key, value in jpsurvData.iteritems():
         print "var: %s = %s" % (key, value)
-
     #Init the R Source
     rSource = robjects.r('source')
     rSource('./JPSurvWrapper.R')
 
     print BOLD+OKBLUE+"**** Calling getFittedResults ****"+ENDC
     # Next two lines execute the R Program
-    getFittedResults = robjects.globalenv['getFittedResults']
-    rStrVector = getFittedResults(UPLOAD_DIR, jpsurvDataString)
-    print type(rStrVector)
-    #rStrVector = getFittedResult2(UPLOAD_DIR, jpsurvData['calculate']['static']['seerFilePrefix'],     jdata['yearOfDiagnosisVarName'],      jdata['yearOfDiagnosisRange'],       jdata['allVars'],        jdata['cohortVars'],         jdata['cohortValues'],          jdata['covariateVars'],           jdata['numJP'],            jdata['keyId'])
-
-    #return  json.dumps(rStrVector)
+    getFittedResultJSON = robjects.globalenv['getFittedResultJSON']
+    rStrVector = getFittedResultJSON(UPLOAD_DIR, jpsurvDataString)
     apcDataString = "".join(tuple(rStrVector))
-    print type(apcDataString)
     print apcDataString
-
     #return json.dumps("{\"start.year\":[1975,2001],\"end.year\":[2001,2011],\"estimate\":[-0.0167891169889347,-0.0032678676219079]}")
     return json.dumps(apcDataString)
-
-@app.route('/jpsurvRest/stage99_calculate', methods=['GET'])
-def stage99_calculate():
-    print "Stage 2:  Calling getFittedResult"
-    command = "Rscript getFittedResult.R"
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-    process.wait()
-    print process.returncode
-    with open ("Breast_RelativeSurvival.output.json", "r") as myfile:
-        data=myfile.read().replace('\n', '')
-
-    return json.dumps(data)
 
 @app.route('/jpsurvRest/stage3_plot', methods=['GET'])
 def stage3_plot():
@@ -223,7 +195,9 @@ def stage3_plot():
 
     for k, v in request.args.iteritems():
         print "var: %s = %s" % (k, v)
-    jpsurvDataString = request.args.get('jpsurvData', False);
+    #name = request.get_json().get('jpsurvData', '')
+    #print name
+    jpsurvDataString = request.args.get('jpsurvData', True);
     print BOLD+"**** jpsurvDataString ****"+ENDC
     print jpsurvDataString
     jpsurvData = json.loads(jpsurvDataString)
@@ -241,110 +215,6 @@ def stage3_plot():
 
     return "done"
 
-@app.route('/jpsurvRest/apc', methods=['GET'])
-def apc():
-    print "apc called"
-    print "output"
-
-    print json.dumps({"start.year":[1975,2001],"end.year":[2001,2011],"estimate":[-0.0167891169889346,-0.00326786762190838]})
-
-    return json.dumps({"start.year":[1975,2001],"end.year":[2001,2011],"estimate":[-0.0167891169889346,-0.00326786762190838]})
-
-@app.route('/jpsurvRest/path', methods=['GET'])
-def path():
-    #Init the R Source
-    print "Python about to execute some R code"
-    rSource = robjects.r('source')
-    rSource('./path.R')
-    printLibPath = robjects.globalenv['printLibPath']
-    printLibPath()
-
-    return "TaDa"
-
-@app.route('/jpsurvRest/stage99_upload', methods=['POST'])
-def stage99_upload():
-    print "Processing upload"
-
-    print request.url_root  # prints "http://domain1.com/"
-    print request.headers['Host']  # prints "domain1.com"
-    #Saving the dictionary file and data file to server
-    if request.method == 'POST':
-        file = request.files['file_control']
-        if file and file.filename:
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(UPLOAD_DIR, filename))
-            file_control_filename = filename
-            print "Saving file_control: %s" % file_control_filename
-        file = request.files['file_data']
-        if file and file.filename:
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(UPLOAD_DIR, filename))
-            file_data_filename = filename
-            print "Saving file_data: %s" % file_data_filename
-    print request.files['file_control']
-    print request.files['file_data']
-
-    if(request.files['file_control'] == ''):
-        print "file_control not assigned"
-    if(request.files['file_data'] == ''):
-        print "file_data not assigned"
-
-    #Now that the files are on the server RUN the RCode
-    rSource = robjects.r('source')
-
-    print HEADER + "****** STARTING HERE ***** " + ENDC
-   # path = "/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv"
-    #Use next line to
-
-    #PRINT FILE_CONTROL
-    file_control = os.path.join(UPLOAD_DIR, file_control_filename)
-    print "file_control"
-    fo = open(file_control, "r+")
-    str = fo.read(250);
-    print OKBLUE+"Read String is : ", str
-    print ENDC
-    print
-    fo.close()
-
-    #PRINT FILE_DATA
-    file_data = os.path.join(UPLOAD_DIR, file_data_filename)
-    print "file_data"
-    fo = open(file_control, "r+")
-    str = fo.read(500);
-    print WARNING+"Read String is : ", str
-    print ENDC
-    fo.close()
-
-    #Init the R Source
-    rSource = robjects.r('source')
-    rSource('./JPSurvWrapper.R')
-
-    # Next two lines execute the R Program
-    getDictionary = robjects.globalenv['getDictionary']
-    rStrVector = getDictionary(file_control_filename, UPLOAD_DIR)
-    #Convert R StrVecter to tuple to str
-
-    keyId = "".join(tuple(rStrVector))
-    output_file = "output-%s.json" % keyId
-    print output_file
-    #PRINT output_file
-    r_output_file = os.path.join(UPLOAD_DIR, output_file)
-    print "R output_file"
-    fo = open(r_output_file, "r+")
-    str = fo.read(500);
-    print BOLD+"Read String is : ", str
-    print ENDC
-    fo.close()
-
-    print "CLOSE FILE %s" % output_file
-    print OKGREEN +"************ END HERE EXIT ********" + ENDC
-
-    #print "json string >> "+str(jsondata[0]);
-    status = "OK"
-
-    return_url = "%s/jpsurv?file_control_filename=%s&file_data_filename=%s&output_file=%s&keyId=%s&status=%s" % (request.url_root, file_control_filename, file_data_filename, output_file, keyId, status)
-    print return_url
-    return redirect(return_url)
 
 import argparse
 if __name__ == '__main__':
