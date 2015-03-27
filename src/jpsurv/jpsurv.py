@@ -180,8 +180,10 @@ def stage2_calculate():
 
     print BOLD+OKBLUE+"**** Calling getFittedResults ****"+ENDC
     # Next two lines execute the R Program
-    getFittedResultJSON = robjects.globalenv['getFittedResultJSON']
-    rStrVector = getFittedResultJSON(UPLOAD_DIR, jpsurvDataString)
+    #getFittedResultJSON = robjects.globalenv['getFittedResultJSON']
+    #rStrVector = getFittedResultJSON(UPLOAD_DIR, jpsurvDataString)
+    getFittedResultWrapper = robjects.globalenv['getFittedResultWrapper']
+    rStrVector = getFittedResultWrapper(UPLOAD_DIR, jpsurvDataString)
     apcDataString = "".join(tuple(rStrVector))
     print apcDataString
     #return json.dumps("{\"start.year\":[1975,2001],\"end.year\":[2001,2011],\"estimate\":[-0.0167891169889347,-0.0032678676219079]}")
