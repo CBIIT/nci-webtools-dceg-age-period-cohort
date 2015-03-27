@@ -72,7 +72,7 @@ getGraph <- function (filePath, jpsurvDataString) {
   outputGraphFile = paste("plot-", jpsurvData$tokenId, "-",jpsurvData$plot$static$imageId, ".png", sep="")
   outputGraphFile = paste(filePath, outputGraphFile, sep="/")
 
-  cat("*** R variables ***")
+  cat("*** R variables ***\n")
   cat("*intervals:\n")
   print(intervals, row.names=FALSE)
   cat("*covariateValues\n")
@@ -109,6 +109,11 @@ getFittedResultWrapper <- function (filePath, jpsurvDataString) {
   cat("fileName\n")
   cat(fileName)
   cat("\n")
+  outputFileName = fileName
+
+  fileName = paste('output', jpsurvData$tokenId, sep="-" )
+  fileName = paste(fileName, "rds", sep="." )
+#fileName = paste("joinpoint-output", "txt", sep="." )
   outputFileName =paste(filePath, fileName, sep="/" )
 
   return (getFittedResult(filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName))
@@ -151,11 +156,42 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 #covariateVars=c("Breast stage")
 #numJP=1
 
-  fileName = paste('output', seerFilePrefix, sep="-" )
-  fileName = paste(fileName, "rds", sep="." )
+  #fileName = paste('output', seerFilePrefix, sep="-" )
+  #fileName = paste(fileName, "rds", sep="." )
 
-  outputFileName =paste(filePath, fileName, sep="/" )
+  #outputFileName =paste(filePath, fileName, sep="/" )
+  cat("*filePath\n")
+  cat(filePath)
+  cat("\n")
+  cat("*seerFilePrefix\n")
+  cat(seerFilePrefix)
+  cat("\n")
+  cat("*yearOfDiagnosisVarName\n")
+  cat(yearOfDiagnosisVarName)
+  cat("\n")
+  cat("*yearOfDiagnosisRange")
+  cat("\n")
+  print(yearOfDiagnosisRange, row.names=FALSE)
+  cat("\n")
+  cat("*allVars\n")
+  print(allVars, row.names=FALSE)
+  cat("*cohortVars\n")
+  print(cohortVars, row.names=FALSE)
+  cat("*cohortValues\n")
+  print(cohortValues, row.names=FALSE)
+  cat("*covariateVars\n")
+  print(covariateVars, row.names=FALSE)
+  cat("*numJP\n")
+  print(numJP, row.names=FALSE)
+  cat("*outputFileName\n")
+
+  print(outputFileName, row.names=FALSE)
+  cat("\n****\n")
+
+
+
   file=paste(filePath, seerFilePrefix, sep="/" )
+
   varLabels=getCorrectFormat(allVars)
   seerdata = joinpoint.seerdata(seerfilename=file,
                                 newvarnames=varLabels,
@@ -176,7 +212,13 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
                        maxnum.jp=numJP);
 
   #save fit.result as RData
+  cat("***outputFileName")
+  cat(outputFileName)
+  cat("\n")
   saveRDS(fit.result, outputFileName)
+  cat("\n\nOutput file has been written: ")
+  cat(outputFileName)
+  cat("\n")
 
   apcJson=paste(toJSON(fit.result$apc))
   return (apcJson)
