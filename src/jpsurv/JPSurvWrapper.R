@@ -46,21 +46,15 @@ getCorrectFormat <-function(variable) {
   return (variable)
 }
 
-#filePath="."
-#fittedResultFile="Breast_RelativeSurvival.output"
-#intervals=c(5,10)
-#covariateValues=c("Localized", "Distant")
-#outputGraphFile="./Breast_RelativeSurvival123.png"
+getGraphWrapper <- function (filePath, jpsurvDataString) {
 
-getGraph <- function (filePath, jpsurvDataString) {
-
-  #filePath="/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp"
   print("R: getGraph")
   jpsurvData = fromJSON(jpsurvDataString)
 
   print(jpsurvData$tokenId)
   print("*jpsurvData.plot =")
   print(jpsurvData$plot)
+
 
   fittedResultFile=paste("output-", jpsurvData$tokenId,".rds", sep="")
 
@@ -71,6 +65,20 @@ getGraph <- function (filePath, jpsurvDataString) {
 
   outputGraphFile = paste("plot-", jpsurvData$tokenId, "-",jpsurvData$plot$static$imageId, ".png", sep="")
   outputGraphFile = paste(filePath, outputGraphFile, sep="/")
+
+  getGraph(filePath, fittedResultFile, intervals, covariateValues, outputGraphFile)
+
+}
+
+#filePath="."
+#fittedResultFile="Breast_RelativeSurvival.output"
+#intervals=c(5,10)
+#covariateValues=c("Localized", "Distant")
+#outputGraphFile="./Breast_RelativeSurvival123.png"
+getGraph <- function (filePath, fittedResultFile, intervals, covariateValues, outputGraphFile) {
+
+  #filePath="/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp"
+
 
   cat("*** R variables ***\n")
   cat("*intervals:\n")
@@ -87,7 +95,7 @@ getGraph <- function (filePath, jpsurvDataString) {
   fit.result=readRDS(outFile)
   continousVector=rep(NA, length(covariateValues))
   png(file=outputGraphFile)
-  plot(fit.result,Intervals=intervals,covar.continuous=continousVector,covar.cat=covariateValues);
+  plot(fit.result,Intervals=intervals,covar.continuous=continousVector,covar.cat=covariateValues)
   dev.off()
 
 }
@@ -187,8 +195,6 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 
   print(outputFileName, row.names=FALSE)
   cat("\n****\n")
-
-
 
   file=paste(filePath, seerFilePrefix, sep="/" )
 
