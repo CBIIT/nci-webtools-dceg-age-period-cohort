@@ -212,8 +212,8 @@ def stage3_plot():
     rSource('./JPSurvWrapper.R')
 
     print BOLD+OKBLUE+"**** Calling getGraph ****"+ENDC
-    getGraph = robjects.globalenv['getGraph']
-    getGraph(UPLOAD_DIR, jpsurvDataString)
+    getGraphWrapper = robjects.globalenv['getGraphWrapper']
+    getGraphWrapper(UPLOAD_DIR, jpsurvDataString)
 
     return "done"
 

@@ -1,33 +1,13 @@
 var control_data;
+var cohort_covariance_variables;
 var jpsurvData = {"file":{"dictionary":"Breast.dic","data":"something.txt", "form":"form-983832.json"}, "calculate":{"form": {"yearOfDiagnosisRange":[]}, "static":{}}, "plot":{"form": {}, "static":{"imageId":0} }, "tokenId":"unknown", "status":"unknown"};
 
-//var yearOfDiagnosisVarName = "Year_of_diagnosis_1975";
-//var year_of_diagnosis_title = "Year fo Diagnosis 1975+";
-//var years;
 if(getUrlParameter('tokenId')) {
 	jpsurvData.tokenId = getUrlParameter('tokenId');
 }
 if(getUrlParameter('status')) {
 	jpsurvData.status = getUrlParameter('status');
 }
-
-//var years = [
-//	                                   "1975","1976","1977","1978","1979",
-//	"1980","1981","1982","1983","1984","1985","1986","1987","1988","1989",
-//	"1990","1991","1982","1983","1984","1985","1986","1987","1988","1989",
-//	"2000","2001","2002","2003","2004","2005","2006","2007","2008","2009",
-//	"2010","2011"
-//];
-//Constant series of events.   On a daily events.
-//var cohort_covariance_variable_names
-var cohort_covariance_variables;
-/*
-var cohort_covariance_variables = {
-	"Age groups": ["0-49","50-65s","65+"],
-	"Breast stage": ["Localized","Regional","Distant"],
-	"Test group": ["val1","ValTwo","AnotherValue"]
-}
-*/
 
 $(document).ready(function() {
 
@@ -58,7 +38,6 @@ $(document).ready(function() {
 		$('#upload_file_submit_container').remove();
 		//var file_control_output = load_ajax(getUrlParameter('file_control_filename'));
 		//console.log(file_control_output	);
-
 		//var file_data_output = load_ajax(getUrlParameter('file_data_filename'));
 
 		setUploadData();
@@ -68,16 +47,6 @@ $(document).ready(function() {
 
 		console.log("Output file...")
 		console.dir(control_data);
-
-//		alert('Updating R Output');
-
-/*
-		$( "<a>" )
-			.append('Reset')
-			.attr('href', '/jpsurv')
-			.css('padding-left', '25px')
-			.insertAfter('#calculate');
-*/
 		load_form();
 		/*
 		$( "<hr>" ).insertBefore('#file_control_output');
@@ -150,17 +119,11 @@ function setCalculateData() {
 	$.each(jpsurvData.calculate.form.cohortVars, function( index, value ) {
 		jpsurvData.calculate.form.cohortValues.push('"'+$('#cohort_value_'+index+'_select').val()+'"');
 	});
-	//Sample
-	$.each([ 52, 97 ], function( index, value ) {
-		console.log( index + ": " + value );
-	});
-
 	// covariate
 	jpsurvData.calculate.form.covariateVars = $('#covariate_select').val();
 	if(jpsurvData.calculate.form.covariateVars == "None") {
 		jpsurvData.calculate.form.covariateVars = '""';
 	}
-
 	// range
 	jpsurvData.calculate.form.yearOfDiagnosisRange = [parseInt($('#year_of_diagnosis_start').val()), parseInt($('#year_of_diagnosis_end').val())];
 	jpsurvData.calculate.form.joinPoints = parseInt($('#join_point_select').val()),
@@ -191,7 +154,6 @@ function setCalculateData() {
 }
 
 function setPlotData() {
-
 	jpsurvData.plot.form.intervals = $('#plot-intervals').val();
 	jpsurvData.plot.form.covariateVars = $('#covariate_value_select').val();
 	jpsurvData.plot.static.imageId++;
@@ -205,10 +167,8 @@ function file_submit() {
 	//set tokenId
 	jpsurvData.tokenId = parseInt(Math.random()*1000000);
 	$("#upload-form").attr('action', '/jpsurvRest/stage1_upload?tokenId='+jpsurvData.tokenId);
-  console.log("About to tokenId = " + jpsurvData.tokenId);
-
-   $("#upload_file_submit").submit();
-
+    console.log("About to tokenId = " + jpsurvData.tokenId);
+    $("#upload_file_submit").submit();
 }
 
 function get_plot() {
@@ -229,7 +189,6 @@ function get_plot() {
 }
 
 function show_apc_table(params) {
-
 		var apc_json = JSON.parse(jpsurvRest('stage2_calculate', params));
 /*
 		$('#apc_json_output').empty()
