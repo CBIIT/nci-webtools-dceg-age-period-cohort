@@ -12,12 +12,12 @@ getDictionary <- function (inputFile, path, tokenId) {
 
 getSubsetStr <- function (yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVars, cohortValues) {
 
-  yearOfDiagnosisVarName=getCorrectFormat(yearOfDiagnosisVarName)
+  yearOfDiagnosisVarName=paste0("`",getCorrectFormat(yearOfDiagnosisVarName), "`")
   startYearStr=paste(yearOfDiagnosisVarName, ">=", yearOfDiagnosisRange[1])
   endYearStr=paste(yearOfDiagnosisVarName, "<=", yearOfDiagnosisRange[2])
   yearStr=paste(startYearStr, endYearStr, sep='&')
-  cohortVars=getCorrectFormat(cohortVars)
-
+  cohortVars=paste0("`",getCorrectFormat(cohortVars), "`")
+  
   subsetStr=paste(paste(cohortVars, cohortValues, sep="=="), collapse='&')
   subsetStr=paste(subsetStr, yearStr, sep='&')
 
@@ -31,7 +31,7 @@ getSubsetStr <- function (yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVa
 getFactorStr <- function (covariateVars) {
   factorStr=NULL
   if (length(covariateVars!=0L)) {
-    covariateVars=getCorrectFormat(covariateVars)
+    covariateVars=paste0("`", getCorrectFormat(covariateVars), "`")
     factorStr=paste("~-1+", paste(gsub("$", ")", gsub("^", "factor(", covariateVars)), collapse="+"), sep='')
   }
   cat("*factorStr\n")
@@ -130,16 +130,15 @@ getFittedResultWrapper <- function (filePath, jpsurvDataString) {
 #filePath="C:/devel/R"
 #seerFilePrefix="SEER9_Survival_6CancerSitesByStage_1975_2007"
 #yearOfDiagnosisVarName="Year of diagnosis (75-07 individual)"
-#yearOfDiagnosisRange=c(1975, 2011)
+#yearOfDiagnosisRange=c(1975, 2007)
 #allVars=c("Sites: CR LB B O P T","Sex Male or Female","SEER historic stage A (All/loc/reg/dist)", "Year of diagnosis (75-07 individual)")
 #cohortVars=c("Sites: CR LB B O P T")
 #cohortValues=c("\"Colon and Rectum\"")
-#covariateVars=c("Sex Male or Female")
+#covariateVars=c("SEER historic stage A (All/loc/reg/dist)")
 #numJP=1
 #outputFileName="SEER9_Survival_6CancerSitesByStage_1975_2007.output"
 
 #filePath="C:/devel/R"
-#jpsurvDataString = "Hello"
 #seerFilePrefix="Breast_RelativeSurvival"
 #yearOfDiagnosisVarName="Year of diagnosis 1975"
 #yearOfDiagnosisRange=c(1975, 2011)
@@ -151,23 +150,6 @@ getFittedResultWrapper <- function (filePath, jpsurvDataString) {
 #outputFileName="Breast_RelativeSurvival.output"
 
 getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
-
-#filePath="/analysistools-sandbox/public_html/apps/jpsurv/tmp"
-
-#seerFilePrefix="Breast_RelativeSurvival"
-#yearOfDiagnosisVarName="Year of diagnosis 1975"
-#yearOfDiagnosisRange=c(1975, 2011)
-#allVars=c("Age groups","Breast stage","Year of diagnosis 1975")
-#cohortVars=c("Age groups")
-#cohortValues=c("\"65+\"")
-#cohortValues=c("\"Localized\"")
-#covariateVars=c("Breast stage")
-#numJP=1
-
-  #fileName = paste('output', seerFilePrefix, sep="-" )
-  #fileName = paste(fileName, "rds", sep="." )
-
-  #outputFileName =paste(filePath, fileName, sep="/" )
   cat("*filePath\n")
   cat(filePath)
   cat("\n")
