@@ -25,12 +25,18 @@ table {
 	min-height:400px;
 	height:auto;
 }
-
+/*
 H2 {
 	font-size:large;
 	text-align:center;
 }
-
+*/
+h2 {
+	font-size:large;
+}
+h3 {
+	font-size:normal;	
+}
 .sub_select {
 	float:left;
 	padding:2px;
@@ -43,6 +49,7 @@ H2 {
 
 #banners {
 		margin-top:15px;
+		height:110px;
 }
 
 .jumbotron {
