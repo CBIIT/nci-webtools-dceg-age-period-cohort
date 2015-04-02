@@ -20,9 +20,6 @@
   <title>JPSurv</title><!--
 <link rel="/LDlink/shortcut icon" href="LD.ico" >
 -->
-  <link rel="stylesheet" href=
-  "http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"
-  type="text/css">
   <link rel="stylesheet" href="../common/css/font-awesome.css"
   type="text/css">
   <link rel="stylesheet" href="../common/css/style.css" type=
@@ -77,44 +74,50 @@
         <div class="col-md-4">
           <div class="well">
             <!-- Upload FORM - STAGE 1 -->
-            <form id="upload-form" class="form-horizontal" role="form" method="post" enctype=
-            "multipart/form-data" action=
-            "/jpsurvRest/stage1_upload">
+
+            <form id="upload-form" class="form-horizontal" role=
+            "form" method="post" enctype="multipart/form-data"
+            action="/jpsurvRest/stage1_upload">
               <h2>Input Files</h2>
 
               <div id="file_control_container" class="form-group">
-              <label for=
-              'file_control'>Data Dictionary File:</label>
-              
-              <a style='font-size:small' href=
-              'SEER9_Survival_6CancerSitesByStage_1975_2007.dic'
-              download=
-              'SEER9_Survival_6CancerSitesByStage_1975_2007.dic'>(example
-              dictionary)</a> 
-              
-              <input type="file" id="file_control"
-              name="file_control" >
+                <label for='file_control'>Data Dictionary
+                File:</label> <a style='font-size:small' href=
+                'SEER9_Survival_6CancerSitesByStage_1975_2007.dic'
+                download=
+                'SEER9_Survival_6CancerSitesByStage_1975_2007.dic'>(example
+                dictionary)</a> <input type="file" id=
+                "file_control" name="file_control">
               </div>
 
-              <div id="file_data_container" class="form-group"><label for=
-              'file_data'>Data File:</label> <a style=
-              'font-size:small' href=
-              'SEER9_Survival_6CancerSitesByStage_1975_2007.txt'
-              download=
-              'SEER9_Survival_6CancerSitesByStage_1975_2007.txt'>(example
-              data)</a> <input type="file" id="file_data" name=
-              "file_data" size="20"></div>
+              <div id="file_data_container" class="form-group">
+                <label for='file_data'>Data File:</label> <a style=
+                'font-size:small' href=
+                'SEER9_Survival_6CancerSitesByStage_1975_2007.txt'
+                download=
+                'SEER9_Survival_6CancerSitesByStage_1975_2007.txt'>(example
+                data)</a> <input type="file" id="file_data" name=
+                "file_data">
+              </div>
 
-              <div id="upload_file_submit_container" class="pull-right"><input type=
-              'submit' id='upload_file_submit' value=
-              'Upload Files'></div>
-            </form>
-            <!-- Calculate - STAGE 2 -->
-            <form id='parameters' class="form-horizontal" role="form" style='display:none'>
-              <h2>
-                Calculation Parameters
-              </h2>
+              <div id="upload_file_submit_container" class=
+              "pull-right">
+                <!--
+            <INPUT type='submit' id='upload_file_submit' value='Upload Files' >
+            -->
+                <button id='upload_file_submit' type="submit"
+                class="btn btn-primary btn-sm" title=
+                "Please attach both input files to enable upload."
+                disabled>Upload Input Files</button>
+              </div>
+            </form><!-- Calculate - STAGE 2 -->
+
+            <form id='parameters' class="form-horizontal" role=
+            "form" style='display:none'>
+              <h2>Calculation Parameters</h2>
+
               <div id='diagnosis_title'></div>
+
               <p>Year of Diagnosis Range:<br>
               <label for="year_of_diagnosis_start" style=
               "display:none">Start Year</label> <select id=
@@ -127,19 +130,22 @@
                 </select></p>
 
               <div class="form-group">
-              <label for="cohort_select">Cohort
-              Variables:</label><br>
-              <select id='cohort_select' name='cohort_select'
-              multiple>
-                </select></div>
+                <label for="cohort_select">Cohort
+                Variables:</label><br>
+                <select id='cohort_select' name='cohort_select'
+                multiple>
+                  </select>
+              </div>
 
               <div id='cohort_sub_select' class="form-group"></div>
 
-              <div class="form-group"><label for="covariate_select">Covariate
-              Variables:</label><br>
-              <select id='covariate_select' name=
-              'covariate_select'>
-                </select></div>
+              <div class="form-group">
+                <label for="covariate_select">Covariate
+                Variables:</label><br>
+                <select id='covariate_select' name=
+                'covariate_select'>
+                  </select>
+              </div>
 
               <p><label for="join_point_select">Join
               Points:</label> <select id='join_point_select' name=
@@ -161,58 +167,63 @@
                 </option>
               </select></p>
 
-              <p style="clear:both;">
-              
-              <input type='button' id=
-              'calculate' value='Calculate' class="pull-right"> 
+              <p style="clear:both;"><!--              
+              <input type='submit' value='Calculate Yeh!' id='calculate' class="btn btn-primary btn-sm pull-right">
+              <button onclick="window.location.href='/jpsurv'" value=
+              "Reset" class="btn btn-warning btn-sm pull-left">Reset</button>
 
-              <input type='button'
-              onclick="window.location.href='/jpsurv'" value=
-              "Reset" class="pull-left">
-              </p>
+-->
+               <input type='button' id='calculate' value=
+              'Calculate'> <input type='button' onclick=
+              "window.location.href='/jpsurv'" value="Reset" class=
+              "pull-right"></p>
             </form>
-            <div style="clear:both;"></div>
 
+            <div style="clear:both;"></div>
             <!-- Plot FORM - STAGE 3 -->
-            <form id='plot-form' class="form-horizontal" role="form" style='display:none'>
+
+            <form id='plot-form' class="form-horizontal" role=
+            "form" style='display:none'>
               <h2>Plot Parameters</h2>
 
               <div class="form-group">
-              <label for="plot-intervals">Intervals
-              (years):</label> <select id="plot-intervals" name=
-              "plot-intervals" multiple>
-                <option>
-                  1
-                </option>
+                <label for="plot-intervals">Intervals
+                (years):</label><br>
+                <select id="plot-intervals" name="plot-intervals"
+                multiple>
+                  <option>
+                    1
+                  </option>
 
-                <option>
-                  2
-                </option>
+                  <option>
+                    2
+                  </option>
 
-                <option>
-                  3
-                </option>
+                  <option>
+                    3
+                  </option>
 
-                <option>
-                  4
-                </option>
+                  <option>
+                    4
+                  </option>
 
-                <option>
-                  5
-                </option>
-              </select>
-
+                  <option>
+                    5
+                  </option>
+                </select>
               </div>
 
               <div id='covariate_sub_select'></div>
-<!--
+
+              <div style="clear:both;"></div><!--
         <P style="clear:both; padding-top:10px;">Covariate Variables:<BR>
         <SELECT id='covariate_select_plot' name='covariate_select_plot'></SELECT></P>
 -->
-              <input type='button' id='plot'
-              value='Plot' class="pull-right"> <!--
+              <button id='plot' type='submit' class=
+              "btn btn-primary btn-sm pull-right">Plot</button> 
+              <!--
           <INPUT type='button'  onclick="window.location.href='/jpsurv'" value="Reset" class="pull-right">
-          --></p>
+          -->
             </form>
           </div>
         </div><!-- Main Menu Tabs -->
@@ -230,7 +241,9 @@
               <div class="jumbotron">
                 <div style="float:left;margin-left:30px;">
                   <p id="spinner" style=
-                  "padding:200px 100px;display:none;"><span style=
+                  "padding:200px 100px;display:none;"><i class=
+                  "fa fa-spinner fa-pulse fa-2x">&nbsp;</i>
+                  <span style=
                   "font-weight:bold;font-size:150%;margin-left:15px;">
                   Calculating</span></p>
 
@@ -267,15 +280,17 @@
                     </div>
 
                     <p id="spinner-plotting" style=
-                    "padding:200px 100px;display:none;">
-                    <span style="font-weight:bold;font-size:150%;margin-left:15px;">
+                    "padding:200px 100px;display:none;"><i class=
+                    "fa fa-spinner fa-pulse fa-2x">&nbsp;</i>
+                    <span style=
+                    "font-weight:bold;font-size:150%;margin-left:15px;">
                     Plotting</span></p>
 
                     <div id="plot-container" style="display:none;">
-                      <h2 style="font-size:20px;text-align:center;">Relative
-                      Survival</h2><!-- <img src="ExampleJPSurvPlot.png" alt="Uploaded" class="logo" style="width:600px;padding:10px;border:1px solid;"> -->
-                      <img id="plot-image" alt="Uploaded" class=
-                      "logo" style=
+                      <h2 style=
+                      "font-size:20px;text-align:center;">Relative
+                      Survival</h2><img id="plot-image" alt=
+                      "Uploaded" class="logo" style=
                       "width:600px;padding:10px;border:1px solid;">
 
                       <div>
@@ -383,7 +398,7 @@
       <div class="footerLinks">
         <a href="http://www.cancer.gov/" title="Home" data-toggle=
         "tooltip" data-placement=
-        "left">JPSurv</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a href=
+        "left">APC</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a href=
         "mailto:jpsurv-admin@mail.nih.gov?subject=JP%20Surv"
         target="_top" title=
         "Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a href=
@@ -415,35 +430,7 @@
 </script><script src=
 "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"
   type="text/javascript">
-</script><!-- Modernizr not in use
-
-Temporarily removing to see if it effects anything.
-
-<script
-  src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"
-  type="text/javascript">
+</script><script src="jpsurv.js" type="text/javascript">
 </script>
-
-  <script
-
-    src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"
-    type="text/javascript">
-
-    </script>
-  <script
-    src="http://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"
-    type="text/javascript">
-
-    </script>
-  <script type="text/javascript"
-    src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js">
-    </script>
--->
-  <script src="jpsurv.js" type="text/javascript">
-</script><!--
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ladda-bootstrap/0.9.4/ladda.min.js"></script>
-
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ladda-bootstrap/0.9.4/spin.min.js"></script>
--->
 </body>
 </html>
