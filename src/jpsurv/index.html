@@ -77,12 +77,12 @@
         <div class="col-md-4">
           <div class="well">
             <!-- Upload FORM - STAGE 1 -->
-
+            <div class="box col-md-12">
             <form id="upload-form" class="form-horizontal" role=
             "form" method="post" enctype="multipart/form-data"
             action="/jpsurvRest/stage1_upload">
-              <h2>Input Files</h2>
-
+              <h2 class="stage-header">Input Files</h2>
+              <hr class="stage-separator">
               <div id="file_control_container" class="form-group">
                 <label for='file_control'>Data Dictionary
                 File:</label> <a style='font-size:small' href=
@@ -113,12 +113,14 @@
                 "Please attach both input files to enable upload."
                 disabled>Upload Input Files</button>
               </div>
-            </form><!-- Calculate - STAGE 2 -->
-
+            </form>
+            </div>
+            <!-- Calculate - STAGE 2 -->
+            <div class="box col-md-12">
             <form id='parameters' class="form-horizontal" role=
             "form" style='display:none'>
-              <hr class="separator">
-              <h2>Calculation Parameters</h2>
+              <h2 class="stage-header">Calculation Parameters</h2>
+              <hr class="stage-separator">
 
               <div id='diagnosis_title'></div>
 
@@ -180,14 +182,14 @@
               "window.location.href='/jpsurv'" value="Reset" class=
               "btn btn-warning btn-sm pull-left"></p>
             </form>
-
+            </div>
             <div style="clear:both;"></div>
             <!-- Plot FORM - STAGE 3 -->
-
-            <form id='plot-form' class="form-horizontal" role=
-            "form" style='display:none'>
-              <hr class="separator">
-              <h2>Plot Parameters</h2>
+            <div id='plot-form' class="box col-md-12" style='display:none'>
+            <form  class="form-horizontal" role=
+            "form">
+              <h2 class="stage-header">Plot Parameters</h2>
+              <hr class="stage-separator">
 
               <div class="form-group">
                 <label for="plot-intervals" class="control-label col-md-6">Intervals
@@ -214,6 +216,8 @@
           <INPUT type='button'  onclick="window.location.href='/jpsurv'" value="Reset" class="pull-right">
           -->
             </form>
+            
+            </div>
           </div>
         </div><!-- Main Menu Tabs -->
 

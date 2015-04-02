@@ -27,10 +27,20 @@ table {
 }
 h2 {
 	font-size:large;
+	font-weight:bold;
 }
 h3 {
 	font-size:normal;	
 }
+
+h2.stage-header {
+	font-weight:bold;
+	font-style:normal;
+	font-size:large;
+	padding:0px;
+	margin-top:-15px;
+}
+
 .sub_select {
 }
 
@@ -49,31 +59,32 @@ h3 {
 }
 
 .well {
-	padding: 25px;
+	padding: 10px;
 	min-height:641px;
+	overflow: auto;
 }
 
 body {
     color: #444;
     font-family: arial;
-		line-height: 1.1;
-		font-size: 12px;
-		font-family: Arial,Helvetica,sans-serif;
+	line-height: 1.1;
+	font-size: 12px;
+	font-family: Arial,Helvetica,sans-serif;
 }
 
 .jumbotron p {
 		font-size: 14px;
 }
 
-hr.separator{
-	margin-top:5 0px;
+hr.stage-separator{
+	margin-top:-10px;
 }
 
 .plot-container {
-		padding:200px 25px;
-		margin-left:40px;
+	padding:200px 25px;
+	margin-left:40px;
 }
-.control-label {
+.form-horizontal .control-label {
 	padding-top:0px;
 }
 
@@ -93,3 +104,12 @@ hr.separator{
 .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border: 1px solid #bbbbbb;}
 .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border: 1px solid #bbbbbb;}
 .tg .tg-e3zv{font-weight:bold;background-color:#aaaaaa;color:#444444}
+
+.box {
+    background: linear-gradient(to bottom, #feffff 0%, #feffff 50%, #e7f3fa 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px 0 rgba(1, 90, 129, 0.4);
+    color: #666;
+    margin-bottom: 18px;
+    padding: 18px;
+}
