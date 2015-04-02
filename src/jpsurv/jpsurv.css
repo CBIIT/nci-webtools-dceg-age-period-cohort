@@ -25,12 +25,6 @@ table {
 	min-height:400px;
 	height:auto;
 }
-/*
-H2 {
-	font-size:large;
-	text-align:center;
-}
-*/
 h2 {
 	font-size:large;
 }
@@ -53,7 +47,11 @@ h3 {
 }
 
 .jumbotron {
-		background-color: white;
+	background-color: white;
+}
+
+.well {
+	padding: 25px;
 }
 
 body {

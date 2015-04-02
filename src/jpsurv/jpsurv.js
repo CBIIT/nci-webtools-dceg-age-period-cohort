@@ -76,6 +76,8 @@ $(document).ready(function() {
 	$("#calculate").on("click", setCalculateData);
 	$("#plot").on("click", setPlotData);
 	//$("#calculate").on("click", show_graph_temp);
+	$("#file_data").on("change", checkInputFiles);
+	$("#file_control").on("change", checkInputFiles);
 
 });
 
@@ -92,7 +94,19 @@ function setUploadData() {
 
 }
 
+function checkInputFiles() {
+	//If both files are filed out then enable the Upload Files Button
+	var file_control = $("#file_control").val();
+	var file_data = $("#file_data").val();
+
+	if(file_control.length > 0 && file_data.length > 0) {
+		$("#upload_file_submit").removeAttr('disabled');
+		$("#upload_file_submit").attr('title', 'Upload Input Files');
+	}
+}
+
 function setCalculateData() {
+
 	//Set static data
 	var inputAnswers;
 	// = $('#parameters').serialize();
