@@ -20,6 +20,9 @@
   <title>JPSurv</title><!--
 <link rel="/LDlink/shortcut icon" href="LD.ico" >
 -->
+  <link rel="stylesheet" href=
+  "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"
+  type="text/css">
   <link rel="stylesheet" href="../common/css/font-awesome.css"
   type="text/css">
   <link rel="stylesheet" href="../common/css/style.css" type=
@@ -114,6 +117,7 @@
 
             <form id='parameters' class="form-horizontal" role=
             "form" style='display:none'>
+              <hr class="separator">
               <h2>Calculation Parameters</h2>
 
               <div id='diagnosis_title'></div>
@@ -147,36 +151,34 @@
                   </select>
               </div>
 
-              <p><label for="join_point_select">Join
-              Points:</label> <select id='join_point_select' name=
+              <div class="form-group">
+              <label for="join_point_select" class="control-label col-md-6">Join
+              Points:</label>
+              <div class="col-md-6">
+               <select id='join_point_select' name=
               'join_point_select'>
-                <option>
-                  1
-                </option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+              </select>
+              </div>
+              </div>
 
-                <option>
-                  2
-                </option>
+              <p style="clear:both;">
 
-                <option>
-                  3
-                </option>
-
-                <option>
-                  4
-                </option>
-              </select></p>
-
-              <p style="clear:both;"><!--              
+              <!--              
               <input type='submit' value='Calculate Yeh!' id='calculate' class="btn btn-primary btn-sm pull-right">
               <button onclick="window.location.href='/jpsurv'" value=
               "Reset" class="btn btn-warning btn-sm pull-left">Reset</button>
 
 -->
                <input type='button' id='calculate' value=
-              'Calculate'> <input type='button' onclick=
+              'Calculate' class=
+              "btn btn-primary btn-sm pull-right"> 
+              <input type='button' onclick=
               "window.location.href='/jpsurv'" value="Reset" class=
-              "pull-right"></p>
+              "btn btn-warning btn-sm pull-left"></p>
             </form>
 
             <div style="clear:both;"></div>
@@ -184,31 +186,16 @@
 
             <form id='plot-form' class="form-horizontal" role=
             "form" style='display:none'>
+              <hr class="separator">
               <h2>Plot Parameters</h2>
 
               <div class="form-group">
-                <label for="plot-intervals">Intervals
-                (years):</label><br>
+                <label for="plot-intervals" class="control-label col-md-6">Intervals
+                (years):</label>
                 <select id="plot-intervals" name="plot-intervals"
                 multiple>
                   <option>
                     1
-                  </option>
-
-                  <option>
-                    2
-                  </option>
-
-                  <option>
-                    3
-                  </option>
-
-                  <option>
-                    4
-                  </option>
-
-                  <option>
-                    5
                   </option>
                 </select>
               </div>
@@ -219,8 +206,10 @@
         <P style="clear:both; padding-top:10px;">Covariate Variables:<BR>
         <SELECT id='covariate_select_plot' name='covariate_select_plot'></SELECT></P>
 -->
-              <button id='plot' type='submit' class=
-              "btn btn-primary btn-sm pull-right">Plot</button> 
+              <div class="pull-right">
+              <input type="button" id='plot' class=
+              "btn btn-primary btn-sm" value="Plot">
+              </div>
               <!--
           <INPUT type='button'  onclick="window.location.href='/jpsurv'" value="Reset" class="pull-right">
           -->
@@ -231,7 +220,7 @@
         <div class="col-md-8">
           <ul id="jpsurv-tabs" class="nav nav-tabs responsive">
             <li class="active"><a href="#home" data-toggle=
-            "tab">JPSurv</a></li>
+            "tab">APC</a></li>
 
             <li><a href="#help-tab" data-toggle="tab">Help</a></li>
           </ul>
@@ -239,20 +228,28 @@
           <div class="tab-content">
             <div class="tab-pane active" id="home">
               <div class="jumbotron">
-                <div style="float:left;margin-left:30px;">
-                  <p id="spinner" style=
-                  "padding:200px 100px;display:none;"><i class=
-                  "fa fa-spinner fa-pulse fa-2x">&nbsp;</i>
+                <div class="container">
+                  <div id="spinner" style=
+                  "display:none;"><i class=
+                  "fa fa-spinner fa-spin fa-2x">&nbsp;</i>
                   <span style=
                   "font-weight:bold;font-size:150%;margin-left:15px;">
-                  Calculating</span></p>
+                  Calculating</span>
+                  </div>
 
-                  <div>
+                  <div class="col-md-12">
                     <div id="apc-container" style="display:none;">
-                      <h2 style="font-size:20px;">APC</h2>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <h2 style="font-size:20px;text-align:center;">APC</h2>
+                        </div>
+                      </div>
 
-                      <table class="tg" style=
-                      "margin-bottom:30px;margin-left:100px;">
+<div class="row">
+                        <div class="col-md-12">
+                      
+                                            <table class="tg" style=
+                      "margin-bottom:30px;" align="center">
                         <tr>
                           <th class="tg-e3zv">Start Year</th>
 
@@ -277,11 +274,13 @@
                           <td id="estimate1" class="tg-031e"></td>
                         </tr>
                       </table>
+                      </div>
+                      </div>
                     </div>
 
                     <p id="spinner-plotting" style=
                     "padding:200px 100px;display:none;"><i class=
-                    "fa fa-spinner fa-pulse fa-2x">&nbsp;</i>
+                    "fa fa-spinner fa-spin fa-2x">&nbsp;</i>
                     <span style=
                     "font-weight:bold;font-size:150%;margin-left:15px;">
                     Plotting</span></p>

@@ -32,8 +32,6 @@ h3 {
 	font-size:normal;	
 }
 .sub_select {
-	float:left;
-	padding:2px;
 }
 
 .table_title {
@@ -52,6 +50,7 @@ h3 {
 
 .well {
 	padding: 25px;
+	min-height:641px;
 }
 
 body {
@@ -66,10 +65,18 @@ body {
 		font-size: 14px;
 }
 
+hr.separator{
+	margin-top:5 0px;
+}
+
 .plot-container {
 		padding:200px 25px;
 		margin-left:40px;
 }
+.control-label {
+	padding-top:0px;
+}
+
 .tab-content {
     background: none repeat scroll 0 0 white;
     border-color: #d9d9d9;

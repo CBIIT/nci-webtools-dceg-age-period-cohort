@@ -618,7 +618,7 @@ function add_cohort_covariance_variable_select(field, variable_name, variable_ti
 	for (i=0;i<values.length;i++) {
 		variable_select.append("<OPTION>"+values[i]+"</OPTION>");
 	}
-	var sub_form_div = $('<div>').addClass('col-sm-5');
+	var sub_form_div = $('<div>').addClass('col-md-6');
 	sub_form_div.append(variable_select);
 
 	var label_message = variable_title + " :";
@@ -628,12 +628,13 @@ function add_cohort_covariance_variable_select(field, variable_name, variable_ti
 		.append(label_message)
 		.attr('for',variable_name+'_select')
 		.addClass('control-label')
-		.addClass('col-sm-7');
+		.addClass('col-md-6');
 
 	field.append($("<DIV class='sub_select'>")
 			.append(label)
 			.append(sub_form_div)
 			);
+	field.append($("<div>").css("clear","both"));
 
 	if(field.attr('id') == "covariate_sub_select") {
 		$("#"+variable_name+"_select").attr('multiple', '');
