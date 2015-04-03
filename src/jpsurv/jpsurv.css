@@ -30,7 +30,7 @@ h2 {
 	font-weight:bold;
 }
 h3 {
-	font-size:normal;	
+	font-size:normal;
 }
 
 h2.stage-header {
@@ -64,12 +64,77 @@ h2.stage-header {
 	overflow: auto;
 }
 
+.form-horizontal .control-label {
+  padding-top:0px;
+}
+
+.form-horizontal .form-group {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+.form-group {
+    margin-bottom: 0px;
+}
+.jpsurv-label-container {
+   margin-bottom: 5px;
+   clear:both;
+ }
+.jpsurv-label {
+    display: inline-block;
+    font-weight: 700;
+    margin-bottom: 5px;
+    max-width: 100%;
+    float:left;
+}
+.jpsurv-label-content {
+    margin-left:5px;
+    max-width:90%;
+    overflow:hidden;
+    clear:both;
+}
+.jpsurv-button {
+    margin-top: 5px;
+    clear:both;
+}
+
+fieldset.jpsurv-fieldset {
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    border:1px solid #DAE4E8;
+    margin-bottom:10px;
+}
+
+legend.jpsurv-legend {
+  /*
+  padding: 0.2em 0.5em;
+  color:green;
+  font-size:90%;
+  */
+    padding: 0.2em 0.5em;
+    font-size:90%;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    padding: 6px;
+    border:1px solid #DAE4E8;
+    margin-bottom:0px;
+    width:auto;
+}
+
+.co-value-container {
+  padding:5px 0px;
+}
+
+
 body {
     color: #444;
     font-family: arial;
 	line-height: 1.1;
 	font-size: 12px;
 	font-family: Arial,Helvetica,sans-serif;
+  margin-bottom:0px;
+  width:auto;
 }
 
 .jumbotron p {
@@ -83,9 +148,6 @@ hr.stage-separator{
 .plot-container {
 	padding:200px 25px;
 	margin-left:40px;
-}
-.form-horizontal .control-label {
-	padding-top:0px;
 }
 
 .tab-content {
@@ -112,4 +174,8 @@ hr.stage-separator{
     color: #666;
     margin-bottom: 18px;
     padding: 18px;
+}
+
+input[type="file"] {
+    max-width: 90%;
 }

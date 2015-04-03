@@ -19,19 +19,30 @@ $(document).ready(function() {
 		$('#file_control_container')
 				.empty()
 				.append($('<div>')
-					.append('Dictionary File: ')
+					.addClass('jpsurv-label-container')
 					.append($('<span>')
-							.append(jpTrim(getUrlParameter('file_control_filename'), 30))
+							.append('Dictionary File:')
+							.addClass('jpsurv-label')
+						)
+					.append($('<span>')
+							.append(getUrlParameter('file_control_filename'))
 							.attr('title', getUrlParameter('file_control_filename'))
+							.addClass('jpsurv-label-content')
 						)
 					);
 		$('#file_data_container')
 				.empty()
 				.append($('<div>')
-					.append('Data File: ')
+					.addClass('jpsurv-label-container')
 					.append($('<span>')
-							.append(jpTrim(getUrlParameter('file_data_filename'), 30))
+							.append('Data File:')
+							.addClass('jpsurv-label')
+						)
+//					.append(jpTrim(getUrlParameter('file_data_filename'), 30))
+					.append($('<span>')
+							.append(getUrlParameter('file_data_filename'))
 							.attr('title', getUrlParameter('file_data_filename'))
+							.addClass('jpsurv-label-content')
 						)
 					);
 
@@ -141,22 +152,6 @@ function setCalculateData() {
 	// range
 	jpsurvData.calculate.form.yearOfDiagnosisRange = [parseInt($('#year_of_diagnosis_start').val()), parseInt($('#year_of_diagnosis_end').val())];
 	jpsurvData.calculate.form.joinPoints = parseInt($('#join_point_select').val()),
-
-	/*
-	console.log('inputAnswers');
-
-	var obj = {
-		"seerFilePrefix" : seerFilePrefix,
-		"yearOfDiagnosisVarName" : yearOfDiagnosisVarName,
-		"yearOfDiagnosisRange" : yearofDiagnosisRange,
-		"allVars" : JSON.stringify(allVars),
-		"cohortVars" : cohortVars,
-		"cohortValues" : cohortValues,
-		"covariateVars" : $('#covariate_select').val(),
-		"numJP" : parseInt($('#join_point_select').val()),
-		"outputFileName" : seerFilePrefix + ".output"
-	};
-	*/
 
 	console.log("setCalculateData()");
 	console.dir(jpsurvData);
@@ -376,7 +371,20 @@ function load_form() {
 	  build_parameter_column();
 	  // The following is for demo purpose only.
 	  //Temp change a title
-	  $('#diagnosis_title').empty().append("Year of Diagnosis: Year of diagnosis 1975+");
+		$('#diagnosis_title')
+				.empty()
+				.append($('<div>')
+					.addClass('jpsurv-label-container')
+					.append($('<span>')
+							.append('Year of Diagnosis:')
+							.addClass('jpsurv-label')
+						)
+					.append($('<span>')
+							.append(jpsurvData.calculate.static.yearOfDiagnosisTitle)
+							.attr('title', 'Year of diagnosis label')
+							.addClass('jpsurv-label-content')
+						)
+					);
 	//}
 
 	//reader.readAsText(file_control, "UTF-8");
@@ -389,7 +397,7 @@ function build_parameter_column() {
 	var covariate_options = Object.keys(cohort_covariance_variables);
 	covariate_options.unshift("None");
 	set_covariate_select(covariate_options);
-	$("#parameters").fadeIn();
+	$("#stage2-calculate").fadeIn();
 }
 
 
