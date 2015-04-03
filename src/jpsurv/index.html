@@ -104,7 +104,7 @@
               </div>
 
               <div id="upload_file_submit_container" class=
-              "pull-right">
+              "jpsurv-button pull-right">
                 <!--
             <INPUT type='submit' id='upload_file_submit' value='Upload Files' >
             -->
@@ -116,15 +116,19 @@
             </form>
             </div>
             <!-- Calculate - STAGE 2 -->
-            <div class="box col-md-12">
+            <div id="stage2-calculate" class="box col-md-12" style="display:none;">
             <form id='parameters' class="form-horizontal" role=
-            "form" style='display:none'>
+            "form">
               <h2 class="stage-header">Calculation Parameters</h2>
               <hr class="stage-separator">
 
               <div id='diagnosis_title'></div>
 
-              <p>Year of Diagnosis Range:<br>
+              <div class="jpsurv-label-container">
+              <span class="jpsurv-label">Year of Diagnosis Range:<span>
+
+              <span class="jpsurv-label-content">
+
               <label for="year_of_diagnosis_start" style=
               "display:none">Start Year</label> <select id=
               'year_of_diagnosis_start' name=
@@ -133,31 +137,37 @@
                 style="display:none">End Year</label> <select id=
                 'year_of_diagnosis_end' name=
                 'year_of_diagnosis_end'>
-                </select></p>
-
-              <div class="form-group">
-                <label for="cohort_select">Cohort
-                Variables:</label><br>
-                <select id='cohort_select' name='cohort_select'
+                </select>
+                </span>
+              </div>
+              <div class="form-group jpsurv-label-container">
+                <label class="jpsurv-label" for="cohort_select">Cohort
+                Variables:</label>
+                <select id='cohort_select' class="jpsurv-label-content" name='cohort_select'
                 multiple>
                   </select>
               </div>
 
-              <div id='cohort_sub_select' class="form-group"></div>
+<fieldset id="cohort-fieldset" class="jpsurv-fieldset">
+  <legend class="jpsurv-legend">Cohort Values:</legend>
+  <div id='cohort_sub_select' class="form-group jpsurv-label-container co-value-container"></div>
+</fieldset>
 
-              <div class="form-group">
-                <label for="covariate_select">Covariate
-                Variables:</label><br>
-                <select id='covariate_select' name=
+              <div style="clear:both;"></div>
+
+              <div class="form-group jpsurv-label-container">
+                <label class="jpsurv-label" for="covariate_select">Covariate
+                Variables:</label>
+                <select id='covariate_select' class="jpsurv-label-content" name=
                 'covariate_select'>
                   </select>
               </div>
 
-              <div class="form-group">
-              <label for="join_point_select" class="control-label col-md-6">Join
+
+              <div class="form-group jpsurv-label-container">
+              <label for="join_point_select" class="jpsurv-label">Join
               Points:</label>
-              <div class="col-md-6">
-               <select id='join_point_select' name=
+              <select id='join_point_select' class="jpsurv-label-content" name=
               'join_point_select'>
                 <option>1</option>
                 <option>2</option>
@@ -165,36 +175,28 @@
                 <option>4</option>
               </select>
               </div>
-              </div>
-
-              <p style="clear:both;">
-
-              <!--              
-              <input type='submit' value='Calculate Yeh!' id='calculate' class="btn btn-primary btn-sm pull-right">
-              <button onclick="window.location.href='/jpsurv'" value=
-              "Reset" class="btn btn-warning btn-sm pull-left">Reset</button>
-
--->
-               <input type='button' id='calculate' value=
-              'Calculate' class=
-              "btn btn-primary btn-sm pull-right"> 
+            <div class="jpsurv-button pull-right">
               <input type='button' onclick=
               "window.location.href='/jpsurv'" value="Reset" class=
-              "btn btn-warning btn-sm pull-left"></p>
+              "btn btn-warning btn-sm" title="Reset all values">
+               <input type='button' id='calculate' value=
+              'Calculate' class=
+              "btn btn-primary btn-sm">
+            </div>
             </form>
             </div>
             <div style="clear:both;"></div>
             <!-- Plot FORM - STAGE 3 -->
-            <div id='plot-form' class="box col-md-12" style='display:none'>
+            <div id='plot-form' class="box col-md-12" style='display:none1'>
             <form  class="form-horizontal" role=
             "form">
               <h2 class="stage-header">Plot Parameters</h2>
               <hr class="stage-separator">
 
-              <div class="form-group">
-                <label for="plot-intervals" class="control-label col-md-6">Intervals
+              <div class="form-group jpsurv-label-container">
+                <label for="plot-intervals" class="jpsurv-label">Intervals
                 (years):</label>
-                <select id="plot-intervals" name="plot-intervals"
+                <select id="plot-intervals" class="jpsurv-label-content" name="plot-intervals"
                 multiple>
                   <option>
                     1
@@ -202,21 +204,29 @@
                 </select>
               </div>
 
-              <div id='covariate_sub_select'></div>
+ <fieldset id="covariate-fieldset" class="jpsurv-fieldset">
+  <legend class="jpsurv-legend">Covariate Values:</legend>
+  <div id='covariate_sub_select' class="co-value-container">
+  Name: <input type="text"><br>
+  Email: <input type="text"><br>
+  Date of birth: <input type="text">
+  </div>
+ </fieldset>
+
 
               <div style="clear:both;"></div><!--
         <P style="clear:both; padding-top:10px;">Covariate Variables:<BR>
         <SELECT id='covariate_select_plot' name='covariate_select_plot'></SELECT></P>
 -->
-              <div class="pull-right">
+              <div class="jpsurv-button pull-right">
               <input type="button" id='plot' class=
-              "btn btn-primary btn-sm" value="Plot">
+              "btn btn-primary btn-sm" value="Plot" title="Generate a plot">
               </div>
               <!--
           <INPUT type='button'  onclick="window.location.href='/jpsurv'" value="Reset" class="pull-right">
           -->
             </form>
-            
+
             </div>
           </div>
         </div><!-- Main Menu Tabs -->
@@ -251,7 +261,7 @@
 
 <div class="row">
                         <div class="col-md-12">
-                      
+
                                             <table class="tg" style=
                       "margin-bottom:30px;" align="center">
                         <tr>
