@@ -103,6 +103,7 @@ fieldset.jpsurv-fieldset {
     border-radius: 8px;
     border:1px solid #DAE4E8;
     margin-bottom:10px;
+    display:none;
 }
 
 legend.jpsurv-legend {

@@ -527,6 +527,7 @@ function change_cohort_select() {
 
 	$("#cohort_sub_select").empty();
 	$("#covariate_select").val('None');
+	$("#covariate-fieldset").hide();
 	//alert('empty covariate_sub_select');
 	$("#covariate_sub_select").empty();
 	//alert('Is it empty?');
@@ -539,8 +540,10 @@ function change_cohort_select() {
 			}
 		}
 		var covariate_options = remove_items_from_set(keys, all_selected);
+		$("#cohort-fieldset").show();
 	} else {
 		var covariate_options = keys;
+		$("#cohort-fieldset").hide();
 	}
 	covariate_options.unshift("None");
 	set_covariate_select(covariate_options);
@@ -578,6 +581,12 @@ function change_covariate_select() {
 		var covariate_options = remove_items_from_set(keys, all_selected);
 	} else {
 		var covariate_options = keys;
+	}
+
+	if(all_selected == "None"){
+		$("#covariate-fieldset").hide();
+	} else {
+		$("#covariate-fieldset").show();
 	}
 
 /*
