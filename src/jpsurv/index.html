@@ -77,146 +77,162 @@
         <div class="col-md-4">
           <div class="well">
             <!-- Upload FORM - STAGE 1 -->
+
             <div class="box col-md-12">
-            <form id="upload-form" class="form-horizontal" role=
-            "form" method="post" enctype="multipart/form-data"
-            action="/jpsurvRest/stage1_upload">
-              <h2 class="stage-header">Input Files</h2>
-              <hr class="stage-separator">
-              <div id="file_control_container" class="form-group">
-                <label for='file_control'>Data Dictionary
-                File:</label> <a style='font-size:small' href=
-                'SEER9_Survival_6CancerSitesByStage_1975_2007.dic'
-                download=
-                'SEER9_Survival_6CancerSitesByStage_1975_2007.dic'>(example
-                dictionary)</a> <input type="file" id=
-                "file_control" name="file_control">
-              </div>
+              <form id="upload-form" class="form-horizontal" role=
+              "form" method="post" enctype="multipart/form-data"
+              action="/jpsurvRest/stage1_upload">
+                <h2 class="stage-header">Input Files</h2>
+                <hr class="stage-separator">
 
-              <div id="file_data_container" class="form-group">
-                <label for='file_data'>Data File:</label> <a style=
-                'font-size:small' href=
-                'SEER9_Survival_6CancerSitesByStage_1975_2007.txt'
-                download=
-                'SEER9_Survival_6CancerSitesByStage_1975_2007.txt'>(example
-                data)</a> <input type="file" id="file_data" name=
-                "file_data">
-              </div>
+                <div id="file_control_container" class=
+                "form-group">
+                  <label for='file_control'>Data Dictionary
+                  File:</label> <a style='font-size:small' href=
+                  'SEER9_Survival_6CancerSitesByStage_1975_2007.dic'
+                  download=
+                  'SEER9_Survival_6CancerSitesByStage_1975_2007.dic'>
+                  (example dictionary)</a> <input type="file" id=
+                  "file_control" name="file_control">
+                </div>
 
-              <div id="upload_file_submit_container" class=
-              "pull-right">
-                <!--
+                <div id="file_data_container" class="form-group">
+                  <label for='file_data'>Data File:</label>
+                  <a style='font-size:small' href=
+                  'SEER9_Survival_6CancerSitesByStage_1975_2007.txt'
+                  download=
+                  'SEER9_Survival_6CancerSitesByStage_1975_2007.txt'>
+                  (example data)</a> <input type="file" id=
+                  "file_data" name="file_data">
+                </div>
+
+                <div id="upload_file_submit_container" class=
+                "pull-right">
+                  <!--
             <INPUT type='submit' id='upload_file_submit' value='Upload Files' >
             -->
-                <button id='upload_file_submit' type="submit"
-                class="btn btn-primary btn-sm" title=
-                "Please attach both input files to enable upload."
-                disabled>Upload Input Files</button>
-              </div>
-            </form>
-            </div>
-            <!-- Calculate - STAGE 2 -->
+                  <button id='upload_file_submit' type="submit"
+                  class="btn btn-primary btn-sm" title=
+                  "Please attach both input files to enable upload."
+                  disabled>Upload Input Files</button>
+                </div>
+              </form>
+            </div><!-- Calculate - STAGE 2 -->
+
             <div class="box col-md-12">
-            <form id='parameters' class="form-horizontal" role=
-            "form" style='display:none'>
-              <h2 class="stage-header">Calculation Parameters</h2>
-              <hr class="stage-separator">
+              <form id='parameters' class="form-horizontal" role=
+              "form" style='display:none'>
+                <h2 class="stage-header">Calculation
+                Parameters</h2>
+                <hr class="stage-separator">
 
-              <div id='diagnosis_title'></div>
+                <div id='diagnosis_title'></div>
 
-              <p>Year of Diagnosis Range:<br>
-              <label for="year_of_diagnosis_start" style=
-              "display:none">Start Year</label> <select id=
-              'year_of_diagnosis_start' name=
-              'year_of_diagnosis_start'>
-                </select> to <label for="year_of_diagnosis_end"
-                style="display:none">End Year</label> <select id=
-                'year_of_diagnosis_end' name=
-                'year_of_diagnosis_end'>
-                </select></p>
+                <p>Year of Diagnosis Range:<br>
+                <label for="year_of_diagnosis_start" style=
+                "display:none">Start Year</label> <select id=
+                'year_of_diagnosis_start' name=
+                'year_of_diagnosis_start'>
+                  </select> to <label for="year_of_diagnosis_end"
+                  style="display:none">End Year</label> <select id=
+                  'year_of_diagnosis_end' name=
+                  'year_of_diagnosis_end'>
+                  </select></p>
 
-              <div class="form-group">
-                <label for="cohort_select">Cohort
-                Variables:</label><br>
-                <select id='cohort_select' name='cohort_select'
-                multiple>
-                  </select>
-              </div>
+                <div class="form-group">
+                  <label for="cohort_select">Cohort
+                  Variables:</label><br>
+                  <select id='cohort_select' name='cohort_select'
+                  multiple>
+                    </select>
+                </div>
 
-              <div id='cohort_sub_select' class="form-group"></div>
+                <div id='cohort_sub_select' class="form-group">
+                </div>
 
-              <div class="form-group">
-                <label for="covariate_select">Covariate
-                Variables:</label><br>
-                <select id='covariate_select' name=
-                'covariate_select'>
-                  </select>
-              </div>
+                <div class="form-group">
+                  <label for="covariate_select">Covariate
+                  Variables:</label><br>
+                  <select id='covariate_select' name=
+                  'covariate_select'>
+                    </select>
+                </div>
 
-              <div class="form-group">
-              <label for="join_point_select" class="control-label col-md-6">Join
-              Points:</label>
-              <div class="col-md-6">
-               <select id='join_point_select' name=
-              'join_point_select'>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-              </select>
-              </div>
-              </div>
+                <div class="form-group">
+                  <label for="join_point_select" class=
+                  "control-label col-md-6">Join Points:</label>
 
-              <p style="clear:both;">
+                  <div class="col-md-6">
+                    <select id='join_point_select' name=
+                    'join_point_select'>
+                      <option>
+                        1
+                      </option>
 
-              <!--              
+                      <option>
+                        2
+                      </option>
+
+                      <option>
+                        3
+                      </option>
+
+                      <option>
+                        4
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <p style="clear:both;"><!--              
               <input type='submit' value='Calculate Yeh!' id='calculate' class="btn btn-primary btn-sm pull-right">
               <button onclick="window.location.href='/jpsurv'" value=
               "Reset" class="btn btn-warning btn-sm pull-left">Reset</button>
 
 -->
-               <input type='button' id='calculate' value=
-              'Calculate' class=
-              "btn btn-primary btn-sm pull-right"> 
-              <input type='button' onclick=
-              "window.location.href='/jpsurv'" value="Reset" class=
-              "btn btn-warning btn-sm pull-left"></p>
-            </form>
+                 <input type='button' id='calculate' value=
+                'Calculate' class=
+                "btn btn-primary btn-sm pull-right"> <input type=
+                'button' onclick="window.location.href='/jpsurv'"
+                value="Reset" class=
+                "btn btn-warning btn-sm pull-left"></p>
+              </form>
             </div>
+
             <div style="clear:both;"></div>
             <!-- Plot FORM - STAGE 3 -->
-            <div id='plot-form' class="box col-md-12" style='display:none'>
-            <form  class="form-horizontal" role=
-            "form">
-              <h2 class="stage-header">Plot Parameters</h2>
-              <hr class="stage-separator">
 
-              <div class="form-group">
-                <label for="plot-intervals" class="control-label col-md-6">Intervals
-                (years):</label>
-                <select id="plot-intervals" name="plot-intervals"
-                multiple>
-                  <option>
-                    1
-                  </option>
-                </select>
-              </div>
+            <div id='plot-form' class="box col-md-12" style=
+            'display:none'>
+              <form class="form-horizontal" role="form">
+                <h2 class="stage-header">Plot Parameters</h2>
+                <hr class="stage-separator">
 
-              <div id='covariate_sub_select'></div>
+                <div class="form-group">
+                  <label for="plot-intervals" class=
+                  "control-label col-md-6">Intervals
+                  (years):</label> <select id="plot-intervals"
+                  name="plot-intervals" multiple>
+                    <option>
+                      1
+                    </option>
+                  </select>
+                </div>
 
-              <div style="clear:both;"></div><!--
+                <div id='covariate_sub_select'></div>
+
+                <div style="clear:both;"></div><!--
         <P style="clear:both; padding-top:10px;">Covariate Variables:<BR>
         <SELECT id='covariate_select_plot' name='covariate_select_plot'></SELECT></P>
 -->
-              <div class="pull-right">
-              <input type="button" id='plot' class=
-              "btn btn-primary btn-sm" value="Plot">
-              </div>
-              <!--
+
+                <div class="pull-right">
+                  <input type="button" id='plot' class=
+                  "btn btn-primary btn-sm" value="Plot">
+                </div><!--
           <INPUT type='button'  onclick="window.location.href='/jpsurv'" value="Reset" class="pull-right">
           -->
-            </form>
-            
+              </form>
             </div>
           </div>
         </div><!-- Main Menu Tabs -->
@@ -233,52 +249,59 @@
             <div class="tab-pane active" id="home">
               <div class="jumbotron">
                 <div class="container">
-                  <div id="spinner" style=
-                  "display:none;"><i class=
-                  "fa fa-spinner fa-spin fa-2x">&nbsp;</i>
-                  <span style=
-                  "font-weight:bold;font-size:150%;margin-left:15px;">
-                  Calculating</span>
+                  <div id="spinner" style="display:none;">
+                    <i class=
+                    "fa fa-spinner fa-spin fa-2x">&nbsp;</i>
+                    <span style=
+                    "font-weight:bold;font-size:150%;margin-left:15px;">
+                    Calculating</span>
                   </div>
 
                   <div class="col-md-12">
                     <div id="apc-container" style="display:none;">
                       <div class="row">
                         <div class="col-md-12">
-                          <h2 style="font-size:20px;text-align:center;">APC</h2>
+                          <h2 style=
+                          "font-size:20px;text-align:center;">
+                          APC</h2>
                         </div>
                       </div>
 
-<div class="row">
+                      <div class="row">
                         <div class="col-md-12">
-                      
-                                            <table class="tg" style=
-                      "margin-bottom:30px;" align="center">
-                        <tr>
-                          <th class="tg-e3zv">Start Year</th>
+                          <table class="tg" style=
+                          "margin-bottom:30px;" align="center">
+                            <tr>
+                              <th class="tg-e3zv">Start Year</th>
 
-                          <th class="tg-e3zv">End Year</th>
+                              <th class="tg-e3zv">End Year</th>
 
-                          <th class="tg-e3zv">Estimate</th>
-                        </tr>
+                              <th class="tg-e3zv">Estimate</th>
+                            </tr>
 
-                        <tr>
-                          <td id="startYear0" class="tg-031e"></td>
+                            <tr>
+                              <td id="startYear0" class="tg-031e">
+                              </td>
 
-                          <td id="endYear0" class="tg-031e"></td>
+                              <td id="endYear0" class="tg-031e">
+                              </td>
 
-                          <td id="estimate0" class="tg-031e"></td>
-                        </tr>
+                              <td id="estimate0" class="tg-031e">
+                              </td>
+                            </tr>
 
-                        <tr>
-                          <td id="startYear1" class="tg-031e"></td>
+                            <tr>
+                              <td id="startYear1" class="tg-031e">
+                              </td>
 
-                          <td id="endYear1" class="tg-031e"></td>
+                              <td id="endYear1" class="tg-031e">
+                              </td>
 
-                          <td id="estimate1" class="tg-031e"></td>
-                        </tr>
-                      </table>
-                      </div>
+                              <td id="estimate1" class="tg-031e">
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
                       </div>
                     </div>
 
