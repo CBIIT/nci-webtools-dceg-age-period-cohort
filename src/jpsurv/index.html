@@ -243,11 +243,48 @@
             <div class="tab-pane active" id="home">
               <div class="jumbotron">
                 <div class="container">
+
+                  <div id="upload-instructions" class="panel panel-default">
+                    <div class="panel-heading"><b>Upload Input Files</b></div>
+                    <div class="panel-body">
+                    <p>Select and upload two SEER files.</p>
+                    <p>
+                        <ul>
+                          <li>Select a SEER Data Dictionary File (.dic)
+                          </li>
+                          <li>Select a SEER Data File (.txt)
+                          </li>
+                          <li>Click <strong>Upload Input Files</strong></li>
+                        </ul>
+                    </p>
+                    </div>
+                  </div>
+                  <div id="calculate-instructions" class="panel panel-default" style="display:none;">
+                    <div class="panel-heading"><strong>Calculation Parameters</strong></div>
+                    <div class="panel-body">
+                      <p>Select the <b>Start Year</b> and <b>End Year</b> for the year of diagnosis range.</p>
+                      <p>Select <strong>Cohort Variables</strong>, <strong>Covariate Variables</strong> and the appropiate values for <strong>Cohort Values</strong> for the <b>SEER Join Point Survivability</b> calculation.</p>
+                    <p>
+                        <ul>
+                          <li>Select one of more cohort variables
+                          </li>
+                          <li>Select cohort values
+                          </li>
+                          <li>Select up to one covariate variable if avalable</li>
+                        </ul>
+                    </p>
+                    <p>Select the number of <strong>Join Points</strong> to use between the interval selected.  Selecting 3 or more Join Points will take a considerable amount of time.  When calculations are completed an e-mail will be sent to you with a link to the results.</p>
+
+                    <p>Click <b>Calculate</b> to execute the Join Point calculation and view the APC table.</p>
+
+                    <p>Click <b>Reset</b> to reset all values and start a new <b>SEER Join Point</b> calculation.</p>
+                    </div>
+                  </div>
                   <div id="spinner" style=
                   "display:none;"><i class=
                   "fa fa-spinner fa-spin fa-2x">&nbsp;</i>
                   <span style=
-                  "font-weight:bold;font-size:150%;margin-left:15px;">
+                  "font-weight:bold;font-size:150%;margin-top:100px;">
                   Calculating</span>
                   </div>
 
@@ -255,14 +292,14 @@
                     <div id="apc-container" style="display:none;">
                       <div class="row">
                         <div class="col-md-12">
-                          <h2 style="font-size:20px;text-align:center;">APC</h2>
+                          <h2 style="font-size:20px;text-align:center;">Annual Percentage Change</h2>
                         </div>
                       </div>
+                      <div class="row">
 
-<div class="row">
                         <div class="col-md-12">
 
-                                            <table class="tg" style=
+                       <table class="tg" style=
                       "margin-bottom:30px;" align="center">
                         <tr>
                           <th class="tg-e3zv">Start Year</th>
@@ -271,7 +308,6 @@
 
                           <th class="tg-e3zv">Estimate</th>
                         </tr>
-
                         <tr>
                           <td id="startYear0" class="tg-031e"></td>
 
@@ -279,7 +315,6 @@
 
                           <td id="estimate0" class="tg-031e"></td>
                         </tr>
-
                         <tr>
                           <td id="startYear1" class="tg-031e"></td>
 
@@ -288,9 +323,34 @@
                           <td id="estimate1" class="tg-031e"></td>
                         </tr>
                       </table>
-                      </div>
-                      </div>
+
+
+                      </div> <!-- md-12 -->
+
+                      </div> <!-- row -->
+                      <!-- Plot instructions inside apc-container -->
+
+                  <div id="plot-instructions" class="panel panel-default">
+                    <div class="panel-heading"><strong>Plot Parameters</strong></div>
+                    <div class="panel-body">
+                    <p>Select <b>interval(s)</b> and/or <b>covarient values</b> for plotting.</p>
+                    <p>
+                        <ul>
+                          <li>Select one or more intervals to plot
+                          </li>
+                          <li>Select <b>Covarient Values</b> for plot
+                          </li>
+                          <li>Click <strong>Plot</strong> to view plots</li>
+                        </ul>
+                    </p>
+                    <p>Change values and click <b>Plot</b> for new plots</p>
+                    <p>Changing <b>Calculation Parameters</b> will reset plot.</p>
+
                     </div>
+                  </div>
+
+                    </div> <!-- apc-container -->
+
 
                     <p id="spinner-plotting" style=
                     "padding:200px 100px;display:none;"><i class=

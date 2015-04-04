@@ -7,6 +7,9 @@ if(getUrlParameter('tokenId')) {
 }
 if(getUrlParameter('status')) {
 	jpsurvData.status = getUrlParameter('status');
+	//Show differenct instructions
+	$('#upload-instructions').hide();
+	$('#calculate-instructions').show();
 }
 
 $(document).ready(function() {
@@ -89,8 +92,21 @@ $(document).ready(function() {
 	//$("#calculate").on("click", show_graph_temp);
 	$("#file_data").on("change", checkInputFiles);
 	$("#file_control").on("change", checkInputFiles);
+	$("#parameters").on("change", checkPlotRest);
 
 });
+
+function checkPlotRest() {
+
+	if ( $('#plot-form').css('display') != 'none' ){
+//		alert('You changed something.  And plot-form is not none');
+		$('#plot-form').hide();
+		$('#plot-instructions').hide();
+		$('#apc-container').hide();
+		$('#calculate-instructions').show();
+	}
+
+}
 
 function setUploadData() {
 	//Set Stage 1 upload data to jpsurvData
@@ -117,6 +133,8 @@ function checkInputFiles() {
 }
 
 function setCalculateData() {
+	//Hide instructions
+	$('#calculate-instructions').hide();
 
 	//Set static data
 	var inputAnswers;
