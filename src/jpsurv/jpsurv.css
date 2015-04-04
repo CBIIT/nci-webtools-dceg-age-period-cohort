@@ -127,6 +127,9 @@ legend.jpsurv-legend {
   padding:5px 0px;
 }
 
+.plot-instructions {
+  margin-top:200px;
+}
 
 body {
     color: #444;
