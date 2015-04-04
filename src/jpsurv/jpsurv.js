@@ -103,6 +103,7 @@ function checkPlotRest() {
 		$('#plot-form').hide();
 		$('#plot-instructions').hide();
 		$('#apc-container').hide();
+		$('#plot-container').hide();
 		$('#calculate-instructions').show();
 	}
 
