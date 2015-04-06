@@ -194,9 +194,9 @@
               <hr class="stage-separator">
 
               <div class="form-group jpsurv-label-container">
-                <label for="plot-intervals" class="jpsurv-label">Intervals
+                <label for="plot_intervals" class="jpsurv-label">Intervals
                 (years):</label>
-                <select id="plot-intervals" class="jpsurv-label-content" name="plot-intervals"
+                <select id="plot_intervals" class="jpsurv-label-content" name="plot_intervals"
                 multiple>
                   <option>
                     1
@@ -220,12 +220,13 @@
 -->
               <div class="jpsurv-button pull-right">
               <input type="button" id='plot' class=
-              "btn btn-primary btn-sm" value="Plot" title="Generate a plot">
+              "btn btn-primary btn-sm" value="Plot" title="Generate a plot" disabled>
               </div>
-              <!--
-          <INPUT type='button'  onclick="window.location.href='/jpsurv'" value="Reset" class="pull-right">
-          -->
-            </form>
+                <!--
+                <button id='plot' class="btn btn-primary btn-sm" title=
+                "Generate a plot."
+                disabled>Plot</button>
+-->
 
             </div>
           </div>
@@ -273,7 +274,7 @@
                           <li>Select <b>Covariate Variable</b> if avalable</li>
                         </ul>
                     </p>
-                    <p>Select the number of <strong>Join Points</strong> to use between the interval selected.  Selecting 3 or more Join Points will take a considerable amount of time.  When calculations are completed an e-mail will be sent to you with a link to the results.</p>
+                    <p>Select the number of <strong>Join Points</strong> to use between the interval selected.  Selecting 3 or more Join Points may take a considerable amount of time.  When long calculations are completed an e-mail will be sent containing a link to the results.</p>
 
                     <p>Click <b>Calculate</b> to execute the Join Point calculation and view the APC table.</p>
 
@@ -323,8 +324,6 @@
                           <td id="estimate1" class="tg-031e"></td>
                         </tr>
                       </table>
-
-
                       </div> <!-- md-12 -->
 
                       </div> <!-- row -->
