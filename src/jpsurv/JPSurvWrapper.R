@@ -215,6 +215,32 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
   return (apcJson)
 }
 
+getDownloadOutputWrapper <- function (filePath, jpsurvDataString) {
+#getDownloadOutputWrapper <- function () {
+  print("R: getFittedResult")
+  jpsurvData = fromJSON(jpsurvDataString)
+  print(jpsurvData)
+  seerFilePrefix = jpsurvData$calculate$static$seerFilePrefix
+  yearOfDiagnosisVarName = jpsurvData$calculate$static$yearOfDiagnosisVarName
+  yearOfDiagnosisRange = jpsurvData$calculate$form$yearOfDiagnosisRange
+  allVars=jpsurvData$calculate$static$allVars
+  cohortVars=jpsurvData$calculate$form$cohortVars
+  cohortValues=jpsurvData$calculate$form$cohortValues
+  covariateVars=jpsurvData$calculate$form$covariateVars
+  numJP=jpsurvData$calculate$form$joinPoints
+  fileName = paste('output', jpsurvData$tokenId, sep="-" )
+  fileName = paste(fileName, "rds", sep="." )
+  cat("fileName\n")
+  cat(fileName)
+  cat("\n")
+  outputFileName = fileName
+
+  fileName = paste('output', jpsurvData$tokenId, sep="-" )
+  fileName = paste(fileName, "rds", sep="." )
+#fileName = paste("joinpoint-output", "txt", sep="." )
+  outputFileName =paste(filePath, fileName, sep="/" )
+}
+
 getDownloadOutput <- function(filePath, fittedResultFile, subsetStr, downloadFile) {
   outFile=paste(filePath, fittedResultFile, sep="/" )
   outputData=readRDS(outFile)
