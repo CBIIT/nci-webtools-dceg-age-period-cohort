@@ -3,9 +3,9 @@
 $(function () {
 
     // Restriction. // TODO - adjust this file extenstion restriction.
-    $('#fileSelect').attr('accept', '.csv, text/plain');
+    $('#fileSelect').attr('accept', '.csv, text/plain');   
 
-// Initilize  
+    // Initilize  
     init();
     function init()
     {
@@ -13,10 +13,11 @@ $(function () {
         console.log(parameters[0]);
         if(parameters[0]) {
             var temp = parameters[0].split("=");
-            var fileId = unescape(temp[1]); 
+            var fileId = unescape(temp[1]);             
+            activateSoccerTab();
             showMetadata(fileId);
             showResult(fileId);              
-        }
+        }        
         else {
             init_state();
         } 
@@ -384,4 +385,26 @@ $(function () {
         init_state(); 
     });
 
+    // tab handling.
+    $('#myTab a').click(function(e){
+        e.preventDefault();        
+        $(this).tab('show');
+    });
+
+    // Info button.  ----- TEMP
+    $("#btnInfo").hover(function(e){
+        var socSystem = $('#socSystem').val();
+        //$(this).attr('data-original-title', $('#socSystem option:selected').text());         
+        //$(this).attr('data-content', 'value: ' + socSystem);   
+        $(this).attr('data-original-title', "MODEL: SOCcer");         
+        $(this).attr('data-content', "Features: JOB Title, SIC, Job Tasks"); 
+        $(this).popover('show');
+    }, function() {
+        $(this).popover('hide');
+    });      
+
 });
+
+function activateSoccerTab() {  
+    $('#myTab a[href="#soccerTab"]').tab('show');
+}
