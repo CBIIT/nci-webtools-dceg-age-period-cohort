@@ -217,7 +217,7 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 
 getDownloadOutputWrapper <- function (filePath, jpsurvDataString) {
 #getDownloadOutputWrapper <- function () {
-  print("R: getFittedResult")
+  print("R: getDownloadOutputWrapper")
   jpsurvData = fromJSON(jpsurvDataString)
   print(jpsurvData)
   seerFilePrefix = jpsurvData$calculate$static$seerFilePrefix

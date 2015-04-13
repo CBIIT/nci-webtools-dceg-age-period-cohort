@@ -98,8 +98,25 @@ $(document).ready(function() {
 //	$("#covariate_value_select").on("change", checkPlotParameters);
 	$("#plot_intervals").on("change", checkPlotParameters);
 	$("#covariate-fieldset").on("click", "#covariate_value_select", checkPlotParameters);
+	$("#data-set").on("click", getDownloadOutput);
 
 });
+
+function getDownloadOutput(event) {
+	event.preventDefault();
+
+	var params = 'jpsurvData='+JSON.stringify(jpsurvData);
+	show_apc_table(params);
+
+	var params = 'jpsurvData='+JSON.stringify(jpsurvData);
+	var download_json = JSON.parse(jpsurvRest('stage3_plot', params));
+
+	alert(download_json);
+
+
+//	$('#data-set').attr('href', '../jpsurv/tmp/output-' +jpsurvData.tokenId+'.rds');
+//	alert("You clicked go go go");
+}
 
 function showPlot() {
 	alert("hide plot instructions");
@@ -240,8 +257,8 @@ function setPlotData() {
 	// Create a unique image id.
 	get_plot();
 	$('#plot-image').attr('src', '../jpsurv/tmp/plot-'+jpsurvData.tokenId+'-'+jpsurvData.plot.static.imageId+'.png')
-	$('#data-set').attr('href', '../jpsurv/tmp/output-' +jpsurvData.tokenId+'.rds');
 }
+
 
 function file_submit() {
 	//set tokenId
@@ -269,8 +286,10 @@ function get_plot() {
 
 }
 
-function show_apc_table(params) {
-		var apc_json = JSON.parse(jpsurvRest('stage2_calculate', params));
+function show_apc_table() {
+
+	var params = 'jpsurvData='+JSON.stringify(jpsurvData);
+	var apc_json = JSON.parse(jpsurvRest('stage2_calculate', params));
 /*
 		$('#apc_json_output').empty()
 			.append($('<h2>').append('APC json').addClass('pull-left'))
@@ -290,15 +309,15 @@ function show_apc_table(params) {
 
 function getApcTable() {
 
-	var params = 'jpsurvData='+JSON.stringify(jpsurvData);
 
 	//jpsurvRest('calculate', newobj);
 	$("#spinner").show();
 	$("#apc-container").hide();
 	$("#plot-container").hide();
 	$("#plot-form").hide();
-	//Uncomment this when data is right....
-	show_apc_table(params);
+
+	show_apc_table();
+
 	$("#spinner").hide();
 	$("#plot-form").show();
 	$("#apc-container").fadeIn();
