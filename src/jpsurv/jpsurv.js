@@ -7,6 +7,9 @@ if(getUrlParameter('tokenId')) {
 }
 if(getUrlParameter('status')) {
 	jpsurvData.status = getUrlParameter('status');
+	//Show differenct instructions
+	$('#upload-instructions').hide();
+	$('#calculate-instructions').show();
 }
 
 $(document).ready(function() {
@@ -19,19 +22,30 @@ $(document).ready(function() {
 		$('#file_control_container')
 				.empty()
 				.append($('<div>')
-					.append('Dictionary File: ')
+					.addClass('jpsurv-label-container')
 					.append($('<span>')
-							.append(jpTrim(getUrlParameter('file_control_filename'), 30))
+							.append('Dictionary File:')
+							.addClass('jpsurv-label')
+						)
+					.append($('<span>')
+							.append(getUrlParameter('file_control_filename'))
 							.attr('title', getUrlParameter('file_control_filename'))
+							.addClass('jpsurv-label-content')
 						)
 					);
 		$('#file_data_container')
 				.empty()
 				.append($('<div>')
-					.append('Data File: ')
+					.addClass('jpsurv-label-container')
 					.append($('<span>')
-							.append(jpTrim(getUrlParameter('file_data_filename'), 30))
+							.append('Data File:')
+							.addClass('jpsurv-label')
+						)
+//					.append(jpTrim(getUrlParameter('file_data_filename'), 30))
+					.append($('<span>')
+							.append(getUrlParameter('file_data_filename'))
 							.attr('title', getUrlParameter('file_data_filename'))
+							.addClass('jpsurv-label-content')
 						)
 					);
 
@@ -76,10 +90,85 @@ $(document).ready(function() {
 	$("#calculate").on("click", setCalculateData);
 	$("#plot").on("click", setPlotData);
 	//$("#calculate").on("click", show_graph_temp);
+	$("#file_data").on("change", checkInputFiles);
+	$("#file_control").on("change", checkInputFiles);
+	$("#parameters").on("change", checkPlotStatus);
+	//$("#plot").on("click", showPlot);
+	//Checking Plot parameters
+//	$("#covariate_value_select").on("change", checkPlotParameters);
+	$("#plot_intervals").on("change", checkPlotParameters);
+	$("#covariate-fieldset").on("click", "#covariate_value_select", checkPlotParameters);
 
 });
 
+function showPlot() {
+	alert("hide plot instructions");
+	$('#plot-instructions').hide();
+}
+function checkPlotStatus() {
+
+	if ( $('#plot-form').css('display') != 'none' ){
+//		alert('You changed something.  And plot-form is not none');
+		$('#plot-form').hide();
+		$('#plot-instructions').hide();
+		$('#apc-container').hide();
+		$('#plot-container').hide();
+		$('#calculate-instructions').show();
+	}
+
+}
+
+function checkPlotParameters() {
+	//If both files are filed out then enable the Upload Files Button
+	var covariate_value = $("#covariate_value_select");
+	var plot_intervals = $("#plot_intervals");
+
+	console.log('checkPlotParameters');
+
+	if(!!covariate_value.val()) {
+		if(!!plot_intervals.val()) {
+			$("#plot").removeAttr('disabled');
+		} else {
+			$("#plot").attr('disabled', true);
+		}
+	} else {
+		$("#plot").attr('disabled', true);
+	}
+	/*
+	if(covariate_value.length !=0){
+		if(plot_intervals.length !=0) {
+			$("#plot").removeAttr('disabled');
+		} else {
+			$("#plot").attr('disabled', true);
+		}
+	} else { 
+		$("#plot").attr('disabled', true);
+	}
+	*/
+	/*
+	if(covariate_value_select.length > 0 && plot_intervals.length > 0) {
+		$("#plot").removeAttr('disabled');
+	} else {
+		$("#plot").attr('disabled', true);
+	}
+	*/
+}
+
+function checkInputFiles() {
+	//If both files are filed out then enable the Upload Files Button
+	var file_control = $("#file_control").val();
+	var file_data = $("#file_data").val();
+
+	if(file_control.length > 0 && file_data.length > 0) {
+		$("#upload_file_submit").removeAttr('disabled');
+		$("#upload_file_submit").attr('title', 'Upload Input Files');
+	}
+}
+
+// set Data after STAGE 1
 function setUploadData() {
+	console.log("setUploadData() - after STAGE 1");
+	console.dir(jpsurvData);
 	//Set Stage 1 upload data to jpsurvData
 	//Set file data
 	jpsurvData.file.dictionary = getUrlParameter('file_control_filename');
@@ -87,12 +176,16 @@ function setUploadData() {
 	jpsurvData.file.form = getUrlParameter('output_filename');
 	jpsurvData.status = getUrlParameter('status');
 
-	console.log("setUploadData()");
-	console.dir(jpsurvData);
 
 }
 
+//Set Data after STAGE 2
 function setCalculateData() {
+	console.log("setCalculateData() - after STAGE 2");
+	console.dir(jpsurvData);
+	//Hide instructions
+	$('#calculate-instructions').hide();
+
 	//Set static data
 	var inputAnswers;
 	// = $('#parameters').serialize();
@@ -128,33 +221,20 @@ function setCalculateData() {
 	jpsurvData.calculate.form.yearOfDiagnosisRange = [parseInt($('#year_of_diagnosis_start').val()), parseInt($('#year_of_diagnosis_end').val())];
 	jpsurvData.calculate.form.joinPoints = parseInt($('#join_point_select').val()),
 
-	/*
-	console.log('inputAnswers');
-
-	var obj = {
-		"seerFilePrefix" : seerFilePrefix,
-		"yearOfDiagnosisVarName" : yearOfDiagnosisVarName,
-		"yearOfDiagnosisRange" : yearofDiagnosisRange,
-		"allVars" : JSON.stringify(allVars),
-		"cohortVars" : cohortVars,
-		"cohortValues" : cohortValues,
-		"covariateVars" : $('#covariate_select').val(),
-		"numJP" : parseInt($('#join_point_select').val()),
-		"outputFileName" : seerFilePrefix + ".output"
-	};
-	*/
-
 	console.log("setCalculateData()");
 	console.dir(jpsurvData);
 
 	//Append the plot intervals
 	append_plot_intervals(jpsurvData.calculate.form.yearOfDiagnosisRange[1] - jpsurvData.calculate.form.yearOfDiagnosisRange[0]);
-	get_apc();
+	getApcTable();
 
 }
 
 function setPlotData() {
-	jpsurvData.plot.form.intervals = $('#plot-intervals').val();
+	console.log("setPlotData() - after STAGE 3");
+	console.dir(jpsurvData);
+
+	jpsurvData.plot.form.intervals = $('#plot_intervals').val();
 	jpsurvData.plot.form.covariateVars = $('#covariate_value_select').val();
 	jpsurvData.plot.static.imageId++;
 	// Create a unique image id.
@@ -172,11 +252,12 @@ function file_submit() {
 }
 
 function get_plot() {
+	$('#plot-instructions').hide();
 	$("#plot-container").hide();
 	$("#spinner-plotting").show();
 	console.log('get_plot');
+
 	var params = 'jpsurvData='+JSON.stringify(jpsurvData);
-	// Calling jpsurvRest
 	var plot_json = JSON.parse(jpsurvRest('stage3_plot', params));
 
 	console.log("plot_json");
@@ -207,107 +288,7 @@ function show_apc_table(params) {
 
 }
 
-function get_apc() {
-	/*  EXAMPLE()...
-
-getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
-
-  #filePath="C:/devel/R"
-  #seerFilePrefix="Breast_RelativeSurvival"
-  #yearOfDiagnosisVarName="Year_of_diagnosis_1975"
-  #yearofDiagnosisRange=c(1975, 2011)
-  #allVar=c("Age_groups","Breast_stage","Year_of_diagnosis_1975")
-  #cohortVars=c("Age_groups")
-  #cohortValues=c("65+")
-  #covariateVars=c("Breast_stage")
-  #numJP=1
-  #outputFileName="Breast_RelativeSurvival.output"
-
-	var obj = {
-		"seerFilePrefix" :"Breast_RelativeSurvival",
-		"yearOfDiagnosisVarName" : "Year_of_diagnosis_1975",
-		"yearofDiagnosisRange" : [1975, 2011],
-		"allVar" : ["Age_groups","Breast_stage","Year_of_diagnosis_1975"],
-		"cohortVars" : ["Age_groups"],
-		"cohortValues" : ["00-49"],
-		"covariateVars" : ["Breast_stage"],
-		"numJP" : 1,
-		"outputFileName" : "Breast_RelativeSurvival.output"
- };
-
-	*/
-/*
-	var inputAnswers;
-	// = $('#parameters').serialize();
-  var yearOfDiagnosisVarName="Year_of_diagnosis_1975";  //HARD CODED...Why?
-
-
-  var seerFilePrefix = "";
-	var yearofDiagnosisRange = [];
-	var allVar = [];
-	var cohortVars = [];
-	var cohortValues = [];
-	var covariateVars = [];
-	var numJP = 1;
-
-  seerFilePrefix = getUrlParameter('file_control_filename');
-  console.info('seerFilePrefix: '+ seerFilePrefix);
-
-  //Find first . and trim to the left
-  var seerFilePrefixIndex = seerFilePrefix.indexOf(".");
-  console.log(seerFilePrefixIndex);
-  if(seerFilePrefixIndex != -1) {
-  		seerFilePrefix = seerFilePrefix.substring(0, seerFilePrefixIndex);
-  }
-  console.log(seerFilePrefix);
-
-	cohortVars = $.map($("#cohort_select option:selected"), function(elem){
-	    return $(elem).text();
-	});
-	$.each(cohortVars, function( index, value ) {
-		cohortValues.push($('#cohort_value_'+index+'_select').val());
-	});
-
-	yearofDiagnosisRange[0] = parseInt($('#year_of_diagnosis_start').val());
-	yearofDiagnosisRange[1] = parseInt($('#year_of_diagnosis_end').val());
-
-	append_plot_intervals(yearofDiagnosisRange[1]-yearofDiagnosisRange[0]);
-	console.log('inputAnswers');
-	console.log(inputAnswers);
-
-	allVars = get_cohort_covariance_variable_names();
-	allVars.push(yearOfDiagnosisVarName);
-
-	var obj = {
-		"seerFilePrefix" : seerFilePrefix,
-		"yearOfDiagnosisVarName" : yearOfDiagnosisVarName,
-		"yearOfDiagnosisRange" : yearofDiagnosisRange,
-		"allVars" : JSON.stringify(allVars),
-		"cohortVars" : cohortVars,
-		"cohortValues" : cohortValues,
-		"covariateVars" : $('#covariate_select').val(),
-		"numJP" : parseInt($('#join_point_select').val()),
-		"outputFileName" : seerFilePrefix + ".output"
-	};
-	console.log("SERIALIZE");
-	console.log($('#parameters').serialize());
-	jpsurvData.calculate.form = obj;
-	jpsurvData.calculate.form.serialized = $('#parameters').serializeObject();
-	console.log("jpsurvData");
-	console.dir(jpsurvData);
-	//var calculateForm = $.text(JSON.stringify($('#parameters').serializeObject()));
-
-	//console.log(calculateForm);
-	console.log("What is obj????");
-	console.dir(obj);
-
-	var cohort_covariance_variable_names = get_cohort_covariance_variable_names();
-	var params = inputAnswers +"&allVars="+ JSON.stringify(encodeURIComponent(cohort_covariance_variable_names));
-
-	//alert('Form Answers:\n'+params.replace(/&/g, "\n"));
-	//var newobj = 'obj='+JSON.stringify(encodeURIComponent(obj));
-	var newobj = 'obj='+JSON.stringify(obj);
-*/
+function getApcTable() {
 
 	var params = 'jpsurvData='+JSON.stringify(jpsurvData);
 
@@ -324,9 +305,9 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 }
 
 function append_plot_intervals(max_interval) {
-	$("#plot-intervals").empty();
+	$("#plot_intervals").empty();
 	for(i=1;i<=max_interval;i++) {
-		$("#plot-intervals").append(
+		$("#plot_intervals").append(
 			$('<option>').val(i).html(i)
 			);
 	}
@@ -362,7 +343,20 @@ function load_form() {
 	  build_parameter_column();
 	  // The following is for demo purpose only.
 	  //Temp change a title
-	  $('#diagnosis_title').empty().append("Year of Diagnosis: Year of diagnosis 1975+");
+		$('#diagnosis_title')
+				.empty()
+				.append($('<div>')
+					.addClass('jpsurv-label-container')
+					.append($('<span>')
+							.append('Year of Diagnosis:')
+							.addClass('jpsurv-label')
+						)
+					.append($('<span>')
+							.append(jpsurvData.calculate.static.yearOfDiagnosisTitle)
+							.attr('title', 'Year of diagnosis label')
+							.addClass('jpsurv-label-content')
+						)
+					);
 	//}
 
 	//reader.readAsText(file_control, "UTF-8");
@@ -375,7 +369,7 @@ function build_parameter_column() {
 	var covariate_options = Object.keys(cohort_covariance_variables);
 	covariate_options.unshift("None");
 	set_covariate_select(covariate_options);
-	$("#parameters").fadeIn();
+	$("#stage2-calculate").fadeIn();
 }
 
 
@@ -505,6 +499,7 @@ function change_cohort_select() {
 
 	$("#cohort_sub_select").empty();
 	$("#covariate_select").val('None');
+	$("#covariate-fieldset").hide();
 	//alert('empty covariate_sub_select');
 	$("#covariate_sub_select").empty();
 	//alert('Is it empty?');
@@ -517,8 +512,10 @@ function change_cohort_select() {
 			}
 		}
 		var covariate_options = remove_items_from_set(keys, all_selected);
+		$("#cohort-fieldset").show();
 	} else {
 		var covariate_options = keys;
+		$("#cohort-fieldset").hide();
 	}
 	covariate_options.unshift("None");
 	set_covariate_select(covariate_options);
@@ -556,6 +553,12 @@ function change_covariate_select() {
 		var covariate_options = remove_items_from_set(keys, all_selected);
 	} else {
 		var covariate_options = keys;
+	}
+
+	if(all_selected == "None"){
+		$("#covariate-fieldset").hide();
+	} else {
+		$("#covariate-fieldset").show();
 	}
 
 /*
@@ -600,22 +603,27 @@ function add_cohort_covariance_variable_select(field, variable_name, variable_ti
 	*/
 	//alert(field.attr('id'));
 
-	var variable_select = $("<SELECT id='"+variable_name+"_select' name='"+variable_name+"_select'>");
+	var variable_select = $("<SELECT id='"+variable_name+"_select' name='"+variable_name+"_select' >");
 	for (i=0;i<values.length;i++) {
 		variable_select.append("<OPTION>"+values[i]+"</OPTION>");
 	}
+	var sub_form_div = $('<div>').addClass('col-md-6');
+	sub_form_div.append(variable_select);
 
-	var label_message = "&nbsp;&nbsp;" + variable_title + " :";
+	var label_message = variable_title + " :";
 
 	//Label
 	var label = $("<label>")
 		.append(label_message)
-		.attr('for',variable_name+'_select');
+		.attr('for',variable_name+'_select')
+		.addClass('control-label')
+		.addClass('col-md-6');
 
 	field.append($("<DIV class='sub_select'>")
 			.append(label)
-			.append(variable_select)
+			.append(sub_form_div)
 			);
+	field.append($("<div>").css("clear","both"));
 
 	if(field.attr('id') == "covariate_sub_select") {
 		$("#"+variable_name+"_select").attr('multiple', '');

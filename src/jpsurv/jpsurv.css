@@ -25,15 +25,23 @@ table {
 	min-height:400px;
 	height:auto;
 }
-
-H2 {
+h2 {
 	font-size:large;
-	text-align:center;
+	font-weight:bold;
+}
+h3 {
+	font-size:normal;
+}
+
+h2.stage-header {
+	font-weight:bold;
+	font-style:normal;
+	font-size:large;
+	padding:0px;
+	margin-top:-15px;
 }
 
 .sub_select {
-	float:left;
-	padding:2px;
 }
 
 .table_title {
@@ -43,28 +51,110 @@ H2 {
 
 #banners {
 		margin-top:15px;
+		height:110px;
 }
 
 .jumbotron {
-		background-color: white;
+	background-color: white;
+}
+
+.well {
+	padding: 10px;
+	min-height:641px;
+	overflow: auto;
+}
+
+.form-horizontal .control-label {
+  padding-top:0px;
+}
+
+.form-horizontal .form-group {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+.form-group {
+    margin-bottom: 0px;
+}
+.jpsurv-label-container {
+   margin-bottom: 5px;
+   clear:both;
+ }
+.jpsurv-label {
+    display: inline-block;
+    font-weight: 700;
+    margin-bottom: 5px;
+    max-width: 100%;
+    float:left;
+}
+.jpsurv-label-content {
+    margin-left:5px;
+    max-width:90%;
+    overflow:hidden;
+    clear:both;
+}
+.jpsurv-button {
+    margin-top: 5px;
+    clear:both;
+}
+
+fieldset.jpsurv-fieldset {
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    border:1px solid #DAE4E8;
+    margin-bottom:10px;
+    display:none;
+}
+
+legend.jpsurv-legend {
+  /*
+  padding: 0.2em 0.5em;
+  color:green;
+  font-size:90%;
+  */
+    padding: 0.2em 0.5em;
+    font-size:90%;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    padding: 6px;
+    border:1px solid #DAE4E8;
+    margin-bottom:0px;
+    margin-left:10px;
+    width:auto;
+}
+
+.co-value-container {
+  padding:5px 0px;
+}
+
+.plot-instructions {
+  margin-top:200px;
 }
 
 body {
     color: #444;
     font-family: arial;
-		line-height: 1.1;
-		font-size: 12px;
-		font-family: Arial,Helvetica,sans-serif;
+	line-height: 1.1;
+	font-size: 12px;
+	font-family: Arial,Helvetica,sans-serif;
+  margin-bottom:0px;
+  width:auto;
 }
 
 .jumbotron p {
 		font-size: 14px;
 }
 
-.plot-container {
-		padding:200px 25px;
-		margin-left:40px;
+hr.stage-separator{
+	margin-top:-10px;
 }
+
+.plot-container {
+	padding:200px 25px;
+	margin-left:40px;
+}
+
 .tab-content {
     background: none repeat scroll 0 0 white;
     border-color: #d9d9d9;
@@ -81,3 +171,16 @@ body {
 .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border: 1px solid #bbbbbb;}
 .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border: 1px solid #bbbbbb;}
 .tg .tg-e3zv{font-weight:bold;background-color:#aaaaaa;color:#444444}
+
+.box {
+    background: linear-gradient(to bottom, #feffff 0%, #feffff 50%, #e7f3fa 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px 0 rgba(1, 90, 129, 0.4);
+    color: #666;
+    margin-bottom: 18px;
+    padding: 18px;
+}
+
+input[type="file"] {
+    max-width: 90%;
+}

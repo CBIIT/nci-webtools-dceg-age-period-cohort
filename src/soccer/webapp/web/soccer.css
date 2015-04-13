@@ -1,4 +1,16 @@
-i {
+blockquote {
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+label {
+    font-size: 14px;
+    font-weight:normal;
+    font-style: normal;
+    color: #555555;
+}
+
+.example {
     font-size: 11px;
 }
 
@@ -11,12 +23,35 @@ i {
 }
 
 #wrapper {    
-    border: 1px #e4e4e4 solid;
-    padding: 20px;
-    border-radius: 4px;
-    box-shadow: 0 0 6px #ccc;
-    background-color: #fff;
+    
+}
+
+#btnInfo {
+    background-image: url(info.png); /* 20px x 20px */
+    background-color: transparent; /* make the button transparent */
+    background-repeat: no-repeat;  /* make the background image appear only once */
+    background-position: 0px 0px;  /* equivalent to 'top left' */
+    border: none;           /* assuming we don't want any borders */
+    cursor: help;        /* make the cursor like hovering over an <a> element */
+    height: 20px;           /* make this the size of your image */
+    text-align: center;
+    vertical-align: middle; /* align the text vertically centered */
+}
+
+.popover-title, .popover-content {
+    min-width: 200px;
+}
+
+.tab-content {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
     min-height: 400px;
+}
+
+.nav-tabs {
+    margin-bottom: 0;
 }
 
 #fileSelect {
@@ -27,7 +62,7 @@ i {
 }
 
 #socSystem {
-    width: 73%;
+    width: 68%;
     height: 28px;
 }
 

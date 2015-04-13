@@ -92,7 +92,8 @@ getGraph <- function (filePath, fittedResultFile, intervals, covariateValues, ou
 
   outFile=paste(filePath, fittedResultFile, sep="/" )
 
-  fit.result=readRDS(outFile)
+  outputData=readRDS(outFile)
+  fit.result=outputData$fit.result
   continousVector=rep(NA, length(covariateValues))
   png(file=outputGraphFile)
   plot(fit.result,Intervals=intervals,covar.continuous=continousVector,covar.cat=covariateValues)
@@ -199,15 +200,50 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
                        model.form = eval(parse(text=factorStr)),
                        maxnum.jp=numJP);
 
-  #save fit.result as RData
+  #save seerdata and fit.result as RData
   cat("***outputFileName")
   cat(outputFileName)
   cat("\n")
-  saveRDS(fit.result, outputFileName)
+  
+  outputData=list("seerdata"=seerdata, "fit.result"=fit.result)
+  saveRDS(outputData, outputFileName)
   cat("\n\nOutput file has been written: ")
   cat(outputFileName)
   cat("\n")
 
   apcJson=paste(toJSON(fit.result$apc))
   return (apcJson)
+}
+
+getDownloadOutputWrapper <- function (filePath, jpsurvDataString) {
+#getDownloadOutputWrapper <- function () {
+  print("R: getFittedResult")
+  jpsurvData = fromJSON(jpsurvDataString)
+  print(jpsurvData)
+  seerFilePrefix = jpsurvData$calculate$static$seerFilePrefix
+  yearOfDiagnosisVarName = jpsurvData$calculate$static$yearOfDiagnosisVarName
+  yearOfDiagnosisRange = jpsurvData$calculate$form$yearOfDiagnosisRange
+  allVars=jpsurvData$calculate$static$allVars
+  cohortVars=jpsurvData$calculate$form$cohortVars
+  cohortValues=jpsurvData$calculate$form$cohortValues
+  covariateVars=jpsurvData$calculate$form$covariateVars
+  numJP=jpsurvData$calculate$form$joinPoints
+  fileName = paste('output', jpsurvData$tokenId, sep="-" )
+  fileName = paste(fileName, "rds", sep="." )
+  cat("fileName\n")
+  cat(fileName)
+  cat("\n")
+  outputFileName = fileName
+
+  fileName = paste('output', jpsurvData$tokenId, sep="-" )
+  fileName = paste(fileName, "rds", sep="." )
+#fileName = paste("joinpoint-output", "txt", sep="." )
+  outputFileName =paste(filePath, fileName, sep="/" )
+}
+
+getDownloadOutput <- function(filePath, fittedResultFile, subsetStr, downloadFile) {
+  outFile=paste(filePath, fittedResultFile, sep="/" )
+  outputData=readRDS(outFile)
+  downloadOutput = output.overview(outputData$seerdata, outputData$fit.result, subsetStr);
+  write.csv(downloadOutput, downloadFile)
 }
