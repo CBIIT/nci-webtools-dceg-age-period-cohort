@@ -219,29 +219,53 @@ getDownloadOutputWrapper <- function (filePath, jpsurvDataString) {
 #getDownloadOutputWrapper <- function () {
   print("R: getDownloadOutputWrapper")
   jpsurvData = fromJSON(jpsurvDataString)
-  print(jpsurvData)
-  seerFilePrefix = jpsurvData$calculate$static$seerFilePrefix
+  #print(jpsurvData)
+
+  #seerFilePrefix = jpsurvData$calculate$static$seerFilePrefix
   yearOfDiagnosisVarName = jpsurvData$calculate$static$yearOfDiagnosisVarName
   yearOfDiagnosisRange = jpsurvData$calculate$form$yearOfDiagnosisRange
-  allVars=jpsurvData$calculate$static$allVars
+  #allVars=jpsurvData$calculate$static$allVars
   cohortVars=jpsurvData$calculate$form$cohortVars
   cohortValues=jpsurvData$calculate$form$cohortValues
-  covariateVars=jpsurvData$calculate$form$covariateVars
-  numJP=jpsurvData$calculate$form$joinPoints
-  fileName = paste('output', jpsurvData$tokenId, sep="-" )
+  #covariateVars=jpsurvData$calculate$form$covariateVars
+  #numJP=jpsurvData$calculate$form$joinPoints
+  subsetStr=getSubsetStr(yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVars, cohortValues)
+  assign("subsetStr", subsetStr, envir = .GlobalEnv)
+
+  fileName = paste('link', jpsurvData$tokenId, sep="-" )
+  fileName = paste(fileName, "rds", sep="." )
+ 
+  #outputFileName = fileName
+
+  fileName = paste('link', jpsurvData$tokenId, sep="-" )
   fileName = paste(fileName, "rds", sep="." )
   cat("fileName\n")
   cat(fileName)
   cat("\n")
-  outputFileName = fileName
-
-  fileName = paste('output', jpsurvData$tokenId, sep="-" )
-  fileName = paste(fileName, "rds", sep="." )
 #fileName = paste("joinpoint-output", "txt", sep="." )
   outputFileName =paste(filePath, fileName, sep="/" )
+
+  fittedResultFile=paste("output-", jpsurvData$tokenId,".rds", sep="")
+  downloadFile=paste("link-", jpsurvData$tokenId,".csv", sep="")
+  cat("**filePath\n")
+  cat(filePath)
+  cat("\n")
+  cat("**fittedResultFile\n")
+  cat(fittedResultFile)
+  cat("\n")
+  cat("**subsetStr\n")
+  cat(subsetStr)
+  cat("\n")
+  cat("**downloadFile\n")
+  cat(downloadFile)
+  cat("\n")
+  getDownloadOutput(filePath, fittedResultFile, subsetStr, downloadFile)
+
+  return (downloadFile)
 }
 
 getDownloadOutput <- function(filePath, fittedResultFile, subsetStr, downloadFile) {
+  downloadFile=paste(filePath, downloadFile, sep="/" )
   outFile=paste(filePath, fittedResultFile, sep="/" )
   outputData=readRDS(outFile)
   downloadOutput = output.overview(outputData$seerdata, outputData$fit.result, subsetStr);

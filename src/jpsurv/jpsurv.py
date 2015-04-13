@@ -243,13 +243,13 @@ def stage4_link():
     print "Linking ..."
 
 
-    for k, v in request.args.iteritems():
-        print "var: %s = %s" % (k, v)
+    #for k, v in request.args.iteritems():
+    #    print "var: %s = %s" % (k, v)
     #name = request.get_json().get('jpsurvData', '')
     #print name
     jpsurvDataString = request.args.get('jpsurvData', True);
-    print BOLD+"**** jpsurvDataString ****"+ENDC
-    print jpsurvDataString
+    #print BOLD+"**** jpsurvDataString ****"+ENDC
+    #print jpsurvDataString
     jpsurvData = json.loads(jpsurvDataString)
     print BOLD+"**** jpsurvData ****"+ENDC
     for key, value in jpsurvData.iteritems():
@@ -259,11 +259,17 @@ def stage4_link():
     rSource = robjects.r('source')
     rSource('./JPSurvWrapper.R')
 
-    print BOLD+OKBLUE+"**** Calling getLink ****"+ENDC
+    print BOLD+OKGREEN+"**** Calling getLink ****"+ENDC
     getDownloadOutputWrapper = robjects.globalenv['getDownloadOutputWrapper']
-    getDownloadOutputWrapper(UPLOAD_DIR, jpsurvDataString)
+    rStrVector = getDownloadOutputWrapper(UPLOAD_DIR, jpsurvDataString)
 
-    return "done"
+    downloadLinkFileName = "".join(tuple(rStrVector))
+    print downloadLinkFileName
+    link = "{\"link\":\"%s\"}" % (downloadLinkFileName)
+    #return json.dumps("{\"start.year\":[1975,2001],\"end.year\":[2001,2011],\"estimate\":[-0.0167891169889347,-0.0032678676219079]}")
+    print json.dumps(link)
+
+    return json.dumps(link)
 
 
 import argparse
