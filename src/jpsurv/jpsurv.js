@@ -103,17 +103,15 @@ $(document).ready(function() {
 });
 
 function getDownloadOutput(event) {
+
 	event.preventDefault();
-
 	var params = 'jpsurvData='+JSON.stringify(jpsurvData);
-	show_apc_table(params);
+	var download_json = JSON.parse(jpsurvRest('stage4_link', params));
+	
+	//alert(download_json.link);
+	window.open('../jpsurv/tmp/'+download_json.link, 'jpsurv_data_window');
 
-	var params = 'jpsurvData='+JSON.stringify(jpsurvData);
-	var download_json = JSON.parse(jpsurvRest('stage3_plot', params));
-
-	alert(download_json);
-
-
+  	return false;
 //	$('#data-set').attr('href', '../jpsurv/tmp/output-' +jpsurvData.tokenId+'.rds');
 //	alert("You clicked go go go");
 }
