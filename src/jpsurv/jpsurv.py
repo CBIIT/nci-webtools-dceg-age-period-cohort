@@ -1,41 +1,14 @@
-#!flask/bin/python
-from flask import Flask, render_template, Response, abort, request, make_response, url_for, jsonify, redirect
+#!/usr/bin/env python
+from flask import Flask, render_template, Response, abort, request, make_response, url_for, jsonify, redirect, current_app
 from functools import wraps
-from flask import current_app
-
 import rpy2.robjects as robjects
-#from rpy2.robjects import r
-
-import cgi
-import shutil
 import os
-from xml.sax.saxutils import escape, unescape
-from socket import gethostname
 import json
-import pandas as pd
-import numpy as np
-from pandas import DataFrame
-import urllib
 from werkzeug import secure_filename
-from random import randint
-import subprocess
-
+import textwrap
+import logging
 
 app = Flask(__name__, static_folder='', static_url_path='/')
-#app.debug = True
-UPLOAD_DIR = os.path.join(os.getcwd(), 'tmp')
-
-#TESTING AREA
-HEADER = '\033[95m'
-OKBLUE = '\033[94m'
-OKGREEN = '\033[92m'
-WARNING = '\033[93m'
-FAIL = '\033[91m'
-BOLD = '\033[1m'
-UNDERLINE = '\033[4m'
-ENDC = '\033[0m'
-
-print BOLD+UPLOAD_DIR+ENDC
 
 def index():
     return render_template('index.html')
@@ -99,53 +72,44 @@ def load():
 @app.route('/jpsurvRest/stage1_upload', methods=['POST'])
 def stage1_upload():
     #print "Processing upload"
-    print OKBLUE+UNDERLINE+HEADER + BOLD + "****** Stage 1: UPLOAD BUTTON ***** " + ENDC
+    debug(OKGREEN+UNDERLINE+BOLD + "****** Stage 1: UPLOAD BUTTON ***** " + ENDC)
     tokenId = request.args.get('tokenId', False);
-    print (BOLD + "****** Stage 1: tokenId = %s" + ENDC) % (tokenId)
+    info((BOLD + "****** Stage 1: tokenId = %s" + ENDC) % (tokenId))
 
-    for k, v in request.args.iteritems():
-        print "var: %s = %s" % (k, v)
+    #for k, v in request.args.iteritems():
+    #    print "var: %s = %s" % (k, v)
 
     file = request.files['file_control']
     if file and file.filename:
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_DIR, filename))
         file_control_filename = filename
-        print "Saving file_control: %s" % file_control_filename
+        info("Saving file_control: %s" % file_control_filename)
     file = request.files['file_data']
     if file and file.filename:
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_DIR, filename))
         file_data_filename = filename
-        print "Saving file_data: %s" % file_data_filename
+        info("Saving file_data: %s" % file_data_filename)
 
     if(request.files['file_control'] == ''):
-        print "file_control not assigned"
+        info("file_control not assigned")
     if(request.files['file_data'] == ''):
-        print "file_data not assigned"
+        info("file_data not assigned")
 
     #Now that the files are on the server RUN the RCode
     rSource = robjects.r('source')
 
-    print HEADER + "****** STARTING HERE ***** " + ENDC
-
     #PRINT FILE_CONTROL
     file_control = os.path.join(UPLOAD_DIR, file_control_filename)
-    print "file_control"
     fo = open(file_control, "r+")
     str = fo.read(250);
-    print OKBLUE+"Read String is : ", str
-    print ENDC
-    print
     fo.close()
 
     #PRINT FILE_DATA
     file_data = os.path.join(UPLOAD_DIR, file_data_filename)
-    print "file_data"
     fo = open(file_control, "r+")
     str = fo.read(500);
-    print WARNING+"Read String is : ", str
-    print ENDC
     fo.close()
 
     #Init the R Source
@@ -160,87 +124,56 @@ def stage1_upload():
     #keyId = "".join(tuple(rStrVector))
     output_filename = "form-%s.json" % tokenId
 
-    print output_filename
+    #print output_filename
     #PRINT output_file
     r_output_file = os.path.join(UPLOAD_DIR, output_filename)
-    print "R output_file"
+    #print "R output_file"
     fo = open(r_output_file, "r+")
     str = fo.read(500);
-    print BOLD+"Read String is : ", str
-    print ENDC
+    #print BOLD+"Read String is : ", str
+    #print ENDC
     fo.close()
 
-    print "CLOSE FILE %s" % output_filename
-    print OKGREEN +"************ END HERE EXIT ********" + ENDC
+    #print "CLOSE FILE %s" % output_filename
+    #print OKGREEN +"************ END HERE EXIT ********" + ENDC
 
     #print "json string >> "+str(jsondata[0]);
     status = "uploaded"
 
     return_url = "%s/jpsurv?file_control_filename=%s&file_data_filename=%s&output_filename=%s&status=%s&tokenId=%s" % (request.url_root, file_control_filename, file_data_filename, output_filename, status, tokenId)
-    print return_url
+    info(return_url)
     return redirect(return_url)
 
 @app.route('/jpsurvRest/stage2_calculate', methods=['GET'])
 def stage2_calculate():
-
-    print UNDERLINE+HEADER + "****** CALCULATE BUTTON ***** " + ENDC
+    debug(OKGREEN+UNDERLINE+BOLD + "****** Stage 2: CALCULATE BUTTON ***** " + ENDC)
 
     jpsurvDataString = request.args.get('jpsurvData', False);
-    print BOLD+"**** jpsurvDataString ****"+ENDC
-    print jpsurvDataString
+    info(BOLD+"**** jpsurvDataString ****"+ENDC)
+    info(jpsurvDataString)
     jpsurvData = json.loads(jpsurvDataString)
-    print BOLD+"**** jpsurvData ****"+ENDC
+    info(BOLD+"**** jpsurvData ****"+ENDC)
     for key, value in jpsurvData.iteritems():
-        print "var: %s = %s" % (key, value)
+        info("var: %s = %s" % (key, value))
+    
     #Init the R Source
     rSource = robjects.r('source')
     rSource('./JPSurvWrapper.R')
 
-    print BOLD+OKBLUE+"**** Calling getFittedResults ****"+ENDC
+    info(BOLD+"**** Calling getFittedResults ****"+ENDC)
     # Next two lines execute the R Program
-    #getFittedResultJSON = robjects.globalenv['getFittedResultJSON']
-    #rStrVector = getFittedResultJSON(UPLOAD_DIR, jpsurvDataString)
     getFittedResultWrapper = robjects.globalenv['getFittedResultWrapper']
     rStrVector = getFittedResultWrapper(UPLOAD_DIR, jpsurvDataString)
     apcDataString = "".join(tuple(rStrVector))
-    print apcDataString
-    #return json.dumps("{\"start.year\":[1975,2001],\"end.year\":[2001,2011],\"estimate\":[-0.0167891169889347,-0.0032678676219079]}")
-    print json.dumps(apcDataString)
+    info(apcDataString)
+    info(json.dumps(apcDataString))
 
     return json.dumps(apcDataString)
 
 @app.route('/jpsurvRest/stage3_plot', methods=['GET'])
 def stage3_plot():
-    print UNDERLINE+HEADER + "****** PLOT BUTTON ***** " + ENDC
-    print "Plotting ..."
-
-
-    for k, v in request.args.iteritems():
-        print "var: %s = %s" % (k, v)
-    #name = request.get_json().get('jpsurvData', '')
-    #print name
-    jpsurvDataString = request.args.get('jpsurvData', True);
-    print BOLD+"**** jpsurvDataString ****"+ENDC
-    print jpsurvDataString
-    jpsurvData = json.loads(jpsurvDataString)
-    print BOLD+"**** jpsurvData ****"+ENDC
-    for key, value in jpsurvData.iteritems():
-        print "var: %s = %s" % (key, value)
-
-    #Init the R Source
-    rSource = robjects.r('source')
-    rSource('./JPSurvWrapper.R')
-
-    print BOLD+OKBLUE+"**** Calling getGraph ****"+ENDC
-    getGraphWrapper = robjects.globalenv['getGraphWrapper']
-    getGraphWrapper(UPLOAD_DIR, jpsurvDataString)
-
-    return "done"
-
-@app.route('/jpsurvRest/stage4_link', methods=['GET'])
-def stage4_link():
-    print UNDERLINE+HEADER + "****** LINK ***** " + ENDC
-    print "Linking ..."
+    debug(OKGREEN+UNDERLINE+BOLD + "****** Stage 3: PLOT BUTTON ***** " + ENDC)
+    info("Plotting ...")
 
 
     #for k, v in request.args.iteritems():
@@ -248,38 +181,126 @@ def stage4_link():
     #name = request.get_json().get('jpsurvData', '')
     #print name
     jpsurvDataString = request.args.get('jpsurvData', True);
-    #print BOLD+"**** jpsurvDataString ****"+ENDC
-    #print jpsurvDataString
+    info(BOLD+"**** jpsurvDataString ****"+ENDC)
+    info(jpsurvDataString)
     jpsurvData = json.loads(jpsurvDataString)
-    print BOLD+"**** jpsurvData ****"+ENDC
+    info(BOLD+"**** jpsurvData ****"+ENDC)
     for key, value in jpsurvData.iteritems():
-        print "var: %s = %s" % (key, value)
+        info("var: %s = %s" % (key, value))
 
     #Init the R Source
     rSource = robjects.r('source')
     rSource('./JPSurvWrapper.R')
 
-    print BOLD+OKGREEN+"**** Calling getLink ****"+ENDC
+    info(BOLD+OKBLUE+"**** Calling getGraph ****"+ENDC)
+    getGraphWrapper = robjects.globalenv['getGraphWrapper']
+    getGraphWrapper(UPLOAD_DIR, jpsurvDataString)
+
+    return "done"
+
+@app.route('/jpsurvRest/stage4_link', methods=['GET'])
+def stage4_link():
+    debug(OKGREEN+UNDERLINE+BOLD + "****** Stage 4: LINK BUTTON ***** " + ENDC)
+    
+    #for k, v in request.args.iteritems():
+    #    print "var: %s = %s" % (k, v)
+    #name = request.get_json().get('jpsurvData', '')
+    #print name
+    jpsurvDataString = request.args.get('jpsurvData', True);
+    info(BOLD+"**** jpsurvDataString ****"+ENDC)
+    info(jpsurvDataString)
+    jpsurvData = json.loads(jpsurvDataString)
+    info(BOLD+"**** jpsurvData ****"+ENDC)
+    for key, value in jpsurvData.iteritems():
+        info("var: %s = %s" % (key, value))
+
+    #Init the R Source
+    rSource = robjects.r('source')
+    rSource('./JPSurvWrapper.R')
+
+    info(BOLD+"**** Calling getDownloadOutputWrapper ****"+ENDC)
     getDownloadOutputWrapper = robjects.globalenv['getDownloadOutputWrapper']
     rStrVector = getDownloadOutputWrapper(UPLOAD_DIR, jpsurvDataString)
 
     downloadLinkFileName = "".join(tuple(rStrVector))
-    print downloadLinkFileName
+    info("Download File Name:  %s" % downloadLinkFileName)
     link = "{\"link\":\"%s\"}" % (downloadLinkFileName)
-    #return json.dumps("{\"start.year\":[1975,2001],\"end.year\":[2001,2011],\"estimate\":[-0.0167891169889347,-0.0032678676219079]}")
-    print json.dumps(link)
+    #return json.dumps("{\"start.year\":[1975,2001],\"end.year\":[2001,2011],\"estimcate\":[-0.0167891169889347,-0.0032678676219079]}")
+    #print json.dumps(link)
+    
+    mimetype = 'application/json'
+    content = json.dumps(link);
+    return current_app.response_class(content, mimetype=mimetype)
+ 
+def info(msg):
+    d={'clientip': request.remote_addr}
+    logger.info('%s', msg, extra=d)
 
-    return json.dumps(link)
+
+def debug(msg):
+    d={'clientip': request.remote_addr}
+    logger.debug('%s', msg, extra=d)
 
 
 import argparse
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-p", dest="port_number", default="9910", help="Sets the Port")
+    UPLOAD_DIR = os.path.join(os.getcwd(), 'tmp')
+
+    #COLORS TO Make logging Mover visible
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    ENDC = '\033[0m'
+
+    parser = argparse.ArgumentParser(
+        prog='Python Flask REST Sever',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=textwrap.dedent('''\
+         Analysis Tools Flask REST Sever
+         --------------------------------
+             Each Analysis ToolREST Server has a unique Port Number
+             Enter a unique port number when starting Flask REST Server
+        '''))
+    parser.add_argument("-p", dest="port_number", type=int, required=True, help="REST Sever port number")
+    parser.add_argument('--version', action='version', version='%(prog)s 2.0')
+    parser.add_argument('--verbose', dest="verbose", default=False, help='Turn on verbose logging', action='store_true')
+    parser.add_argument('--debug', dest="debug", default=False, help='Turn on debug logging', action='store_true')
 
     args = parser.parse_args()
     port_num = int(args.port_number);
 
-    hostname = gethostname()
-    app.run(host='0.0.0.0', port=port_num, debug = True)
+    #Logging Levels
+    #Level   Numeric value
+    #CRITICAL   50
+    #ERROR      40
+    #WARNING    30
+    #INFO       20
+    #DEBUG      10
+    #NOTSET     0
 
+    #debug(BOLD+UPLOAD_DIR+ENDC)
+    FORMAT = '%(asctime)-15s %(clientip)s %(message)s'
+    logging.basicConfig(format=FORMAT)
+    d = {'clientip': 'localhost'}
+    logger = logging.getLogger('RESTserver')
+    
+    app.debug = True
+    if args.verbose == False and args.debug == False:
+        app.debug = False
+        print "setLevel: NOSET"
+        logger.setLevel(logging.NOTSET)
+    elif args.verbose == True:
+        print "setLevel: INFO"
+        logger.setLevel(logging.INFO)
+    elif args.debug == True:
+        print "setLevel: DEBUG"
+        logger.setLevel(logging.DEBUG)
+
+    logger.warning('app.debug: %s' % app.debug, extra=d)
+    logger.info('Temp Directory: %s', BOLD+UPLOAD_DIR+ENDC, extra=d)
+
+    app.run(host='0.0.0.0', port=port_num, debug = app.debug)
