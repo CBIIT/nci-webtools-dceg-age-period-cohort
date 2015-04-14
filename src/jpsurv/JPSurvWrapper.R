@@ -1,5 +1,6 @@
 library('rjson')
 library('JPSurv')
+VERBOSE=FALSE
 
 getDictionary <- function (inputFile, path, tokenId) {
   fqFileName = file.path(path, inputFile)
@@ -21,9 +22,9 @@ getSubsetStr <- function (yearOfDiagnosisVarName, yearOfDiagnosisRange, cohortVa
   subsetStr=paste(paste(cohortVars, cohortValues, sep="=="), collapse='&')
   subsetStr=paste(subsetStr, yearStr, sep='&')
 
-  cat("*subsetStr\n")
-  cat(subsetStr)
-  cat("\n\n")
+  #cat("*subsetStr\n")
+  #cat(subsetStr)
+  #cat("\n\n")
   return (subsetStr)
 
 }
@@ -34,9 +35,9 @@ getFactorStr <- function (covariateVars) {
     covariateVars=paste0("`", getCorrectFormat(covariateVars), "`")
     factorStr=paste("~-1+", paste(gsub("$", ")", gsub("^", "factor(", covariateVars)), collapse="+"), sep='')
   }
-  cat("*factorStr\n")
-  cat(factorStr)
-  cat("\n\n")
+  #cat("*factorStr\n")
+  #cat(factorStr)
+  #cat("\n\n")
   return (factorStr)
 }
 
@@ -48,12 +49,12 @@ getCorrectFormat <-function(variable) {
 
 getGraphWrapper <- function (filePath, jpsurvDataString) {
 
-  print("R: getGraph")
+  #print("R: getGraph")
   jpsurvData = fromJSON(jpsurvDataString)
 
-  print(jpsurvData$tokenId)
-  print("*jpsurvData.plot =")
-  print(jpsurvData$plot)
+  #print(jpsurvData$tokenId)
+  #print("*jpsurvData.plot =")
+  #print(jpsurvData$plot)
 
 
   fittedResultFile=paste("output-", jpsurvData$tokenId,".rds", sep="")
@@ -80,15 +81,15 @@ getGraph <- function (filePath, fittedResultFile, intervals, covariateValues, ou
   #filePath="/h1/kneislercp/nci-analysis-tools-web-presence/src/jpsurv/tmp"
 
 
-  cat("*** R variables ***\n")
-  cat("*intervals:\n")
-  print(intervals, row.names=FALSE)
-  cat("*covariateValues\n")
-  print(covariateValues, row.names=FALSE)
-  cat("\n")
-  cat("outputGraphFile:\n")
-  cat(outputGraphFile)
-  cat("\n")
+  #cat("*** R variables ***\n")
+  #cat("*intervals:\n")
+  #print(intervals, row.names=FALSE)
+  #cat("*covariateValues\n")
+  #print(covariateValues, row.names=FALSE)
+  #cat("\n")
+  #cat("outputGraphFile:\n")
+  #cat(outputGraphFile)
+  #cat("\n")
 
   outFile=paste(filePath, fittedResultFile, sep="/" )
 
@@ -102,9 +103,9 @@ getGraph <- function (filePath, fittedResultFile, intervals, covariateValues, ou
 }
 
 getFittedResultWrapper <- function (filePath, jpsurvDataString) {
-  print("R: getFittedResult")
+
   jpsurvData = fromJSON(jpsurvDataString)
-  print(jpsurvData)
+
   seerFilePrefix = jpsurvData$calculate$static$seerFilePrefix
   yearOfDiagnosisVarName = jpsurvData$calculate$static$yearOfDiagnosisVarName
   yearOfDiagnosisRange = jpsurvData$calculate$form$yearOfDiagnosisRange
@@ -115,14 +116,11 @@ getFittedResultWrapper <- function (filePath, jpsurvDataString) {
   numJP=jpsurvData$calculate$form$joinPoints
   fileName = paste('output', jpsurvData$tokenId, sep="-" )
   fileName = paste(fileName, "rds", sep="." )
-  cat("fileName\n")
-  cat(fileName)
-  cat("\n")
   outputFileName = fileName
 
   fileName = paste('output', jpsurvData$tokenId, sep="-" )
   fileName = paste(fileName, "rds", sep="." )
-#fileName = paste("joinpoint-output", "txt", sep="." )
+
   outputFileName =paste(filePath, fileName, sep="/" )
 
   return (getFittedResult(filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName))
@@ -151,6 +149,7 @@ getFittedResultWrapper <- function (filePath, jpsurvDataString) {
 #outputFileName="Breast_RelativeSurvival.output"
 
 getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, yearOfDiagnosisRange, allVars, cohortVars, cohortValues, covariateVars, numJP, outputFileName) {
+  if(VERBOSE) {
   cat("*filePath\n")
   cat(filePath)
   cat("\n")
@@ -178,6 +177,7 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
 
   print(outputFileName, row.names=FALSE)
   cat("\n****\n")
+  }
 
   file=paste(filePath, seerFilePrefix, sep="/" )
 
@@ -201,23 +201,22 @@ getFittedResult <- function (filePath, seerFilePrefix, yearOfDiagnosisVarName, y
                        maxnum.jp=numJP);
 
   #save seerdata and fit.result as RData
-  cat("***outputFileName")
-  cat(outputFileName)
-  cat("\n")
+  #cat("***outputFileName")
+  #cat(outputFileName)
+  #cat("\n")
   
   outputData=list("seerdata"=seerdata, "fit.result"=fit.result)
   saveRDS(outputData, outputFileName)
-  cat("\n\nOutput file has been written: ")
-  cat(outputFileName)
-  cat("\n")
+  #cat("\n\nOutput file has been written: ")
+  #cat(outputFileName)
+  #cat("\n")
 
   apcJson=paste(toJSON(fit.result$apc))
   return (apcJson)
 }
 
 getDownloadOutputWrapper <- function (filePath, jpsurvDataString) {
-#getDownloadOutputWrapper <- function () {
-  print("R: getDownloadOutputWrapper")
+  #print("R: getDownloadOutputWrapper")
   jpsurvData = fromJSON(jpsurvDataString)
   #print(jpsurvData)
 
@@ -239,26 +238,11 @@ getDownloadOutputWrapper <- function (filePath, jpsurvDataString) {
 
   fileName = paste('link', jpsurvData$tokenId, sep="-" )
   fileName = paste(fileName, "rds", sep="." )
-  cat("fileName\n")
-  cat(fileName)
-  cat("\n")
-#fileName = paste("joinpoint-output", "txt", sep="." )
   outputFileName =paste(filePath, fileName, sep="/" )
 
   fittedResultFile=paste("output-", jpsurvData$tokenId,".rds", sep="")
   downloadFile=paste("link-", jpsurvData$tokenId,".csv", sep="")
-  cat("**filePath\n")
-  cat(filePath)
-  cat("\n")
-  cat("**fittedResultFile\n")
-  cat(fittedResultFile)
-  cat("\n")
-  cat("**subsetStr\n")
-  cat(subsetStr)
-  cat("\n")
-  cat("**downloadFile\n")
-  cat(downloadFile)
-  cat("\n")
+
   getDownloadOutput(filePath, fittedResultFile, subsetStr, downloadFile)
 
   return (downloadFile)
