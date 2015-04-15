@@ -203,6 +203,266 @@ findN_scoreRp2 <- function(R0, R, p2_t,alpha,power_score,k) {
   table
 }
 
+findN2_scorep1p2 <- function(R0, p1_t, p2_t,alpha,power_score,N1) {
+  R0 <- as.vector(R0)
+  p1_t <- as.vector(p1_t)
+  p2_t <- as.vector(p2_t)
+  alpha <- as.vector(alpha)
+  power_score <- as.vector(power_score)
+  N1 <- as.vector(N1)
+  N <- rep(NA,times=length(R0))
+  k <- rep(NA,times=length(R0))
+  N2 <- rep(NA,times=length(R0))
+  R <- p1_t/p2_t
+  VE <- 1 - R
+  for(i in 1:length(R0)) {
+    checkN <- seq(N1[i]+0.1,100000,by=0.1)
+    y <- round(findPower_scorep1p2(rep(R0[i],times=length(checkN)),rep(p1_t[i],times=length(checkN)),rep(p2_t[i],times=length(checkN)),rep(alpha[i],times=length(checkN)),checkN,N1[i]/checkN),5)
+    n <- match(power_score[i],y)
+    N[i] <- checkN[n]
+    k[i] <- N1[i]/N[i]
+    N2[i] <- N[i] - N1[i]
+  }
+  data <- matrix(c(R0, p1_t, p2_t, R, VE, alpha, power_score, k, N,N1,N2), ncol=11, nrow=length(R0))
+  colnames(data) <- c("R0","p1","p2","R = p1/p2","vaccine efficacy", "alpha","power (score method)","k","N","N1","N2")
+  table <- as.table(data)
+  table
+}
+
+findN2_scoreVEp2 <- function(R0, VE, p2_t,alpha,power_score,N1) {
+  R0 <- as.vector(R0)
+  VE <- as.vector(VE)
+  p2_t <- as.vector(p2_t)
+  alpha <- as.vector(alpha)
+  power_score <- as.vector(power_score)
+  N1 <- as.vector(N1)
+  N <- rep(NA,times=length(R0))
+  k <- rep(NA,times=length(R0))
+  N2 <- rep(NA,times=length(R0))
+  R <- 1 - VE
+  p1_t <- R*p2_t
+  for(i in 1:length(R0)) {
+    checkN <- seq(N1[i]+0.1,100000,by=0.1)
+    y <- round(findPower_scorep1p2(rep(R0[i],times=length(checkN)),rep(p1_t[i],times=length(checkN)),rep(p2_t[i],times=length(checkN)),rep(alpha[i],times=length(checkN)),checkN,N1[i]/checkN),5)
+    n <- match(power_score[i],y)
+    N[i] <- checkN[n]
+    k[i] <- N1[i]/N[i]
+    N2[i] <- N[i] - N1[i]
+  }
+  data <- matrix(c(R0, p1_t, p2_t, R, VE, alpha, power_score, k, N,N1,N2), ncol=11, nrow=length(R0))
+  colnames(data) <- c("R0","p1","p2","R = p1/p2","vaccine efficacy", "alpha","power (score method)","k","N","N1","N2")
+  table <- as.table(data)
+  table
+}
+
+findN2_scoreVEp1 <- function(R0, VE, p1_t,alpha,power_score,N1) {
+  R0 <- as.vector(R0)
+  VE <- as.vector(VE)
+  p1_t <- as.vector(p1_t)
+  alpha <- as.vector(alpha)
+  power_score <- as.vector(power_score)
+  N1 <- as.vector(N1)
+  N <- rep(NA,times=length(R0))
+  k <- rep(NA,times=length(R0))
+  N2 <- rep(NA,times=length(R0))
+  R <- 1 - VE
+  p2_t <- p1_t/R
+  for(i in 1:length(R0)) {
+    checkN <- seq(N1[i]+0.1,100000,by=0.1)
+    y <- round(findPower_scorep1p2(rep(R0[i],times=length(checkN)),rep(p1_t[i],times=length(checkN)),rep(p2_t[i],times=length(checkN)),rep(alpha[i],times=length(checkN)),checkN,N1[i]/checkN),5)
+    n <- match(power_score[i],y)
+    N[i] <- checkN[n]
+    k[i] <- N1[i]/N[i]
+    N2[i] <- N[i] - N1[i]
+  }
+  data <- matrix(c(R0, p1_t, p2_t, R, VE, alpha, power_score, k, N,N1,N2), ncol=11, nrow=length(R0))
+  colnames(data) <- c("R0","p1","p2","R = p1/p2","vaccine efficacy", "alpha","power (score method)","k","N","N1","N2")
+  table <- as.table(data)
+  table
+}
+
+findN2_scoreRp1 <- function(R0, R, p1_t,alpha,power_score,N1) {
+  R0 <- as.vector(R0)
+  R <- as.vector(R)
+  p1_t <- as.vector(p1_t)
+  alpha <- as.vector(alpha)
+  power_score <- as.vector(power_score)
+  N1 <- as.vector(N1)
+  N <- rep(NA,times=length(R0))
+  k <- rep(NA,times=length(R0))
+  N2 <- rep(NA,times=length(R0))
+  VE <- 1 - R
+  p2_t <- p1_t/R
+  for(i in 1:length(R0)) {
+    checkN <- seq(N1[i]+0.1,100000,by=0.1)
+    y <- round(findPower_scorep1p2(rep(R0[i],times=length(checkN)),rep(p1_t[i],times=length(checkN)),rep(p2_t[i],times=length(checkN)),rep(alpha[i],times=length(checkN)),checkN,N1[i]/checkN),5)
+    n <- match(power_score[i],y)
+    N[i] <- checkN[n]
+    k[i] <- N1[i]/N[i]
+    N2[i] <- N[i] - N1[i]
+  }
+  data <- matrix(c(R0, p1_t, p2_t, R, VE, alpha, power_score, k, N,N1,N2), ncol=11, nrow=length(R0))
+  colnames(data) <- c("R0","p1","p2","R = p1/p2","vaccine efficacy", "alpha","power (score method)","k","N","N1","N2")
+  table <- as.table(data)
+  table
+}
+
+findN2_scoreRp2 <- function(R0, R, p2_t,alpha,power_score,N1) {
+  R0 <- as.vector(R0)
+  R <- as.vector(R)
+  p2_t <- as.vector(p2_t)
+  alpha <- as.vector(alpha)
+  power_score <- as.vector(power_score)
+  N1 <- as.vector(N1)
+  N <- rep(NA,times=length(R0))
+  k <- rep(NA,times=length(R0))
+  N2 <- rep(NA,times=length(R0))
+  VE <- 1 - R
+  p1_t <- p2_t*R
+  for(i in 1:length(R0)) {
+    checkN <- seq(N1[i]+0.1,100000,by=0.1)
+    y <- round(findPower_scorep1p2(rep(R0[i],times=length(checkN)),rep(p1_t[i],times=length(checkN)),rep(p2_t[i],times=length(checkN)),rep(alpha[i],times=length(checkN)),checkN,N1[i]/checkN),5)
+    n <- match(power_score[i],y)
+    N[i] <- checkN[n]
+    k[i] <- N1[i]/N[i]
+    N2[i] <- N[i] - N1[i]
+  }
+  data <- matrix(c(R0, p1_t, p2_t, R, VE, alpha, power_score, k, N,N1,N2), ncol=11, nrow=length(R0))
+  colnames(data) <- c("R0","p1","p2","R = p1/p2","vaccine efficacy", "alpha","power (score method)","k","N","N1","N2")
+  table <- as.table(data)
+  table
+}
+
+findN1_scorep1p2 <- function(R0, p1_t, p2_t,alpha,power_score,N2) {
+  R0 <- as.vector(R0)
+  p1_t <- as.vector(p1_t)
+  p2_t <- as.vector(p2_t)
+  alpha <- as.vector(alpha)
+  power_score <- as.vector(power_score)
+  N2 <- as.vector(N2)
+  N <- rep(NA,times=length(R0))
+  k <- rep(NA,times=length(R0))
+  N1 <- rep(NA,times=length(R0))
+  R <- p1_t/p2_t
+  VE <- 1 - R
+  for(i in 1:length(R0)) {
+    checkN <- seq(N2[i]+0.1,100000,by=0.1)
+    y <- round(findPower_scorep1p2(rep(R0[i],times=length(checkN)),rep(p1_t[i],times=length(checkN)),rep(p2_t[i],times=length(checkN)),rep(alpha[i],times=length(checkN)),checkN,(checkN - N2[i])/checkN),5)
+    n <- match(power_score[i],y)
+    N[i] <- checkN[n]
+    k[i] <- (N[i] - N2[i])/N[i]
+    N1[i] <- N[i] - N2[i]
+  }
+  data <- matrix(c(R0, p1_t, p2_t, R, VE, alpha, power_score, k, N,N1,N2), ncol=11, nrow=length(R0))
+  colnames(data) <- c("R0","p1","p2","R = p1/p2","vaccine efficacy", "alpha","power (score method)","k","N","N1","N2")
+  table <- as.table(data)
+  table
+}
+
+findN1_scoreVEp2 <- function(R0, VE, p2_t,alpha,power_score,N2) {
+  R0 <- as.vector(R0)
+  VE <- as.vector(VE)
+  p2_t <- as.vector(p2_t)
+  alpha <- as.vector(alpha)
+  power_score <- as.vector(power_score)
+  N2 <- as.vector(N2)
+  N <- rep(NA,times=length(R0))
+  k <- rep(NA,times=length(R0))
+  N1 <- rep(NA,times=length(R0))
+  R <- 1 - VE
+  p1_t <- p2_t*R
+  for(i in 1:length(R0)) {
+    checkN <- seq(N2[i]+0.1,100000,by=0.1)
+    y <- round(findPower_scorep1p2(rep(R0[i],times=length(checkN)),rep(p1_t[i],times=length(checkN)),rep(p2_t[i],times=length(checkN)),rep(alpha[i],times=length(checkN)),checkN,(checkN - N2[i])/checkN),5)
+    n <- match(power_score[i],y)
+    N[i] <- checkN[n]
+    k[i] <- (N[i] - N2[i])/N[i]
+    N1[i] <- N[i] - N2[i]
+  }
+  data <- matrix(c(R0, p1_t, p2_t, R, VE, alpha, power_score, k, N,N1,N2), ncol=11, nrow=length(R0))
+  colnames(data) <- c("R0","p1","p2","R = p1/p2","vaccine efficacy", "alpha","power (score method)","k","N","N1","N2")
+  table <- as.table(data)
+  table
+}
+
+findN1_scoreVEp1 <- function(R0, VE, p1_t,alpha,power_score,N2) {
+  R0 <- as.vector(R0)
+  VE <- as.vector(VE)
+  p1_t <- as.vector(p1_t)
+  alpha <- as.vector(alpha)
+  power_score <- as.vector(power_score)
+  N2 <- as.vector(N2)
+  N <- rep(NA,times=length(R0))
+  k <- rep(NA,times=length(R0))
+  N1 <- rep(NA,times=length(R0))
+  R <- 1 - VE
+  p2_t <- p1_t/R
+  for(i in 1:length(R0)) {
+    checkN <- seq(N2[i]+0.1,100000,by=0.1)
+    y <- round(findPower_scorep1p2(rep(R0[i],times=length(checkN)),rep(p1_t[i],times=length(checkN)),rep(p2_t[i],times=length(checkN)),rep(alpha[i],times=length(checkN)),checkN,(checkN - N2[i])/checkN),5)
+    n <- match(power_score[i],y)
+    N[i] <- checkN[n]
+    k[i] <- (N[i] - N2[i])/N[i]
+    N1[i] <- N[i] - N2[i]
+  }
+  data <- matrix(c(R0, p1_t, p2_t, R, VE, alpha, power_score, k, N,N1,N2), ncol=11, nrow=length(R0))
+  colnames(data) <- c("R0","p1","p2","R = p1/p2","vaccine efficacy", "alpha","power (score method)","k","N","N1","N2")
+  table <- as.table(data)
+  table
+}
+
+findN1_scoreRp1 <- function(R0, R, p1_t,alpha,power_score,N2) {
+  R0 <- as.vector(R0)
+  R <- as.vector(R)
+  p1_t <- as.vector(p1_t)
+  alpha <- as.vector(alpha)
+  power_score <- as.vector(power_score)
+  N2 <- as.vector(N2)
+  N <- rep(NA,times=length(R0))
+  k <- rep(NA,times=length(R0))
+  N1 <- rep(NA,times=length(R0))
+  VE <- 1 - R
+  p2_t <- p1_t/R
+  for(i in 1:length(R0)) {
+    checkN <- seq(N2[i]+0.1,100000,by=0.1)
+    y <- round(findPower_scorep1p2(rep(R0[i],times=length(checkN)),rep(p1_t[i],times=length(checkN)),rep(p2_t[i],times=length(checkN)),rep(alpha[i],times=length(checkN)),checkN,(checkN - N2[i])/checkN),5)
+    n <- match(power_score[i],y)
+    N[i] <- checkN[n]
+    k[i] <- (N[i] - N2[i])/N[i]
+    N1[i] <- N[i] - N2[i]
+  }
+  data <- matrix(c(R0, p1_t, p2_t, R, VE, alpha, power_score, k, N,N1,N2), ncol=11, nrow=length(R0))
+  colnames(data) <- c("R0","p1","p2","R = p1/p2","vaccine efficacy", "alpha","power (score method)","k","N","N1","N2")
+  table <- as.table(data)
+  table
+}
+
+findN1_scoreRp2 <- function(R0, R, p2_t,alpha,power_score,N2) {
+  R0 <- as.vector(R0)
+  R <- as.vector(R)
+  p2_t <- as.vector(p2_t)
+  alpha <- as.vector(alpha)
+  power_score <- as.vector(power_score)
+  N2 <- as.vector(N2)
+  N <- rep(NA,times=length(R0))
+  k <- rep(NA,times=length(R0))
+  N1 <- rep(NA,times=length(R0))
+  VE <- 1 - R
+  p1_t <- p2_t*R
+  for(i in 1:length(R0)) {
+    checkN <- seq(N2[i]+0.1,100000,by=0.1)
+    y <- round(findPower_scorep1p2(rep(R0[i],times=length(checkN)),rep(p1_t[i],times=length(checkN)),rep(p2_t[i],times=length(checkN)),rep(alpha[i],times=length(checkN)),checkN,(checkN - N2[i])/checkN),5)
+    n <- match(power_score[i],y)
+    N[i] <- checkN[n]
+    k[i] <- (N[i] - N2[i])/N[i]
+    N1[i] <- N[i] - N2[i]
+  }
+  data <- matrix(c(R0, p1_t, p2_t, R, VE, alpha, power_score, k, N,N1,N2), ncol=11, nrow=length(R0))
+  colnames(data) <- c("R0","p1","p2","R = p1/p2","vaccine efficacy", "alpha","power (score method)","k","N","N1","N2")
+  table <- as.table(data)
+  table
+}
+
 findPower_scorep1p2 <- function(R0, p1_t, p2_t,alpha,N,k) {
   R0 <- as.vector(R0)
   p1_t <- as.vector(p1_t)
