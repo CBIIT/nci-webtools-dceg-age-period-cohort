@@ -1,0 +1,180 @@
+.ui-widget {
+	font-size: 12px;
+}
+
+.label {
+	float: right;
+}
+
+.title {
+	background-color: #aaa;
+}
+
+.example-image {
+	float: left;
+}
+
+.explanation {
+	float: left;
+	padding-left: 15px;
+	width: 600px;
+}
+
+.reference_row {
+	background-color: yellow;
+}
+
+td {
+	text-align: left;
+}
+
+.top-header {
+	text-align: center;
+	background-color: #444;
+	color: #FFF;
+}
+
+.header {
+	background-color: #AAA;
+	color: #444;
+}
+
+#output {
+	/*width: 600px;*/
+	
+}
+
+#inputdata {
+	width: 500px;
+}
+
+.prevalence_label {
+	font-weight: bold;
+	background-color: #AAA;
+	color: #444;
+	padding: 2px 25px 2px 25px;
+}
+
+.bibliography {
+	width: 950px;
+	clear: both;
+	float: left;
+	margin: 50px;
+}
+
+.bib-author {
+	float: left;
+}
+
+.bib-year {
+	float: left;
+}
+
+.bib-title {
+	float: left;
+	font-style: italic;
+}
+
+.bib-journal {
+	float: left;
+}
+
+.bib-ref {
+	float: left;
+}
+
+.bib-pages {
+	float: left;
+}
+
+.bib-doi {
+	float: left;
+}
+
+.bibliography_entry {
+	width: 300px;
+}
+
+.bibliography_link {
+	width: 50px;
+}
+
+#status-bar {
+	background: #CCC;
+	display: block;
+	border: none;
+	box-sizing: border-box;
+	font: 18px arial, sans-serif;
+	left: 0;
+	margin: 10px;
+	outline: none;
+	padding: 10px;
+	top: 2px;
+	width: 100%;
+	visibility: hidden;
+}
+
+.status-info {
+	color: black
+}
+
+.status-error {
+	color: red;
+}
+
+.variable-example {
+	padding-left: 10px;
+	text-align: left;
+}
+
+a#add-test-data {
+	text-decoration: underline;
+	float: right;
+}
+/* mouse over link */
+a#add-test-data:hover {
+	font-weight: bold;
+}
+
+/*Tabs CSS */
+.table-title {
+	word-wrap: normal;
+	font-weight: bold;
+	/*border: solid blue 1px; */
+	padding: 5 5 5 5px;
+	margin: 10px;
+	text-align:center;
+	background-color: #F8FAFA;
+}
+
+.table-side {
+	float: left;
+	width: 450px;
+	/* border: solid red 1px; */
+}
+
+.graphic-side {
+	float: right;
+	/*width:700;*/
+	width: 410px;
+	/*border: solid green 1px;*/
+}
+
+#tabs {
+	width: 994px;
+}
+
+.tab-pane {
+	width: 950px;
+	height: 950px;
+}
+
+.vertical-text {
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	white-space: nowrap;
+	width: 15px;
+}

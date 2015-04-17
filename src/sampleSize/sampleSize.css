@@ -1,0 +1,171 @@
+#portal-footer {clear:both; border-top:1px solid black; line-height: 1.2em; margin: 2em 0em 1em 0em; padding: 1em 0em 1em 0em; text-align: center; background-color:#FFF; color: #333333; font-size: 79%;}
+
+.example-image {
+	float:left;
+}
+
+.explanation {
+	float:left;
+	padding-left:15px;
+	width:600px;
+}
+
+.reference_row {
+	background-color: yellow;
+}
+
+#maindiv {
+	width: 1100px; 
+	margin-left: auto; 
+	margin-right: auto;
+}
+
+.fontnormal {
+	font-weight: normal;
+}
+
+.dom_valref {
+	display:none;
+}
+
+td.label {
+	text-align: right;
+}
+
+.top-header {
+	text-align: center;
+	background-color: #444;
+	color: #FFF;
+}
+
+.header {
+	background-color: #AAA;
+	color: #000;
+        font-family: sans-serif;
+        font-size: 80%;
+        border-left: 1px solid #000;
+        border-top: 1px solid #000;
+        border-collapse: collapse;
+	border: 1px solid #000;
+	text-align: center;
+}
+
+#output {
+	width: 500px;
+}
+
+#inputdata {
+	width: 500px;
+}
+
+.title {
+	background-color: #AAA;
+	color: #444;
+	padding: 5px;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.prevalence_label {
+	font-weight: bold;
+	background-color: #AAA;
+	color: #444;
+	padding: 2px 25px 2px 25px;
+}
+
+.bibliography {
+	width: 950px;
+	clear: both;
+	float: left;
+	margin: 50px;
+}
+
+.bib-author {
+	float: left;
+}
+
+.bib-year {
+	float: left;
+}
+
+.bib-title {
+	float: left;
+	font-style: italic;
+}
+
+.bib-journal {
+	float: left;
+}
+
+.bib-ref {
+	float: left;
+}
+
+.bib-pages {
+	float: left;
+}
+
+.bib-doi {
+	float: left;
+}
+
+.bibliography_entry {
+	width: 300px;
+}
+
+.bibliography_link {
+	width: 50px;
+}
+
+table.table_data {
+    background-color: white;
+    border: 1px solid #bbb;
+    border-collapse: collapse;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 90%;
+}
+table.output_data {
+    background-color: white;
+    border: 2px solid black;
+    border-collapse: collapse;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+table.table_data td{
+    font-family: sans-serif;
+    text-align: center;
+    font-size: 80%;
+    border-bottom: 1px solid #bbb;
+    border-left: 1px solid #bbb;
+    border-collapse: collapse;
+}
+
+.example {
+   text-align: right;
+}
+
+th.col1 {
+    text-align: right;
+}
+tr.table_data_header {
+    background-color: #a0a0a0;
+    border-bottom: 1px solid black;
+}
+
+table.tablevars {
+	border-spacing: 8px 2px;
+        border-collapse: separate;
+}
+
+.ui-tabs .ui-tabs-nav li {
+    height: 50px; 
+    font-size:12px; 
+    text-align: center;
+}
+
+h2, .h2 {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    font-color: red;
+}

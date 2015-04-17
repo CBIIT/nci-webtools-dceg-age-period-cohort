@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sample Size</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<script
+	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script
+	src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+<script src="/common/js/meansToRiskGlossary.js"></script>
+<script src="./sampleSize.js"></script>
+
+<script src="jquery.spin.js" type="text/javascript"></script>
+<link href="jquery.spin.css" rel="stylesheet" type="text/css" />
+
+<link rel="stylesheet" href="../common/css/font-awesome.css"
+  type="text/css">
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" href="/common/css/style.css" />
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="sampleSize.css" />
+
+</head>
+
+<body>
+	<div id="maindiv">
+		<!-- blockcontent was here -->
+		<div id="wrapper">
+			<div id="logos">
+				<div id="left">
+					<a href="http://www.cancer.gov" target="_blank"><img
+						src="/common/images/nci.jpg" width="286" height="40" border="0"
+						alt="National Cancer Institute" title="National Cancer Institute" /></a>
+				</div> 
+				<div id="right">
+					<a href="http://www.cancer.gov" target="_blank"><img
+						src="/common/images/nih.jpg" width="322" height="40" border="0"
+						alt="at the National Institutes of Health"
+						title="at the National Institutes of Health" /></a>
+				</div>
+			</div>
+		</div>
+		<br>
+
+		<div id="banners">
+			<div id="left">
+				<img src="/common/images/DCEG-BB-HREB.png"
+					alt="Banner for NCI Division of Cancer Epidemiology, Genetics Biostatistics Branch, Hormonal and Reproductive Epidemiology Branch "
+					height="43" />
+			</div>
+		</div>
+
+		<div id='main'>
+			<br>
+			<h2 class="title" align="center">Power and Sample Size for Biomarker Case Control Studies</h2>
+			<div id="helpGlossaryLinks">
+				<a href="#"
+					onclick="openHelpWindow('/common/html/meansToRiskGlossary.html')">Glossary</a>
+			</div>
+			<br>
+			<form id="ss">
+			<div style='clear: left; padding-top: 10px;'>
+<table class="tablevars">
+				<tr>
+					<td align="right"><label for="independent_dropdown">Independent Variable</label></td>
+					<td><select id="independent_dropdown"
+						name="independent_dropdown" width="100%">
+							<option value="k" selected>k</option>
+
+					</select></td>
+					<td><label for="independent"> <input type="text"
+							size="30" id="independent" pattern="([0-9],[0-9])"
+							title="A comma separated pair that refers to the minimum and maximum respectively"
+							title="A comma separated pair that refers to the minimum and maximum respectively"
+							value="0,1" class="fontnormal">
+					</label></td>
+				</tr>
+				<tr>
+					<td align="right"><label for="contour_dropdown">Contour</label></td>
+					<td><select id="contour_dropdown" name="contour_dropdown" onchange="lock_fixed_options();">
+							<option value="" selected></option>
+							<option value="specificity">Specificity</option>
+							<option value="sensitivity">Sensitivity</option>
+					</select></td>
+					<td><label for="contour"> <input type="text" size="30"
+							id="contour" pattern="([0-9,. \-])+"
+							title="An array of floating point numbers separated by commas.  Numbers must be between 0 and 1"
+							title="An array of floating point numbers separated by commas  Numbers must be between 0 and 1"
+							 class="fontnormal">
+					</label></td>
+				</tr>
+				<tr>
+					<td align="right"><label for="fixed_dropdown">Fixed Values</label></td>
+					<td><select id="fixed_dropdown" name="fixed_dropdown"
+						id='fixed_dropdown'>
+							<option value="" selected></option>
+						        <option value="specificity" disabled="disabled">Specificity</option>
+                                                        <option value="sensitivity" disabled="disabled">Sensitivity</option>
+
+					</select></td>
+					<td><label for="fixed"> <input type="text" size="30"
+							id="fixed" pattern="([0-9,. \-])+"
+							title="An array of floating point numbers separated by commas. Numbers must be between 0 and 1"
+							 class="fontnormal">
+					</label></td>
+				</tr>
+								<tr>
+					<td align="right"><label for="prevalence">Prevalence</label></td>
+					<td><label for="prevalence"> <input type="text" size="10"
+							id="prevalence" value="0.001"
+							title="A floating point number between 0 and 1"
+							 class="fontnormal"  required>
+					</label></td>
+				</tr>
+								<tr>
+					<td align="right"><label for="n_value">N</label></td>
+					<td><label for="n_value"> <input type="text" size="10"
+							id="n_value" value="1" pattern="(^[0-9]$)+"
+							title="Number must be an integer"
+							 class="fontnormal" required>
+					</label></td>
+				</tr>
+				<tr><td></td><td></td><td></td></tr>
+   				<tr>
+					<td class="spacer">
+                                		<button class="post" type="submit">Calculate</button>
+					&nbsp;
+						<button class="reset">Reset</button>
+
+					</td>
+					<td class="spacer">
+&nbsp;
+</td>
+					<td class="example">
+					 <a id="add-test-data" title="Populate variables with working example" href="#">Example</a>
+					</td>
+				</tr>
+
+			</table>
+				<div id="specificity_val" class="dom_valref"></div>
+				<div id="sensitivity_val" class="dom_valref"></div>
+                                <div id="fixed_flag" class="dom_valref"></div>
+			      	<div id="randomnumber" class="dom_valref"></div>
+
+			</div>
+			</form>
+				<div><p id="spinner" style="display: none;"> <i class="fa fa-spinner fa-spin fa-2x"></i> <span id="spinnerText">Calculating</span></p></div>
+                                        <div class="col-sm-7 col-sm-offset-2" id="message" style="display: none;">
+                                               <div class="panel panel-danger">
+                                                   <div class="panel-heading"></div>
+                                                   <div class="panel-body" id="message-content"></div>
+                                               </div>
+                                        </div>
+				<br />
+
+				<div id="output_graph"></div>
+       		</div>
+	</div>
+	<!-- main -->
+
+	<div id="portal-footer">
+		<div class="footerLinks">
+			<a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="mailto:NCIMeansToRiskWebAdmin@mail.nih.gov" title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/global/web/policies/accessibility"
+				title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://cancer.gov/global/viewing-files" target="_blank"
+				title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br />
+			<br /> <a href="http://www.dhhs.gov/">Department of Health and
+				Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+				href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+				href="http://www.usa.gov/">USA.gov</a>
+		</div>
+		<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
+	</div>
+</body>
+</html>

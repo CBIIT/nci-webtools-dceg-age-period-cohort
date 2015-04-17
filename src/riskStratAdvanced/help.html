@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Means to Risk Stratification: A Web Tool</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<script
+	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+<script
+	src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+<script src="/common/js/meansToRiskGlossary.js"></script>
+<script src="./riskStratAdv.js"></script>
+<link rel="stylesheet" href="/common/css/style.css" />
+<link rel="stylesheet" href="./riskStratAdv.css" />
+
+</head>
+<body>
+	<div style='margin-left: 50px; margin-right: 50px;'>
+		<!-- blockcontent was here -->
+		<div id="wrapper">
+			<div id="logos">
+				<div id="left">
+					<a href="http://www.cancer.gov" target="_blank"><img
+						src="/common/images/nci.jpg" width="286" height="40" border="0"
+						alt="National Cancer Institute" title="National Cancer Institute" /></a>
+				</div>
+				<div id="right">
+					<a href="http://www.cancer.gov" target="_blank"><img
+						src="/common/images/nih.jpg" width="322" height="40" border="0"
+						alt="at the National Institutes of Health"
+						title="at the National Institutes of Health" /></a>
+				</div>
+			</div>
+		</div>
+		<br>
+
+
+		<div class='main_area'>
+			<div id="banners">
+				<div id="dceg_logo">
+					<img src="/common/images/DCEG-BB-HREB.png" style="float: left;"
+						alt="Banner for NCI Division of Cancer Epidemiology, Genetics Biostatistics Branch, Hormonal and Reproductive Epidemiology Branch "
+						height="43" />
+				</div>
+			</div>
+			<h2 class='title' align="center">Help</h2>
+			<p>
+				<b>Instructions for Input</b><br> This tool calculates values
+				and creates a graph for valid combinations of given PPV, cNPV,
+				delta, specificity, sensitivity, and prevalence values. Click on the
+				'Example' link for an example input combination.
+			<ol>
+				<li>Choose which values you would like to input as the
+					independent variable, or for the x-axis of the output graph, from
+					the drop-down menu next to 'Independent Variable'. Then enter your
+					values as decimals separated by commas.</li>
+				<li>Choose which values you would like to input as the contours
+					of the output graph from the drop-down menu next to 'Contour'. Then
+					enter your values as decimals separated by commas.</li>
+				<li>Choose which values you would like to input as fixed
+					values. Then enter your values as decimals separated by commas.</li>
+				<li>Click 'Calculate'</li>
+			</ol>
+			<p>
+				<b>Input Validation Rules</b>
+			<ul>
+				<li>Specificity, Sensitivity, PPV, cNPV, and Prevalence can
+					only be 0 to 1</li>
+				<li>Delta can be 0 to 5</li>
+				<li>cNPV < Prevalence</li>
+				<li>For arrays: max(cNPV) < min(Prevalence)</li>
+				<li>Prevalence < PPV</li>
+				<li>For arrays: max(prev) < min(PPV)</li>
+				<li>Sensitivity+Specificity-1 > 0</li>
+				<li>PPV and cNPV; Sensitivity, Specificity, and Delta; PPV,
+					Prevalence, and Delta; and cNPV, Prevalence, and Delta are invalid
+					combinations of input</li>
+			</ul>
+			</p>
+
+			<p>
+				<b>Where do I go for technical support?</b> Please send an <a
+					href="mailto:NCIMeansToRiskWebAdmin@mail.nih.gov?subject=Advanced Risk Stratification Tool Support"
+					title="Advanced Risk Stratification Support">e-mail</a> to our
+				technical support team.
+			</p>
+			<p>
+				<b>What browsers does the web tool support? </b>The web tool has
+				been tested to work with Internet Explorer 10, Firefox and Chrome.
+				The tool does not support Internet Explorer 9 and below.
+			</p>
+			<div id="portal-footer">
+				<div class="footerLinks">
+					<a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+					<a href="mailto:NCIMeansToRiskWebAdmin@mail.nih.gov"
+						title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+						href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+					<a href="http://www.cancer.gov/global/web/policies/accessibility"
+						title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+						href="http://cancer.gov/global/viewing-files" target="_blank"
+						title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+						href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br />
+					<br /> <a href="http://www.dhhs.gov/">Department of Health and
+						Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+						href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+					<a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+						href="http://www.usa.gov/">USA.gov</a>
+				</div>
+				<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
