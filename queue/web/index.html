@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Queue</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h2>Common Queue RESTful Web Services</h2>        
+        <h3>REST APIs:</h3>
+        <pre>
+http://localhost:8080/queue/restapi/soccerqueue
+http://localhost:8080/queue/restapi/ldlinkqueue
+
+... 
+        </pre>
+
+        <h3>Examples:</h3>
+        <pre>
+<strong>Produce: </strong>
+http://localhost:8080/queue/restapi/soccerqueue
+POST Content-Type:application/json 
+
+<strong>Consume: </strong>
+http://localhost:8080/queue/restapi/soccerqueue
+GET Accept:application/json
+        </pre>
+    </body>
+</html>
