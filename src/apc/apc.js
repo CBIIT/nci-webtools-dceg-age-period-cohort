@@ -9,6 +9,12 @@ var csvResultData = {};
 var open_threads; // Used to determine if all calls have returned
 var error_count = 0;
 
+function escapeHtml(unsafe) {
+	
+    return unsafe
+        .replace("</script>", "")
+        .replace("<script>", "")
+}
 
 $(document).ready(function() { 
 
@@ -55,7 +61,6 @@ $(document).ready(function() {
 			var title = encodeURIComponent($("#title").val());
     	}
     	
-    	var title = encodeURIComponent($("#title").val());
     	var startYear = $("#startYear").val();
      	var startAge = $("#startAge").val();
      	var interval = $("#interval").val();
@@ -139,12 +144,28 @@ $(document).ready(function() {
     
 	// IE10 does not support the onchange event correctly, so instead we check for blur
 	// and force a blur when user hits the enter key on a field 
-	$("#title").blur(function() { setTableTitle(); });
+	$("#title").blur(function() { 
+	
+		var title = $("#title").val();
+		title = escapeHtml(title);
+		$("#title").val(title);
+		setTableTitle(); 
+		
+	});
 	$("#title").on('keypress', function(e){
+		
 		if(e.which == 13) { $("#title").blur(); }
 	});
 	
-	$("#description").blur(function() { setTableTitle(); });
+	$("#description").blur(function() { 
+	
+		var desc = $("#description").val();
+		desc = escapeHtml(desc);
+		$("#description").val(desc);
+		setTableTitle(); 
+		
+	});
+	
 	$("#description").on('keypress', function(e){
 		if(e.which == 13) { $("#description").blur(); }
 	});
@@ -166,6 +187,7 @@ $(document).ready(function() {
 	});
 	
 	$("#title").on('keypress', function(e){
+		
 		if(e.which == 13) {
 			$("#title").blur();
 		}
