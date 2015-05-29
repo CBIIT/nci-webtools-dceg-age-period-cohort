@@ -9,13 +9,6 @@ var csvResultData = {};
 var open_threads; // Used to determine if all calls have returned
 var error_count = 0;
 
-function escapeHtml(unsafe) {
-	
-    return unsafe
-        .replace("</script>", "")
-        .replace("<script>", "")
-}
-
 $(document).ready(function() { 
 
 	var main_table = $("#inputData").html();
@@ -146,22 +139,16 @@ $(document).ready(function() {
 	// and force a blur when user hits the enter key on a field 
 	$("#title").blur(function() { 
 	
-		var title = $("#title").val();
-		title = escapeHtml(title);
-		$("#title").val(title);
 		setTableTitle(); 
 		
 	});
 	$("#title").on('keypress', function(e){
-		
+	
 		if(e.which == 13) { $("#title").blur(); }
 	});
 	
 	$("#description").blur(function() { 
-	
-		var desc = $("#description").val();
-		desc = escapeHtml(desc);
-		$("#description").val(desc);
+
 		setTableTitle(); 
 		
 	});
@@ -180,29 +167,6 @@ $(document).ready(function() {
 		if(e.which == 13) { $("#startAge").blur(); }
 	});
 
-	
-	$( "#title" ).blur(function() {
-		//display_table(text);
-		setTableTitle();
-	});
-	
-	$("#title").on('keypress', function(e){
-		
-		if(e.which == 13) {
-			$("#title").blur();
-		}
-	});
-	
-	$( "#description" ).blur(function() {
-		//display_table(text);
-		setTableTitle();
-	});
-
-	$("#description").on('keypress', function(e){
-		if(e.which == 13) {
-			$("#description").blur();
-		}
-	});
 	
 	$( "#startYear" ).blur(function() {
 		on_change_start_year();
@@ -274,7 +238,12 @@ $(document).ready(function() {
 
 });
 function setTableTitle () {
-	$("#table-title").html($("#title").val()+ " <br/> <span style='color:blue'>" + $("#description").val() + "</span>");
+	
+	var title = DOMPurify.sanitize($("#title").val());
+	var description = DOMPurify.sanitize($("#description").val());
+	
+	$("#table-title").html(title + "<br/> <span style='color:blue'>" + description + "</span>");
+	
 }
 
 function generateUID() {
