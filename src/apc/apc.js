@@ -9,6 +9,7 @@ var csvResultData = {};
 var open_threads; // Used to determine if all calls have returned
 var error_count = 0;
 
+
 $(document).ready(function() { 
 
 	var main_table = $("#inputData").html();
@@ -54,6 +55,7 @@ $(document).ready(function() {
 			var title = encodeURIComponent($("#title").val());
     	}
     	
+    	var title = encodeURIComponent($("#title").val());
     	var startYear = $("#startYear").val();
      	var startAge = $("#startAge").val();
      	var interval = $("#interval").val();
@@ -137,22 +139,12 @@ $(document).ready(function() {
     
 	// IE10 does not support the onchange event correctly, so instead we check for blur
 	// and force a blur when user hits the enter key on a field 
-	$("#title").blur(function() { 
-	
-		setTableTitle(); 
-		
-	});
+	$("#title").blur(function() { setTableTitle(); });
 	$("#title").on('keypress', function(e){
-	
 		if(e.which == 13) { $("#title").blur(); }
 	});
 	
-	$("#description").blur(function() { 
-
-		setTableTitle(); 
-		
-	});
-	
+	$("#description").blur(function() { setTableTitle(); });
 	$("#description").on('keypress', function(e){
 		if(e.which == 13) { $("#description").blur(); }
 	});
@@ -167,6 +159,11 @@ $(document).ready(function() {
 		if(e.which == 13) { $("#startAge").blur(); }
 	});
 
+	
+	$( "#title" ).blur(function() {
+		//display_table(text);
+		setTableTitle();
+	});
 	
 	$( "#startYear" ).blur(function() {
 		on_change_start_year();
@@ -238,12 +235,11 @@ $(document).ready(function() {
 
 });
 function setTableTitle () {
-	
-	var title = DOMPurify.sanitize($("#title").val());
-	var description = DOMPurify.sanitize($("#description").val());
-	
-	$("#table-title").html(title + "<br/> <span style='color:blue'>" + description + "</span>");
-	
+    
+    var title = DOMPurify.sanitize($("#title").val());
+    var description = DOMPurify.sanitize($("#description").val());
+
+	$("#table-title").html(title+ " <br/> <span style='color:blue'>" + description + "</span>");
 }
 
 function generateUID() {

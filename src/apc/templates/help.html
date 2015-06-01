@@ -30,14 +30,14 @@ and birth cohort (year of birth). The cancer <b><i>Rate</i></b> is expressed as 
 persons at risk, which is calculated from the data using the formula: <b><i>(Count/Population) x 100,000.</i></b> </p>
 
 <p>This web tool uses the inputted count and population data to fit the APC Model and returns a number of <b><i>Outputs.</i></b>
-To use this tool the width of the age and period intervals must all be equal. When this is so the diagonals 
+To use this tool, the width of the age and period intervals must all be equal. When this is so, the diagonals 
 of the rate table represent birth cohorts.</p> 
 
 <p> Visit the following sections to learn more about the APC web tool:</p>
 <ul>
-	<li><a href='#started'>Getting started</a> - Learn how to enter data into the tool</li>
+	<li><a href='#started'>Getting started</a> - Learn how to enter data into the tool.</li>
 	<li><a href='#example'>Sample data</a> - Enter any of these sample datasets to see the tool in action. </li>
-	<li><a href='#whatitdoes'>What it does</a> - Find out what outputs are produced </li>
+	<li><a href='#whatitdoes'>What it does</a> - Find out what outputs are produced. </li>
 	<li><a href='#savingyourresults'>Saving your results</a> - Find out how to save raw output as an Excel Workbook, R Workspace, or text file. </li>
         <li><a href='#faq'>FAQ</a> - Find out answers to some common questions about the APC tool.</li>
 </ul>
@@ -57,7 +57,7 @@ The data can be input by copy-and-paste from an Excel worksheet or file upload o
 		<li><B>Start Age</B> - list the first age of the first age group of your data, for example use 30 for the interval 30 - 34</li>
 		<li><B>Interval (Years)</B> - the width of the age and period intervals, for example use 1 for single-year data, 2 for two-year data, 5 for five-year data (e.g., 1990 - 1994), etc.</li>
 	</ul>
-	<li>Click the calculate button</li>
+	<li>Click the Calculate button.</li>
 	</li>
 </ol>
 <p><h5>To input data from a csv file:</h5></p>
@@ -327,7 +327,7 @@ Longitudinal age curve describes age incidence pattern in every cohort.
 <li><i><b>Can my Populations include zeroes?</b></i> No, zero population counts will generate errors because the corresponding rates are undefined (you can't divide by zero!)</li>
 <li><i><b>What algorithm do you use to estimate the parameters and functions?</b></i> We use the statistical method of weighted least squares and the assumption that the count data follow a Poisson distribution allowing for extra-Poisson variation. </li>
 <li><i><b>What software do you use?</b></i> Our calculations are carried out using the R environment for statistical computing and graphics.</li>
-<li><i><b>Are your R programs available?</b></i> Yes, our R programs are freely available. You can obtain a copy of our code <a href="https://github.com/CBIIT/nci-analysis-tools-web-presence/blob/master/src/apc/apc.R" target="code">here</a>.</li>
+<li><i><b>Are your R programs available?</b></i> Yes, our R programs are freely available. You can obtain a copy of our code <a href="https://github.com/CBIIT/nci-webtools-dceg-age-period-cohort/blob/master/apc/apc.R" target="code">here</a>.</li>
 <li><i><b>Where do I go for technical support?</b></i> Please send an <a href="mailto:NCIAPCWebToolAdmin@mail.nih.gov?subject=APC tool support" title="APC Tool Technical Support">e-mail</a> to our technical support team.
 <li><i><b>What browsers does the web tool support?</b></i> The web tool has been tested to work with Internet Explorer 10, Firefox and Chrome. The file upload feature currently does not work with Internet Explorer 9 and below.
 </ul>
