@@ -165,23 +165,6 @@ $(document).ready(function() {
 		setTableTitle();
 	});
 	
-	$("#title").on('keypress', function(e){
-		if(e.which == 13) {
-			$("#title").blur();
-		}
-	});
-	
-	$( "#description" ).blur(function() {
-		//display_table(text);
-		setTableTitle();
-	});
-
-	$("#description").on('keypress', function(e){
-		if(e.which == 13) {
-			$("#description").blur();
-		}
-	});
-	
 	$( "#startYear" ).blur(function() {
 		on_change_start_year();
 	});
@@ -252,7 +235,11 @@ $(document).ready(function() {
 
 });
 function setTableTitle () {
-	$("#table-title").html($("#title").val()+ " <br/> <span style='color:blue'>" + $("#description").val() + "</span>");
+    
+    var title = DOMPurify.sanitize($("#title").val());
+    var description = DOMPurify.sanitize($("#description").val());
+
+	$("#table-title").html(title+ " <br/> <span style='color:blue'>" + description + "</span>");
 }
 
 function generateUID() {
