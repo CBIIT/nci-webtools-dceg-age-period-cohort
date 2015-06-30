@@ -129,7 +129,7 @@ createPanCanList <- function (inputList) {
 }
 
 getGraph <- function (apcOutput, keyGraphName, uniqueId) {
-  
+  dir.create(tmpDirectory);
   imageFileName = paste(tmpDirectory, keyGraphName, uniqueId, ".png", sep = '');
   png(file = imageFileName , units="in", width=10, height=8, res=150);
   line.apc(apcOutput, keyGraphName);
