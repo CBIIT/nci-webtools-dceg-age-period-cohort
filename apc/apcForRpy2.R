@@ -8,13 +8,7 @@ library('stringr');
 source ('apc.R');
 source ('writeToExcel.R')
 
-# Use These directories when testing locally running a Flask Server
-#imageDirectory <- "/home/brent/myproject/nci-analysis-tools-web-presence/src/apc/static/img/";
-#rawDirectory <- "/home/brent/myproject/nci-analysis-tools-web-presence/src/apc/static/raw/";
-
-# Use these directories in production
-imageDirectory <- "tmp/";
-rawDirectory <- "tmp/";
+tmpDirectory <- "tmp/";
 
 moveRowLabelsToData <- function (matrixWithNamedRows, key) {
   
@@ -135,8 +129,8 @@ createPanCanList <- function (inputList) {
 }
 
 getGraph <- function (apcOutput, keyGraphName, uniqueId) {
-  dir.create(imageDirectory);
-  imageFileName = paste(imageDirectory, keyGraphName, uniqueId, ".png", sep = '');
+  
+  imageFileName = paste(tmpDirectory, keyGraphName, uniqueId, ".png", sep = '');
   png(file = imageFileName , units="in", width=10, height=8, res=150);
   line.apc(apcOutput, keyGraphName);
   dev.off();
@@ -149,6 +143,7 @@ getApcData <- function (urlEncodedString) {
 
 getApcDataJSON <-function(urlEncodedString)
 {
+  dir.create(tmpDirectory);
   inputList <- parseURLEncodedString(urlEncodedString);
   apcdata<-getApcData (inputList);
   jsonString = "";
@@ -206,15 +201,15 @@ getApcDataJSON <-function(urlEncodedString)
     defaultTitle<-pmatch("APCAnalysis", title, nomatch=0);
 
     if (defaultTitle > 0) {
-      rawInputDataFileName <- paste(rawDirectory, title,"_","RawInput.RData", sep='');
-      rawOutputDataFileName <- paste(rawDirectory,title,"_","RawOutput.RData", sep='');
-      txtInputDataFileName <- paste(rawDirectory, title,"_","RawInput.txt", sep='');
-      txtOutputDataFileName <- paste(rawDirectory, title,"_","RawOutput.txt", sep='');  
+      rawInputDataFileName <- paste(tmpDirectory, title,"_","RawInput.RData", sep='');
+      rawOutputDataFileName <- paste(tmpDirectory,title,"_","RawOutput.RData", sep='');
+      txtInputDataFileName <- paste(tmpDirectory, title,"_","RawInput.txt", sep='');
+      txtOutputDataFileName <- paste(tmpDirectory, title,"_","RawOutput.txt", sep='');  
     } else {
-      rawInputDataFileName <- paste(rawDirectory, title,"_",time,"_","RawInput.RData", sep='');
-      rawOutputDataFileName <- paste(rawDirectory, title,"_",time,"_","RawOutput.RData", sep='');
-      txtInputDataFileName <- paste(rawDirectory, title,"_",time,"_","RawInput.txt", sep='');
-      txtOutputDataFileName <- paste(rawDirectory, title,"_",time,"_","RawOutput.txt", sep='');
+      rawInputDataFileName <- paste(tmpDirectory, title,"_",time,"_","RawInput.RData", sep='');
+      rawOutputDataFileName <- paste(tmpDirectory, title,"_",time,"_","RawOutput.RData", sep='');
+      txtInputDataFileName <- paste(tmpDirectory, title,"_",time,"_","RawInput.txt", sep='');
+      txtOutputDataFileName <- paste(tmpDirectory, title,"_",time,"_","RawOutput.txt", sep='');
     }
     save(inputData, file = rawInputDataFileName);
     save(apcdata, file = rawOutputDataFileName);
@@ -227,7 +222,7 @@ getApcDataJSON <-function(urlEncodedString)
     # Assumes the graphs have already been created and just need to be added to Excel
     # Therefore, all other keys above must have been called for this to work.
     
-    excelFileName <- writeResultsToExcel(apcdata, uniqueId, URLdecode(getTitle(inputList)), imageDirectory);
+    excelFileName <- writeResultsToExcel(apcdata, uniqueId, URLdecode(getTitle(inputList)), tmpDirectory);
     jsonString <- toJSON(excelFileName);
   }
   str_replace_all(jsonString, "[\n]","");
