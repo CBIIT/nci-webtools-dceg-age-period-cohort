@@ -8,7 +8,7 @@ library('stringr');
 source ('apc.R');
 source ('writeToExcel.R')
 
-tmpDirectory <- "tmp/";
+tmpDirectory <- "./tmp/";
 
 moveRowLabelsToData <- function (matrixWithNamedRows, key) {
   
