@@ -15,10 +15,10 @@ import cgi, re
 import shutil
 import os
 from xml.sax.saxutils import escape, unescape
-import pandas as pd
-import numpy as np
-from pandas import DataFrame
-import pandas.rpy.common as com
+#import pandas as pd
+#import numpy as np
+#from pandas import DataFrame
+#import pandas.rpy.common as com
 from socket import gethostname
 import urllib
 from jinja2 import Environment, FileSystemLoader
