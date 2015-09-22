@@ -12,8 +12,8 @@
 <script src="//cdn.jsdelivr.net/bootstrap/2.1.0/js/bootstrap.min.js"></script>
 <script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 
-<script src="/common/js/purify.js"> </script>
 <script src="./apc.js"></script>
+<script src="/common/js/purify.js"> </script>
 
 <link rel="stylesheet"
 	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
@@ -33,18 +33,8 @@
 
 
 	<div id="wrapper">
-		<div id="logos">
-			<div id="left">
-				<a href="http://www.cancer.gov" target="_blank"><img
-					src="/common/images/nci.jpg" width="286" height="43" border="0"
-					alt="National Cancer Institute" title="National Cancer Institute" /></a>
-			</div>
-			<div id="right">
-				<a href="http://www.cancer.gov" target="_blank"><img
-					src="/common/images/nih.jpg" width="322" height="43" border="0"
-					alt="at the National Institutes of Health"
-					title="at the National Institutes of Health" /></a>
-			</div>
+		<div d="logos">
+		   <a href="/"><img alt="Division of Cancer Epidemiology &amp; Genetics" src="/common/images/DCEG-logo.svg" width="80%"  ></a>
 		</div>
 		<br>
 		<div id="banners">
@@ -58,7 +48,7 @@
 					alt="Age-Period-Cohort Web Tool" height="43" />
 			</div>
 		</div>
-	
+
 		<div id="blockcontent">{% block content %}{% endblock %}</div>
 		<div id="citation">Rosenberg PS, Check DP, Anderson WF. A Web Tool for Age-Period-Cohort Analysis of Cancer Incidence and Mortality Rates. Cancer Epidemiology, Biomarkers Prevent 2014:23:2296, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25146089">PMID: 25146089</a></div>
 		<div id="portal-footer">
