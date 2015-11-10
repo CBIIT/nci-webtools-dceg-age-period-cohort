@@ -93,7 +93,7 @@ if __name__ == '__main__':
     parser.add_argument("-p", dest="port_number", default="8888", help="Sets the Port") 
     # Default port is production value; prod,stage,dev = 8888, sandbox=8788
     args = parser.parse_args()
-    port_num = int(args.port_number);
+    port_num = int(args.port_number)
 
     hostname = gethostname()
     createStaticFiles()
