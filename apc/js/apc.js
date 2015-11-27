@@ -49,7 +49,6 @@ $(document).ready(function() {
 
 
 	$( "#calculate" ).click(function() {
-		alert("new calculation");
     	if ($("#title").val()=='') {
 
     		var d = new Date();
