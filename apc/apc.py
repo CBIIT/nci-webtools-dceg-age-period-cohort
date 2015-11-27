@@ -33,25 +33,6 @@ app = Flask(__name__, static_folder='web', static_url_path='/web')
 #def root():
 #    return url_for('web', filename='index.html')
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/check.html')
-def check():
-    return render_template('check.html')
-
-@app.route('/help.html')
-def help():
-    return render_template('help.html')
-
-@app.route('/index.html')
-def root():
-    return render_template('index.html')
-
-def root1():
-    return render_template('index.html')
-
 def jsonp(func):
     """Wraps JSONified output for JSONP requests."""
     @wraps(func)
@@ -76,17 +57,6 @@ def createPanCanList():
     apcJsondata = r_getname_getApcData(request.stream.read())
     return apcJsondata[0]
 
-def createStaticFiles():
-    """ solves issue of copying templates to root index.html, help.html etc. Deleted 4 static files from github as there is no reason to check these files in."""
-    env = Environment(loader=FileSystemLoader('templates'))
-    files = os.listdir('./templates')
-    for x in files:
-        template = env.get_template(x)
-        renderedFile = template.render(**{})
-        f = open(x,'w')
-        f.write(renderedFile)
-        f.close()
-        
 import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -96,5 +66,4 @@ if __name__ == '__main__':
     port_num = int(args.port_number)
 
     hostname = gethostname()
-    createStaticFiles()
     app.run(host='0.0.0.0', port=port_num, debug = True)
