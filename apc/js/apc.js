@@ -1,5 +1,5 @@
 var error_reason;
-var paste_instructions = 
+var paste_instructions =
 	"When pasting from a spreadsheet or uploading from a csv file,\n it should have alternating " +
 	"columns of count-then-population\n" +
 	"for at least two age periods (minimum size array = 2x2),\n no more than 100 age groups and periods.";
@@ -9,16 +9,28 @@ var csvResultData = {};
 var open_threads; // Used to determine if all calls have returned
 var error_count = 0;
 
+$(document).ready(function() {
+	$('#startYear').spinner({
+		min: 0,
+		max: 10000,
+		step: 1,
+		spin: function(event, ui){on_change_start_year();},
+		stop: function(event, ui){on_change_start_year();}
+	});
+	$('#startAge').spinner({
+		min: 0,
+		max: 120,
+		step: 1,
+		spin: function(event, ui){on_change_starting_age();},
+		stop: function(event, ui){on_change_starting_age();}
+	});
+    var main_table = $("#inputData").html();
 
-$(document).ready(function() { 
-
-	var main_table = $("#inputData").html();
-	
 	$("#paste").css("width",  $("#main-table").innerWidth() - 10);
 	$("#paste").css("height",  $("#main-table").innerHeight() - 10);
-	
+
 	var off = $("#paste_here_image").position();
-	
+
 	$("#please_wait").dialog({
 		dialogClass: 'no-close',
 		resizable: false,
@@ -26,38 +38,38 @@ $(document).ready(function() {
 	    autoOpen: false,
 	    hide: { effect: "fade", duration: 200 }
 	});
-	
+
 
 	create_paste_binding($(".paste_area"));
 
-	$( "#cancel" ).click(function() { 
+	$( "#cancel" ).click(function() {
 		window.location.reload(true);
 		return false;
 	});
 
 
 	$( "#calculate" ).click(function() {
-
+		alert("new calculation");
     	if ($("#title").val()=='') {
-    		
+
     		var d = new Date();
-			var date_str = "" 
-				+ d.getFullYear() + "_" 
+			var date_str = ""
+				+ d.getFullYear() + "_"
 				+ (d.getMonth() + 1) + "_" // Why is january = 0?
 				+ d.getDate() + "_"
 				+ d.getHours() + "_"
 				+ d.getMinutes();
-    		
+
     		$("#title").val('APC Analysis - ' + date_str)
     		setTableTitle();
     	}
     	else {
 			var title = encodeURIComponent($("#title").val());
     	}
-    	
+
     	var title = encodeURIComponent($("#title").val());
-    	var startYear = $("#startYear").val();
-     	var startAge = $("#startAge").val();
+    	var startYear = $('#startYear').val();
+     	var startAge = $('#startAge').val();
      	var interval = $("#interval").val();
 
 
@@ -76,18 +88,18 @@ $(document).ready(function() {
     		return false;
     	}
     	if (interval != "year1" && interval != "year2" &&
-    		interval != "year3" && interval != "year4" && 
+    		interval != "year3" && interval != "year4" &&
     		interval != "year5" && interval != "year6" &&
-    		interval != "year7" && interval != "year8" && 
+    		interval != "year7" && interval != "year8" &&
     		interval != "year9" && interval != "year10") {
     		alert("Interval must be 1,2,3,4,5,6,7,8,9 or 10 years, it is: [" + interval + "]");
     		return false;
     	}
     	// Moved below checks because if there is no year we should not try and set the default description
      	if ($("#description").val()=='') {
-     		var description = "Start Year: " 
-     			+ startYear + " at Age: " 
-     			+ startAge + " with Interval: " 
+     		var description = "Start Year: "
+     			+ startYear + " at Age: "
+     			+ startAge + " with Interval: "
      			+ getInterval() + " years";
      			$("#description").val(description);
      			setTableTitle();
@@ -95,7 +107,7 @@ $(document).ready(function() {
      		var description = encodeURIComponent($("#description").val());
      	}
 
-    	
+
       	var periodCount= numberOfPeriods();
      	var rowCount = numberOfRows();
      	//var countCSV = encodeURIComponent(determine_count_array());
@@ -103,15 +115,15 @@ $(document).ready(function() {
      	//var populationCSV = encodeURIComponent(determine_pop_array());
      	var populationCSV = determine_pop_array();
      	var uniqueId = generateUID ();
-     
-		var keys = ["AgeDeviations","PerDeviations","CohDeviations", 		"LongAge", 
+
+		var keys = ["AgeDeviations","PerDeviations","CohDeviations", 		"LongAge",
 					"CrossAge", 	"Long2CrossRR", "FittedTemporalTrends",	"PeriodRR",
-					"CohortRR",		"LocalDrifts",	"Coefficients",			"Waldtests", 
+					"CohortRR",		"LocalDrifts",	"Coefficients",			"Waldtests",
 					"NetDrift",		"Offset",		"RawData", "Excel" ];
 		//-----
         $("#please_wait").dialog('open');
         $("#ND").css("display","block");
-        
+
         $("#CE").css("display","block");
         $("#WT").css("display","block");
         $(".rates").css("display","block");
@@ -120,51 +132,50 @@ $(document).ready(function() {
 		for (var i in keys){
 			getAPCData({
 		                	key: keys[i],
-		                	title: title, 
-		                	startYear: startYear, 
-		                	startAge:  startAge, 
-		                	interval:  interval, 
-		                	periodCount: periodCount, 
-		                	rowCount: rowCount, 
-		                	countCSV: countCSV, 
+		                	title: title,
+		                	startYear: startYear,
+		                	startAge:  startAge,
+		                	interval:  interval,
+		                	periodCount: periodCount,
+		                	rowCount: rowCount,
+		                	countCSV: countCSV,
 		                	populationCSV: populationCSV,
 		                	uniqueId: uniqueId,
 		                	description: description
 		                }, keys[i], uniqueId);
-			
+
 		}
 		return false;
 
 	});
-    
+
 	// IE10 does not support the onchange event correctly, so instead we check for blur
-	// and force a blur when user hits the enter key on a field 
+	// and force a blur when user hits the enter key on a field
 	$("#title").blur(function() { setTableTitle(); });
 	$("#title").on('keypress', function(e){
 		if(e.which == 13) { $("#title").blur(); }
 	});
-	
+
 	$("#description").blur(function() { setTableTitle(); });
 	$("#description").on('keypress', function(e){
 		if(e.which == 13) { $("#description").blur(); }
 	});
-	
-	$("#startYear").blur(function() { on_change_start_year(); });
-	$("#startYear").on('keypress', function(e){
-		if(e.which == 13) { $("#startYear").blur(); }
-	});
 
-	$("#startAge").blur(function() { on_change_starting_age(); });
-	$("#startAge").on('keypress', function(e){
-		if(e.which == 13) { $("#startAge").blur(); }
-	});
+	//$("#startYear").blur(function() { on_change_start_year(); });
+	//$("#startYear").on('keypress', function(e){
+	//	if(e.which == 13) { $("#startYear").blur(); }
+	//});
 
-	
+	//$("#startAge").blur(function() { on_change_starting_age(); });
+	//$("#startAge").on('keypress', function(e){
+	//	if(e.which == 13) { $("#startAge").blur(); }
+	//});
+
 	$( "#title" ).blur(function() {
 		//display_table(text);
 		setTableTitle();
 	});
-	
+
 	$( "#startYear" ).blur(function() {
 		on_change_start_year();
 	});
@@ -176,7 +187,7 @@ $(document).ready(function() {
 	});
 
 	$( "#startAge" ).blur(function() {
-		on_change_starting_age();		
+		on_change_starting_age();
 	});
 
 	$("#startAge").on('keypress', function(e){
@@ -184,12 +195,12 @@ $(document).ready(function() {
 			$("#startAge").blur();
 		}
 	});
-	
+
 	$( "#interval" ).change(function() {
 		on_change_starting_age();
 		on_change_start_year();
 	});
-	
+
     $('#countPopulation').change(function(){
                 if ( window.FileReader ) {
                         var file = this.files[0];
@@ -208,7 +219,7 @@ $(document).ready(function() {
                         reader.readAsText(file);
                 }
                 else {
-                        if ($("#title").val()=='') { 
+                        if ($("#title").val()=='') {
                         	var filename = $("#countPopulation").val();
                         	filename = filename.substr(filename.lastIndexOf('/')+1)
                         	var new_title = filename.substr(0, filename.lastIndexOf('.'));
@@ -222,20 +233,21 @@ $(document).ready(function() {
                 }
                 $("#cancel").css("display","block");
                 $("#paste_here_image").hide();
-        
+
     });
 
 
     $("#download").click(function() {
     	var selected_file = $("#download_selector").val();
     	window.open("./" + selected_file, 'download');
-//    	alert ("File is: " + selected_file);
     	return false;
     });
 
-});
+}); //end of ready function
+
+
 function setTableTitle () {
-    
+
     var title = DOMPurify.sanitize($("#title").val());
     var description = DOMPurify.sanitize($("#description").val());
 
@@ -265,13 +277,13 @@ function getAPCData(data, keyData, uniqueId){
 				} else {
 					displayText(data, keyData);
 				}
-				if (keyData.localeCompare("Waldtests") != 0 && 
-					keyData.localeCompare("Coefficients") != 0 && 
+				if (keyData.localeCompare("Waldtests") != 0 &&
+					keyData.localeCompare("Coefficients") != 0 &&
 					keyData.localeCompare("NetDrift") != 0 &&
 					keyData.localeCompare("Offset") != 0 &&
 					keyData.localeCompare("Excel") != 0 &&
 					keyData.localeCompare("RawData") != 0 ){
-					loadImage(keyData, uniqueId);	
+					loadImage(keyData, uniqueId);
 				}
 
 			},
@@ -291,7 +303,7 @@ function getAPCData(data, keyData, uniqueId){
 						error_count=0;
 					}
 				}
-				
+
 				if (keyData == "NetDrift" && $("#netdrift_header").length == 0) $("#NetDrift").find("thead").prepend(
 					"<tr><th id='netdrift_header' colspan='4' style='text-align:center;'>Net Drift </th></tr>");
 				if (keyData == "Waldtests" && $("#waldtest_header").length == 0) $("#Waldtests").find("thead").prepend(
@@ -299,7 +311,7 @@ function getAPCData(data, keyData, uniqueId){
 				if (keyData == "Coefficients" && $("#coefficients_header").length == 0) $("#Coefficients").find("thead").prepend(
 					"<tr><th id='coefficients_header' colspan='5' style='text-align:center;'>Coefficients </th></tr>");
 
-				
+
 			},
 			dataType: "json"
 			//dataType: "jsonp"
@@ -309,19 +321,19 @@ function displayText(jsonData, key){
 	if (key.localeCompare("Offset") == 0) {
 		$('#OffsetLongAge').text(jsonData[0]);
 		$('#OffsetCrossAge').text(jsonData[0]);
-		$('#OffsetFittedTemporalTrends').text(jsonData[0]);	
+		$('#OffsetFittedTemporalTrends').text(jsonData[0]);
 	} else if (key.localeCompare("RawData") == 0) {
 		$("#download_choice").show();
-		
+
 		$("#raw_input_option").attr("value", jsonData[0]);
 		$("#raw_output_option").attr("value", jsonData[1]);
 		$("#text_input_option").attr("value", jsonData[2]);
 		$("#text_output_option").attr("value", jsonData[3]);
-		
+
 	} else {
 		$("#excel_output_option").attr("value", jsonData[0]);
 	}
-	
+
 }
 
 function fillDataTable(jsonTableData, key){
@@ -336,7 +348,7 @@ function fillDataTable(jsonTableData, key){
 		"bPaginate": false,
 		"bDestroy": true,
 		"aaSorting": []
-	});		
+	});
 }
 
 // function createResultDownloadLink (keyData, uniqueId){
@@ -344,13 +356,13 @@ function fillDataTable(jsonTableData, key){
 // }
 
 function loadImage(keyData, uniqueId) {
-	$('#' + keyData + 'Graph').html("<img style='width: 600px ; height: 480px' class='center' alt='graph for " 
+	$('#' + keyData + 'Graph').html("<img style='width: 600px ; height: 480px' class='center' alt='graph for "
 			+ keyData + "' src='./tmp/" + keyData + uniqueId + ".png'>");
 }
 
 function getColumnHeaderData(data2d, keyName) {
 	var columnHeaderData2d = new Array();
-	
+
 	for (var key in data2d[0]){
 		var tempObject = {};
 		tempObject["mDataProp"] = key;
@@ -383,15 +395,15 @@ function JSON2CSV(objArray) {
 
     line = line.slice(0, -1);
     str += line + '\r\n';
-    return str;    
+    return str;
 }
 
- 
+
 function upload_file() {
 //	var file = document.getElementById('files').files[0];
 	var files_element = document.getElementById('files');
 	var files = files_element.files;
-	
+
 	if (!files|| !files.length) {
 		alert('Please select a file!');
 		return;
@@ -412,10 +424,10 @@ function upload_file() {
 }
 
 function parse_file(blob) {
-//	var text = blob.replace(/,/g,'\t');	
+//	var text = blob.replace(/,/g,'\t');
 //	display_table(text, '\t');
 	re = 	/\"(\d+),(\d+),(\d+)\"/;
-	
+
 	var intermediate_text = text.replace(re, "$0$1$2");
 	display_table(text, ",");
 }
@@ -432,18 +444,18 @@ function create_paste_binding (element) {
             	$("#paste_area").val("Input Pasted");
             }
             else $("#paste_area").val("Input Failed \nneeds to be 14,9");
-        }, 0); 
+        }, 0);
         $("#paste_here_image").hide();
-     });	 
+     });
 }
 
 function on_change_starting_age() {
 	if (line_array == null) return;
-	
-	if ($("#startAge").val() == "" ) return;
-	
-	var starting_age = parseInt($("#startAge").val());
-	
+
+	if ($('#startAge').val() == "" ) return;
+
+	var starting_age = parseInt($('#startAge').val());
+
 	var num_ages = line_array.length ;
 	for (var y=0;y<num_ages;y++) {
 		$("#age_" + y).html(compute_age(y));
@@ -477,22 +489,22 @@ function getInterval (){
 		break;
 		case "year8":
 			interval = 8;
-		break;				
+		break;
 		case "year9":
 			interval = 9;
 		break;
 		case "year10":
 			interval = 10;
-		break;		
+		break;
 	}
 	return interval;
 }
 
 function on_change_start_year() {
 	if (line_array == null) return;
-	
-	var first_period = parseInt($("#startYear").val());
-	
+
+	var first_period = parseInt($('#startYear').val());
+
 	var num_periods = Math.floor((line_array[0].length + 1) / 2);
 	for (var x=0;x<num_periods;x++) {
 		var period_start = compute_period(x);
@@ -508,10 +520,10 @@ function on_change_start_year() {
 }
 
 function determine_count_array() {
-	
+
 	var num_periods = numberOfPeriods();
 	var num_ages = numberOfRows();
-	
+
 	var counts = "";
 	for (var y=0;y<=num_ages;y++) {
 		for (var x=0;x<num_periods;x++) {
@@ -525,14 +537,14 @@ function determine_pop_array() {
 
 	var num_periods = numberOfPeriods();
 	var num_ages = numberOfRows();
-	
+
 	var pop_array = "";
 	for (var y=0;y<=num_ages;y++) {
 		for (var x=0;x<num_periods;x++) {
 			pop_array += line_array[y][((x*2)+1)] + ',';
 		}
 	}
-	return pop_array;	
+	return pop_array;
 }
 
 function numberOfPeriods () {
@@ -545,13 +557,13 @@ function numberOfRows () {
 
 
 function display_table(txt, delimiter) {
-	
+
 	var re3 = /\"(\d+),(\d+),(\d+)\"/g;
 	var i_text = txt.replace(re3, "$1$2$3");
 	var re2 = /\"(\d+),(\d+)\"/g;
 	i_text = i_text.replace(re2, "$1$2");
 	txt = i_text;
-	
+
 	var lines = txt.split("\n");
 	// Must remove any trailing blank lines
 	while (lines[lines.length-1].length == 0) {
@@ -559,11 +571,11 @@ function display_table(txt, delimiter) {
 	}
 	// Then add 1 and only 1 back
 	lines.push("");
-	
+
 	line_array = new Array(lines.length);
 	for (count = 0; count < lines.length;count++) {
 		//line_array[count] = lines[count].split("\t");
-		line_array[count] = lines[count].split(delimiter);			
+		line_array[count] = lines[count].split(delimiter);
 	}
 
 	var test_another_row = true;
@@ -607,11 +619,11 @@ function display_table(txt, delimiter) {
 			year = parseInt(first_cell_in_row.substring(10));  // Everything after Interval:_
 			test_another_row = true;
 		} else if (first_cell_in_row == "" || isNaN(first_cell_in_row)) {
-			test_another_row = true; // Also remove blank lines			
+			test_another_row = true; // Also remove blank lines
 		}
 	}
 	var metadata_lines = i-1; // i will be 1 higher than the number of metadata lines
-	
+
 	if (metadata_lines > 0) {
 		for (count = metadata_lines; count < lines.length;count++) {
 			line_array[count - metadata_lines] = line_array[count];
@@ -620,41 +632,41 @@ function display_table(txt, delimiter) {
 
 		if (title != null) $("#title").val(title);
 		if (description != null)$("#description").val(description);
-		if (start_year != null)$("#startYear").val(start_year);	
-		if (start_age != null)$("#startAge").val(start_age);	
-		if (year != null)$("#interval").val("year" + year);	
+		if (start_year != null)$('#startYear').val(start_year);
+		if (start_age != null)$('#startAge').val(start_age);
+		if (year != null)$("#interval").val("year" + year);
 	}
-	
+
 	// Check for all conditions in which data size is wrong
 	if (!validate_paste_input(line_array)) {
 		alert(error_reason + "\n\n" + paste_instructions);
 		return false;
 	}
-	
+
 	var rows = line_array.length;
 //	var rows;
-	
+
 	// Sometimes the data has a blank row at the end, do not iterate on it.
 //	if (line_array[line_array.length -1][0] == "") rows = line_array.length;
 //	else rows = line_array.length + 1;
-	
+
 	// Note each 'col' is actually 2 columns in the data and tables
 	var cols = Math.floor((line_array[0].length + 1) / 2);
-		
+
 	// We are going to completely replace this table with a new one of the appropriate size
 
 	$("#main-table").empty();
-	
-	
+
+
 	var third_header_row = $("<tr></tr>");
 	third_header_row.append("<td >&nbsp;</td>");
 	third_header_row.append("<td class='header border-left border-top'>&nbsp;</td>");
 	var table_title = $("<td id='table-title' colspan='" + (cols * 2) + "' class='header border-bottom border-right border-left  border-top'>" + $("#title").val() + "<br/> <span style='color:blue'>" + $("#description").val()  + "</span></td>");
 
 	third_header_row.append(table_title);
-	
+
 	$("#main-table").append(third_header_row);
-	
+
 	var fourth_header_row = $("<tr></tr>");
 	fourth_header_row.append("<td></td>");
 	fourth_header_row.append("<td class='header border-left border-right'></td>");
@@ -666,14 +678,14 @@ function display_table(txt, delimiter) {
 //		if (x == cols - 1) cell_right.addClass("border-right");
 		var period_start = compute_period(x);
 		var period_end = period_start + getInterval() - 1;
-		
+
 		// When start and end are both is same year, just display it once
 		var period_display;
-		if (isNaN(period_start) || isNaN(period_end) ) period_display = ""; 
+		if (isNaN(period_start) || isNaN(period_end) ) period_display = "";
 		else if (period_start == period_end) period_display = period_start;
 		else period_display = period_start +  " - " + period_end;
 
-		var cell = $("<td colspan='2' class='header border-dotted-left' id='period_" + x + "'>" + 
+		var cell = $("<td colspan='2' class='header border-dotted-left' id='period_" + x + "'>" +
 				period_display +  "</th>");
 		fourth_header_row.append(cell);
 		if (x == cols - 1) cell.addClass("border-right");
@@ -707,69 +719,70 @@ function display_table(txt, delimiter) {
 		if (y == 0) data_row.append("<td id='row-title' rowspan='" + rows + "' " +
 				"class='row-header border-top border-bottom border-left'>" +
 				"<div class='vertical-text'>Age<br/><i>(" + rows + "&nbsp;Age&nbsp;Groups)</i></div></td>")
-		
+
 		var age = compute_age(y);
 		if (isNaN(age)) age = "";
 		var age_cell = $("<td id='age_" + y + "' class='header border-left border-right'>" + age + "</td>");
-				
+
 		if (y == rows - 1) age_cell.addClass("border-bottom");
 		data_row.append(age_cell);
 		for (var x=0; x<cols;x++) {
 			var count_value = line_array[y][2*x];
 			var population_value = line_array[y][2*x+1];
-			
+
 			var cell = $("<td  class='data border-dotted-left'> " + addCommas(count_value) + "</td>");
 			cell.attr("id", "D_" + y + "_" + x + "_count");
 			if (y == rows-1 ) cell.addClass("border-bottom");
-			
+
 			data_row.append(cell);
 			var cell = $("<td class='data'> " + addCommas(population_value) + "</td>");
 			if (y == rows-1 ) cell.addClass("border-bottom");
 			if (x == cols-1 ) cell.addClass("border-right");
 			cell.attr("id", "D_" + y + "_" + x + "_pop");
-			
+
 			data_row.append(cell);
 		}
 		$("#main-table").append(data_row);
 	}
-	
+
 	set_paste_area_size();
 //	create_paste_binding(paste_area_box);
-	
+
 	return true;
 }
 
 function set_paste_area_size() {
-	// Ok, now we built the whole table.  We need to find out exactly where and how big the data area is for the 
+	// Ok, now we built the whole table.  We need to find out exactly where and how big the data area is for the
 	// Invisible paste-box
 
 	var total_width = $("#main-table").innerWidth();
 	if (total_width > 600) total_width = 600; // Can't be larger than window
 	var total_height = $("#main-table").innerHeight() - 20;
-		
+
 	var offset = $("#main-table").offset();
-	
+
 	$("#paste")
 	var paste_area_box = $("#paste");
 	paste_area_box.css("height", total_height);
 	paste_area_box.css("width", total_width);
 	paste_area_box.css("left", offset.left);
-	paste_area_box.css("top", offset.top);	
+	paste_area_box.css("top", offset.top);
 }
 
 function compute_age (num) {
-	var starting_age = parseInt($("#startAge").val());
+	var starting_age = parseInt($('#startAge').val());
 	var interval = getInterval();//parseInt($("#interval").val());
-	
+
 //	alert ("["+starting_age+"]["+interval+"]")
 	return starting_age + (num * interval);
 }
 
 function compute_period(num) {
-	var first_period = parseInt($("#startYear").val());
+	//var first_period = parseInt($("#startYear").val());
+	var first_period = parseInt($('#startYear').val());
 	var interval = getInterval();//parseInt($("#interval").val());
-	
-	return first_period + (num * interval);	
+
+	return first_period + (num * interval);
 }
 
 // error_reason is a global that provides insight as to why the paste did not work.
@@ -778,12 +791,12 @@ function validate_paste_input (line_array) {
 	var cols = line_array[0].length;
 
 	if (rows == 0 || cols == 0) { error_reason = "Data is Empty"; return false; }
-	if ( (cols % 2) != 0) { error_reason = "Not an even number of columns"; return false; } 
+	if ( (cols % 2) != 0) { error_reason = "Not an even number of columns"; return false; }
 	if (rows < 2)  { error_reason = "Less than 2 rows"; return false; }
 	if (cols < 2)  { error_reason = "Less than 2 columns"; return false; }
 	if (rows > 100)  { error_reason = "Too many rows (more than 100)"; return false; }
 	if (cols > 200)  { error_reason = "Too many columns (more than 200)"; return false; }
-	
+
 	// check that all numbers are really numbers
 	var rows = line_array.length;
 	// Note each 'col' is actually 2 columns in the data and tables
@@ -801,28 +814,28 @@ function validate_paste_input (line_array) {
 			line_array[y][2*x] = before_clean.replace(/[^\d\.\-\ ]/g, '');
 			before_clean = line_array[y][2*x+1];
 			line_array[y][2*x+1] = before_clean.replace(/[^\d\.\-\ ]/g, '');
-			
+
 			var count_value = line_array[y][2*x];
 			var population_value = line_array[y][2*x+1];
-			
-			if (isNaN(count_value)) { 
-				all_numbers=false; 
-				bad_values += "[" + count_value + "]"; 
+
+			if (isNaN(count_value)) {
+				all_numbers=false;
+				bad_values += "[" + count_value + "]";
 				num_errors++;
 			}
-			if (isNaN(population_value)) { 
-				all_numbers=false; 
-				bad_values += "["+population_value+"]"; 
+			if (isNaN(population_value)) {
+				all_numbers=false;
+				bad_values += "["+population_value+"]";
 				num_errors++;
 			}
 			// No reason to show too many errors
 			if (num_errors >= 5) { error_reason = "At least 5 non-numbers found: " + bad_values; return false; }
-	
-		}	
+
+		}
 	}
 	if (!all_numbers) { error_reason = "Some non-numbers found: " + bad_values; return false; }
-	
-	
+
+
 	return true;
 }
 

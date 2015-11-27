@@ -1,5 +1,55 @@
-{% extends "layout.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<script
+	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script
+	src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+<script src="//cdn.jsdelivr.net/bootstrap/2.1.0/js/bootstrap.min.js"></script>
+<script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+
+<script src="./apc.js"></script>
+<script src="/common/js/purify.js"> </script>
+
+<link rel="stylesheet"
+	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" href="./lib/bootstrap.css">
+<link rel="stylesheet" href="./lib/bootstrap.min.css">
+<link rel="stylesheet" href="./lib/bootstrap-responsive.min.css">
+<link rel="stylesheet" href="/common/css/style.css" />
+<link rel="stylesheet" href="./shiny.css" />
+<link rel="stylesheet" href="./apc.css">
+
+<title>Age Period Cohort Analysis Tool</title>
+
+</head>
+
+<body>
+	<!-- Uses JINJA2 templates. Please do all changes here. Then view the source of the rendered page on the web and copy changes to the root index.html -->
+
+
+	<div id="wrapper">
+		<div d="logos">
+		   <a href="http://dceg.cancer.gov" target="_blank"><img alt="Division of Cancer Epidemiology &amp; Genetics" src="/common/images/DCEG-logo.svg" class="division-logo"></a>
+		</div>
+		<br>
+		<div id="banners">
+			<div id="left">
+				<img src="/common/images/DCEGBB.png"
+					alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch"
+					height="25" />
+			</div>
+			<div id="right">
+				<img src="apc_webtool_banner_no_bar.png"
+					alt="Age-Period-Cohort Web Tool" height="33" />
+			</div>
+		</div>
+
+		<div id="blockcontent">
 
 <!-- Uses JINJA2 templates. Please do all changes here. Then view the source of the rendered page on the web and copy changes to the root index.html -->
 <style>
@@ -333,5 +383,30 @@ Longitudinal age curve describes age incidence pattern in every cohort.
 </ul>
 </div> <!-- blockcontent -->
 
-{% endblock %}
+</div>
+		<div id="citation">Rosenberg PS, Check DP, Anderson WF. A Web Tool for Age-Period-Cohort Analysis of Cancer Incidence and Mortality Rates. Cancer Epidemiology, Biomarkers Prevent 2014:23:2296, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25146089">PMID: 25146089</a></div>
+		<div id="portal-footer">
+			<div class="footerLinks">
+				<a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+				<a href="mailto:NCIAPCWebToolAdmin@mail.nih.gov" title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+				<a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+				<a href="http://www.cancer.gov/global/web/policies/accessibility"
+					title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+					href="http://cancer.gov/global/viewing-files" target="_blank"
+					title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+					href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br />
+				<br /> <a href="http://www.dhhs.gov/">Department of Health and
+					Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
+					href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+				<a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+					href="http://www.usa.gov/">USA.gov</a>
+			</div>
+			<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
+		</div>
+	</div>
 
+	</div>
+</body>
+</html>
+
+5
