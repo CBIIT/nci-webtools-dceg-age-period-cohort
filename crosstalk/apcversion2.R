@@ -1,3 +1,4 @@
+# Version 2 of APC 
 apc2 <- function(R, ...)
 {
   PVP <- checkPVPPAIRS(R, ...)
