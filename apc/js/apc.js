@@ -3,13 +3,19 @@ var paste_instructions =
 	"When pasting from a spreadsheet or uploading from a csv file,\n it should have alternating " +
 	"columns of count-then-population\n" +
 	"for at least two age periods (minimum size array = 2x2),\n no more than 100 age groups and periods.";
+var referenceWarning = "Please select reference year and age";
 var line_array; // This is global.  Not set until a paste or upload
 var csvResultData = {};
+var ageline = "<option value='-1' selected>Age</option>";
+var yearline = "<option value='-1' selected>Year</option>";
+
 
 var open_threads; // Used to determine if all calls have returned
 var error_count = 0;
 
 $(document).ready(function() {
+	loadReferenceYear();
+	loadReferenceAge();
 	$('#startYear').spinner({
 		min: 0,
 		max: 10000,
@@ -71,7 +77,12 @@ $(document).ready(function() {
      	var startAge = $('#startAge').val();
      	var interval = $("#interval").val();
 
-
+		if($('input[name="reference"]:checked').val() == 'manual'){
+			if($('#refYear').val() == "-1" || $('#refAge').val() == "-1"){
+				alert(referenceWarning);
+				return false;
+			}
+		}
      	if (line_array == undefined || line_array == null || line_array.length == 0) {
     		alert(paste_instructions);
     		return false;
@@ -176,31 +187,37 @@ $(document).ready(function() {
 	});
 
 	$( "#startYear" ).blur(function() {
+		resetReferenceYearAge();
 		on_change_start_year();
 	});
 
 	$("#startYear").on('keypress', function(e){
 		if(e.which == 13) {
+			resetReferenceYearAge();
 			$("#startYear").blur();
 		}
 	});
 
 	$( "#startAge" ).blur(function() {
+		resetReferenceYearAge();
 		on_change_starting_age();
 	});
 
 	$("#startAge").on('keypress', function(e){
 		if(e.which == 13) {
+			resetReferenceYearAge();
 			$("#startAge").blur();
 		}
 	});
 
 	$( "#interval" ).change(function() {
+		resetReferenceYearAge();
 		on_change_starting_age();
 		on_change_start_year();
 	});
 
     $('#countPopulation').change(function(){
+				resetReferenceYearAge();
                 if ( window.FileReader ) {
                         var file = this.files[0];
                         if ($("#title").val()=='') {
@@ -232,7 +249,8 @@ $(document).ready(function() {
                 }
                 $("#cancel").css("display","block");
                 $("#paste_here_image").hide();
-
+				setTimeout(function(){loadReferenceYear();},1000);//make sure the html page is ready to populate
+				setTimeout(function(){loadReferenceAge();},1000);
     });
 
 
@@ -449,16 +467,24 @@ function create_paste_binding (element) {
 }
 
 function on_change_starting_age() {
+
 	if (line_array == null) return;
 
 	if ($('#startAge').val() == "" ) return;
 
-	var starting_age = parseInt($('#startAge').val());
-
 	var num_ages = line_array.length ;
-	for (var y=0;y<num_ages;y++) {
-		$("#age_" + y).html(compute_age(y));
+	for (var y=0;y<num_ages-1;y++) {
+		var age_start = compute_age(y);
+		var age_end = age_start + getInterval() - 1;
+		// When start and end are both is same year, just display it once
+		var age_display;
+		if (age_start == age_end) age_display = age_start;
+		else age_display = age_start +  " - " + age_end;
+		createReferenceAge(age_display);
+		$("#age_" + y).html(age_display);
 	}
+	loadReferenceAge();
+	//setTimeout(function(){loadReferenceAge();},1000);//make sure the html page is ready to populate
 }
 
 function getInterval (){
@@ -500,6 +526,7 @@ function getInterval (){
 }
 
 function on_change_start_year() {
+
 	if (line_array == null) return;
 
 	var first_period = parseInt($('#startYear').val());
@@ -513,9 +540,11 @@ function on_change_start_year() {
 		var period_display;
 		if (period_start == period_end) period_display = period_start;
 		else period_display = period_start +  " - " + period_end;
-
+		createReferenceYear(period_display);
 		$("#period_" + x).html(period_display);
 	}
+	loadReferenceYear();
+	//setTimeout(function(){loadReferenceYear();},1000);//make sure the html page is ready to populate
 }
 
 function determine_count_array() {
@@ -683,7 +712,7 @@ function display_table(txt, delimiter) {
 		if (isNaN(period_start) || isNaN(period_end) ) period_display = "";
 		else if (period_start == period_end) period_display = period_start;
 		else period_display = period_start +  " - " + period_end;
-
+		createReferenceYear(period_display);
 		var cell = $("<td colspan='2' class='header border-dotted-left' id='period_" + x + "'>" +
 				period_display +  "</th>");
 		fourth_header_row.append(cell);
@@ -694,7 +723,11 @@ function display_table(txt, delimiter) {
 
 	var fifth_header_row = $("<tr></tr>");
 	fifth_header_row.append("<td></td>");
-	fifth_header_row.append("<td class='header border-bottom border-left border-right'>Age</th>");
+	if(getInterval() == 1){
+		fifth_header_row.append("<td class='header border-bottom border-left border-right'>Age</th>");
+	}else{
+		fifth_header_row.append("<td class='header border-bottom border-left border-right'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Age&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>");
+	}
 	for (var x =0; x < cols; x++) {
 		var cell_left = $("<td class='header border-bottom border-dotted-left'>Count</th>");
 		fifth_header_row.append(cell_left);
@@ -720,8 +753,15 @@ function display_table(txt, delimiter) {
 				"<div class='vertical-text'>Age<br/><i>(" + rows + "&nbsp;Age&nbsp;Groups)</i></div></td>")
 
 		var age = compute_age(y);
+		var age_end = age + getInterval() - 1;
+		var age_display;
+		if (isNaN(age) || isNaN(age_end) ) age_display = "";
+		else if (age == age_end) age_display = age;
+		else age_display = age +  " - " + age_end;
+		createReferenceAge(age_display);
+
 		if (isNaN(age)) age = "";
-		var age_cell = $("<td id='age_" + y + "' class='header border-left border-right'>" + age + "</td>");
+		var age_cell = $("<td id='age_" + y + "' class='header border-left border-right'>" + age_display + "</td>");
 
 		if (y == rows - 1) age_cell.addClass("border-bottom");
 		data_row.append(age_cell);
@@ -855,4 +895,52 @@ function addCommas(nStr)
 function openHelpWindow(pageURL) {
     var helpWin=window.open(pageURL, "Help", "alwaysRaised,dependent,status,scrollbars,resizable,width=1000,height=800");
     helpWin.focus();
+}
+
+function toggleReference(id){
+	if(id == 'auto'){
+		$('#referenceDiv').css("display", "none");
+	}
+	if(id == 'manual'){
+		if($.trim($('#startYear').val()) == '' || $.trim($('#startAge').val()) == '' || $.trim($('#interval').val()) == ''){
+			alert("The value of start year, start age and interval must be seleceted.");
+			$('#auto').prop("checked", true);
+		}else{
+			$('#referenceDiv').css("display", "block");
+		}
+	}
+}
+
+function createReferenceYear(value){
+	yearline = yearline + "<option value='" + value +"'>" + value +"</option>";
+}
+
+
+function createReferenceAge(value){
+	ageline = ageline + "<option value='" + value + "'>" + value + "</option>";
+}
+
+function resetReferenceYearAge(){
+	ageline = "<option value='-1' selected>Age</option>";
+	yearline = "<option value='-1' selected>Year</option>";
+}
+function loadReferenceYear(){
+	$('#refYear').html(yearline);
+	$('#cohort').val("");
+}
+function loadReferenceAge(){
+	$('#refAge').html(ageline);
+	$('#cohort').val("");
+}
+function calculateCohort(){
+	if($('#refYear').val() != "-1" && $('#refAge').val() != "-1"){
+		var years = ($('#refYear').val()).split('-');
+		var ages =  ($('#refAge').val()).split('-');
+		if(years.length == 1){
+			$('#cohort').val(parseFloat(years[0]) - parseFloat(ages[0]));
+		}else{
+			var cohort = (parseFloat(years[0]) + parseFloat(years[1]) + 1.0) / 2 - (parseFloat(ages[0]) + parseFloat(ages[1]) + 1.0) / 2;
+			$('#cohort').val(cohort);
+	}
+	}
 }

@@ -81,6 +81,27 @@
 						  </select>
 						</div>
 						<br/><br/>
+						<div class="col-sm-4" style="white-space:nowrap;">
+          					<font size="2"><b>Reference:</b></font>
+          				</div>
+          				<div class="col-sm-4" style="white-space:nowrap;">
+          					<font size="2"><b>Automatic</b></font> <input type="radio" id="reference" name="reference" onclick="toggleReference('auto');" value="auto" checked/>
+          				</div>
+          				<div class="col-sm-4" style="white-space:nowrap;">
+          					<font size="2"><b>Manual</b></font> <input type="radio" id="reference" name="reference" onclick="toggleReference('manual');" value="manual"/>
+          				</div>
+						<br/><br/>
+						<div id="referenceDiv" style="display:none;">
+						 <div class="col-sm-4"> <select style="width:80px; height:28px;" onchange="calculateCohort();" id="refYear">
+												  </select>
+						</div>
+						<div class="col-sm-4"> <select style="width:80px; height:28px;" onchange="calculateCohort();" id="refAge">
+												  </select>
+						</div>
+						<div class="col-sm-4"> <input type="text" style="width:60px; height:28px;" id="cohort" disabled/>
+						</div>
+						<br/><br/>
+						</div>
 						<div class="form-label">
 							Copy and paste into table on right or upload a csv with population and count information
 						</div>
