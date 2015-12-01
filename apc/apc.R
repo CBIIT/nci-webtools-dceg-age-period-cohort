@@ -314,6 +314,7 @@ apc <- function(R, ...)
 
 checkPVPPAIRS <- function(R, OverDispersion = 1, offset_tick = 10^5, zero_fill = 0.1, RVals = c(NaN, NaN, NaN))
 {
+  print(RVals)
   D <- rates2data_set(R)
   
   if (all(is.nan(RVals)))

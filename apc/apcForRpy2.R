@@ -103,6 +103,16 @@ getDescription <- function(inputList) {
   inputList[[11]][[1]];  
 }
 
+getRefYear <- function(inputList){
+  inputList[[12]][[1]];
+}
+getRefAge <- function(inputList){
+  inputList[[13]][[1]];
+}
+getRefCohort <- function(inputList){
+  inputList[[14]][[1]];
+}
+
 createPanCanList <- function (inputList) {
  
   startYear <- as.numeric(getStartYear(inputList));
@@ -138,7 +148,14 @@ getGraph <- function (apcOutput, keyGraphName, uniqueId) {
 }
 
 getApcData <- function (urlEncodedString) {
-  apcdata<-apc(createPanCanList (urlEncodedString));
+  refYear <- as.numeric(getRefYear(urlEncodedString));
+  refAge <- as.numeric(getRefAge(urlEncodedString));
+  coh <- as.numeric(getRefCohort(urlEncodedString));
+  if(refYear == -1){
+    apcdata<-apc(createPanCanList (urlEncodedString));
+  }else{
+    apcdata<-apc(createPanCanList (urlEncodedString), RVals = c(refAge,refYear,coh));
+  }
 }
 
 getApcDataJSON <-function(urlEncodedString)
@@ -230,7 +247,8 @@ getApcDataJSON <-function(urlEncodedString)
 
 }
 
-# Call from Python....
+# by adding new value for reference year age and cohort, these tests will fail.
+# Call from Python.... 
 # This one has different data for testing Scientific notation of Wald Tests
 #getApcDataJSON("key=Waldtests&title=Cancer&startYear=1993&startAge=33&interval=year4&periodCount=4&rowCount=13&countCSV=0%2C33%2C20%2C31%2C34%2C48%2C55%2C49%2C84%2C100%2C87%2C112%2C139%2C146%2C214%2C202%2C223%2C262%2C285%2C337%2C264%2C335%2C401%2C462%2C370%2C380%2C489%2C657%2C465%2C547%2C595%2C758%2C725%2C677%2C753%2C775%2C917%2C874%2C862%2C895%2C1064%2C1072%2C1088%2C1108%2C971%2C1085%2C1124%2C1204%2C863%2C910%2C1042%2C1172%2C&populationCSV=5241669%2C5093922%2C4808326%2C4702121%2C4969935%2C5157733%2C4998516%2C4724585%2C4464138%2C4852854%2C5060050%2C4907558%2C3950908%2C4394963%2C4795796%2C4963444%2C3236185%2C3983615%2C4334967%2C4682585%2C2646972%2C3159339%2C3857792%2C4194788%2C2276580%2C2531162%2C3000143%2C3685285%2C2136113%2C2155275%2C2384617%2C2832300%2C2153193%2C2023311%2C2038710%2C2240841%2C2022952%2C1965344%2C1885222%2C1911687%2C1767616%2C1854800%2C1808948%2C1733224%2C1424465%2C1544791%2C1633085%2C1602380%2C1051362%2C1134925%2C1265687%2C1355442%2C&uniqueId=ph2lov&description=test");
 # --------

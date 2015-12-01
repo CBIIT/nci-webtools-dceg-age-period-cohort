@@ -151,7 +151,10 @@ $(document).ready(function() {
 		                	countCSV: countCSV,
 		                	populationCSV: populationCSV,
 		                	uniqueId: uniqueId,
-		                	description: description
+		                	description: description,
+		                	refYear: getReferenceYear(),
+		                	refAge: getReferenceAge(),
+		                	refCohort: getReferenceCohort()
 		                }, keys[i], uniqueId);
 
 		}
@@ -934,13 +937,34 @@ function loadReferenceAge(){
 }
 function calculateCohort(){
 	if($('#refYear').val() != "-1" && $('#refAge').val() != "-1"){
-		var years = ($('#refYear').val()).split('-');
-		var ages =  ($('#refAge').val()).split('-');
-		if(years.length == 1){
-			$('#cohort').val(parseFloat(years[0]) - parseFloat(ages[0]));
-		}else{
-			var cohort = (parseFloat(years[0]) + parseFloat(years[1]) + 1.0) / 2 - (parseFloat(ages[0]) + parseFloat(ages[1]) + 1.0) / 2;
-			$('#cohort').val(cohort);
+		$('#cohort').val(getReferenceCohort());
 	}
+}
+function getReferenceYear(){
+	if($('input[name="reference"]:checked').val() == 'auto'){
+		return "-1";
 	}
+	var years = ($('#refYear').val()).split('-');
+	if(years.length == 1){
+		return parseFloat(years[0]);
+	}else{
+		return (parseFloat(years[0]) + parseFloat(years[1]) + 1.0) / 2;
+	}
+}
+function getReferenceAge(){
+	if($('input[name="reference"]:checked').val() == 'auto'){
+			return "-1";
+	}
+	var ages =  ($('#refAge').val()).split('-');
+	if(ages.length == 1){
+		return parseFloat(ages[0]);
+	}else{
+		return (parseFloat(ages[0]) + parseFloat(ages[1]) + 1.0) / 2;
+	}
+}
+function getReferenceCohort(){
+	if($('input[name="reference"]:checked').val() == 'auto'){
+			return "-1";
+	}
+	return getReferenceYear() - getReferenceAge();
 }
