@@ -10,7 +10,7 @@ tmpDirectory <- "./tmp/";
 
 #Graphs the rates tab. Input is a csv file
 #Rows and Columns much be the same
-graph_TemporalTrends<-function(inputfile){
+graph_TemporalTrends<-function(inputfile,uniqeID){
   information=parseCSV(inputfile) #retrieving a vector containg the contents, title and descrition of the csv file
   table=information[[3]] #storing the contents
   rows=nrow(table) #counting how many rows (age) are in the table
@@ -32,8 +32,8 @@ graph_TemporalTrends<-function(inputfile){
       data <- rbind(data,line) #adding each line to an array
   }
   p <- ggplot(data, aes(x=Calender_Periods, y=Rate_Per_100000, group=age,colour=age))+geom_line()+geom_point(aes(shape=age)) #graphing the vector
-  ggsave(file = paste0(unique(p$SIC), "CrossTalk.png"),width=10,height=10,limitsize=FALSE,path=tmpDirectory) #saving the image
-    
+  ggsave(file = paste0(unique(p$SIC), as.character(uniqeID),"Rates.png"),width=10,height=10,limitsize=FALSE,path=tmpDirectory) #saving the image
+    return(tmpDirectory,as.character(uniqeID),"Rates.png")
 
 }
 #Parses a csv file and returns a vecor of the matrix, title and description
@@ -53,4 +53,3 @@ parseCSV<-function(inputfile){
 }
 
 
-#graph_TemporalTrends(inputfile)
