@@ -6,7 +6,7 @@ library('directlabels');
 
 
 tmpDirectory <- "./tmp/";
-#inputfile="/media/sf_shared/CrosTalk_test/China_test.csv"
+inputfile="/media/sf_shared/CrosTalk_test/China_test.csv"
 
 #Graphs the rates tab. Input is a csv file
 #Rows and Columns much be the same
@@ -25,15 +25,16 @@ graph_TemporalTrends<-function(inputfile,uniqeID){
   }
   
   ages<-table[2:rows,1] #stores the first row which contains the age ranges (ex/ 31-32)
-  rates<-apply(table[2:cols,2:rows], 1,as.numeric)  #Stores part of the table that contains the rates
+  rates<-apply(table[2:rows,2:cols], 1,as.numeric)  #Stores part of the table that contains the rates
   data <- numeric(0)
-  for (i in 2:ncol(rates)){
-      line <- data.frame(Calender_Periods=years, Rate_Per_100000=rates[i,1:ncol(rates)], age=table[i],shapes=3) # x= years, y=rates, label=ages
+  for (i in 1:nrow(rates)){
+    line <- data.frame(Calender_Periods=years, Rate_Per_100000=rates[1:nrow(rates),i], age=table[i+1],shapes=i) # x= years, y=rates, label=ages
+      print(line)
       data <- rbind(data,line) #adding each line to an array
   }
   p <- ggplot(data, aes(x=Calender_Periods, y=Rate_Per_100000, group=age,colour=age))+geom_line()+geom_point(aes(shape=age)) #graphing the vector
   ggsave(file = paste0(unique(p$SIC), as.character(uniqeID),"Rates.png"),width=10,height=10,limitsize=FALSE,path=tmpDirectory) #saving the image
-    return(tmpDirectory,as.character(uniqeID),"Rates.png")
+    return(paste0(tmpDirectory,as.character(uniqeID),"Rates.png"))
 
 }
 #Parses a csv file and returns a vecor of the matrix, title and description
@@ -53,3 +54,4 @@ parseCSV<-function(inputfile){
 }
 
 
+graph_TemporalTrends(inputfile,1234)
