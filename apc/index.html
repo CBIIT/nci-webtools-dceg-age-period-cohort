@@ -5,131 +5,173 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Age Period Cohort Analysis Tool</title>
+<!--
 <link rel="stylesheet" href="css/bootstrap.css">
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet"	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+-->
+
+<!--
 <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
-<link rel="stylesheet" href="/common/css/style.css" />
+-->
+
+<!--
 <link rel="stylesheet" href="css/shiny.css" />
-<link href="css/apc.css" rel="stylesheet">
+-->
+
+<!--
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script	src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
-<script src="js/jquery.dataTables.min.js"></script>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+-->
+
+<!-- CSS STYLES -->
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="/common/css/style.css" />
+<link href="css/apc.css" rel="stylesheet">
+
+<!-- JAVASCRIPT -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script	src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+<script	src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
 <script src="js/apc.js"></script>
 <script src="/common/js/purify.js"> </script>
+
+<!--
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+-->
 </head>
 <body>
 <div id="slideoutTab">
-		<i id ="plus_minus" class="fa fa-caret-left fa-2x"></i>
+	<i id ="plus_minus" class="fa fa-caret-left fa-2x"></i>
 </div>
 <div class="container">
 		<div> <!-- Banner div -->
-			   <a href="http://dceg.cancer.gov" target="_blank"><img alt="Division of Cancer Epidemiology &amp; Genetics" src="../common/images/DCEG-logo.svg" class="division-logo"></a>
+			<a href="http://dceg.cancer.gov" target="_blank"><img alt="Division of Cancer Epidemiology &amp; Genetics" src="../common/images/DCEG-logo.svg" class="division-logo"></a>
 		</div> <!-- end of banner div -->
 		<div id="banners"> <!-- sub-Banner div -->
 			<div id="left">
-				<img src="../common/images/DCEGBB.png"
-					alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch"
-					height="25" />
+				<img src="../common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
 			</div> <!-- end of sub-banner div -->
 			<div id="right">
-				<img src="apc_webtool_banner_no_bar.png"
-					alt="Age-Period-Cohort Web Tool" height="33" />
+				<img src="apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" height="33" />
 			</div>
 		</div>
 		<!--  end of header -->
 		<!--  start of body content -->
 		<div class="row">
-			<div class="col-sm-4">
+			<div class="col-md-4">
 				<div class="well">
-					<div class="box">
-						<label class="form-label">Title</label>&nbsp;&nbsp;<a class="help" href="#" onclick="openHelpWindow('help.html')">Help</a>
-						<br/>
-						<input type="text" class="form-control" id="title" placeholder="Enter Title">
-						<br/>
-						<label class="form-label">Description</label>
-          				<br/>
-          				<textarea id="description" class="form-control" style="width:100%;" rows="3"></textarea>
-          				<br/><br/>
-          				<div class="col-sm-4" style="white-space:nowrap;">
-          					<font size="1">Start Year</font>
-          				</div>
-          				<div class="col-sm-4" style="white-space:nowrap;">
-          					<font size="1">Start Age</font>
-          				</div>
-          				<div class="col-sm-4" style="white-space:nowrap;">
-          					<font size="1">Interval (Years)</font>
-          				</div>
-          				<br/>
-          				<div class="col-sm-4"><input type="text" style="width:50px; height:20px;" id="startYear"/></div>
-						<div class="col-sm-4"><input type="text" style="width:50px; height:20px;" id="startAge"/></div>
-						<div class="col-sm-4"> <select style="width:60px; height:28px;" id="interval">
-							 <option value=""></option>
-							 <option value="year1">1</option>
-							 <option value="year2">2</option>
-							 <option value="year3">3</option>
-							 <option value="year4">4</option>
-							 <option value="year5">5</option>
-							 <option value="year6">6</option>
-							 <option value="year7">7</option>
-							 <option value="year8">8</option>
-							 <option value="year9">9</option>
-							 <option value="year10">10</option>
-						  </select>
-						</div>
-						<br/><br/>
-						<div class="col-sm-4" style="white-space:nowrap;">
-          					<font size="2"><b>Reference:</b></font>
-          				</div>
-          				<div class="col-sm-4" style="white-space:nowrap;">
-          					<font size="2"><b>Automatic</b></font> <input type="radio" id="reference" name="reference" onclick="toggleReference('auto');" value="auto" checked/>
-          				</div>
-          				<div class="col-sm-4" style="white-space:nowrap;">
-          					<font size="2"><b>Manual</b></font> <input type="radio" id="reference" name="reference" onclick="toggleReference('manual');" value="manual"/>
-          				</div>
-						<br/><br/>
-						<div id="referenceDiv" style="display:none;">
-						 <div class="col-sm-4"> <select style="width:80px; height:28px;" onchange="calculateCohort();" id="refYear">
-												  </select>
-						</div>
-						<div class="col-sm-4"> <select style="width:80px; height:28px;" onchange="calculateCohort();" id="refAge">
-												  </select>
-						</div>
-						<div class="col-sm-4"> <input type="text" style="width:60px; height:28px;" id="cohort" disabled/>
-						</div>
-						<br/><br/>
-						</div>
-						<div class="form-label">
-							Copy and paste into table on right or upload a csv with population and count information
-						</div>
-						<br/>
-						<div align="left"><input id="countPopulation" type="file" accept=".csv"/></div>
-						<br/>
-						<div align="left" style="white-space:nowrap;">
-							<div class="col-sm-6">
-							<button type="button" id="cancel" class="btn btn-primary btn-sm" style=""><b>Clear</b></button>
+					<div class="well well-nested">
+						<form name="apc_form">
+							<div class="form-group">
+								<label for="title">Title</label> <span class="cursor-pointer glyphicon glyphicon-info-sign glyphicon-blue" href="#" onclick="openHelpWindow('help.html')" aria-label="Help"></span>
+								<input id="title" type="text" class="form-control" id="title" placeholder="Enter Title">
 							</div>
-							<div class="col-sm-6">
-							<button type="button" id="calculate" class="btn btn-primary btn-sm" style=""><b>Calculate</b></button>
+							<div class="form-group">
+								<label for="description">Description</label>
+	          					<textarea id="description" class="form-control" rows="3"></textarea>
 							</div>
-						</div>
-						<br/> <br/>
-						<div id='download_choice' style='display:none'>
-							<label for="download_selector">&nbsp;</label>
-							<select id='download_selector' style='width:auto; margin-bottom:0px; float:left; height:30px;'>
-								<option id='raw_input_option'>R-Studio Input </option>
-								<option id='raw_output_option'>R-Studio Output </option>
-								<option id='text_input_option'>Text Input </option>
-								<option id='text_output_option'>Text Output </option>
-								<option id='excel_output_option'>Excel Output </option>
-							</select>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<button type="submit" id="download" class="btn btn-primary btn-sm" style="vertical-align:top;"> <b>Download</b></button>
-						</div>
-						<br/>
+
+							<div class="row">
+								<div class="col-sm-3">
+									<div class="form-group">
+										<div class="row">
+											<label class="col-xs-12" for="startYear">Start Date</label>
+											<div class="col-xs-12">
+												<input type="text" class="input-small input-sm" id="startYear"/>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-1"></div>
+		          				<div class="col-sm-3">
+									<div class="form-group">
+										<div class="row">
+			          						<label class="col-xs-12" for="startAge">Start Age</label>
+											<div class="col-xs-12">
+												<input type="text" class="input-small input-sm" id="startAge"/>
+											</div>
+										</div>
+									</div>
+		          				</div>
+								<div class="col-sm-1"></div>
+		          				<div class="col-sm-4">
+									<div class="form-group">
+										<div class="row">
+			          						<label class="col-xs-12" for="interval">Interval (Years)</label>
+											<div class="col-xs-12">
+												<select class="input-small input-sm" id="interval">
+													<option value=""></option>
+													<option value="year1">1</option>
+													<option value="year2">2</option>
+													<option value="year3">3</option>
+													<option value="year4">4</option>
+													<option value="year5">5</option>
+													<option value="year6">6</option>
+													<option value="year7">7</option>
+													<option value="year8">8</option>
+													<option value="year9">9</option>
+													<option value="year10">10</option>
+					   							</select>
+											</div>
+										</div>
+									</div>
+		          				</div>
+							</div>
+
+							<div class="row">
+								<div class="col-xs-12">
+									<div class="form-group">
+										<label>Reference: </label>
+										<label class="checkbox-inline label-bold"><input type="radio" id="reference" name="reference" onclick="toggleReference('auto');" value="auto" checked> Automatic</label>
+										<label class="checkbox-inline label-bold"><input type="radio" id="reference" name="reference" onclick="toggleReference('manual');" value="manual"> Manual</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="row" id="referenceDiv" style="display:none;">
+								 <div class="col-md-4">
+									 <select class="input-sm" onchange="calculateCohort();" id="refYear"></select>
+								</div>
+								<div class="col-md-4">
+									<select class="input-sm" onchange="calculateCohort();" id="refAge"></select>
+								</div>
+								<div class="col-md-4">
+									<input type="text" class="input-small input-sm" id="cohort" disabled/>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label>Copy and paste into table on right or upload a csv with population and count information.</label>
+							</div>
+
+							<div class="form-group">
+								<input id="countPopulation" type="file" accept=".csv"/>
+							</div>
+
+							<div class="btn-toolbar">
+								<button type="button" id="calculate" class="btn btn-primary btn-sm pull-right">Calculate</button>
+								<button type="button" id="cancel" class="btn btn-default btn-sm pull-right">Clear</button>
+							</div>
+
+							<div id='download_choice' style='display:none'>
+								<label for="download_selector">&nbsp;</label>
+								<select id='download_selector' style='width:auto; margin-bottom:0px; float:left; height:30px;'>
+									<option id='raw_input_option'>R-Studio Input </option>
+									<option id='raw_output_option'>R-Studio Output </option>
+									<option id='text_input_option'>Text Input </option>
+									<option id='text_output_option'>Text Output </option>
+									<option id='excel_output_option'>Excel Output </option>
+								</select>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<button type="submit" id="download" class="btn btn-primary btn-sm" style="vertical-align:top;"> <b>Download</b></button>
+							</div>
+							<br/>
+						</form>
 					</div>
 				</div>
 				<hr class="style-two">
@@ -151,7 +193,7 @@
 		            </div>
 		        </div>
 			</div> <!--  end of left box -->
-			<div class="col-sm-8">
+			<div class="col-md-8">
 			<ul class="nav nav-tabs">
 		        <li class="active">
 		          <a href="#tab-4458-1" data-toggle="tab">Input</a>
