@@ -49,15 +49,17 @@
 	<i id ="plus_minus" class="fa fa-caret-left fa-2x"></i>
 </div>
 <div class="container">
-		<div> <!-- Banner div -->
-			<a href="http://dceg.cancer.gov" target="_blank"><img alt="Division of Cancer Epidemiology &amp; Genetics" src="../common/images/DCEG-logo.svg" class="division-logo"></a>
+		<div class="row"> <!-- Banner div -->
+			<div class="col-xs-12">
+				<a href="http://dceg.cancer.gov" target="_blank" class="header-logo" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics"></a>
+			</div>
 		</div> <!-- end of banner div -->
-		<div id="banners"> <!-- sub-Banner div -->
-			<div id="left">
-				<img src="../common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
-			</div> <!-- end of sub-banner div -->
-			<div id="right">
-				<img src="apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" height="33" />
+		<div class="row" id="banners"> <!-- sub-Banner div -->
+			<div class="col-xs-12 col-md-10">
+				<img src="../common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" title="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
+			</div>
+			<div class="col-xs-12 col-md-2">
+				<img src="apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" title="Age-Period-Cohort Web Tool" height="33" />
 			</div>
 		</div>
 		<!--  end of header -->
@@ -153,24 +155,24 @@
 								<input id="countPopulation" type="file" accept=".csv"/>
 							</div>
 
-							<div class="btn-toolbar">
+							<div class="btn-toolbar offset">
 								<button type="button" id="calculate" class="btn btn-primary btn-sm pull-right">Calculate</button>
 								<button type="button" id="cancel" class="btn btn-default btn-sm pull-right">Clear</button>
 							</div>
 
-							<div id='download_choice' style='display:none'>
-								<label for="download_selector">&nbsp;</label>
-								<select id='download_selector' style='width:auto; margin-bottom:0px; float:left; height:30px;'>
-									<option id='raw_input_option'>R-Studio Input </option>
-									<option id='raw_output_option'>R-Studio Output </option>
-									<option id='text_input_option'>Text Input </option>
-									<option id='text_output_option'>Text Output </option>
-									<option id='excel_output_option'>Excel Output </option>
-								</select>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<button type="submit" id="download" class="btn btn-primary btn-sm" style="vertical-align:top;"> <b>Download</b></button>
+							<div id="download_choice" class="form-group" style="display:none;">
+								<label for="download_selector">Select download format</label>
+								<div class="form-horizontal">
+									<select id="download_selector" class="input-tiny input-sm">
+										<option id="raw_input_option">R-Studio Input</option>
+										<option id="raw_output_option">R-Studio Output</option>
+										<option id="text_input_option">Text Input</option>
+										<option id="text_output_option">Text Output</option>
+										<option id="excel_output_option">Excel Output</option>
+									</select>
+									<button type="submit" id="download" class="btn btn-primary btn-sm">Download</button>
+								</div>
 							</div>
-							<br/>
 						</form>
 					</div>
 				</div>
@@ -194,42 +196,42 @@
 		        </div>
 			</div> <!--  end of left box -->
 			<div class="col-md-8">
-			<ul class="nav nav-tabs">
-		        <li class="active">
-		          <a href="#tab-4458-1" data-toggle="tab">Input</a>
-		        </li>
-		        <li>
-		          <a href="#tab-4458-8" data-toggle="tab">Age Deviations</a>
-		        </li>
-		        <li>
-		          <a href="#tab-4458-9" data-toggle="tab">Per Deviations</a>
-		        </li>
-		        <li>
-		          <a href="#tab-4458-10" data-toggle="tab">Coh Deviations</a>
-		        </li>
-		        <li>
-		          <a href="#tab-4458-11" data-toggle="tab">Long Age</a>
-		        </li>
-		        <li>
-		          <a href="#tab-4458-12" data-toggle="tab">Cross Age</a>
-		        </li>
-		        <li>
-		          <a href="#tab-4458-13" data-toggle="tab">Long 2 CrossRR</a>
-		        </li>
-		        <li>
-		          <a href="#tab-4458-14" data-toggle="tab">Fitted Temporal Trend</a>
-		        </li>
-		        <li>
-		          <a href="#tab-4458-15" data-toggle="tab">PeriodRR</a>
-		        </li>
-		        <li>
-		          <a href="#tab-4458-16" data-toggle="tab">CohortRR</a>
-		        </li>
-		        <li>
-		          <a href="#tab-4458-17" data-toggle="tab">Local Drifts</a>
-		        </li>
-		      </ul>
-			<div class="tab-content">
+				<ul class="nav nav-tabs">
+			        <li class="active">
+			          <a href="#tab-4458-1" data-toggle="tab">Input</a>
+			        </li>
+			        <li>
+			          <a href="#tab-4458-8" data-toggle="tab">Age Deviations</a>
+			        </li>
+			        <li>
+			          <a href="#tab-4458-9" data-toggle="tab">Per Deviations</a>
+			        </li>
+			        <li>
+			          <a href="#tab-4458-10" data-toggle="tab">Coh Deviations</a>
+			        </li>
+			        <li>
+			          <a href="#tab-4458-11" data-toggle="tab">Long Age</a>
+			        </li>
+			        <li>
+			          <a href="#tab-4458-12" data-toggle="tab">Cross Age</a>
+			        </li>
+			        <li>
+			          <a href="#tab-4458-13" data-toggle="tab">Long 2 CrossRR</a>
+			        </li>
+			        <li>
+			          <a href="#tab-4458-14" data-toggle="tab">Fitted Temporal Trend</a>
+			        </li>
+			        <li>
+			          <a href="#tab-4458-15" data-toggle="tab">PeriodRR</a>
+			        </li>
+			        <li>
+			          <a href="#tab-4458-16" data-toggle="tab">CohortRR</a>
+			        </li>
+			        <li>
+			          <a href="#tab-4458-17" data-toggle="tab">Local Drifts</a>
+			        </li>
+			      </ul>
+				<div class="tab-content">
 				 <div class="tab-pane active" id="tab-4458-1">
 				          <div id="inputData" style="overflow-x: auto; overflow-y: hidden;">
 				            <label for='paste' style='position:absolute;'>&nbsp;</label>
