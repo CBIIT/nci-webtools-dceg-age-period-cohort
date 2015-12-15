@@ -3,6 +3,7 @@ library(jsonlite)
 tmpDirectory <- "./tmp/"
 
 source('apcversion2.R')
+source('resultsToExcel.R')
 
 ## Test data generated from: example_data/ClaytonSchifflers1987StatMed.csv
 testData = '{"title":"Belgium Female Lung Cancer Mortality","description":"Example from: Clayton D. & Schifflers E. Models for temporal variation in cancer rates. I: Age-period and age-cohort models. Stat. Med., 1987; 6:449-467.","startYear":1955,"startAge":25,"interval":5,"count":[[3,2,7,3,10],[11,16,11,10,7],[11,22,24,25,15],[36,44,42,53,48],[77,74,68,99,88],[106,131,99,142,134],[157,184,189,180,177],[193,232,262,249,239],[219,267,323,325,343],[223,250,308,412,358],[198,214,253,338,312]],"population":[[1578947.368,1538461.538,1400000,1578947.368,1428571.429],[1666666.667,1632653.061,1527777.778,1408450.704,1228070.175],[1410256.41,1666666.667,1632653.061,1524390.244,1136363.636],[1348314.607,1392405.063,1660079.051,1568047.337,1221374.046],[1590909.091,1321428.571,1379310.345,1636363.636,1288433.382],[1606060.606,1541176.471,1294117.647,1340887.63,1285988.484],[1515444.015,1533333.333,1490536.278,1255230.126,986072.4234],[1307588.076,1417226.634,1455555.556,1414772.727,999581.765],[1066731.612,1181415.929,1297188.755,1335799.425,1048929.664],[849847.561,902527.0758,1010830.325,1115322.144,930595.269],[591574.5444,636715.2633,688060.9192,773632.4102,690265.4867]],"refYear":-1,"refAge":-1,"refCohort":-1}'
@@ -74,7 +75,6 @@ getApcDataJSON <- function(jsonData) {
     )
 
   ## Generate Raw Input/Output Files
-
   results$RStudio = list(
     input = paste0(tmpDirectory, "APCAnalysis", getTimestamp() , "_RawInput.RData"),
     output = paste0(tmpDirectory, "APCAnalysis", getTimestamp() , "_RawOutput.RData")
@@ -91,14 +91,16 @@ getApcDataJSON <- function(jsonData) {
   capture.output(print(input), file = results$RawText$input)
   capture.output(print(output), file = results$RawText$output)
   
+  
+  ## Generate Excel Spreadsheet
   results$Excel = list(
-    pathToFile = ""#generateExcel(output)
+    pathToFile = writeResultsToExcel(results, input$name, tmpDirectory)
   )
 
   return (toJSON(results))
 }
 
-
+## Creates a graph with the given data and key, and returns the filename
 getGraph <- function (apcOutput, keyGraphName) {
   dir.create(tmpDirectory)
   imageFileName = paste0(tmpDirectory, keyGraphName, getTimestamp(), ".png")
@@ -110,6 +112,7 @@ getGraph <- function (apcOutput, keyGraphName) {
   imageFileName
 }
 
+## Retrieves the current system time
 getTimestamp <- function () {
   format(Sys.time(), "_%Y%m%d_%H%M%OS6")
 }
