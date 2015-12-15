@@ -46,6 +46,21 @@ $(document).ready(function() {
 	});
 
 
+	$('#apc-tab-nav a').on('click', function(e) {
+		e.preventDefault();
+		console.log('id is: ', $(this).attr('href'));
+		$('select[name^=apc-result-menu]').val($(this).attr('href'));
+	});
+
+	$('select[name^=apc-result-menu]').on('change', function(e) {
+		var selectedVal = $(this).val();
+		$('.tab-content').find('.tab-pane').removeClass('active');
+		$('.tab-content').find(selectedVal).addClass('active');
+		$('#apc-tab-nav li').removeClass('active');
+		$('#apc-tab-nav').find('a[href=' + selectedVal + ']').parent().addClass('active');
+	});
+
+
 	create_paste_binding($(".paste_area"));
 
 	$( "#cancel" ).click(function() {

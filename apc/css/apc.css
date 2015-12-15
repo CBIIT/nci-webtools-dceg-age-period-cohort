@@ -13,6 +13,14 @@
     	display:block;
     	padding: 3px 0 10px 0;
     }
+
+    .footer ul {
+        text-align:left;
+    }
+
+    .footer ul li {
+        display:block;
+    }
 }
 
 /* Extra Small Devices, Phones */
@@ -22,6 +30,14 @@
         width: 389px;
         height: 72px;
         background: url('/common/images/dceg_36px_logo.png');
+    }
+
+    .footer ul {
+        text-align:center;
+    }
+
+    .footer ul li {
+        display:inline-block;
     }
 }
 
@@ -201,32 +217,13 @@ hr.style-two {
         margin-top: 30px;
 }
 
-#portal-footer {
-        line-height: 1.2em;
-        margin: 2em 0em 1em 0em;
-        padding: 1em 0em 1em 0em;
-        text-align: center;
-        background-color: #FFF;
-        color: #333333;
-        font-size: 79%;
+.footer {
+    bottom: 0;
+    color: #444;
+    padding:25px 0;
 }
-
-#portal-footer a {
-        text-decoration: none;
-        color: #333333;
-        border: none;
-}
-
-#portal-footer a:visited {
-        color: #333333;
-}
-
-#portal-footer a:hover {
-        text-decoration: underline;
-}
-
-.footerLinks {
-        padding: .5em 0em 0em 0em;
+.footer ul li a {
+    color: #444;
 }
 
 .division-logo {
@@ -305,4 +302,18 @@ select.input-sm {
 
 .offset {
     margin-bottom: 15px;
+}
+
+.top-offset {
+    margin-top: 15px;
+}
+
+.nav-pills li {
+    margin:5px;
+}
+
+.navbar-toggle {
+    margin-top: 14px;
+    margin-left: 10px;
+    float:none;
 }

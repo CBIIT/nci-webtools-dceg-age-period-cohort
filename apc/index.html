@@ -54,7 +54,7 @@
 				<a href="http://dceg.cancer.gov" target="_blank" class="header-logo" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics"></a>
 			</div>
 		</div> <!-- end of banner div -->
-		<div class="row" id="banners"> <!-- sub-Banner div -->
+		<div class="row offset"> <!-- sub-Banner div -->
 			<div class="col-xs-12 col-md-10">
 				<img src="../common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" title="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
 			</div>
@@ -69,57 +69,58 @@
 				<div class="well">
 					<div class="well well-nested">
 						<form name="apc_form">
-							<div class="form-group">
-								<label for="title">Title</label> <span class="cursor-pointer glyphicon glyphicon-info-sign glyphicon-blue" href="#" onclick="openHelpWindow('help.html')" aria-label="Help"></span>
-								<input id="title" type="text" class="form-control" id="title" placeholder="Enter Title">
-							</div>
-							<div class="form-group">
-								<label for="description">Description</label>
-	          					<textarea id="description" class="form-control" rows="3"></textarea>
+							<div class="row">
+								<div class="col-xs-12">
+									<div class="form-group">
+										<label for="title">Title</label> <span class="cursor-pointer glyphicon glyphicon-info-sign glyphicon-blue" href="#" onclick="openHelpWindow('help.html')" aria-label="Help"></span>
+										<input id="title" type="text" class="form-control" id="title" placeholder="Enter Title">
+									</div>
+								</div>
 							</div>
 
 							<div class="row">
-								<div class="col-sm-3">
+								<div class="col-xs-12">
 									<div class="form-group">
-										<div class="row">
-											<label class="col-xs-12" for="startYear">Start Date</label>
-											<div class="col-xs-12">
-												<input type="text" class="input-small input-sm" id="startYear"/>
-											</div>
+										<label for="description">Description</label>
+		          						<textarea id="description" class="form-control" rows="3"></textarea>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label for="startYear">Start Date</label>
+										<div>
+											<input type="text" class="input-small input-sm" id="startYear"/>
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-1"></div>
-		          				<div class="col-sm-3">
+		          				<div class="col-sm-4">
 									<div class="form-group">
-										<div class="row">
-			          						<label class="col-xs-12" for="startAge">Start Age</label>
-											<div class="col-xs-12">
-												<input type="text" class="input-small input-sm" id="startAge"/>
-											</div>
+		          						<label for="startAge">Start Age</label>
+										<div>
+											<input type="text" class="input-small input-sm" id="startAge"/>
 										</div>
 									</div>
 		          				</div>
-								<div class="col-sm-1"></div>
 		          				<div class="col-sm-4">
 									<div class="form-group">
-										<div class="row">
-			          						<label class="col-xs-12" for="interval">Interval (Years)</label>
-											<div class="col-xs-12">
-												<select class="input-small input-sm" id="interval">
-													<option value=""></option>
-													<option value="year1">1</option>
-													<option value="year2">2</option>
-													<option value="year3">3</option>
-													<option value="year4">4</option>
-													<option value="year5">5</option>
-													<option value="year6">6</option>
-													<option value="year7">7</option>
-													<option value="year8">8</option>
-													<option value="year9">9</option>
-													<option value="year10">10</option>
-					   							</select>
-											</div>
+		          						<label for="interval">Interval (Years)</label>
+										<div>
+											<select class="input-small input-sm" id="interval">
+												<option value=""></option>
+												<option value="year1">1</option>
+												<option value="year2">2</option>
+												<option value="year3">3</option>
+												<option value="year4">4</option>
+												<option value="year5">5</option>
+												<option value="year6">6</option>
+												<option value="year7">7</option>
+												<option value="year8">8</option>
+												<option value="year9">9</option>
+												<option value="year10">10</option>
+				   							</select>
 										</div>
 									</div>
 		          				</div>
@@ -189,48 +190,49 @@
 		        </div>
 		        <div id="CE" style="display:none">
 		            <div>
-		                  <div id="tab-4458-7">
-		                    <table id="Coefficients"class="bordered-table zebra-striped"></table>
-		                  </div>
+	                  <div id="tab-4458-7">
+	                    <table id="Coefficients"class="bordered-table zebra-striped"></table>
+	                  </div>
 		            </div>
 		        </div>
 			</div> <!--  end of left box -->
 			<div class="col-md-8">
-				<ul class="nav nav-tabs">
-			        <li class="active">
-			          <a href="#tab-4458-1" data-toggle="tab">Input</a>
-			        </li>
-			        <li>
-			          <a href="#tab-4458-8" data-toggle="tab">Age Deviations</a>
-			        </li>
-			        <li>
-			          <a href="#tab-4458-9" data-toggle="tab">Per Deviations</a>
-			        </li>
-			        <li>
-			          <a href="#tab-4458-10" data-toggle="tab">Coh Deviations</a>
-			        </li>
-			        <li>
-			          <a href="#tab-4458-11" data-toggle="tab">Long Age</a>
-			        </li>
-			        <li>
-			          <a href="#tab-4458-12" data-toggle="tab">Cross Age</a>
-			        </li>
-			        <li>
-			          <a href="#tab-4458-13" data-toggle="tab">Long 2 CrossRR</a>
-			        </li>
-			        <li>
-			          <a href="#tab-4458-14" data-toggle="tab">Fitted Temporal Trend</a>
-			        </li>
-			        <li>
-			          <a href="#tab-4458-15" data-toggle="tab">PeriodRR</a>
-			        </li>
-			        <li>
-			          <a href="#tab-4458-16" data-toggle="tab">CohortRR</a>
-			        </li>
-			        <li>
-			          <a href="#tab-4458-17" data-toggle="tab">Local Drifts</a>
-			        </li>
-			      </ul>
+				  <nav class="navbar navbar-default">
+				      <!-- Brand and toggle get grouped for better mobile display -->
+				      <div class="navbar-header">
+						<select name="apc-result-menu" class="navbar-toggle collapsed" data-toggle="collapse" id="apc-result-menu" aria-expanded="false" class="form-control">
+							<option value="#tab-4458-1" data-toggle="tab">Input</option>
+							<option value="#tab-4458-8" data-toggle="tab">Age Deviations</option>
+							<option value="#tab-4458-9" data-toggle="tab">Per Deviations</option>
+							<option value="#tab-4458-10" data-toggle="tab">Coh Deviations</option>
+							<option value="#tab-4458-11" data-toggle="tab">Long Age</option>
+							<option value="#tab-4458-12" data-toggle="tab">Cross Age</option>
+							<option value="#tab-4458-13" data-toggle="tab">Long 2 CrossRR</option>
+							<option value="#tab-4458-14" data-toggle="tab">Fitted Temporal Trend</option>
+							<option value="#tab-4458-15" data-toggle="tab">PeriodRR</option>
+							<option value="#tab-4458-16" data-toggle="tab">CohortRR</option>
+							<option value="#tab-4458-17" data-toggle="tab">Local Drifts</option>
+						</select>
+				      </div>
+
+				      <!-- Collect the nav links, forms, and other content for toggling -->
+				      <div class="collapse navbar-collapse" id="apc-tab-nav">
+				        <ul class="nav nav-pills">
+							<li class="active"><a href="#tab-4458-1" data-toggle="tab">Input</a></li>
+							<li><a href="#tab-4458-8" data-toggle="tab">Age Deviations</a></li>
+							<li><a href="#tab-4458-9" data-toggle="tab">Per Deviations</a></li>
+							<li><a href="#tab-4458-10" data-toggle="tab">Coh Deviations</a></li>
+							<li><a href="#tab-4458-11" data-toggle="tab">Long Age</a></li>
+							<li><a href="#tab-4458-12" data-toggle="tab">Cross Age</a></li>
+							<li><a href="#tab-4458-13" data-toggle="tab">Long 2 CrossRR</a></li>
+							<li><a href="#tab-4458-14" data-toggle="tab">Fitted Temporal Trend</a></li>
+							<li><a href="#tab-4458-15" data-toggle="tab">PeriodRR</a></li>
+							<li><a href="#tab-4458-16" data-toggle="tab">CohortRR</a></li>
+							<li><a href="#tab-4458-17" data-toggle="tab">Local Drifts</a></li>
+				        </ul>
+				      </div><!-- /.navbar-collapse -->
+				  </nav>
+
 				<div class="tab-content">
 				 <div class="tab-pane active" id="tab-4458-1">
 				          <div id="inputData" style="overflow-x: auto; overflow-y: hidden;">
@@ -268,7 +270,7 @@
 				              </tr>
 				              <tr id='age_1_row'>
 				                <td id='row-title' rowspan='14' class='row-header border-left border-bottom border-top'>
-				                		<div class='vertical-text'>Age</div>
+				                	<div class='vertical-text'>Age</div>
 				                </td>
 				                <td id='age_1_age' class='header border-left border-right'>&nbsp;
 				                </td>
@@ -485,31 +487,44 @@
 				       <table id="LocalDrifts" class="bordered-table zebra-striped"></table>
 				   </div>
 			</div> <!--  end of tab content -->
-			</div>
 		</div>
 		<!--  end of body content -->
-		<br/><br/>
-		<div class="row">
-			<div id="citation">Rosenberg PS, Check DP, Anderson WF. A Web Tool for Age-Period-Cohort Analysis of Cancer Incidence and Mortality Rates. Cancer Epidemiology, Biomarkers Prevent 2014:23:2296, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25146089">PMID: 25146089</a></div>
-			<div id="portal-footer">
-					<div class="footerLinks">
-							<a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-							<a href="mailto:NCIAPCWebToolAdmin@mail.nih.gov" title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-							<a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-							<a href="http://www.cancer.gov/global/web/policies/accessibility"
-								title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-								href="http://cancer.gov/global/viewing-files" target="_blank"
-								title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-								href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br />
-							<br /> <a href="http://www.dhhs.gov/">Department of Health and
-								Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-								href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-							<a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
-								href="http://www.usa.gov/">USA.gov</a>
-					</div>
-				<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
+	</div>
+	<div class="container footer">
+        <div class="center-block">
+			<div class="row">
+				<div class="col-xs-12 offset" id="citation">Rosenberg PS, Check DP, Anderson WF. A Web Tool for Age-Period-Cohort Analysis of Cancer Incidence and Mortality Rates. Cancer Epidemiology, Biomarkers Prevent 2014:23:2296, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25146089">PMID: 25146089</a></div>
 			</div>
-		</div>
-</div>
+			<div class="row">
+				<div class="col-xs-12">
+		            <ul class="list-inline">
+		                <li><a href="http://www.cancer.gov/" title="Home" target="_blank">Home</a></li>
+		                <li>|</li>
+		                <li><a href="mailto:NCILungCancerScreeningToolWebAdmin@mail.nih.gov?subject=LungCancerScreeningTool" target="_top" title="Support">Support</a></li>
+		                <li>|</li>
+		                <li><a href="http://www.cancer.gov/global/web/policies" title="Policies" target="_blank">Policies</a></li>
+		                <li>|</li>
+		                <li><a href="http://www.cancer.gov/global/web/policies/accessibility" title="Accessibility" target="_blank">Accessibility</a></li>
+		                <li>|</li>
+		                <li><a href="http://cancer.gov/global/viewing-files" title="Viewing Files" target="_blank">Viewing Files</a></li>
+		                <li>|</li>
+		                <li><a href="http://www.cancer.gov/global/web/policies/foia" title="FOIA" target="_blank">FOIA</a></li>
+		            </ul>
+		            <ul class="list-inline">
+		                <li><a href="http://www.hhs.gov/" target="_blank">U.S. Department of Health and Human Services</a></li>
+		                <li>|</li>
+		                <li><a href="http://www.nih.gov" target="_blank">National Institutes of Health</a></li>
+		                <li>|</li>
+		                <li><a href="http://www.cancer.gov/" target="_blank">National Cancer Institute</a></li>
+		                <li>|</li>
+		                <li><a href="http://usa.gov" target="_blank">USA.gov</a></li>
+		            </ul>
+		            <div class="text-center">
+		                NIH ... Turning Discovery Into Health<sup>®</sup>
+		            </div>
+				</div>
+			</div>
+        </div>
+    </div>
 </body>
 </html>
