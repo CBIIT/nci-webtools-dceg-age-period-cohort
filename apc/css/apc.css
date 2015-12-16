@@ -14,12 +14,27 @@
     	padding: 3px 0 10px 0;
     }
 
+    .footer {
+        padding:25px 0 0 16px;
+    }
+
     .footer ul {
         text-align:left;
     }
 
     .footer ul li {
         display:block;
+    }
+
+    .footer .footer-spacer {
+        display:none;
+    }
+
+    .footer .well {
+        border: none;
+        box-shadow:none;
+        border-radius:0;
+        margin-bottom:0;
     }
 }
 
@@ -32,12 +47,27 @@
         background: url('/common/images/dceg_36px_logo.png');
     }
 
+    .footer {
+        padding: 25px 0;
+    }
+
     .footer ul {
         text-align:center;
     }
 
     .footer ul li {
         display:inline-block;
+    }
+
+    .footer .footer-spacer {
+        display:inline-block;
+    }
+
+    .footer .well {
+        background-image: none;
+        border: none;
+        box-shadow:none;
+        background-color:transparent;
     }
 }
 
@@ -63,12 +93,6 @@ body {
 
 label {
 	font-size:12px;
-}
-
-table.input {
-	border: 0px solid black;
-	border-collapse:collapse;
-	width:97%;
 }
 
 .example-data-table {
@@ -144,6 +168,8 @@ th.header {
 	filter: alpha(opacity = 50);
 	opacity:0.5;
 	overflow:auto;
+    width:80%;
+    height:65%;
 }
 
 .paste_area {
@@ -170,6 +196,7 @@ th.header {
   -o-transform: rotate(-90deg);
   transform: rotate(-90deg);
   filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  margin:170px 0px 0px 10px;
 }
 
 #sampledatatable #datavalues{
@@ -220,7 +247,6 @@ hr.style-two {
 .footer {
     bottom: 0;
     color: #444;
-    padding:25px 0;
 }
 .footer ul li a {
     color: #444;
@@ -234,7 +260,7 @@ hr.style-two {
 .tab-content {
 	padding: 10px;
 	width: 100%;
-	min-height: 480px;
+	min-height: 250px;
 	-webkit-overflow-scrolling: touch;
 	background: white;
 	border-width: 0 1px 1px 1px;
@@ -316,4 +342,9 @@ select.input-sm {
     margin-top: 14px;
     margin-left: 10px;
     float:none;
+}
+
+/* Responsive Bootstrap Table hack needed for FF */
+@-moz-document url-prefix() {
+  fieldset { display: table-cell; }
 }

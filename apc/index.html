@@ -1,60 +1,46 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Age Period Cohort Analysis Tool</title>
-<!--
-<link rel="stylesheet" href="css/bootstrap.css">
--->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Age Period Cohort Analysis Tool</title>
 
-<!--
-<link rel="stylesheet" href="css/bootstrap-responsive.min.css">
--->
+	<!-- CSS STYLES -->
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
 
-<!--
-<link rel="stylesheet" href="css/shiny.css" />
--->
+	<link rel="stylesheet" href="/common/css/style.css" />
+	<link href="css/apc.css" rel="stylesheet">
 
-<!--
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
--->
+	<!-- JAVASCRIPT -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-<!-- CSS STYLES -->
-<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+	<script src="js/apc.js"></script>
+	<script src="/common/js/purify.js">
+	</script>
 
-<link rel="stylesheet" href="/common/css/style.css" />
-<link href="css/apc.css" rel="stylesheet">
-
-<!-- JAVASCRIPT -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script	src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
-<script	src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-<script src="js/apc.js"></script>
-<script src="/common/js/purify.js"> </script>
-
-<!--
-<script src="js/jquery.dataTables.min.js"></script>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
--->
 </head>
+
 <body>
-<div id="slideoutTab">
-	<i id ="plus_minus" class="fa fa-caret-left fa-2x"></i>
-</div>
-<div class="container">
-		<div class="row"> <!-- Banner div -->
+	<div id="slideoutTab">
+		<i id="plus_minus" class="fa fa-caret-left fa-2x"></i>
+	</div>
+	<div class="container">
+		<div class="row">
+			<!-- Banner div -->
 			<div class="col-xs-12">
 				<a href="http://dceg.cancer.gov" target="_blank" class="header-logo" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics"></a>
 			</div>
-		</div> <!-- end of banner div -->
-		<div class="row offset"> <!-- sub-Banner div -->
+		</div>
+		<!-- end of banner div -->
+		<div class="row offset">
+			<!-- sub-Banner div -->
 			<div class="col-xs-12 col-md-10">
 				<img src="../common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" title="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
 			</div>
@@ -64,6 +50,7 @@
 		</div>
 		<!--  end of header -->
 		<!--  start of body content -->
+
 		<div class="row">
 			<div class="col-md-4">
 				<div class="well">
@@ -72,7 +59,8 @@
 							<div class="row">
 								<div class="col-xs-12">
 									<div class="form-group">
-										<label for="title">Title</label> <span class="cursor-pointer glyphicon glyphicon-info-sign glyphicon-blue" href="#" onclick="openHelpWindow('help.html')" aria-label="Help"></span>
+										<label for="title">Title</label>
+										<span class="cursor-pointer glyphicon glyphicon-info-sign glyphicon-blue" href="#" onclick="openHelpWindow('help.html')" aria-label="Help"></span>
 										<input id="title" type="text" class="form-control" id="title" placeholder="Enter Title">
 									</div>
 								</div>
@@ -82,7 +70,7 @@
 								<div class="col-xs-12">
 									<div class="form-group">
 										<label for="description">Description</label>
-		          						<textarea id="description" class="form-control" rows="3"></textarea>
+										<textarea id="description" class="form-control" rows="3"></textarea>
 									</div>
 								</div>
 							</div>
@@ -92,21 +80,21 @@
 									<div class="form-group">
 										<label for="startYear">Start Date</label>
 										<div>
-											<input type="text" class="input-small input-sm" id="startYear"/>
+											<input type="text" class="input-small input-sm" id="startYear" />
 										</div>
 									</div>
 								</div>
-		          				<div class="col-sm-4">
+								<div class="col-sm-4">
 									<div class="form-group">
-		          						<label for="startAge">Start Age</label>
+										<label for="startAge">Start Age</label>
 										<div>
-											<input type="text" class="input-small input-sm" id="startAge"/>
+											<input type="text" class="input-small input-sm" id="startAge" />
 										</div>
 									</div>
-		          				</div>
-		          				<div class="col-sm-4">
+								</div>
+								<div class="col-sm-4">
 									<div class="form-group">
-		          						<label for="interval">Interval (Years)</label>
+										<label for="interval">Interval (Years)</label>
 										<div>
 											<select class="input-small input-sm" id="interval">
 												<option value=""></option>
@@ -120,25 +108,27 @@
 												<option value="year8">8</option>
 												<option value="year9">9</option>
 												<option value="year10">10</option>
-				   							</select>
+											</select>
 										</div>
 									</div>
-		          				</div>
+								</div>
 							</div>
 
 							<div class="row">
 								<div class="col-xs-12">
 									<div class="form-group">
 										<label>Reference: </label>
-										<label class="checkbox-inline label-bold"><input type="radio" id="reference" name="reference" onclick="toggleReference('auto');" value="auto" checked> Automatic</label>
-										<label class="checkbox-inline label-bold"><input type="radio" id="reference" name="reference" onclick="toggleReference('manual');" value="manual"> Manual</label>
+										<label class="checkbox-inline label-bold">
+											<input type="radio" id="reference" name="reference" onclick="toggleReference('auto');" value="auto" checked> Automatic</label>
+										<label class="checkbox-inline label-bold">
+											<input type="radio" id="reference" name="reference" onclick="toggleReference('manual');" value="manual"> Manual</label>
 									</div>
 								</div>
 							</div>
 
 							<div class="row" id="referenceDiv" style="display:none;">
-								 <div class="col-md-4">
-									 <select class="input-sm" onchange="calculateCohort();" id="refYear"></select>
+								<div class="col-md-4">
+									<select class="input-sm" onchange="calculateCohort();" id="refYear"></select>
 								</div>
 								<div class="col-md-4">
 									<select class="input-sm" onchange="calculateCohort();" id="refAge"></select>
@@ -153,7 +143,7 @@
 							</div>
 
 							<div class="form-group">
-								<input id="countPopulation" type="file" accept=".csv"/>
+								<input id="countPopulation" type="file" accept=".csv" />
 							</div>
 
 							<div class="btn-toolbar offset">
@@ -179,27 +169,28 @@
 				</div>
 				<hr class="style-two">
 				<div id="ND" style="display:none">
-            		<table id="NetDrift" class="bordered-table zebra-striped"></table>
-        		</div>
-        		<div id="WT" style="display:none">
-		            <div>
-		                <div id="tab-4458-18">
-		                  <table id="Waldtests" class="bordered-table zebra-striped"></table>
-		                </div>
-		            </div>
-		        </div>
-		        <div id="CE" style="display:none">
-		            <div>
-	                  <div id="tab-4458-7">
-	                    <table id="Coefficients"class="bordered-table zebra-striped"></table>
-	                  </div>
-		            </div>
-		        </div>
-			</div> <!--  end of left box -->
+					<table id="NetDrift" class="table table-bordered table-condensed table-striped"></table>
+				</div>
+				<div id="WT" style="display:none">
+					<div>
+						<div id="tab-4458-18">
+							<table id="Waldtests" class="table table-bordered table-condensed table-striped"></table>
+						</div>
+					</div>
+				</div>
+				<div id="CE" style="display:none">
+					<div>
+						<div id="tab-4458-7">
+							<table id="Coefficients" class="table table-bordered table-condensed table-striped"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--  end of left box -->
 			<div class="col-md-8">
-				  <nav class="navbar navbar-default">
-				      <!-- Brand and toggle get grouped for better mobile display -->
-				      <div class="navbar-header">
+				<nav class="navbar navbar-default">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
 						<select name="apc-result-menu" class="navbar-toggle collapsed" data-toggle="collapse" id="apc-result-menu" aria-expanded="false" class="form-control">
 							<option value="#tab-4458-1" data-toggle="tab">Input</option>
 							<option value="#tab-4458-8" data-toggle="tab">Age Deviations</option>
@@ -213,11 +204,11 @@
 							<option value="#tab-4458-16" data-toggle="tab">CohortRR</option>
 							<option value="#tab-4458-17" data-toggle="tab">Local Drifts</option>
 						</select>
-				      </div>
+					</div>
 
-				      <!-- Collect the nav links, forms, and other content for toggling -->
-				      <div class="collapse navbar-collapse" id="apc-tab-nav">
-				        <ul class="nav nav-pills">
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse" id="apc-tab-nav">
+						<ul class="nav nav-pills">
 							<li class="active"><a href="#tab-4458-1" data-toggle="tab">Input</a></li>
 							<li><a href="#tab-4458-8" data-toggle="tab">Age Deviations</a></li>
 							<li><a href="#tab-4458-9" data-toggle="tab">Per Deviations</a></li>
@@ -229,302 +220,298 @@
 							<li><a href="#tab-4458-15" data-toggle="tab">PeriodRR</a></li>
 							<li><a href="#tab-4458-16" data-toggle="tab">CohortRR</a></li>
 							<li><a href="#tab-4458-17" data-toggle="tab">Local Drifts</a></li>
-				        </ul>
-				      </div><!-- /.navbar-collapse -->
-				  </nav>
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+				</nav>
 
 				<div class="tab-content">
-				 <div class="tab-pane active" id="tab-4458-1">
-				          <div id="inputData" style="overflow-x: auto; overflow-y: hidden;">
-				            <label for='paste' style='position:absolute;'>&nbsp;</label>
-				            <img id='paste_here_image' alt='paste here image' style="width: 80%; height: 50%;" src='/common/images/paste-here.gif'
-				            	style='position:absolute'/>
-				            <textarea id='paste' class='paste_area' ></textarea>
-
-				            <table id='main-table' class='input' style="margin: 5px;">
-				              <tr>
-				                <td>&nbsp;</td>
-				                <td class='header border-left border-top'>&nbsp;</td>
-				                <td id='table-title' colspan='8' class='header border-bottom border-right border-left border-top'></td>
-				              </tr>
-				              <tr>
-				                <td></td>
-				                <td class='header border-left'></td>
-				                <td colspan='2' class='header border-left' id='year_1_year'></td>
-				                <td colspan='2' class='header border-dotted-left' id='year_2_year'></td>
-				                <td colspan='2' class='header border-dotted-left' id='year_3_year'></td>
-				                <td colspan='2' class='header border-dotted-left border-right' id='year_4_year'></td>
-				              </tr>
-				              <tr>
-				                <td></td>
-				                <td class='header border-bottom border-left border-right'>Age
-				                </td>
-				                <td class='header border-bottom border-left'>Count</td>
-				                <td class='header border-bottom'>Population</td>
-				                <td class='header border-bottom border-dotted-left'>Count</td>
-				                <td class='header border-bottom'>Population</td>
-				                <td class='header border-bottom border-dotted-left'>Count</td>
-				                <td class='header border-bottom'>Population</td>
-				                <td class='header border-bottom border-dotted-left'>Count</td>
-				                <td class='header border-bottom border-right'>Population</td>
-				              </tr>
-				              <tr id='age_1_row'>
-				                <td id='row-title' rowspan='14' class='row-header border-left border-bottom border-top'>
-				                	<div class='vertical-text'>Age</div>
-				                </td>
-				                <td id='age_1_age' class='header border-left border-right'>&nbsp;
-				                </td>
-				                <td id='age_1_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_1_year_1_pop' class='data'></td>
-				                <td id='age_1_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_1_year_2_pop' class='data'></td>
-				                <td id='age_1_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_1_year_3_pop' class='data'></td>
-				                <td id='age_1_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_1_year_4_pop' class='data border-right'></td>
-				              </tr>
-				              <tr id='age_2_row'>
-				                <td id='age_2_age' class='header border-left border-right'>&nbsp;</td>
-				                <td id='age_2_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_2_year_1_pop' class='data'></td>
-				                <td id='age_2_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_2_year_2_pop' class='data'></td>
-				                <td id='age_2_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_2_year_3_pop' class='data'></td>
-				                <td id='age_2_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_2_year_4_pop' class='data border-right'></td>
-				              </tr>
-				              <tr id='age_3_row'>
-				                <td id='age_3_age' class='header border-left border-right'>&nbsp;</td>
-				                <td id='age_3_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_3_year_1_pop' class='data'></td>
-				                <td id='age_3_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_3_year_2_pop' class='data'></td>
-				                <td id='age_3_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_3_year_3_pop' class='data'></td>
-				                <td id='age_3_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_3_year_4_pop' class='data border-right'></td>
-				              </tr>
-				              <tr id='age_4_row'>
-				                <td id='age_4_age' class='header border-left border-right'>&nbsp;</td>
-				                <td id='age_4_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_4_year_1_pop' class='data'></td>
-				                <td id='age_4_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_4_year_2_pop' class='data'></td>
-				                <td id='age_4_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_4_year_3_pop' class='data'></td>
-				                <td id='age_4_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_4_year_4_pop' class='data border-right'></td>
-				              </tr>
-				              <tr id='age_5_row'>
-				                <td id='age_5_age' class='header border-left border-right'>&nbsp;</td>
-				                <td id='age_5_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_5_year_1_pop' class='data'></td>
-				                <td id='age_5_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_5_year_2_pop' class='data'></td>
-				                <td id='age_5_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_5_year_3_pop' class='data'></td>
-				                <td id='age_5_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_5_year_4_pop' class='data border-right'></td>
-				              </tr>
-				              <tr id='age_6_row'>
-				                <td id='age_6_age' class='header border-left border-right'>&nbsp;</td>
-				                <td id='age_6_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_6_year_1_pop' class='data'></td>
-				                <td id='age_6_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_6_year_2_pop' class='data'></td>
-				                <td id='age_6_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_6_year_3_pop' class='data'></td>
-				                <td id='age_6_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_6_year_4_pop' class='data border-right'></td>
-				              </tr>
-				              <tr id='age_7_row'>
-				                <td id='age_7_age' class='header border-left border-right'>&nbsp;</td>
-				                <td id='age_7_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_7_year_1_pop' class='data'></td>
-				                <td id='age_7_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_7_year_2_pop' class='data'></td>
-				                <td id='age_7_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_7_year_3_pop' class='data'></td>
-				                <td id='age_7_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_7_year_4_pop' class='data border-right'></td>
-				              </tr>
-				              <tr id='age_8_row'>
-				                <td id='age_8_age' class='header border-left border-right'>&nbsp;</td>
-				                <td id='age_8_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_8_year_1_pop' class='data'></td>
-				                <td id='age_8_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_8_year_2_pop' class='data'></td>
-				                <td id='age_8_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_8_year_3_pop' class='data'></td>
-				                <td id='age_8_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_8_year_4_pop' class='data border-right'></td>
-				              </tr>
-				              <tr id='age_9_row'>
-				                <td id='age_9_age' class='header border-left border-right'>&nbsp;</td>
-				                <td id='age_9_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_9_year_1_pop' class='data'></td>
-				                <td id='age_9_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_9_year_2_pop' class='data'></td>
-				                <td id='age_9_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_9_year_3_pop' class='data'></td>
-				                <td id='age_9_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_9_year_4_pop' class='data border-right'></td>
-				              </tr>
-				              <tr id='age_10_row'>
-				                <td id='age_10_age' class='header border-left border-right'>&nbsp;</td>
-				                <td id='age_10_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_10_year_1_pop' class='data'></td>
-				                <td id='age_10_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_10_year_2_pop' class='data'></td>
-				                <td id='age_10_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_10_year_3_pop' class='data'></td>
-				                <td id='age_10_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_10_year_4_pop' class='data border-right'></td>
-				              </tr>
-				              <tr id='age_11_row'>
-				                <td id='age_11_age' class='header border-left border-right'>&nbsp;</td>
-				                <td id='age_11_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_11_year_1_pop' class='data'></td>
-				                <td id='age_11_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_11_year_2_pop' class='data'></td>
-				                <td id='age_11_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_11_year_3_pop' class='data'></td>
-				                <td id='age_11_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_11_year_4_pop' class='data border-right'></td>
-				             </tr>
-				              <tr id='age_12_row'>
-				                <td id='age_12_age' class='header border-left border-right'>&nbsp;</td>
-				                <td id='age_12_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_12_year_1_pop' class='data'></td>
-				                <td id='age_12_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_12_year_2_pop' class='data'></td>
-				                <td id='age_12_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_12_year_3_pop' class='data'></td>
-				                <td id='age_12_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_12_year_4_pop' class='data border-right'></td>
-				              </tr>
-				              <tr id='age_13_row'>
-				                <td id='age_13_age' class='header border-left border-right'>&nbsp;</td>
-				                <td id='age_13_year_1_count' class='data border-dotted-left'></td>
-				                <td id='age_13_year_1_pop' class='data'></td>
-				                <td id='age_13_year_2_count' class='data border-dotted-left'></td>
-				                <td id='age_13_year_2_pop' class='data'></td>
-				                <td id='age_13_year_3_count' class='data border-dotted-left'></td>
-				                <td id='age_13_year_3_pop' class='data'></td>
-				                <td id='age_13_year_4_count' class='data border-dotted-left'></td>
-				                <td id='age_13_year_4_pop' class='data border-right'></td>
-				              </tr>
-				              <tr id='age_14_row'>
-				                <td id='age_14_age' class='header border-bottom border-left border-right'>&nbsp;</td>
-				                <td id='age_14_year_1_count' class='data border-bottom border-dotted-left'></td>
-				                <td id='age_14_year_1_pop' class='data border-bottom'></td>
-				                <td id='age_14_year_2_count' class='data border-bottom border-dotted-left'></td>
-				                <td id='age_14_year_2_pop' class='data border-bottom'></td>
-				                <td id='age_14_year_3_count' class='data border-bottom border-dotted-left'></td>
-				                <td id='age_14_year_3_pop' class='data border-bottom'></td>
-				                <td id='age_14_year_4_count' class='data border-bottom border-dotted-left'></td>
-				                <td id='age_14_year_4_pop' class='data border-bottom border-right'></td>
-				              </tr>
-				            </table>
-				            <div id='please_wait' title='Please Wait...'>
-				            	<img src='/common/images/working.gif' alt="Calculating" title="Calculating" />
-				            </div>
-				          </div>
-				        </div>
-				 <div class="tab-pane" id="tab-4458-8">
-				          <div id="AgeDeviationsGraph" style="overflow: auto;"></div>
-				           <br /> <br /> <br />
-				           <table id="AgeDeviations" class="bordered-table zebra-striped"></table>
-				           <div id="AgeDeviationsDownloadResultLink"></div>
-				 </div>
-				 <div class="tab-pane" id="tab-4458-9">
-			          <div id="PerDeviationsGraph" style="overflow: auto;"></div>
-			           <br /> <br /> <br />
-			          <table id="PerDeviations" class="bordered-table zebra-striped"></table>
-			      </div>
-				  <div class="tab-pane" id="tab-4458-10">
-			          <div id="CohDeviationsGraph" style="overflow: auto;"></div>
-			           <br /> <br /> <br />
-			          <table id="CohDeviations" class="bordered-table zebra-striped"></table>
-			      </div>
-				  <div class="tab-pane" id="tab-4458-11">
-				       <div id="LongAgeGraph" style="overflow: auto;"></div>
-				       <div class="rates" style="display:none;">Rates Per <span id="OffsetLongAge"></span> Person-Years</div>
-				        <br /> <br />
-				       <table id="LongAge" class="bordered-table zebra-striped"></table>
-				   </div>
-				   <div class="tab-pane" id="tab-4458-12">
-				       <div id="CrossAgeGraph" style="overflow: auto;"></div>
-				       <div class="rates" style="display:none;">Rates Per <span id="OffsetCrossAge"></span> Person-Years</div>
-				        <br /> <br />
-				       <table id="CrossAge" class="bordered-table zebra-striped"></table>
-				   </div>
-				   <div class="tab-pane" id="tab-4458-13">
-				       <div id="Long2CrossRRGraph" style="overflow: auto;"></div>
-				       <br /> <br /> <br />
-				       <table id="Long2CrossRR" class="bordered-table zebra-striped"></table>
-				   </div>
-				   <div class="tab-pane" id="tab-4458-14">
-				       <div id="FittedTemporalTrendsGraph" style="overflow: auto;"></div>
-				       <div class="rates" style="display:none;">Rates Per <span id="OffsetFittedTemporalTrends"></span> Person-Years</div>
-				       <br /> <br />
-				       <table id="FittedTemporalTrends" class="bordered-table zebra-striped"></table>
-				   </div>
-				   <div class="tab-pane" id="tab-4458-15">
-				       <div id="PeriodRRGraph" style="overflow: auto;"></div>
-				       <br /> <br /> <br />
-				       <table id="PeriodRR" class="bordered-table zebra-striped"></table>
-				   </div>
-				   <div class="tab-pane" id="tab-4458-16">
-				       <div id="CohortRRGraph" style="overflow: auto;"></div>
-				       <br /> <br /> <br />
-				       <table id="CohortRR" class="bordered-table zebra-striped"></table>
-				   </div>
-				   <div class="tab-pane" id="tab-4458-17">
-				       <div id="LocalDriftsGraph" style="overflow: auto;"></div>
-				       <br /> <br /> <br />
-				       <table id="LocalDrifts" class="bordered-table zebra-striped"></table>
-				   </div>
-			</div> <!--  end of tab content -->
+					<div class="tab-pane active" id="tab-4458-1">
+						<div id="inputData" style="overflow-x: auto; overflow-y: hidden;">
+							<label for="paste" style="position:absolute;">&nbsp;</label>
+							<img id="paste_here_image" alt="paste here image" src="/common/images/paste-here.gif" />
+							<textarea id="paste" class="paste_area"></textarea>
+							<div class="table-responsive">
+								<table id="main-table" class="table table-bordered table-condensed table-striped" style="margin: 5px;">
+									<tr>
+										<td class="header"></td>
+										<td class="header border-left"></td>
+										<td colspan="2" class="header border-left" id="year_1_year"></td>
+										<td colspan="2" class="header border-dotted-left" id="year_2_year"></td>
+										<td colspan="2" class="header border-dotted-left" id="year_3_year"></td>
+										<td colspan="2" class="header border-dotted-left border-right" id="year_4_year"></td>
+									</tr>
+									<tr>
+										<td class="header"></td>
+										<td class="header border-bottom border-left border-right">Age
+										</td>
+										<td class="header border-bottom border-left">Count</td>
+										<td class="header border-bottom">Population</td>
+										<td class="header border-bottom border-dotted-left">Count</td>
+										<td class="header border-bottom">Population</td>
+										<td class="header border-bottom border-dotted-left">Count</td>
+										<td class="header border-bottom">Population</td>
+										<td class="header border-bottom border-dotted-left">Count</td>
+										<td class="header border-bottom border-right">Population</td>
+									</tr>
+									<tr id="age_1_row">
+										<td id="row-title" rowspan="14" class="row-header border-left border-bottom border-top">
+											<div class="vertical-text">Age</div>
+										</td>
+										<td id="age_1_age" class="header border-left border-right">&nbsp;
+										</td>
+										<td id="age_1_year_1_count" class="data border-dotted-left"></td>
+										<td id="age_1_year_1_pop" class="data"></td>
+										<td id="age_1_year_2_count" class="data border-dotted-left"></td>
+										<td id="age_1_year_2_pop" class="data"></td>
+										<td id="age_1_year_3_count" class="data border-dotted-left"></td>
+										<td id="age_1_year_3_pop" class="data"></td>
+										<td id="age_1_year_4_count" class="data border-dotted-left"></td>
+										<td id="age_1_year_4_pop" class="data border-right"></td>
+									</tr>
+									<tr id="age_2_row">
+										<td id="age_2_age" class="header border-left border-right">&nbsp;</td>
+										<td id="age_2_year_1_count" class="data border-dotted-left"></td>
+										<td id="age_2_year_1_pop" class="data"></td>
+										<td id="age_2_year_2_count" class="data border-dotted-left"></td>
+										<td id="age_2_year_2_pop" class="data"></td>
+										<td id="age_2_year_3_count" class="data border-dotted-left"></td>
+										<td id="age_2_year_3_pop" class="data"></td>
+										<td id="age_2_year_4_count" class="data border-dotted-left"></td>
+										<td id="age_2_year_4_pop" class="data border-right"></td>
+									</tr>
+									<tr id="age_3_row">
+										<td id="age_3_age" class="header border-left border-right">&nbsp;</td>
+										<td id="age_3_year_1_count" class="data border-dotted-left"></td>
+										<td id="age_3_year_1_pop" class="data"></td>
+										<td id="age_3_year_2_count" class="data border-dotted-left"></td>
+										<td id="age_3_year_2_pop" class="data"></td>
+										<td id="age_3_year_3_count" class="data border-dotted-left"></td>
+										<td id="age_3_year_3_pop" class="data"></td>
+										<td id="age_3_year_4_count" class="data border-dotted-left"></td>
+										<td id="age_3_year_4_pop" class="data border-right"></td>
+									</tr>
+									<tr id="age_4_row">
+										<td id="age_4_age" class="header border-left border-right">&nbsp;</td>
+										<td id="age_4_year_1_count" class="data border-dotted-left"></td>
+										<td id="age_4_year_1_pop" class="data"></td>
+										<td id="age_4_year_2_count" class="data border-dotted-left"></td>
+										<td id="age_4_year_2_pop" class="data"></td>
+										<td id="age_4_year_3_count" class="data border-dotted-left"></td>
+										<td id="age_4_year_3_pop" class="data"></td>
+										<td id="age_4_year_4_count" class="data border-dotted-left"></td>
+										<td id="age_4_year_4_pop" class="data border-right"></td>
+									</tr>
+									<tr id="age_5_row">
+										<td id="age_5_age" class="header border-left border-right">&nbsp;</td>
+										<td id="age_5_year_1_count" class="data border-dotted-left"></td>
+										<td id="age_5_year_1_pop" class="data"></td>
+										<td id="age_5_year_2_count" class="data border-dotted-left"></td>
+										<td id="age_5_year_2_pop" class="data"></td>
+										<td id="age_5_year_3_count" class="data border-dotted-left"></td>
+										<td id="age_5_year_3_pop" class="data"></td>
+										<td id="age_5_year_4_count" class="data border-dotted-left"></td>
+										<td id="age_5_year_4_pop" class="data border-right"></td>
+									</tr>
+									<tr id="age_6_row">
+										<td id="age_6_age" class="header border-left border-right">&nbsp;</td>
+										<td id="age_6_year_1_count" class="data border-dotted-left"></td>
+										<td id="age_6_year_1_pop" class="data"></td>
+										<td id="age_6_year_2_count" class="data border-dotted-left"></td>
+										<td id="age_6_year_2_pop" class="data"></td>
+										<td id="age_6_year_3_count" class="data border-dotted-left"></td>
+										<td id="age_6_year_3_pop" class="data"></td>
+										<td id="age_6_year_4_count" class="data border-dotted-left"></td>
+										<td id="age_6_year_4_pop" class="data border-right"></td>
+									</tr>
+									<tr id="age_7_row">
+										<td id="age_7_age" class="header border-left border-right">&nbsp;</td>
+										<td id="age_7_year_1_count" class="data border-dotted-left"></td>
+										<td id="age_7_year_1_pop" class="data"></td>
+										<td id="age_7_year_2_count" class="data border-dotted-left"></td>
+										<td id="age_7_year_2_pop" class="data"></td>
+										<td id="age_7_year_3_count" class="data border-dotted-left"></td>
+										<td id="age_7_year_3_pop" class="data"></td>
+										<td id="age_7_year_4_count" class="data border-dotted-left"></td>
+										<td id="age_7_year_4_pop" class="data border-right"></td>
+									</tr>
+									<tr id="age_8_row">
+										<td id="age_8_age" class="header border-left border-right">&nbsp;</td>
+										<td id="age_8_year_1_count" class="data border-dotted-left"></td>
+										<td id="age_8_year_1_pop" class="data"></td>
+										<td id="age_8_year_2_count" class="data border-dotted-left"></td>
+										<td id="age_8_year_2_pop" class="data"></td>
+										<td id="age_8_year_3_count" class="data border-dotted-left"></td>
+										<td id="age_8_year_3_pop" class="data"></td>
+										<td id="age_8_year_4_count" class="data border-dotted-left"></td>
+										<td id="age_8_year_4_pop" class="data border-right"></td>
+									</tr>
+									<tr id="age_9_row">
+										<td id="age_9_age" class="header border-left border-right">&nbsp;</td>
+										<td id="age_9_year_1_count" class="data border-dotted-left"></td>
+										<td id="age_9_year_1_pop" class="data"></td>
+										<td id="age_9_year_2_count" class="data border-dotted-left"></td>
+										<td id="age_9_year_2_pop" class="data"></td>
+										<td id="age_9_year_3_count" class="data border-dotted-left"></td>
+										<td id="age_9_year_3_pop" class="data"></td>
+										<td id="age_9_year_4_count" class="data border-dotted-left"></td>
+										<td id="age_9_year_4_pop" class="data border-right"></td>
+									</tr>
+									<tr id="age_10_row">
+										<td id="age_10_age" class="header border-left border-right">&nbsp;</td>
+										<td id="age_10_year_1_count" class="data border-dotted-left"></td>
+										<td id="age_10_year_1_pop" class="data"></td>
+										<td id="age_10_year_2_count" class="data border-dotted-left"></td>
+										<td id="age_10_year_2_pop" class="data"></td>
+										<td id="age_10_year_3_count" class="data border-dotted-left"></td>
+										<td id="age_10_year_3_pop" class="data"></td>
+										<td id="age_10_year_4_count" class="data border-dotted-left"></td>
+										<td id="age_10_year_4_pop" class="data border-right"></td>
+									</tr>
+								</table>
+							</div>
+							<div id="please_wait" title="Please Wait...">
+								<img src="/common/images/working.gif" alt="Calculating" title="Calculating" />
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab-4458-8">
+						<div id="AgeDeviationsGraph" style="overflow: auto;"></div>
+						<br />
+						<br />
+						<br />
+						<div class="table-responsive">
+							<table id="AgeDeviations" class="table table-bordered table-condensed table-striped"></table>
+						</div>
+						<div id="AgeDeviationsDownloadResultLink"></div>
+					</div>
+					<div class="tab-pane" id="tab-4458-9">
+						<div id="PerDeviationsGraph" style="overflow: auto;"></div>
+						<br />
+						<br />
+						<br />
+						<div class="table-responsive">
+							<table id="PerDeviations" class="table table-bordered table-condensed table-striped"></table>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab-4458-10">
+						<div id="CohDeviationsGraph" style="overflow: auto;"></div>
+						<br />
+						<br />
+						<br />
+						<div class="table-responsive">
+							<table id="CohDeviations" class="table table-bordered table-condensed table-striped"></table>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab-4458-11">
+						<div id="LongAgeGraph" style="overflow: auto;"></div>
+						<div class="rates" style="display:none;">Rates Per
+							<span id="OffsetLongAge"></span> Person-Years</div>
+						<br />
+						<br />
+						<div class="table-responsive">
+							<table id="LongAge" class="table table-bordered table-condensed table-striped"></table>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab-4458-12">
+						<div id="CrossAgeGraph" style="overflow: auto;"></div>
+						<div class="rates" style="display:none;">Rates Per
+							<span id="OffsetCrossAge"></span> Person-Years</div>
+						<br />
+						<br />
+						<div class="table-responsive">
+							<table id="CrossAge" class="table table-bordered table-condensed table-striped"></table>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab-4458-13">
+						<div id="Long2CrossRRGraph" style="overflow: auto;"></div>
+						<br />
+						<br />
+						<br />
+						<div class="table-responsive">
+							<table id="Long2CrossRR" class="table table-bordered table-condensed table-striped"></table>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab-4458-14">
+						<div id="FittedTemporalTrendsGraph" style="overflow: auto;"></div>
+						<div class="rates" style="display:none;">Rates Per
+							<span id="OffsetFittedTemporalTrends"></span> Person-Years</div>
+						<br />
+						<br />
+						<div class="table-responsive">
+							<table id="FittedTemporalTrends" class="table table-bordered table-condensed table-striped"></table>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab-4458-15">
+						<div id="PeriodRRGraph" style="overflow: auto;"></div>
+						<br />
+						<br />
+						<br />
+						<div class="table-responsive">
+							<table id="PeriodRR" class="table table-bordered table-condensed table-striped"></table>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab-4458-16">
+						<div id="CohortRRGraph" style="overflow: auto;"></div>
+						<br />
+						<br />
+						<br />
+						<div class="table-responsive">
+							<table id="CohortRR" class="table table-bordered table-condensed table-striped"></table>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab-4458-17">
+						<div id="LocalDriftsGraph" style="overflow: auto;"></div>
+						<br />
+						<br />
+						<br />
+						<div class="table-responsive">
+							<table id="LocalDrifts" class="table table-bordered table-condensed table-striped"></table>
+						</div>
+					</div>
+				</div>
+				<!--  end of tab content -->
+			</div>
+			<!--  end of body content -->
 		</div>
-		<!--  end of body content -->
 	</div>
 	<div class="container footer">
-        <div class="center-block">
+		<div class="center-block">
 			<div class="row">
-				<div class="col-xs-12 offset" id="citation">Rosenberg PS, Check DP, Anderson WF. A Web Tool for Age-Period-Cohort Analysis of Cancer Incidence and Mortality Rates. Cancer Epidemiology, Biomarkers Prevent 2014:23:2296, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25146089">PMID: 25146089</a></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-10 offset" id="citation">Rosenberg PS, Check DP, Anderson WF. A Web Tool for Age-Period-Cohort Analysis of Cancer Incidence and Mortality Rates. Cancer Epidemiology, Biomarkers Prevent 2014:23:2296, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25146089">PMID: 25146089</a></div>
+				<div class="col-xs-1"></div>
 			</div>
 			<div class="row">
-				<div class="col-xs-12">
-		            <ul class="list-inline">
-		                <li><a href="http://www.cancer.gov/" title="Home" target="_blank">Home</a></li>
-		                <li>|</li>
-		                <li><a href="mailto:NCILungCancerScreeningToolWebAdmin@mail.nih.gov?subject=LungCancerScreeningTool" target="_top" title="Support">Support</a></li>
-		                <li>|</li>
-		                <li><a href="http://www.cancer.gov/global/web/policies" title="Policies" target="_blank">Policies</a></li>
-		                <li>|</li>
-		                <li><a href="http://www.cancer.gov/global/web/policies/accessibility" title="Accessibility" target="_blank">Accessibility</a></li>
-		                <li>|</li>
-		                <li><a href="http://cancer.gov/global/viewing-files" title="Viewing Files" target="_blank">Viewing Files</a></li>
-		                <li>|</li>
-		                <li><a href="http://www.cancer.gov/global/web/policies/foia" title="FOIA" target="_blank">FOIA</a></li>
-		            </ul>
-		            <ul class="list-inline">
-		                <li><a href="http://www.hhs.gov/" target="_blank">U.S. Department of Health and Human Services</a></li>
-		                <li>|</li>
-		                <li><a href="http://www.nih.gov" target="_blank">National Institutes of Health</a></li>
-		                <li>|</li>
-		                <li><a href="http://www.cancer.gov/" target="_blank">National Cancer Institute</a></li>
-		                <li>|</li>
-		                <li><a href="http://usa.gov" target="_blank">USA.gov</a></li>
-		            </ul>
-		            <div class="text-center">
-		                NIH ... Turning Discovery Into Health<sup>®</sup>
-		            </div>
+				<div class="col-xs-12 well">
+					<ul class="list-inline">
+						<li><a href="http://www.cancer.gov/" title="Home" target="_blank">Home</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="mailto:NCILungCancerScreeningToolWebAdmin@mail.nih.gov?subject=LungCancerScreeningTool" target="_top" title="Support">Support</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://www.cancer.gov/global/web/policies" title="Policies" target="_blank">Policies</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://www.cancer.gov/global/web/policies/accessibility" title="Accessibility" target="_blank">Accessibility</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://cancer.gov/global/viewing-files" title="Viewing Files" target="_blank">Viewing Files</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://www.cancer.gov/global/web/policies/foia" title="FOIA" target="_blank">FOIA</a></li>
+					</ul>
+					<ul class="list-inline">
+						<li><a href="http://www.hhs.gov/" target="_blank">U.S. Department of Health and Human Services</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://www.nih.gov" target="_blank">National Institutes of Health</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://www.cancer.gov/" target="_blank">National Cancer Institute</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://usa.gov" target="_blank">USA.gov</a></li>
+					</ul>
+					<div class="text-center">
+						NIH ... Turning Discovery Into Health<sup>®</sup>
+					</div>
 				</div>
 			</div>
-        </div>
-    </div>
+		</div>
+	</div>
 </body>
 </html>

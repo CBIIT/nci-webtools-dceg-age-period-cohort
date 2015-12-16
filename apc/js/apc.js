@@ -820,10 +820,11 @@ function set_paste_area_size() {
 
 	$("#paste")
 	var paste_area_box = $("#paste");
-	paste_area_box.css("height", total_height);
+	paste_area_box.css("height", total_height + 50);
 	paste_area_box.css("width", total_width);
 	paste_area_box.css("left", offset.left);
 	paste_area_box.css("top", offset.top);
+	$('.vertical-text').css('margin-top', ($('#main-table').innerHeight()/2));
 }
 
 function compute_age (num) {
@@ -921,7 +922,7 @@ function toggleReference(id){
 	}
 	if(id == 'manual'){
 		if($.trim($('#startYear').val()) == '' || $.trim($('#startAge').val()) == '' || $.trim($('#interval').val()) == ''){
-			alert("The value of start year, start age and interval must be seleceted.");
+			alert("The value of start year, start age and interval must be selected.");
 			$('#auto').prop("checked", true);
 		}else{
 			$('#referenceDiv').css("display", "block");
