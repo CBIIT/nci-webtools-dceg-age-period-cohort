@@ -300,8 +300,9 @@ hr.style-two {
     box-shadow: 0 2px 4px 0 rgba(1, 90, 129, 0.4);
 }
 
-.label-bold {
+label.label-bold {
     font-weight: bold;
+    white-space:nowrap;
 }
 
 .input-small {
@@ -347,4 +348,8 @@ select.input-sm {
 /* Responsive Bootstrap Table hack needed for FF */
 @-moz-document url-prefix() {
   fieldset { display: table-cell; }
+}
+
+.wrappable {
+    white-space: normal;
 }
