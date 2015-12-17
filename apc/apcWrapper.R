@@ -22,7 +22,7 @@ graphKeys = c("AgeDeviations",
               "LocalDrifts")
 
 ## Test data generated from: example_data/ClaytonSchifflers1987StatMed.csv
- testData = '{"title":"Belgium Female Lung Cancer Mortality","description":"Example from: Clayton D. & Schifflers E. Models for temporal variation in cancer rates. I: Age-period and age-cohort models. Stat. Med., 1987; 6:449-467.","startYear":1955,"startAge":25,"interval":5,"count":[[3,2,7,3,10],[11,16,11,10,7],[11,22,24,25,15],[36,44,42,53,48],[77,74,68,99,88],[106,131,99,142,134],[157,184,189,180,177],[193,232,262,249,239],[219,267,323,325,343],[223,250,308,412,358],[198,214,253,338,312]],"population":[[1578947.368,1538461.538,1400000,1578947.368,1428571.429],[1666666.667,1632653.061,1527777.778,1408450.704,1228070.175],[1410256.41,1666666.667,1632653.061,1524390.244,1136363.636],[1348314.607,1392405.063,1660079.051,1568047.337,1221374.046],[1590909.091,1321428.571,1379310.345,1636363.636,1288433.382],[1606060.606,1541176.471,1294117.647,1340887.63,1285988.484],[1515444.015,1533333.333,1490536.278,1255230.126,986072.4234],[1307588.076,1417226.634,1455555.556,1414772.727,999581.765],[1066731.612,1181415.929,1297188.755,1335799.425,1048929.664],[849847.561,902527.0758,1010830.325,1115322.144,930595.269],[591574.5444,636715.2633,688060.9192,773632.4102,690265.4867]],"refYear":-1,"refAge":-1,"refCohort":-1}'
+## testData = '{"title":"Belgium Female Lung Cancer Mortality","description":"Example from: Clayton D. & Schifflers E. Models for temporal variation in cancer rates. I: Age-period and age-cohort models. Stat. Med., 1987; 6:449-467.","startYear":1955,"startAge":25,"interval":5,"count":[[3,2,7,3,10],[11,16,11,10,7],[11,22,24,25,15],[36,44,42,53,48],[77,74,68,99,88],[106,131,99,142,134],[157,184,189,180,177],[193,232,262,249,239],[219,267,323,325,343],[223,250,308,412,358],[198,214,253,338,312]],"population":[[1578947.368,1538461.538,1400000,1578947.368,1428571.429],[1666666.667,1632653.061,1527777.778,1408450.704,1228070.175],[1410256.41,1666666.667,1632653.061,1524390.244,1136363.636],[1348314.607,1392405.063,1660079.051,1568047.337,1221374.046],[1590909.091,1321428.571,1379310.345,1636363.636,1288433.382],[1606060.606,1541176.471,1294117.647,1340887.63,1285988.484],[1515444.015,1533333.333,1490536.278,1255230.126,986072.4234],[1307588.076,1417226.634,1455555.556,1414772.727,999581.765],[1066731.612,1181415.929,1297188.755,1335799.425,1048929.664],[849847.561,902527.0758,1010830.325,1115322.144,930595.269],[591574.5444,636715.2633,688060.9192,773632.4102,690265.4867]],"refYear":-1,"refAge":-1,"refCohort":-1}'
 ## Generate output with: getApcDataJSON(testData)
 
 #-------------------------------------------------------
@@ -158,7 +158,12 @@ generateExcel <- function(apcOutput, title) {
   for (key in c(graphKeys, keys)) {
     
     currentSheet = createSheet(workbook, sheetName = key)
-    addDataFrame(x = round(apcOutput[[key]]$table, 3), sheet = currentSheet, row.names = FALSE)
+    
+    if (key %in%  c("Waldtests", "Coefficients"))
+      addDataFrame(x = round(apcOutput[[key]]$table, 3), sheet = currentSheet)
+    
+    else
+      addDataFrame(x = round(apcOutput[[key]]$table, 3), sheet = currentSheet, row.names = FALSE)
     
     if (key %in% graphKeys)
       addPicture(apcOutput[[key]]$pathToFile, currentSheet, scale = .65, startRow = 1, startColumn = 6)
