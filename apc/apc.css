@@ -353,3 +353,7 @@ select.input-sm {
 .wrappable {
     white-space: normal;
 }
+
+pre {
+    line-height: 4em;
+}
