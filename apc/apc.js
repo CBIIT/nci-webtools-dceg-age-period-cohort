@@ -1,85 +1,100 @@
-var paste_instructions = 
-	"When pasting data from a spreadsheet or uploading\n" +
+var paste_instructions =
+    "When pasting data from a spreadsheet or uploading\n" +
     "from a csv file, it should have alternating columns of\n" +
     "count-then-population for at least two age periods\n" +
     "(minimum size array = 2x2)";
 
-var dataKeys =  [   "NetDrift", 
-                    "Waldtests", 
-                    "Coefficients"  ];
+var dataKeys = [
+    "NetDrift",
+    "Waldtests",
+    "Coefficients"
+];
 
-var graphKeys = [   "AgeDeviations",
-                    "PerDeviations",
-                    "CohDeviations",
-                    "LongAge",
-                    "CrossAge",
-                    "Long2CrossRR",
-                    "FittedTemporalTrends",
-                    "PeriodRR",
-                    "CohortRR",
-                    "LocalDrifts"   ];
+var graphKeys = [
+    "AgeDeviations",
+    "PerDeviations",
+    "CohDeviations",
+    "LongAge",
+    "CrossAge",
+    "Long2CrossRR",
+    "FittedTemporalTrends",
+    "PeriodRR",
+    "CohortRR",
+    "LocalDrifts"
+];
 
-var apcModel = {    title: '',
-                    description: '',
-                    startYear: null,
-                    startAge: null,
-                    interval: null,
-                    table: null,
-                    refYear: -1,
-                    refAge: -1,
-                    refCohort: -1   };
-                    
+var apcModel = {
+    title: '',
+    description: '',
+    startYear: null,
+    startAge: null,
+    interval: null,
+    table: null,
+    refYear: -1,
+    refAge: -1,
+    refCohort: -1
+};
+
 var firstRun = true;
-                    
+
 $(document).ready(function() {
-    
+
     createInputTable('#tableContainer', createHeaders(6), createMatrix(11, 10));
-    
-	$('#inputData').bind('drop', dragTable);
+
+    $('#inputData').bind('drop', dragTable);
     $('#fileUpload').change(fileUpload);
     $('#cancel').click(reset);
     $('#calculate').click(sendRequest);
     $("#download").click(downloadResults);
-    
+
     $('#title').change(redrawTable);
     $('#description').change(redrawTable);
 
     $('#interval').change(redrawTable);
 
     $('#startYear').spinner({
-		min: 1800,
-		max: 2200,
-		step: 1,
-		spin: function(event, ui){redrawTable()},
-		stop: function(event, ui){redrawTable()}
-	});
-    
-	$('#startAge').spinner({
-		min: 0,
-		max: 120,
-		step: 1,
-		spin: function(event, ui){redrawTable()},
-		stop: function(event, ui){redrawTable()}
-	});
-    
+        min: 1800,
+        max: 2200,
+        step: 1,
+        spin: function(event, ui) {
+            redrawTable()
+        },
+        stop: function(event, ui) {
+            redrawTable()
+        }
+    });
+
+    $('#startAge').spinner({
+        min: 0,
+        max: 120,
+        step: 1,
+        spin: function(event, ui) {
+            redrawTable()
+        },
+        stop: function(event, ui) {
+            redrawTable()
+        }
+    });
+
     $("#please_wait").dialog({
-		dialogClass: 'no-close',
-		resizable: false,
-	    width: '180px',
-	    autoOpen: false,
-	    hide: { effect: "fade", duration: 200 }
-	});
-    
+        dialogClass: 'no-close',
+        resizable: false,
+        width: '180px',
+        autoOpen: false,
+        hide: {
+            effect: "fade",
+            duration: 200
+        }
+    });
+
     $('#refAge').change(updateCohortModel);
     $('#refYear').change(updateCohortModel);
-    
+
     // allows elements to be dragged into this document
     document.addEventListener('dragover', function(event) {
         event.stopPropagation();
         event.preventDefault();
     });
-
-
 });
 
 
@@ -89,10 +104,10 @@ $(document).ready(function() {
 function dragTable(event) {
     event.stopPropagation();
     event.preventDefault();
-    
+
     // gets text that was dragged into this container and extracts non-empty lines
     var data = event.originalEvent.dataTransfer.getData("text/plain").match(/[^\r\n]+/g);
-    
+
     // update model and redraw table
     apcModel.table = createTable(data);
     redrawTable();
@@ -105,10 +120,10 @@ function fileUpload() {
     var reader = new FileReader();
 
     reader.onload = function(event) {
-        
+
         // split the file contents into an array of non-empty lines
         var contents = event.target.result.match(/[^\r\n]+/g);
-        
+
         updateModel(contents);
         redraw();
     }
@@ -132,26 +147,24 @@ function redraw() {
     $('#startYear').val(apcModel.startYear);
     $('#startAge').val(apcModel.startAge);
     $('#interval').val(apcModel.interval);
-    
+
     if (apcModel.table != null) redrawTable();
 }
 
 // ------ Redraw Input Table ------ //
 function redrawTable() {
-    
+
     if (!validate(apcModel.table)) {
         alert(paste_instructions);
         this.preventDefault();
-    }
-    
-    else {
+    } else {
         apcModel.title = $('#title').val();
         apcModel.description = $('#description').val();
         apcModel.startYear = parseFloat($('#startYear').val());
         apcModel.startAge = parseFloat($('#startAge').val());
         apcModel.interval = parseFloat($('#interval').val());
-        
-        
+
+
         // initialize the table
         contents = apcModel.table;
 
@@ -159,42 +172,40 @@ function redrawTable() {
         numCols = contents[0].length;
 
         // create the column headers
-        startAge  = parseFloat($('#startAge').val());
+        startAge = parseFloat($('#startAge').val());
         startYear = parseFloat($('#startYear').val());
-        interval  = parseFloat($('#interval').val());
-        
+        interval = parseFloat($('#interval').val());
+
         // if the age, year and interval were specified
         // generate the age-interval column and the year-interval headers
         if (startAge && startYear && interval) {
             ages = createIntervals(startAge, interval, numRows);
-            years = createIntervals(startYear, interval, numCols/2);
-            
+            years = createIntervals(startYear, interval, numCols / 2);
+
             // Update reference ages/years
             updateReference(ages, years);
         } else {
             ages = [];
-            for (var i = 0; i < numRows; i ++) {
+            for (var i = 0; i < numRows; i++) {
                 ages.push('');
             }
         }
-        
-        
+
         var displayTable = [];
-        
+
         for (var j = 0; j < contents.length; j++) {
             displayTable.push([ages[j]]);
             for (var k = 0; k < contents[j].length; k++) {
                 displayTable[j].push(contents[j][k].toLocaleString());
             }
         }
-        
-        console.log(contents);
+
         $('#paste_here_image').zIndex(-1);
         var tableID = createInputTable('#tableContainer', createHeaders(numCols), displayTable);
-        
+
         $(tableID).addClass("nowrap cell-border ");
         headerRow = $(tableID).children().first();
-        
+
         if (startYear && interval) {
             createHeader(years).forEach(function(row) {
                 headerRow.prepend(row);
@@ -205,24 +216,24 @@ function redrawTable() {
 
 
 function createInputTable(containerID, headers, data) {
-	
-	var table = document.createElement('table');
-	table.setAttribute('id', 'inputTable');
-	table.setAttribute('class', 'display');
-	table.setAttribute('width', '100%');
-	
-	$(containerID).html(table);
-	$('#inputTable').DataTable({
-		"destroy": true,
-		"data": data,
-		"columns": headers,
-		"bSort": false,
-		"bFilter": false,
-		"paging": false,
-		"responsive": true,
-		"dom": 't'
-	})
-    
+
+    var table = document.createElement('table');
+    table.setAttribute('id', 'inputTable');
+    table.setAttribute('class', 'display');
+    table.setAttribute('width', '100%');
+
+    $(containerID).html(table);
+    $('#inputTable').DataTable({
+        "destroy": true,
+        "data": data,
+        "columns": headers,
+        "bSort": false,
+        "bFilter": false,
+        "paging": false,
+        "responsive": true,
+        "dom": 't'
+    })
+
     return '#inputTable';
 }
 
@@ -231,12 +242,11 @@ function createInputTable(containerID, headers, data) {
 
 // ------ Send Data To Server ------ //
 function sendRequest() {
-    
+
     $("#please_wait").dialog('open');
-    
+
     $.post("/apcRest/", JSON.stringify(apcModel))
         .done(function(data) {
-            console.log(data);
             displayResults(data);
         })
         .always(function() {
@@ -246,32 +256,29 @@ function sendRequest() {
 
 // ------ Display Results Data ------ //
 function displayResults(data) {
-    
+
     var results = JSON.parse(data);
-    
+
     graphKeys.forEach(function(key) {
         loadImage(key, results[key]['pathToFile'][0]);
     });
-    
-    
+
+
     dataKeys.concat(graphKeys).forEach(function(key) {
-        
+
         table = results[key]['table'];
-        
+
         keys = Object.keys(table[0])
         if ($.inArray('_row', keys) != -1) keys.unshift(keys.pop());
-        
+
         headers = [];
         keys.forEach(function(key) {
-           header = {
-               "data": key,
-               "title": key == '_row' ? '' : key
-           };
-           headers.push(header); 
+            header = {
+                "data": key,
+                "title": key == '_row' ? '' : key
+            };
+            headers.push(header);
         });
-        
-        console.log(table, headers);
-        
 
         $('#' + key).DataTable({
             "destroy": true,
@@ -282,31 +289,29 @@ function displayResults(data) {
             "responsive": true,
             "dom": 't'
         });
-        
+
         $('#' + key).addClass("nowrap compact cell-border stripe hover");
-        
+
     });
-    
-    
+
+
     if (firstRun) {
         $('#NetDrift').children().first().prepend('<tr role="row"><th colspan = "3" class="text-center"> Net Drift </th></tr>');
         $('#Waldtests').children().first().prepend('<tr role="row"><th colspan = "4" class="text-center"> Wald Tests </th></tr>');
         $('#Coefficients').children().first().prepend('<tr role="row"><th colspan = "5" class="text-center"> Coefficients </th></tr>');
         firstRun = false;
     }
-    
-    
-    ['RDataInput', 'RDataOutput', 'TextInput', 'TextOutput', 'Excel'].forEach(function (key) {
+
+
+    ['RDataInput', 'RDataOutput', 'TextInput', 'TextOutput', 'Excel'].forEach(function(key) {
         $('#' + key).attr('value', results[key]['pathToFile'][0]);
     });
-    
+
     $("#download_choice").show();
-    
-    ['#ND', '#WT', '#CE'].forEach(function (key) {
+
+    ['#ND', '#WT', '#CE'].forEach(function(key) {
         $(key).show();
     });
-
-    console.log(results);
 }
 
 
@@ -315,18 +320,27 @@ function displayResults(data) {
 
 // ------ Create row headers for input table ------ //
 function createHeaders(length) {
-    
+
     var ageHeader = "Age";
     if (apcModel.table) ageHeader = '<span class = "ageGroups">' + apcModel.table.length + " age groups </span>";
-    
-	var headers = [{title: ageHeader, className: 'dt-center grey'}];
-	
-	for (var i = 0; i < length; i += 2) {
-        headers.push({title: "Count", className: 'dt-body-right'});
-        headers.push({title: "Population", className: 'dt-body-right'});
-	}
-	
-	return headers;
+
+    var headers = [{
+        title: ageHeader,
+        className: 'dt-center grey'
+    }];
+
+    for (var i = 0; i < length; i += 2) {
+        headers.push({
+            title: "Count",
+            className: 'dt-body-right'
+        });
+        headers.push({
+            title: "Population",
+            className: 'dt-body-right'
+        });
+    }
+
+    return headers;
 }
 
 
@@ -334,14 +348,14 @@ function createHeaders(length) {
 // Creates and returns an array of ranges using the specified interval
 function createIntervals(initial, interval, length) {
     var intervals = [];
-    
+
     for (var i = initial; i < initial + interval * length; i += interval) {
-        
+
         var value = i;
         if (interval > 1) value += ' - ' + (i + interval - 1);
         intervals.push(value);
     }
-    
+
     return intervals;
 }
 
@@ -349,10 +363,10 @@ function createIntervals(initial, interval, length) {
 // ------ Create Table Matrix ------ //
 // Creates the input table from an array of lines
 function createTable(contents) {
-    
+
     // splits each line by commas, spaces, or tabs
     return contents.map(function(line) {
-        
+
         // converts each element to a floating point number
         return line.split(/[ \t,]+/).map(function(element) {
             return parseFloat(element);
@@ -364,8 +378,7 @@ function createTable(contents) {
 // ------ Load Image ------ //
 // Populates the graphs
 function loadImage(keyData, pathToFile) {
-	$('#' + keyData + 'Graph').html("<img style='min-width: 600px;' class='center-text' alt='graph for "
-			+ keyData + "' src= '" + pathToFile + "' />");
+    $('#' + keyData + 'Graph').html("<img style='min-width: 600px;' class='center-text' alt='graph for " + keyData + "' src= '" + pathToFile + "' />");
 }
 
 
@@ -385,7 +398,7 @@ function parseHeader(line) {
 
 // ------ Reset Model ------ //
 function reset() {
-    
+
     // reset apc model
     apcModel = {
         title: '',
@@ -398,25 +411,25 @@ function reset() {
         refAge: -1,
         refCohort: -1
     }
-    
+
     // clear file upload
     $("#fileUpload").replaceWith($("#fileUpload").clone(true));
     $("#download_choice").hide();
-    
+
     $('#tableContainer').empty();
     createInputTable('#tableContainer', createHeaders(6), createMatrix(11, 10));
     $('#paste_here_image').zIndex(999);
-    
+
     // clear all tables and graphs
     dataKeys.concat(graphKeys).forEach(function(id) {
         $('#' + id).empty();
         $('#' + id + 'Graph').empty();
     });
-    
-    ['#ND', '#WT', '#CE'].forEach(function (key) {
+
+    ['#ND', '#WT', '#CE'].forEach(function(key) {
         $(key).hide();
-    });    
-    
+    });
+
     redraw();
 }
 
@@ -427,65 +440,62 @@ function reset() {
 function updateModel(contents) {
 
     // the first five rows of the csv are the headers
-    apcModel.title          = parseHeader(contents.shift());
-    apcModel.description    = parseHeader(contents.shift());
-    apcModel.startYear      = parseInt(parseHeader(contents.shift()));
-    apcModel.startAge       = parseInt(parseHeader(contents.shift()));
-    apcModel.interval       = parseInt(parseHeader(contents.shift()));
-    apcModel.table          = createTable(contents);
+    apcModel.title = parseHeader(contents.shift());
+    apcModel.description = parseHeader(contents.shift());
+    apcModel.startYear = parseInt(parseHeader(contents.shift()));
+    apcModel.startAge = parseInt(parseHeader(contents.shift()));
+    apcModel.interval = parseInt(parseHeader(contents.shift()));
+    apcModel.table = createTable(contents);
 }
 
 
 function syncModel() {
-    apcModel.title          = $('#header').val();
-    apcModel.description    = $('#description').val();
-    apcModel.startYear      = $('#startYear').val();
-    apcModel.startAge       = $('#startAge').val();
-    apcModel.interval       = $('#interval').val();
-    
+    apcModel.title = $('#header').val();
+    apcModel.description = $('#description').val();
+    apcModel.startYear = $('#startYear').val();
+    apcModel.startAge = $('#startAge').val();
+    apcModel.interval = $('#interval').val();
+
 }
 
 
 function createHeader(years) {
-    
-//'<tr role="row"><th colspan = "' + displayTable[0].length + '" > Test Row </th></tr>'
-
 
     if (apcModel.title != '') {
         var title = document.createElement('tr');
-        
+
         var emptyCell = document.createElement('th');
         emptyCell.setAttribute('class', 'white-border');
         title.appendChild(emptyCell);
-        
-        
+
+
         var titleCell = document.createElement('th');
         titleCell.setAttribute('class', 'header');
         titleCell.setAttribute('colspan', apcModel.table[0].length);
-        
+
         var description = document.createElement('span');
         description.setAttribute('class', 'blue');
         description.innerHTML = apcModel.description;
-        
+
         titleCell.innerHTML = apcModel.title;
         titleCell.appendChild(document.createElement('br'));
         titleCell.appendChild(description);
-        
+
         title.appendChild(titleCell);
     }
-    
+
     var row = document.createElement('tr');
     row.setAttribute('role', 'row');
     row.appendChild(document.createElement('th'));
-    
-    years.forEach(function (year) {
+
+    years.forEach(function(year) {
         var header = document.createElement('th');
         header.setAttribute('class', 'row-header');
         header.setAttribute('colspan', '2');
         header.innerHTML = year;
         row.appendChild(header);
     });
-    
+
     return [row || '', title || ''];
 }
 
@@ -494,19 +504,19 @@ function createHeader(years) {
 function validate(contents) {
     if (contents == null || !contents.length || contents.length < 2)
         return false;
-    
+
     var length = contents[0].length;
-    
+
     if (length % 2 != 0 || length < 2)
         return false;
-    
-    contents.forEach(function (line) {
+
+    contents.forEach(function(line) {
         if (line.length != length) return false;
-        line.forEach(function (element) {
+        line.forEach(function(element) {
             if (!parseFloat(element)) return false;
         });
     });
-    
+
     return true;
 }
 
@@ -514,31 +524,31 @@ function validate(contents) {
 // ------ Create Matrix  ------ //
 // Creates and returns a matrix with the specified number of rows and columns
 function createMatrix(rows, columns) {
-	
-	var matrix = [];
-    
-	for (var i = 0; i < rows; i ++) {
-		matrix[i] = createArray(columns);
-	}
-	
-	return matrix;
+
+    var matrix = [];
+
+    for (var i = 0; i < rows; i++) {
+        matrix[i] = createArray(columns);
+    }
+
+    return matrix;
 }
 
 // ------ Create Array  ------ //
 // Creates and returns an array of the specified length containing zero width characters
 function createArray(length) {
     var array = [];
-    
-    for (var i = 0; i < length; i ++) {
+
+    for (var i = 0; i < length; i++) {
         array.push('&zwj;');
     }
-    
+
     return array;
 }
 
 // ------ Round Floating Point Number (Specify length)------ //
-function round(x, digits){
-  return parseFloat(x.toFixed(digits))
+function round(x, digits) {
+    return parseFloat(x.toFixed(digits))
 }
 
 
@@ -547,31 +557,31 @@ function round(x, digits){
 
 // ------ Update contents of reference age/year selector ------ //
 function updateReference(ages, years) {
-    
+
     $('#refAge').html("<option value='-1' selected>Age</option>");
     $('#refYear').html("<option value='-1' selected>Year</option>");
-    
-    ages.forEach(function (age) {
+
+    ages.forEach(function(age) {
         var option = document.createElement('option');
-        
+
         var values = age.toString().split('-');
-        
+
         var refAge = values[0];
         if (values[1]) refAge = (parseFloat(values[0]) + parseFloat(values[1]) + 1.0) / 2;
-        
+
         option.setAttribute('value', refAge.toString());
         option.innerHTML = age;
         $('#refAge').append(option);
     });
-    
-    years.forEach(function (year) {
+
+    years.forEach(function(year) {
         var option = document.createElement('option');
-        
+
         var values = year.toString().split('-');
         var refYear = values[0];
-        
+
         if (values[1]) refYear = (parseFloat(values[0]) + parseFloat(values[1]) + 1.0) / 2;
-        
+
         option.setAttribute('value', refYear.toString());
         option.innerHTML = year;
         $('#refYear').append(option);
@@ -579,43 +589,43 @@ function updateReference(ages, years) {
 }
 
 function updateCohortModel() {
-    
+
     year = parseFloat($('#refYear').val());
     age = parseFloat($('#refAge').val());
-    
+
     if (year != -1 && age != -1) {
         cohort = year - age;
-        
+
         apcModel.refAge = age;
         apcModel.refYear = year;
         apcModel.refCohort = cohort;
-        
+
         $('#cohort').val(apcModel.refCohort.toString());
     } else {
         apcModel.refAge = -1;
         apcModel.refYear = -1;
         apcModel.refCohort = -1;
-        
+
         $('#cohort').val('');
     }
-    
+
 }
 
 function openHelpWindow(pageURL) {
-    var helpWin=window.open(pageURL, "Help", "alwaysRaised,dependent,status,scrollbars,resizable,width=1000,height=800");
+    var helpWin = window.open(pageURL, "Help", "alwaysRaised,dependent,status,scrollbars,resizable,width=1000,height=800");
     helpWin.focus();
 }
 
-function toggleReference(id){
-	if(id == 'auto'){
-		$('#referenceDiv').css("display", "none");
-	}
-	if(id == 'manual'){
-		if($.trim($('#startYear').val()) == '' || $.trim($('#startAge').val()) == '' || $.trim($('#interval').val()) == ''){
-			alert("The value of start year, start age and interval must be selected.");
-			$('#auto').prop("checked", true);
-		}else{
-			$('#referenceDiv').css("display", "block");
-		}
-	}
+function toggleReference(id) {
+    if (id == 'auto') {
+        $('#referenceDiv').css("display", "none");
+    }
+    if (id == 'manual') {
+        if ($.trim($('#startYear').val()) == '' || $.trim($('#startAge').val()) == '' || $.trim($('#interval').val()) == '') {
+            alert("The value of start year, start age and interval must be selected.");
+            $('#auto').prop("checked", true);
+        } else {
+            $('#referenceDiv').css("display", "block");
+        }
+    }
 }
