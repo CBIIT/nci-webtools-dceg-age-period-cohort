@@ -106,6 +106,10 @@ function fileUpload() {
 
     reader.onload = function(event) {
         
+        apcModel.refAge = -1;
+        apcModel.refYear = -1;
+        apcModel.cohort = -1;
+        
         // split the file contents into an array of non-empty lines
         var contents = event.target.result.match(/[^\r\n]+/g);
         
