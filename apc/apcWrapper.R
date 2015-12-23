@@ -16,7 +16,6 @@ graphKeys = c("AgeDeviations",
               "CrossAge",
               "Long2CrossRR",
               "FittedTemporalTrends",
-              "FittedCohortPattern",
               "PeriodRR",
               "CohortRR",
               "LocalDrifts")
@@ -35,7 +34,7 @@ graphKeys = c("AgeDeviations",
 getApcDataJSON <- function(jsonData) {
   
   # Directory for storing output files
-  dir.create(tmpDirectory);
+  dir.create(tmpDirectory)
   
   # Generate input and output data
   input   = parseJSON(jsonData)
@@ -79,17 +78,26 @@ getApcDataJSON <- function(jsonData) {
 #-------------------------------------------------------
 parseJSON <- function(jsonData) {
   data = fromJSON(jsonData)
-  ageRange = data$interval * nrow(data$count)
-  periodRange = data$interval * ncol(data$count)
+  
+  table         = as.data.frame(data$table)
+  sequence      = seq_along(table) %% 2
+  endAge        = data$startAge  + data$interval * nrow(table)
+  endYear       = data$startYear + data$interval * ncol(table) / 2
+  
+  if (data$title == '')
+    data$title = 'APC Analysis'
+  
+  if (data$description == '')
+    data$description = paste('Timestamp: ', getTimestamp())
   
   contents = list(
     name        = data$title,
     description = data$description,
-    events      = data$count,
-    offset      = data$population,
+    events      = as.matrix(table[sequence == 1]), # odd numbered columns
+    offset      = as.matrix(table[sequence == 0]), # even numbered columns
     offset_tick = 100000,
-    ages        = seq(data$startAge, data$startAge + ageRange, by = data$interval),
-    periods     = seq(data$startYear, data$startYear + periodRange, by = data$interval)
+    ages        = seq(data$startAge,  endAge,  by = data$interval),
+    periods     = seq(data$startYear, endYear, by = data$interval)
   )
 }
 
@@ -105,8 +113,8 @@ runAPC <- function(jsonData) {
   
   data = fromJSON(jsonData)
   
-  if (data$refYear != -1)
-    apc(parseJSON(jsonData), RVals = c(data$refYear, data$refAge, data$refCohort))
+  if (data$refAge != -1)
+    apc(parseJSON(jsonData), RVals = c(data$refAge, data$refYear, data$refCohort))
   
   else
     apc(parseJSON(jsonData))

@@ -9,8 +9,9 @@
 
 	<!-- CSS STYLES -->
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
-	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
 
 	<link rel="stylesheet" href="/common/css/style.css" />
 	<link href="apc.css" rel="stylesheet">
@@ -20,9 +21,10 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/0.7.3/purify.min.js"></script>
 
-	<script src="js/apc.js"></script>
-	<script src="/common/js/purify.js"></script>
+	<script src="apc.js"></script>
+	<link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
 </head>
 
 <body>
@@ -30,13 +32,6 @@
 		<i id="plus_minus" class="fa fa-caret-left fa-2x"></i>
 	</div>
 	<div class="container">
-		<!--[if lte IE 10]>
-		<div class="row">
-			<div class="col-xs-12 alert alert-danger" role="alert">
-				You are using an <strong>outdated</strong> version of IE that is not supported for this tool.  Please upgrade your browser to IE version 10.
-			</div>
-		</div>
-		<![endif]-->
 		<div class="row">
 			<!-- Banner div -->
 			<div class="col-xs-12">
@@ -50,7 +45,7 @@
 				<img src="../common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" title="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
 			</div>
 			<div class="col-xs-12 col-md-2">
-				<img src="apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" title="Age-Period-Cohort Web Tool" height="33" />
+				<img src="images/apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" title="Age-Period-Cohort Web Tool" height="33" />
 			</div>
 		</div>
 		<!--  end of header -->
@@ -103,16 +98,16 @@
 										<div>
 											<select class="input-small input-sm" id="interval">
 												<option value=""></option>
-												<option value="year1">1</option>
-												<option value="year2">2</option>
-												<option value="year3">3</option>
-												<option value="year4">4</option>
-												<option value="year5">5</option>
-												<option value="year6">6</option>
-												<option value="year7">7</option>
-												<option value="year8">8</option>
-												<option value="year9">9</option>
-												<option value="year10">10</option>
+												<option value="1">1</option>
+												<option value="2">2</option>
+												<option value="3">3</option>
+												<option value="4">4</option>
+												<option value="5">5</option>
+												<option value="6">6</option>
+												<option value="7">7</option>
+												<option value="8">8</option>
+												<option value="9">9</option>
+												<option value="10">10</option>
 											</select>
 										</div>
 									</div>
@@ -145,13 +140,13 @@
 
 							<div class="row" id="referenceDiv" style="display:none;">
 								<div class="col-md-4">
-									<select class="input-sm" onchange="calculateCohort();" id="refYear"></select>
+									<select class="input-sm" id="refYear"></select>
 								</div>
 								<div class="col-md-4">
-									<select class="input-sm" onchange="calculateCohort();" id="refAge"></select>
+									<select class="input-sm" id="refAge"></select>
 								</div>
 								<div class="col-md-4">
-									<input type="text" class="input-small input-sm" id="cohort" disabled/>
+									<input type="text" class="form-control input-sm " id="cohort" disabled/>
 								</div>
 							</div>
 
@@ -160,7 +155,7 @@
 							</div>
 
 							<div class="form-group">
-								<input id="countPopulation" type="file" accept=".csv" />
+								<input id="fileUpload" type="file" accept=".csv" />
 							</div>
 
 							<div class="btn-toolbar offset">
@@ -172,11 +167,11 @@
 								<label for="download_selector">Select download format</label>
 								<div class="form-horizontal">
 									<select id="download_selector" class="input-tiny input-sm">
-										<option id="raw_input_option">R-Studio Input</option>
-										<option id="raw_output_option">R-Studio Output</option>
-										<option id="text_input_option">Text Input</option>
-										<option id="text_output_option">Text Output</option>
-										<option id="excel_output_option">Excel Output</option>
+										<option id="RDataInput">R-Studio Input</option>
+										<option id="RDataOutput">R-Studio Output</option>
+										<option id="TextInput">Text Input</option>
+										<option id="TextOutput">Text Output</option>
+										<option id="Excel">Excel Output</option>
 									</select>
 									<button type="submit" id="download" class="btn btn-primary btn-sm">Download</button>
 								</div>
@@ -186,21 +181,24 @@
 				</div>
 				<hr class="style-two">
 				<div id="ND" style="display:none">
-					<table id="NetDrift" class="table table-bordered table-condensed table-striped"></table>
+					<table id="NetDrift" class="data-table"></table>
+				<br>
 				</div>
 				<div id="WT" style="display:none">
 					<div>
 						<div id="tab-4458-18">
-							<table id="Waldtests" class="table table-bordered table-condensed table-striped"></table>
+							<table id="Waldtests" class="data-table"></table>
 						</div>
 					</div>
+				<br>
 				</div>
 				<div id="CE" style="display:none">
 					<div>
 						<div id="tab-4458-7">
-							<table id="Coefficients" class="table table-bordered table-condensed table-striped"></table>
+							<table id="Coefficients" class="data-table"></table>
 						</div>
 					</div>
+				<br>
 				</div>
 			</div>
 			<!--  end of left box -->
@@ -244,151 +242,15 @@
 
 				<div class="tab-content">
 					<div class="tab-pane active" id="tab-4458-1">
-						<div id="inputData" style="overflow-x: auto; overflow-y: hidden;">
-							<label for="paste" style="position:absolute;">&nbsp;</label>
+						<div id="inputData" ondragover="return false">
+
 							<img id="paste_here_image" alt="paste here image" src="/common/images/paste-here.gif" />
-							<textarea id="paste" class="paste_area"></textarea>
-							<div class="table-responsive">
-								<table id="main-table" class="table table-bordered table-condensed table-striped" style="margin: 5px;">
-									<tr>
-										<td class="header"></td>
-										<td class="header border-left"></td>
-										<td colspan="2" class="header border-left" id="year_1_year"></td>
-										<td colspan="2" class="header border-dotted-left" id="year_2_year"></td>
-										<td colspan="2" class="header border-dotted-left" id="year_3_year"></td>
-										<td colspan="2" class="header border-dotted-left border-right" id="year_4_year"></td>
-									</tr>
-									<tr>
-										<td class="header"></td>
-										<td class="header border-bottom border-left border-right">Age
-										</td>
-										<td class="header border-bottom border-left">Count</td>
-										<td class="header border-bottom">Population</td>
-										<td class="header border-bottom border-dotted-left">Count</td>
-										<td class="header border-bottom">Population</td>
-										<td class="header border-bottom border-dotted-left">Count</td>
-										<td class="header border-bottom">Population</td>
-										<td class="header border-bottom border-dotted-left">Count</td>
-										<td class="header border-bottom border-right">Population</td>
-									</tr>
-									<tr id="age_1_row">
-										<td id="row-title" rowspan="14" class="row-header border-left border-bottom border-top">
-											<div class="vertical-text">Age</div>
-										</td>
-										<td id="age_1_age" class="header border-left border-right">&nbsp;
-										</td>
-										<td id="age_1_year_1_count" class="data border-dotted-left"></td>
-										<td id="age_1_year_1_pop" class="data"></td>
-										<td id="age_1_year_2_count" class="data border-dotted-left"></td>
-										<td id="age_1_year_2_pop" class="data"></td>
-										<td id="age_1_year_3_count" class="data border-dotted-left"></td>
-										<td id="age_1_year_3_pop" class="data"></td>
-										<td id="age_1_year_4_count" class="data border-dotted-left"></td>
-										<td id="age_1_year_4_pop" class="data border-right"></td>
-									</tr>
-									<tr id="age_2_row">
-										<td id="age_2_age" class="header border-left border-right">&nbsp;</td>
-										<td id="age_2_year_1_count" class="data border-dotted-left"></td>
-										<td id="age_2_year_1_pop" class="data"></td>
-										<td id="age_2_year_2_count" class="data border-dotted-left"></td>
-										<td id="age_2_year_2_pop" class="data"></td>
-										<td id="age_2_year_3_count" class="data border-dotted-left"></td>
-										<td id="age_2_year_3_pop" class="data"></td>
-										<td id="age_2_year_4_count" class="data border-dotted-left"></td>
-										<td id="age_2_year_4_pop" class="data border-right"></td>
-									</tr>
-									<tr id="age_3_row">
-										<td id="age_3_age" class="header border-left border-right">&nbsp;</td>
-										<td id="age_3_year_1_count" class="data border-dotted-left"></td>
-										<td id="age_3_year_1_pop" class="data"></td>
-										<td id="age_3_year_2_count" class="data border-dotted-left"></td>
-										<td id="age_3_year_2_pop" class="data"></td>
-										<td id="age_3_year_3_count" class="data border-dotted-left"></td>
-										<td id="age_3_year_3_pop" class="data"></td>
-										<td id="age_3_year_4_count" class="data border-dotted-left"></td>
-										<td id="age_3_year_4_pop" class="data border-right"></td>
-									</tr>
-									<tr id="age_4_row">
-										<td id="age_4_age" class="header border-left border-right">&nbsp;</td>
-										<td id="age_4_year_1_count" class="data border-dotted-left"></td>
-										<td id="age_4_year_1_pop" class="data"></td>
-										<td id="age_4_year_2_count" class="data border-dotted-left"></td>
-										<td id="age_4_year_2_pop" class="data"></td>
-										<td id="age_4_year_3_count" class="data border-dotted-left"></td>
-										<td id="age_4_year_3_pop" class="data"></td>
-										<td id="age_4_year_4_count" class="data border-dotted-left"></td>
-										<td id="age_4_year_4_pop" class="data border-right"></td>
-									</tr>
-									<tr id="age_5_row">
-										<td id="age_5_age" class="header border-left border-right">&nbsp;</td>
-										<td id="age_5_year_1_count" class="data border-dotted-left"></td>
-										<td id="age_5_year_1_pop" class="data"></td>
-										<td id="age_5_year_2_count" class="data border-dotted-left"></td>
-										<td id="age_5_year_2_pop" class="data"></td>
-										<td id="age_5_year_3_count" class="data border-dotted-left"></td>
-										<td id="age_5_year_3_pop" class="data"></td>
-										<td id="age_5_year_4_count" class="data border-dotted-left"></td>
-										<td id="age_5_year_4_pop" class="data border-right"></td>
-									</tr>
-									<tr id="age_6_row">
-										<td id="age_6_age" class="header border-left border-right">&nbsp;</td>
-										<td id="age_6_year_1_count" class="data border-dotted-left"></td>
-										<td id="age_6_year_1_pop" class="data"></td>
-										<td id="age_6_year_2_count" class="data border-dotted-left"></td>
-										<td id="age_6_year_2_pop" class="data"></td>
-										<td id="age_6_year_3_count" class="data border-dotted-left"></td>
-										<td id="age_6_year_3_pop" class="data"></td>
-										<td id="age_6_year_4_count" class="data border-dotted-left"></td>
-										<td id="age_6_year_4_pop" class="data border-right"></td>
-									</tr>
-									<tr id="age_7_row">
-										<td id="age_7_age" class="header border-left border-right">&nbsp;</td>
-										<td id="age_7_year_1_count" class="data border-dotted-left"></td>
-										<td id="age_7_year_1_pop" class="data"></td>
-										<td id="age_7_year_2_count" class="data border-dotted-left"></td>
-										<td id="age_7_year_2_pop" class="data"></td>
-										<td id="age_7_year_3_count" class="data border-dotted-left"></td>
-										<td id="age_7_year_3_pop" class="data"></td>
-										<td id="age_7_year_4_count" class="data border-dotted-left"></td>
-										<td id="age_7_year_4_pop" class="data border-right"></td>
-									</tr>
-									<tr id="age_8_row">
-										<td id="age_8_age" class="header border-left border-right">&nbsp;</td>
-										<td id="age_8_year_1_count" class="data border-dotted-left"></td>
-										<td id="age_8_year_1_pop" class="data"></td>
-										<td id="age_8_year_2_count" class="data border-dotted-left"></td>
-										<td id="age_8_year_2_pop" class="data"></td>
-										<td id="age_8_year_3_count" class="data border-dotted-left"></td>
-										<td id="age_8_year_3_pop" class="data"></td>
-										<td id="age_8_year_4_count" class="data border-dotted-left"></td>
-										<td id="age_8_year_4_pop" class="data border-right"></td>
-									</tr>
-									<tr id="age_9_row">
-										<td id="age_9_age" class="header border-left border-right">&nbsp;</td>
-										<td id="age_9_year_1_count" class="data border-dotted-left"></td>
-										<td id="age_9_year_1_pop" class="data"></td>
-										<td id="age_9_year_2_count" class="data border-dotted-left"></td>
-										<td id="age_9_year_2_pop" class="data"></td>
-										<td id="age_9_year_3_count" class="data border-dotted-left"></td>
-										<td id="age_9_year_3_pop" class="data"></td>
-										<td id="age_9_year_4_count" class="data border-dotted-left"></td>
-										<td id="age_9_year_4_pop" class="data border-right"></td>
-									</tr>
-									<tr id="age_10_row">
-										<td id="age_10_age" class="header border-left border-right">&nbsp;</td>
-										<td id="age_10_year_1_count" class="data border-dotted-left"></td>
-										<td id="age_10_year_1_pop" class="data"></td>
-										<td id="age_10_year_2_count" class="data border-dotted-left"></td>
-										<td id="age_10_year_2_pop" class="data"></td>
-										<td id="age_10_year_3_count" class="data border-dotted-left"></td>
-										<td id="age_10_year_3_pop" class="data"></td>
-										<td id="age_10_year_4_count" class="data border-dotted-left"></td>
-										<td id="age_10_year_4_pop" class="data border-right"></td>
-									</tr>
-								</table>
+							
+							<div id="tableContainer" class="table-responsive" >
 							</div>
+							
 							<div id="please_wait" title="Please Wait...">
-								<img src="/common/images/working.gif" alt="Calculating" title="Calculating" />
+								<img src="images/loading.gif" alt="Calculating" title="Calculating" />
 							</div>
 						</div>
 					</div>
@@ -398,7 +260,7 @@
 						<br />
 						<br />
 						<div class="table-responsive">
-							<table id="AgeDeviations" class="table table-bordered table-condensed table-striped"></table>
+							<table id="AgeDeviations" class="data-table"></table>
 						</div>
 						<div id="AgeDeviationsDownloadResultLink"></div>
 					</div>
@@ -408,7 +270,7 @@
 						<br />
 						<br />
 						<div class="table-responsive">
-							<table id="PerDeviations" class="table table-bordered table-condensed table-striped"></table>
+							<table id="PerDeviations" class="data-table"></table>
 						</div>
 					</div>
 					<div class="tab-pane" id="tab-4458-10">
@@ -417,7 +279,7 @@
 						<br />
 						<br />
 						<div class="table-responsive">
-							<table id="CohDeviations" class="table table-bordered table-condensed table-striped"></table>
+							<table id="CohDeviations" class="data-table"></table>
 						</div>
 					</div>
 					<div class="tab-pane" id="tab-4458-11">
@@ -427,7 +289,7 @@
 						<br />
 						<br />
 						<div class="table-responsive">
-							<table id="LongAge" class="table table-bordered table-condensed table-striped"></table>
+							<table id="LongAge" class="data-table"></table>
 						</div>
 					</div>
 					<div class="tab-pane" id="tab-4458-12">
@@ -437,7 +299,7 @@
 						<br />
 						<br />
 						<div class="table-responsive">
-							<table id="CrossAge" class="table table-bordered table-condensed table-striped"></table>
+							<table id="CrossAge" class="data-table"></table>
 						</div>
 					</div>
 					<div class="tab-pane" id="tab-4458-13">
@@ -446,7 +308,7 @@
 						<br />
 						<br />
 						<div class="table-responsive">
-							<table id="Long2CrossRR" class="table table-bordered table-condensed table-striped"></table>
+ 							<table id="Long2CrossRR" class="data-table"></table>
 						</div>
 					</div>
 					<div class="tab-pane" id="tab-4458-14">
@@ -456,7 +318,7 @@
 						<br />
 						<br />
 						<div class="table-responsive">
-							<table id="FittedTemporalTrends" class="table table-bordered table-condensed table-striped"></table>
+							<table id="FittedTemporalTrends" class="data-table"></table>
 						</div>
 					</div>
 					<div class="tab-pane" id="tab-4458-15">
@@ -465,7 +327,7 @@
 						<br />
 						<br />
 						<div class="table-responsive">
-							<table id="PeriodRR" class="table table-bordered table-condensed table-striped"></table>
+							<table id="PeriodRR" class="data-table"></table>
 						</div>
 					</div>
 					<div class="tab-pane" id="tab-4458-16">
@@ -474,7 +336,7 @@
 						<br />
 						<br />
 						<div class="table-responsive">
-							<table id="CohortRR" class="table table-bordered table-condensed table-striped"></table>
+							<table id="CohortRR" class="data-table"></table>
 						</div>
 					</div>
 					<div class="tab-pane" id="tab-4458-17">
@@ -483,7 +345,7 @@
 						<br />
 						<br />
 						<div class="table-responsive">
-							<table id="LocalDrifts" class="table table-bordered table-condensed table-striped"></table>
+							<table id="LocalDrifts" class="data-table"></table>
 						</div>
 					</div>
 				</div>
