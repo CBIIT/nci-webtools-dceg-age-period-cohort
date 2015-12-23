@@ -364,7 +364,7 @@ function createTable(contents) {
 // ------ Load Image ------ //
 // Populates the graphs
 function loadImage(keyData, pathToFile) {
-	$('#' + keyData + 'Graph').html("<img style='min-width: 600px; width: 100%;' class='center-text' alt='graph for "
+	$('#' + keyData + 'Graph').html("<img style='min-width: 600px;' class='center-text' alt='graph for "
 			+ keyData + "' src= '" + pathToFile + "' />");
 }
 

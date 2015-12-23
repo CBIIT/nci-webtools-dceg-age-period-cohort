@@ -132,7 +132,7 @@ runAPC <- function(jsonData) {
 getGraph <- function (apcOutput, keyGraphName) {
   imageFileName = paste0(tmpDirectory, keyGraphName, "_", getTimestamp(), ".png")
   
-  png(file = imageFileName , units="in", width=8, height=6, res=150)
+  png(file = imageFileName , units="px", width=600, height=400, res=72, pointsize = 10)
   line.apc(apcOutput, keyGraphName)
   dev.off()
   
