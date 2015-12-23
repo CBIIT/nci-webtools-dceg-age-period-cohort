@@ -554,7 +554,7 @@ function updateReference(ages, years) {
     ages.forEach(function (age) {
         var option = document.createElement('option');
         
-        var values = age.split('-');
+        var values = age.toString().split('-');
         
         var refAge = values[0];
         if (values[1]) refAge = (parseFloat(values[0]) + parseFloat(values[1]) + 1.0) / 2;
@@ -567,7 +567,7 @@ function updateReference(ages, years) {
     years.forEach(function (year) {
         var option = document.createElement('option');
         
-        var values = year.split('-');
+        var values = year.toString().split('-');
         var refYear = values[0];
         
         if (values[1]) refYear = (parseFloat(values[0]) + parseFloat(values[1]) + 1.0) / 2;
