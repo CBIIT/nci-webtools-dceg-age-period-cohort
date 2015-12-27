@@ -5,8 +5,8 @@ import rpy2.robjects as robjects
 app = Flask(__name__)
 robjects.r['source']('CrossTalkWrapper.R')
 
-@app.route('/apcRest/', methods = ['POST'])
-def apc():
+@app.route('/crossTalkRest/', methods = ['POST'])
+def calculation():
     return robjects.r['getCrossTalkDataJSON'](request.stream.read())[0]
 
 import argparse
