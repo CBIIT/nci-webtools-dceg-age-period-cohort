@@ -90,6 +90,8 @@ $(document).ready(function() {
 
     $('#refAge').change(updateCohortModel);
     $('#refYear').change(updateCohortModel);
+    
+    $('#apc-tab-nav').tabCollapse();
 
     // allows elements to be dragged into this document
     document.addEventListener('dragover', function(event) {
@@ -103,8 +105,9 @@ $(document).ready(function() {
 
 // ------ Read Dropped Text ------ //
 function dragTable(event) {
+    
+    // prevent page redirects
     event.stopPropagation();
-    event.preventDefault();
 
     // gets text that was dragged into this container and extracts non-empty lines
     var data = event.originalEvent.dataTransfer.getData("text/plain").match(/[^\r\n]+/g);

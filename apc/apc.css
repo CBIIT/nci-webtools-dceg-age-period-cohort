@@ -254,6 +254,14 @@ th.header {
     margin-bottom: 20px;
 }
 
+.panel-group {
+    margin-bottom: 0px;
+}
+
+textarea { 
+    resize: vertical; 
+}
+
 /* Used for jquery dialog to remove close botton */
 .no-close .ui-dialog-titlebar-close {display: none }
 
@@ -368,10 +376,9 @@ hr.style-two {
 .tab-content {
 	padding: 10px;
 	width: 100%;
-	min-height: 250px;
 	-webkit-overflow-scrolling: touch;
 	background: white;
-	border-width: 0 1px 1px 1px;
+	border-width: 0;
 	border-style: solid;
 	border-color: #d9d9d9;
 	border-radius: 0 0 4px 4px;
