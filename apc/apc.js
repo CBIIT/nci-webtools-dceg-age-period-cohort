@@ -79,7 +79,8 @@ $(document).ready(function() {
     $("#please_wait").dialog({
         dialogClass: 'no-close',
         resizable: false,
-        width: '180px',
+        width: 'auto',
+
         autoOpen: false,
         hide: {
             effect: "fade",
@@ -120,6 +121,9 @@ function fileUpload() {
     var reader = new FileReader();
 
     reader.onload = function(event) {
+        apcModel.refAge = -1;
+        apcModel.refYear = -1;		
+        apcModel.cohort = -1;
 
         // split the file contents into an array of non-empty lines
         var contents = event.target.result.match(/[^\r\n]+/g);
