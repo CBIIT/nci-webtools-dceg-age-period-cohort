@@ -180,7 +180,7 @@ generateExcel <- function(apcOutput, title) {
     
     # If this key has a graph, add it to the current sheet
     if (key %in% graphKeys)
-      addPicture(apcOutput[[key]]$pathToFile, currentSheet, startRow = 1, startColumn = 6)
+      addPicture(apcOutput[[key]]$pathToFile, currentSheet, scale = 0.85, startRow = 1, startColumn = 6)
   }
 
   pathToFile = paste0(tmpDirectory, title, " ", getTimestamp(), ".xlsx")
