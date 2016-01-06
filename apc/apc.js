@@ -209,7 +209,7 @@ function redrawTable() {
             }
         }
 
-        $('#paste_here_image').zIndex(-1);
+        $('#paste_here_image').hide();
         var tableID = createInputTable('#tableContainer', createHeaders(numCols), displayTable);
 
         $(tableID).addClass("nowrap cell-border ");
@@ -437,7 +437,7 @@ function reset() {
 
     $('#tableContainer').empty();
     createInputTable('#tableContainer', createHeaders(6), createMatrix(11, 10));
-    $('#paste_here_image').zIndex(999);
+    $('#paste_here_image').show();
 
     // clear all tables and graphs
     dataKeys.concat(graphKeys).forEach(function(id) {

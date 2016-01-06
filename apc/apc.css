@@ -145,6 +145,14 @@ table.dataTable.compact thead th, table.dataTable.compact thead td {
     margin: 0px !important;
 }
 
+.grey-border {
+    border-top: 1px solid #F8F8F8;
+    border-left: 1px solid #F8F8F8;
+    border-right: 1px solid #F8F8F8;
+    border-bottom: 1px solid #F2F2F2;
+    box-shadow: 0px 1px 4px 1px #F9F9F9;
+}
+
 #refAge, #refYear {
     max-width: 110px;
     padding-left: 4px;
