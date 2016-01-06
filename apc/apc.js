@@ -39,7 +39,7 @@ var firstRun = true;
 
 $(document).ready(function() {
 
-    createInputTable('#tableContainer', createHeaders(6), createMatrix(11, 10));
+    createInputTable('#tableContainer', createHeaders(6), createMatrix(13, 10));
 
     $('#inputData').bind('drop', dragTable);
     $('#fileUpload').change(fileUpload);
@@ -105,6 +105,8 @@ $(document).ready(function() {
 
 // ------ Read Dropped Text ------ //
 function dragTable(event) {
+    
+    event.preventDefault();
     
     // prevent page redirects
     event.stopPropagation();
@@ -207,7 +209,7 @@ function redrawTable() {
             }
         }
 
-        $('#paste_here_image').hide();
+        $('#paste_here_image').zIndex(-1);
         var tableID = createInputTable('#tableContainer', createHeaders(numCols), displayTable);
 
         $(tableID).addClass("nowrap cell-border ");
@@ -265,6 +267,7 @@ function sendRequest() {
 function displayResults(data) {
 
     var results = JSON.parse(data);
+    console.log(results);
 
     graphKeys.forEach(function(key) {
         loadImage(key, results[key]['pathToFile'][0]);
@@ -274,6 +277,14 @@ function displayResults(data) {
     dataKeys.concat(graphKeys).forEach(function(key) {
 
         table = results[key]['table'];
+        
+        for (var i = 0; i < table.length; i ++) {
+            for (k in table[i]) {
+                if (key == 'Waldtests') table[i][k] = round(table[i][k], 4, 5);
+                else table[i][k] = round(table[i][k], 3, 4);
+            }
+        }
+        
 
         keys = Object.keys(table[0])
         if ($.inArray('_row', keys) != -1) keys.unshift(keys.pop());
@@ -294,6 +305,7 @@ function displayResults(data) {
             "bFilter": false,
             "paging": false,
             "responsive": true,
+            "aaSorting": [],
             "dom": 't'
         });
 
@@ -425,7 +437,7 @@ function reset() {
 
     $('#tableContainer').empty();
     createInputTable('#tableContainer', createHeaders(6), createMatrix(11, 10));
-    $('#paste_here_image').show();
+    $('#paste_here_image').zIndex(999);
 
     // clear all tables and graphs
     dataKeys.concat(graphKeys).forEach(function(id) {
@@ -554,8 +566,10 @@ function createArray(length) {
 }
 
 // ------ Round Floating Point Number (Specify length)------ //
-function round(x, digits) {
-    return parseFloat(x.toFixed(digits))
+function round(x, digits, trim) {
+    
+    if (!parseFloat(x)) return x
+    return parseFloat(parseFloat(x.toFixed(digits)).toPrecision(trim))
 }
 
 
