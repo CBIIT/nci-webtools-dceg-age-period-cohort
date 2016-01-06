@@ -115,6 +115,10 @@ label {
     border-left: 1px solid #EEE;
 }
 
+table.dataTable.compact thead th, table.dataTable.compact thead td {
+    padding: 4px 10px;
+}
+
 .example-data-table {
 	font-size: 10px;
 }
@@ -124,7 +128,6 @@ label {
 }
 
 .ageGroups {
-    margin: -10px;
     font-size: 0.8em;
 }
 

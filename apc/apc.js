@@ -226,7 +226,7 @@ function createInputTable(containerID, headers, data) {
 
     var table = document.createElement('table');
     table.setAttribute('id', 'inputTable');
-    table.setAttribute('class', 'display');
+    table.setAttribute('class', 'display compact');
     table.setAttribute('width', '100%');
 
     $(containerID).html(table);
