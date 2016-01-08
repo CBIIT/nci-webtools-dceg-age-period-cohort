@@ -162,6 +162,8 @@ function redraw() {
 
 // ------ Redraw Input Table ------ //
 function redrawTable() {
+    
+    if (apcModel.table == null) return;
 
     if (!validate(apcModel.table)) {
         alert(paste_instructions);
@@ -226,13 +228,14 @@ function redrawTable() {
 
 function createInputTable(containerID, headers, data) {
 
+    var tableID = '#inputTable';
     var table = document.createElement('table');
     table.setAttribute('id', 'inputTable');
     table.setAttribute('class', 'display compact');
     table.setAttribute('width', '100%');
 
     $(containerID).html(table);
-    $('#inputTable').DataTable({
+    $(tableID).DataTable({
         "destroy": true,
         "data": data,
         "columns": headers,
@@ -243,7 +246,7 @@ function createInputTable(containerID, headers, data) {
         "dom": 't'
     })
 
-    return '#inputTable';
+    return tableID;
 }
 
 
@@ -436,7 +439,7 @@ function reset() {
     $("#download_choice").hide();
 
     $('#tableContainer').empty();
-    createInputTable('#tableContainer', createHeaders(6), createMatrix(11, 10));
+    createInputTable('#tableContainer', createHeaders(6), createMatrix(13, 10));
     $('#paste_here_image').show();
 
     // clear all tables and graphs
