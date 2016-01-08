@@ -117,10 +117,10 @@ runAPC <- function(jsonData) {
   data = fromJSON(jsonData)
   
   if (data$refAge != -1)
-    apc(parseJSON(jsonData), RVals = c(data$refAge, data$refYear, data$refCohort))
+    apc2(parseJSON(jsonData), RVals = c(data$refAge, data$refYear, data$refCohort))
   
   else
-    apc(parseJSON(jsonData))
+    apc2(parseJSON(jsonData))
 }
 
 

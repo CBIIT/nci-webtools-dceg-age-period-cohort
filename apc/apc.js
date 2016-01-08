@@ -281,7 +281,7 @@ function displayResults(data) {
         for (var i = 0; i < table.length; i ++) {
             for (k in table[i]) {
                 if (key == 'Waldtests') table[i][k] = round(table[i][k], 4, 5);
-                else table[i][k] = round(table[i][k], 3, 4);
+                else table[i][k] = round(table[i][k], 3, 5);
             }
         }
         
