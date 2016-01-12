@@ -12,6 +12,8 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
 
 	<link rel="stylesheet" href="/common/css/style.css" />
 	<link href="apc.css" rel="stylesheet">
@@ -29,10 +31,13 @@
 </head>
 
 <body>
-	<div id="slideoutTab">
+	<!-- 
+	<div>
 		<i id="plus_minus" class="fa fa-caret-left fa-2x"></i>
 	</div>
-	<div class="container">
+	 -->
+
+	 <div class="container">
 		<div class="row">
 			<!-- Banner div -->
 			<div class="col-xs-12">
@@ -226,13 +231,14 @@
 
 				<div class="tab-content grey-border">
 					<div class="tab-pane active" id="tab-4458-1">
-						<div id="inputData" ondragover="return false">
-
+						<div id="inputData">
+						
 							<img id="paste_here_image" alt="paste here image" src="/common/images/paste-here.gif" />
 							
+							<textarea id="paste" rows="4"></textarea>
 							<div id="tableContainer" class="table-responsive" >
 							</div>
-							
+
 							<div id="please_wait" title="Running Calculation">
 							    <div class="loading"></div>
 							</div>

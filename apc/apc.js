@@ -37,11 +37,11 @@ var apcModel = {
 
 var firstRun = true;
 
+
 $(document).ready(function() {
 
     createInputTable('#tableContainer', createHeaders(6), createMatrix(13, 10));
 
-    $('#inputData').bind('drop', dragTable);
     $('#fileUpload').change(fileUpload);
     $('#cancel').click(reset);
     $('#calculate').click(sendRequest);
@@ -92,13 +92,26 @@ $(document).ready(function() {
     $('#refYear').change(updateCohortModel);
     
     $('#apc-tab-nav').tabCollapse();
-
+    
+    var paste = $('#paste');
+    paste.bind('drop', dragTable);
+    handlePaste(paste);
+    paste.click(function(e){e.preventDefault()});
+    
+    resizePasteArea('#paste', '#inputTable');
+    
     // allows elements to be dragged into this document
     document.addEventListener('dragover', function(event) {
         event.stopPropagation();
         event.preventDefault();
     });
 });
+
+$(window).resize(function() {
+    resizePasteArea('#paste', '#inputTable');
+});
+
+
 
 
 // ------------ EVENT HANDLERS ----------- //
@@ -117,27 +130,72 @@ function dragTable(event) {
     // update model and redraw table
     apcModel.table = createTable(data);
     redrawTable();
+    resizePasteArea('#paste', '#inputTable');
 }
+
+
+// ------ Read Pasted Text ------ //
+
+	
+function handlePaste(element) {
+    element.bind('paste', function(e) {
+        setTimeout(function() {
+            var data = element.val().match(/[^\r\n]+/g);
+            element.val('');
+            
+            // update model and redraw table
+            apcModel.table = createTable(data);
+            redrawTable();
+            resizePasteArea('#paste', '#inputTable');
+        }, 10);
+    });
+};
+
 
 // ------ Read Uploaded File ------ //
 // Reads an uploaded file and updates the model with the contents
 function fileUpload() {
-    var file = this.files[0];
-    var reader = new FileReader();
+    
+    // If this browser supports the Files API
+    if (window.FileReader) {
+        var file = this.files[0];
+        var reader = new FileReader();
 
-    reader.onload = function(event) {
-        apcModel.refAge = -1;
-        apcModel.refYear = -1;		
-        apcModel.cohort = -1;
+        reader.onload = function(event) {
+            apcModel.refAge = -1;
+            apcModel.refYear = -1;		
+            apcModel.cohort = -1;
 
-        // split the file contents into an array of non-empty lines
-        var contents = event.target.result.match(/[^\r\n]+/g);
+            // split the file contents into an array of non-empty lines
+            var contents = event.target.result.match(/[^\r\n]+/g);
 
-        updateModel(contents);
-        redraw();
+            updateModel(contents);
+            redraw();
+            resizePasteArea('#paste', '#inputTable');
+        }
+
+        if (file) reader.readAsText(file);
+        
+    // Otherwise, attempt to use ActiveX
+    } else {
+        try {
+            var filePath = $("#fileUpload").val();
+            var fso = new ActiveXObject("Scripting.FileSystemObject");
+            var textStream = fso.OpenTextFile(filePath);
+            var fileData = textStream.ReadAll();
+            console.log(fileData);
+            
+        }
+        catch (e) {
+            if (e.number == -2146827859) {
+            alert('Unable to access local files due to browser security settings. ' + 
+            'To overcome this, go to Tools->Internet Options->Security->Custom Level. ' + 
+            'Find the setting for "Initialize and script ActiveX controls not marked as safe" and change it to "Enable" or "Prompt"'); 
+            }
+        }
     }
-
-    if (file) reader.readAsText(file);
+    
+    
 }
 
 // ------ Initialize Download Results Selector ------ //
@@ -652,4 +710,11 @@ function toggleReference(id) {
             $('#referenceDiv').css("display", "block");
         }
     }
+}
+
+function resizePasteArea(textAreaID, tableID) {
+    var textArea = $(textAreaID);
+    
+    textArea.width($('#tableContainer').innerWidth());
+    textArea.height($(tableID).innerHeight());
 }

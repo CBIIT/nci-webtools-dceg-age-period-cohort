@@ -247,6 +247,13 @@ th.header {
     z-index: 999;
 }
 
+#paste {
+    opacity: 0;
+    position: absolute;
+    z-index: 999;
+    text-indent: -9999em;
+}
+
 .paste_area {
 	position:absolute;
 	background-color:green;
@@ -269,7 +276,7 @@ th.header {
     margin-bottom: 0px;
 }
 
-textarea { 
+#description { 
     resize: vertical; 
 }
 
