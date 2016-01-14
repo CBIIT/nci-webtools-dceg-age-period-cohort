@@ -31,7 +31,7 @@
 </head>
 
 <body>
-	<!-- 
+	<!--
 	<div>
 		<i id="plus_minus" class="fa fa-caret-left fa-2x"></i>
 	</div>
@@ -67,7 +67,7 @@
 									<div class="form-group">
 										<label for="title">Title</label>
 										<span class="cursor-pointer glyphicon glyphicon-info-sign glyphicon-blue" href="#" onclick="openHelpWindow('help.html')" aria-label="Help"></span>
-										<input id="title" type="text" class="form-control" id="title" placeholder="Enter Title">
+										<input id="title" type="text" class="form-control" placeholder="Enter Title">
 									</div>
 								</div>
 							</div>
@@ -84,7 +84,7 @@
 							<div class="row">
 								<div class="col-sm-4">
 									<div class="form-group">
-										<label for="startYear">Start Date</label>
+										<label for="startYear">Start Year</label>
 										<div>
 											<input type="text" class="input-small input-sm" id="startYear" />
 										</div>
@@ -209,6 +209,10 @@
 			</div>
 			<!--  end of left box -->
 			<div class="col-lg-8 col-md-7 col-sm-12 col-xs-12 ">
+				<div class="large loading">
+					<div>Loading…</div>
+				</div>
+
 				<nav class="navbar navbar-default">
 					<!-- Collect the nav links, forms, and other content for toggling -->
 					<div class="collapse navbar-collapse" id="apc-tab-nav">
@@ -232,15 +236,12 @@
 				<div class="tab-content grey-border">
 					<div class="tab-pane active" id="tab-4458-1">
 						<div id="inputData">
-						
-							<img id="paste_here_image" alt="paste here image" src="/common/images/paste-here.gif" />
-							
-							<textarea id="paste" rows="4"></textarea>
-							<div id="tableContainer" class="table-responsive" >
-							</div>
 
-							<div id="please_wait" title="Running Calculation">
-							    <div class="loading"></div>
+							<img id="paste_here_image" alt="paste here image" src="/common/images/paste-here.gif" />
+
+							<textarea id="paste" rows="4"></textarea>
+							<div id="tableContainer">
+
 							</div>
 						</div>
 					</div>
@@ -356,7 +357,7 @@
 					<ul class="list-inline">
 						<li><a href="http://www.cancer.gov/" title="Home" target="_blank">Home</a></li>
 						<li class="footer-spacer">|</li>
-						<li><a href="mailto:NCILungCancerScreeningToolWebAdmin@mail.nih.gov?subject=LungCancerScreeningTool" target="_top" title="Support">Support</a></li>
+						<li><a href="mailto:APCWebAdmin@mail.nih.gov?subject=APCTool" target="_top" title="Support">Support</a></li>
 						<li class="footer-spacer">|</li>
 						<li><a href="http://www.cancer.gov/global/web/policies" title="Policies" target="_blank">Policies</a></li>
 						<li class="footer-spacer">|</li>

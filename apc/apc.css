@@ -36,6 +36,15 @@
         border-radius:0;
         margin-bottom:0;
     }
+
+    .loading {
+        top:20%;
+        left:38%;
+    }
+
+    .large.loading {
+    	font-size: 18px;
+    }
 }
 
 /* Extra Small Devices, Phones */
@@ -69,6 +78,11 @@
         box-shadow:none;
         background-color:transparent;
     }
+
+    .loading {
+        top:20%;
+        left:45%;
+    }
 }
 
 /* Small Devices, Tablets */
@@ -82,6 +96,15 @@
 
     .form-horizontal .control-label {
         padding-top: 3px;
+    }
+
+    .loading {
+        top:50%;
+        left:45%;
+    }
+
+    .large.loading {
+    	font-size: 24px;
     }
 }
 
@@ -304,14 +327,7 @@ text-align: center;
 
 /* Loading Animation */
 
-.loading {
-    border: 6px solid #EEE;
-    border-top: 6px solid #BBB;
-    border-radius: 100%;
-    height: 105px;
-    width: 105px;
-    animation: sweep 1s infinite linear;
-}
+
 @keyframes sweep {
 from { transform: rotate(0deg); }
 to { transform: rotate(359deg); }
@@ -506,8 +522,8 @@ table.dataTable thead .sorting_desc {
 }
 
 .loading {
-	position: relative;
-	display: block;
+	position: absolute;
+	display: none;
 	width: 5em;
 	height: 5em;
 	margin: 0 auto;
@@ -515,10 +531,7 @@ table.dataTable thead .sorting_desc {
 	text-indent: 999em;
 	overflow: hidden;
 	animation: spin 1s infinite steps(8);
-}
-
-.large.loading {
-	font-size: 24px;
+    z-index:100;
 }
 
 .loading:before,

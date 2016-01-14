@@ -57,10 +57,10 @@ $(document).ready(function() {
         max: 2200,
         step: 1,
         spin: function(event, ui) {
-            redrawTable()
+            redrawTable();
         },
         stop: function(event, ui) {
-            redrawTable()
+            redrawTable();
         }
     });
 
@@ -69,10 +69,10 @@ $(document).ready(function() {
         max: 120,
         step: 1,
         spin: function(event, ui) {
-            redrawTable()
+            redrawTable();
         },
         stop: function(event, ui) {
-            redrawTable()
+            redrawTable();
         }
     });
 
@@ -90,16 +90,16 @@ $(document).ready(function() {
 
     $('#refAge').change(updateCohortModel);
     $('#refYear').change(updateCohortModel);
-    
+
     $('#apc-tab-nav').tabCollapse();
-    
+
     var paste = $('#paste');
     paste.bind('drop', dragTable);
     handlePaste(paste);
-    paste.click(function(e){e.preventDefault()});
-    
+    paste.click(function(e){e.preventDefault();});
+
     resizePasteArea('#paste', '#inputTable');
-    
+
     // allows elements to be dragged into this document
     document.addEventListener('dragover', function(event) {
         event.stopPropagation();
@@ -118,9 +118,9 @@ $(window).resize(function() {
 
 // ------ Read Dropped Text ------ //
 function dragTable(event) {
-    
+
     event.preventDefault();
-    
+
     // prevent page redirects
     event.stopPropagation();
 
@@ -136,26 +136,26 @@ function dragTable(event) {
 
 // ------ Read Pasted Text ------ //
 
-	
+
 function handlePaste(element) {
     element.bind('paste', function(e) {
         setTimeout(function() {
             var data = element.val().match(/[^\r\n]+/g);
             element.val('');
-            
+
             // update model and redraw table
             apcModel.table = createTable(data);
             redrawTable();
             resizePasteArea('#paste', '#inputTable');
         }, 10);
     });
-};
+}
 
 
 // ------ Read Uploaded File ------ //
 // Reads an uploaded file and updates the model with the contents
 function fileUpload() {
-    
+
     // If this browser supports the Files API
     if (window.FileReader) {
         var file = this.files[0];
@@ -163,7 +163,7 @@ function fileUpload() {
 
         reader.onload = function(event) {
             apcModel.refAge = -1;
-            apcModel.refYear = -1;		
+            apcModel.refYear = -1;
             apcModel.cohort = -1;
 
             // split the file contents into an array of non-empty lines
@@ -172,10 +172,10 @@ function fileUpload() {
             updateModel(contents);
             redraw();
             resizePasteArea('#paste', '#inputTable');
-        }
+        };
 
         if (file) reader.readAsText(file);
-        
+
     // Otherwise, attempt to use ActiveX
     } else {
         try {
@@ -184,18 +184,18 @@ function fileUpload() {
             var textStream = fso.OpenTextFile(filePath);
             var fileData = textStream.ReadAll();
             console.log(fileData);
-            
+
         }
         catch (e) {
             if (e.number == -2146827859) {
-            alert('Unable to access local files due to browser security settings. ' + 
-            'To overcome this, go to Tools->Internet Options->Security->Custom Level. ' + 
-            'Find the setting for "Initialize and script ActiveX controls not marked as safe" and change it to "Enable" or "Prompt"'); 
+            alert('Unable to access local files due to browser security settings. ' +
+            'To overcome this, go to Tools->Internet Options->Security->Custom Level. ' +
+            'Find the setting for "Initialize and script ActiveX controls not marked as safe" and change it to "Enable" or "Prompt"');
             }
         }
     }
-    
-    
+
+
 }
 
 // ------ Initialize Download Results Selector ------ //
@@ -220,7 +220,7 @@ function redraw() {
 
 // ------ Redraw Input Table ------ //
 function redrawTable() {
-    
+
     if (apcModel.table == null) return;
 
     if (!validate(apcModel.table)) {
@@ -289,7 +289,7 @@ function createInputTable(containerID, headers, data) {
     var tableID = '#inputTable';
     var table = document.createElement('table');
     table.setAttribute('id', 'inputTable');
-    table.setAttribute('class', 'display compact');
+    table.setAttribute('class', 'table display compact');
     table.setAttribute('width', '100%');
 
     $(containerID).html(table);
@@ -302,7 +302,9 @@ function createInputTable(containerID, headers, data) {
         "paging": false,
         "responsive": true,
         "dom": 't'
-    })
+    });
+
+    $('#tableContainer').find('#inputTable_wrapper').addClass('table-responsive');
 
     return tableID;
 }
@@ -313,14 +315,35 @@ function createInputTable(containerID, headers, data) {
 // ------ Send Data To Server ------ //
 function sendRequest() {
 
-    $("#please_wait").dialog('open');
+    /* Populate title/description if empty */
+    var title = $('#title');
+    var description = $('#description');
+
+    if (!title.val()) {
+        var date = new Date();
+        var titleText = 'APC Analysis - ' + date.getFullYear() + '_' +
+                     date.getMonth() + 1 + '_' +
+                     date.getDay() + '_' +
+                     date.getHours() + '_' +
+                     date.getMinutes();
+
+        title.val(titleText);
+    }
+
+    if (!description.val()) {
+        var descriptionText = 'Start Year: ' + $('#startYear').val() + ' at Age: ' + $('#startAge').val() + ' with Interval: ' + $('#interval').val()  + ' years' ;
+
+        description.val(descriptionText);
+    }
+
+    $(".loading").css('display', 'block');
 
     $.post("/apcRest/", JSON.stringify(apcModel))
         .done(function(data) {
             displayResults(data);
         })
         .always(function() {
-            $("#please_wait").dialog('close');
+            $(".loading").css('display', 'none');
         });
 }
 
@@ -338,14 +361,14 @@ function displayResults(data) {
     dataKeys.concat(graphKeys).forEach(function(key) {
 
         table = results[key]['table'];
-        
+
         for (var i = 0; i < table.length; i ++) {
             for (k in table[i]) {
                 if (key == 'Waldtests') table[i][k] = round(table[i][k], 4, 5);
                 else table[i][k] = round(table[i][k], 3, 5);
             }
         }
-        
+
 
         keys = Object.keys(table[0])
         if ($.inArray('_row', keys) != -1) keys.unshift(keys.pop());
@@ -628,7 +651,7 @@ function createArray(length) {
 
 // ------ Round Floating Point Number (Specify length)------ //
 function round(x, digits, trim) {
-    
+
     if (!parseFloat(x)) return x
     return parseFloat(parseFloat(x.toFixed(digits)).toPrecision(trim))
 }
@@ -714,7 +737,7 @@ function toggleReference(id) {
 
 function resizePasteArea(textAreaID, tableID) {
     var textArea = $(textAreaID);
-    
+
     textArea.width($('#tableContainer').innerWidth());
     textArea.height($(tableID).innerHeight());
 }
