@@ -3,11 +3,11 @@ from socket import gethostname
 import rpy2.robjects as robjects
 
 app = Flask(__name__)
+robjects.r['source']('CrossTalkWrapper.R')
 
-@app.route('/apcRest/', methods = ['POST'])
-def apc():
-    robjects.r['source']('apcWrapper.R')
-    return robjects.r['getApcDataJSON'](request.stream.read())[0]
+@app.route('/crossTalkRest/', methods = ['POST'])
+def calculation():
+    return robjects.r['getCrossTalkDataJSON'](request.stream.read())[0]
 
 import argparse
 if __name__ == '__main__':
@@ -18,4 +18,4 @@ if __name__ == '__main__':
     port_num = int(args.port_number)
 
     hostname = gethostname()
-    app.run(host='0.0.0.0', port=port_num, debug = True)
+    app.run(host='0.0.0.0', port=port_num, debug = True) 
