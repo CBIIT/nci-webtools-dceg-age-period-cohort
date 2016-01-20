@@ -665,6 +665,17 @@ $(document).ready(function() {
         }
     });
 
+    $('#refAuto, #refManual').on('change', function(e) {
+        var refValue = $(e.target).val();
+        e.stopPropagation();
+        apcModule.toggleReference(refValue);
+    });
+
+    $('#help').on('click', function(e) {
+        e.stopPropagation();
+        apcModule.openHelpWindow('help.html');
+    });
+
     $('#startAge').spinner({
         min: 0,
         max: 120,
