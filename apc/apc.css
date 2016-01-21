@@ -577,3 +577,7 @@ table.dataTable thead .sorting_desc {
     min-width: 200px;
     white-space: normal;
 }
+
+.table-responsive>.table.input-table>tbody>tr>td {
+    min-width: 25px;
+}

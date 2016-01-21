@@ -226,6 +226,7 @@ var apcModule = (function($) {
         });
 
         $('#tableContainer').find('#inputTable_wrapper').addClass('table-responsive');
+        $('#tableContainer').find('.table').addClass('input-table');
 
         return tableID;
     };
