@@ -568,3 +568,7 @@ table.dataTable thead .sorting_desc {
 	transform: rotate(-135deg);
 	background: #bbb;
 }
+
+.form-group > a {
+	text-decoration: none;
+}
