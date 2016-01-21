@@ -572,3 +572,8 @@ table.dataTable thead .sorting_desc {
 .form-group > a {
 	text-decoration: none;
 }
+
+.table-responsive>.table>tbody>tr>td {
+    min-width: 200px;
+    white-space: normal;
+}
