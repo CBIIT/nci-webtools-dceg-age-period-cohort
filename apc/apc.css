@@ -581,3 +581,7 @@ table.dataTable thead .sorting_desc {
 .table-responsive>.table.input-table>tbody>tr>td {
     min-width: 25px;
 }
+
+.table > tbody > tr:last-child > th, .table > tbody > tr:last-child > td {
+    padding-bottom: 20px;
+}
