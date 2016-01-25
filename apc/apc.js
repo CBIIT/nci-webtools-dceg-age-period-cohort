@@ -147,7 +147,6 @@ var apcModule = (function($) {
 
         if (!apcTool.validate(apcModel.table)) {
             alert(paste_instructions);
-            apcTool.preventDefault();
         } else {
             var displayTable = [];
 
@@ -186,7 +185,10 @@ var apcModule = (function($) {
             for (var j = 0; j < contents.length; j++) {
                 displayTable.push([ages[j]]);
                 for (var k = 0; k < contents[j].length; k++) {
-                    displayTable[j].push(contents[j][k].toLocaleString());
+                    var num = Number(contents[j][k]).toLocaleString().split('.')[0];
+                    displayTable[j].push(num);
+
+                    console.log('num is: ', num);
                 }
             }
 
