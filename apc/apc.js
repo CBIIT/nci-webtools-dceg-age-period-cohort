@@ -501,7 +501,10 @@ var apcModule = (function($) {
 
         var row = document.createElement('tr');
         row.setAttribute('role', 'row');
-        row.appendChild(document.createElement('th'));
+
+        var emptyCell = document.createElement('th');
+        emptyCell.setAttribute('class', 'white-border');
+        row.appendChild(emptyCell);
 
         years.forEach(function(year) {
             var header = document.createElement('th');
