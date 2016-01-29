@@ -392,7 +392,12 @@ var apcModule = (function($) {
     // ------ Load Image ------ //
     // Populates the graphs
     apcTool.loadImage = function(keyData, pathToFile) {
-        $('#' + keyData + 'Graph').html("<img style='min-width: 600px;' class='center-text' alt='graph for " + keyData + "' src= '" + pathToFile + "' />");
+        var graphHTML = "<img style='min-width: 600px;' class='center-text' alt='graph for " + keyData + "' src= '" + pathToFile + "' />";
+        
+        if (keyData == 'LongAge' || keyData == 'CrossAge' || keyData == 'FittedTemporalTrends')
+            graphHTML += '<div>Rates Per 100000 Person-Years</div><br>';
+        
+        $('#' + keyData + 'Graph').html(graphHTML);
     };
 
     // ------ Parse Header ------ //
