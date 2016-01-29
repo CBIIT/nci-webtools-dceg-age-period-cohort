@@ -338,13 +338,14 @@ var apcModule = (function($) {
     // ------ Create row headers for input table ------ //
     apcTool.createHeaders = function(length) {
         var ageHeader = "Age";
+
+        if (apcModel.table)
+            ageHeader = '<span class = "ageGroups">' + apcModel.table.length + " age groups </span>";
+
         var headers = [{
             title: ageHeader,
             className: 'dt-center grey'
         }];
-
-        if (apcModel.table)
-            ageHeader = '<span class = "ageGroups">' + apcModel.table.length + " age groups </span>";
 
         for (var i = 0; i < length; i += 2) {
             headers.push({
