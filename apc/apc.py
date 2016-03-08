@@ -16,7 +16,7 @@ if __name__ == '__main__':
     parser.add_argument("-d", dest="debug", default="False", help="Sets the Debugging Option") 
     # Default port is production value; prod, stage, dev = 8040, sandbox = 9040
     args = parser.parse_args()
-    port_num = int(args.port_number)'
+    port_num = int(args.port_number)
     
     if args.debug == 'True' :
     	debug = True
