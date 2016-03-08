@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="APC" default="replace" basedir=".">
+      <target name="replace" depends="debug_exist">
+         <replace file="apc.conf" token="@debug@" value="${debug}"/>
+      </target>
+      <target name="mail_exist" unless="debug">
+        <fail> debug value is not set, stop</fail>
+      </target>	
+</project>
