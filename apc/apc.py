@@ -22,4 +22,4 @@ if __name__ == '__main__':
     f.close()
 
     hostname = gethostname()
-    app.run(host='0.0.0.0', port=port_num, debug = debug) 
+    app.run(host='0.0.0.0', port=port_num, debug = debug, use_evalex = False) 
