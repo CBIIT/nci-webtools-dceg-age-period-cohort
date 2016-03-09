@@ -1,0 +1,82 @@
+      #demonstration{
+        background : rgb(240,240,240);
+        border     : 0.5em solid rgb(240,240,240);
+      }
+      
+      #demonstration td{
+        vertical-align : middle;
+      }
+    
+      .spinBox{
+        position      : relative;
+        display       : inline-block;
+        margin-top    : 0.375em;
+        padding-right : 0.875em;
+        border-radius : 0.25em;
+        box-shadow    : 0 0.0625em 0 rgba(255,255,255,0.5);
+      }
+
+      .spinBox input{
+        display                   : block;
+        width                     : 2.5em;
+        height                    : 1.5625em;
+        padding                   : 0 0.25em;
+        border                    : 0.0625em solid rgb(224,224,224);
+        border-right              : none;
+        border-top-left-radius    : 0.25em;
+        border-bottom-left-radius : 0.25em;
+        color                     : rgb(64,64,64);
+        font-family               : inherit;
+        font-size                 : 1em;
+        text-align                : right;
+        box-shadow                : 0 0.125em 0.125em rgba(0,0,0,0.03125) inset;
+      }
+
+      .spinBox input[disabled]{
+        background : rgb(240,240,240);
+      }
+
+      .spinBoxUp,
+      .spinBoxDown{
+        position         : absolute;
+        right            : 0;
+        display          : block;
+        width            : 0.75em;
+        height           : 0.75em;
+        border           : 0.0625em solid rgb(224,224,224);
+        background       : rgb(248,248,248);
+        background-image : -webkit-linear-gradient(rgb(248,248,248),rgb(240,240,240));
+        background-image :         linear-gradient(rgb(248,248,248),rgb(240,240,240));
+        cursor           : pointer;
+      }
+
+      .spinBox input[disabled] + span,
+      .spinBox input[disabled] + span + span{
+        background : rgb(240,240,240);
+        cursor     : auto;
+      }
+
+      .spinBoxUp span,
+      .spinBoxDown span{
+        display : block;
+        width   : 0.75em;
+        height  : 0.75em;
+      }
+
+      .spinBoxUp{
+        top                     : 0;
+        border-top-right-radius : 0.25em;
+      }
+
+      .spinBoxUp span{
+        background : url('../images/arrow-up.png') no-repeat center center;
+      }
+
+      .spinBoxDown{
+        bottom                     : 0;
+        border-bottom-right-radius : 0.25em;
+      }
+
+      .spinBoxDown span{
+        background : url('../images/arrow-down.png') no-repeat center center;
+      }
