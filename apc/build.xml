@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="APC" default="replace" basedir=".">
-      <target name="replace" depends="debug_exist">
+      <target name="replace" depends="debug_exist, filepath_exist">
          <replace file="apc.conf" token="@debug@" value="${debug}"/>
+         <replace file="apc.conf" token="@filepath@" value="${filepath}"/>
       </target>
       <target name="debug_exist" unless="debug">
         <fail> debug value is not set, stop</fail>
+      </target>	
+      <target name="filepath_exist" unless="filepath">
+              <fail> File Path value is not set, stop</fail>
       </target>	
 </project>
