@@ -7,6 +7,7 @@ library('directlabels');
 
 tmpDirectory <- "./tmp/";
 inputfile="/media/sf_shared/CrosTalk_test/China_test.csv" #------CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!
+inputfile = 'NHW.csv'
 
 #Graphs the rates tab. Input is a csv file
 #Rows and Columns much be the same
