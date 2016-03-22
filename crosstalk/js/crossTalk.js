@@ -1,8 +1,8 @@
 $( document ).ready(function() {
-	var spinbox1 = new SpinBox('sbox1', {'minimum' : 1, 'maximum' : 5});
-	var spinbox2 = new SpinBox('sbox2', {'minimum' : 1, 'maximum' : 5});
-	var spinbox3 = new SpinBox('sbox3', {'minimum' : 1, 'maximum' : 5});
-	$("[name='showSwitch']").bootstrapSwitch();
+	//var spinbox1 = new SpinBox('sbox1', {'minimum' : 1, 'maximum' : 5});
+	//var spinbox2 = new SpinBox('sbox2', {'minimum' : 1, 'maximum' : 5});
+	//var spinbox3 = new SpinBox('sbox3', {'minimum' : 1, 'maximum' : 5});
+	//$("[name='showSwitch']").bootstrapSwitch();
 
 	$("#modelBt").click(function() {
 		$('#ratePane').attr('style', 'display:block');
@@ -21,6 +21,32 @@ $( document ).ready(function() {
 		$('#apcRatioPane').attr('style', 'display:none');
 
 	});
+
+    $('#crosstalk-tab-nav').tabCollapse();
+
+	$('#startYear').spinner({
+        min: 1800,
+        max: 2200,
+        step: 1,
+        spin: function(event, ui) {
+			// Needs redraw table code
+        },
+        stop: function(event, ui) {
+			// Needs redraw table code
+        }
+    });
+
+	$('#startAge').spinner({
+        min: 0,
+        max: 120,
+        step: 1,
+        spin: function(event, ui) {
+			// Needs redraw table code
+        },
+        stop: function(event, ui) {
+			// Needs redraw table code
+        }
+    });
 });
 
    function changeContent(id){
@@ -69,12 +95,6 @@ $( document ).ready(function() {
 	                marginLeft: '31%'
 	                }, 20);
 
-	         $("#right_panel").animate({
-	                width: '66.666666%'
-	                        }, 10);
-
-
-
+	         $("#right_panel").animate({ width: '66.666666%'}, 10);
 	    }
-
 	 }

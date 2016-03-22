@@ -1,123 +1,210 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/crossTalk.css" rel="stylesheet">
-<link href="css/spin.css" rel="stylesheet">
-<link href="css/bootstrap-switch.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
-<link href="css/bootstrap-theme.min.css" rel="stylesheet">
-<script src="js/jquery.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/SpinBox.js"></script>
-<script src="js/bootstrap-switch.js"></script>
-<script src="js/crossTalk.js"></script>
-<script>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Cross Talk Analysis Tool</title>
 
+	<!-- CSS STYLES -->
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-</script>
-<title>Cross Talk Analysis Tool</title>
+	<link rel="stylesheet" href="/common/css/style.css">
+	<link href="css/crossTalk.css" rel="stylesheet">
+
+	<!--
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/crossTalk.css" rel="stylesheet">
+	<link href="css/spin.css" rel="stylesheet">
+	<link href="css/bootstrap-switch.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
+	<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+	<script src="js/jquery.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/SpinBox.js"></script>
+	<script src="js/bootstrap-switch.js"></script>
+
+	-->
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/0.7.3/purify.min.js"></script>
+	<script src="https://cdn.rawgit.com/flatlogic/bootstrap-tabcollapse/master/bootstrap-tabcollapse.js"></script>
+
+	<script src="js/crossTalk.js"></script>
+	<link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
 </head>
 <body>
 	<div class="container">
-		<div id="logos"> <!-- Banner div -->
-			   <a href="http://dceg.cancer.gov" target="_blank"><img alt="Division of Cancer Epidemiology &amp; Genetics" src="images/DCEG-logo.svg" class="division-logo"></a>
-		</div> <!-- end of banner div -->
-		<div id="banners"> <!-- sub-Banner div -->
-			<div id="left">
-				<img src="images/DCEGBB.png"
-					alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch"
-					height="25" />
-			</div> <!-- end of sub-banner div -->
-		</div>
-		<!-- panel for content -->
-		<br/>
-		<div class="row">
+	   <div class="row">
+		   <!-- Banner div -->
+		   <div class="col-xs-12">
+			   <a href="http://dceg.cancer.gov" target="_blank" class="header-logo" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics"></a>
+		   </div>
+	   </div>
+	   <!-- end of banner div -->
+	   <div class="row offset">
+		   <!-- sub-Banner div -->
+		   <div class="col-xs-12 col-md-10">
+			   <img src="../common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" title="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
+		   </div>
+		   <div class="col-xs-12 col-md-2">
+			   <img src="images/apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" title="Age-Period-Cohort Web Tool" height="33" />
+		   </div>
+	   </div>
+	   <!--  end of header -->
+	   <!--  start of body content -->
+
+	   <div class="row">
+		   <!--
 				<div id="slideoutTab">
-						<i id ="icon" class="fa fa-caret-left fa-2x" onclick="Slide_menu_Horz()" style="margin-left:31%"></i>
+					<i id ="icon" class="fa fa-caret-left fa-2x" onclick="Slide_menu_Horz()" style="margin-left:31%"></i>
         		</div>
-			<div class="col-lg-4" id="slideoutForm"><!-- left panel -->
+			<div class="col-lg-4" id="slideoutForm">
 				<div id="slideout">
-					<div class="well" >
-							<div class="box" >
-								<label class="form-label"> Description </label>
-								<span class="pull-right"><a href="javascript:alert('Will implement later');" >Help</a></span>
-								<br/>
-								<textarea class="form-control" rows="3" id="description" ></textarea>
-								<br/>
-								<div class="col-sm-4">Start Year</div>
-								<div class="col-sm-4">Start Age</div>
-								<div class="col-sm-4">Interval(Year)</div>
-								<br/>
-								<div class="col-sm-4"><span id="sbox1"></span></div>
-								<div class="col-sm-4"><span id="sbox2"></span></div>
-								<div class="col-sm-4"><span id="sbox3"></span></div>
-								<br/><br/>
-								Copy and Paste into the tables on right or upload two data files in the specified CSV format &nbsp;&nbsp; <a href="javascript:alert('Will implement later')">Help</a>
-								<br/><br/>
-								<fieldset>
-									<legend><font size="2"><b>Data File 1</b></font></legend>
-									<div class="col-sm-2">
-										<label class="control-label" for="title1">Title</label>
+		 	-->
+			<div class="col-lg-4 col-md-5 col-sm-12">
+				<div class="well" >
+					<div class="well well-nested">
+						<form class="form" name="crosstalk_form">
+							<div class="row">
+								<div class="col-xs-12">
+									<div class="form-group">
+										<label for="description" class="control-label">Description</label>
+										<a id="help" class="pull-right" href="#"><span class="glyphicon glyphicon-info-sign glyphicon-blue"></span> Help</a>
+										<textarea class="form-control" rows="3" id="description" ></textarea>
 									</div>
-									<div class="col-sm-10">
-									<input type="text" class="form-control" id="title1" placeholder="Enter Title">
-									</div>
-									<br/><br/><br/>
-									<div class="col-sm-12">
-										<input type="file" id="inputfile1">
-									</div>
-								</fieldset>
-								<br/><br/>
-								<fieldset>
-									<legend><font size="2"><b>Data File 2</b></font></legend>
-									<div class="col-sm-2">
-										<label class="control-label" for="title2">Title</label>
-									</div>
-									<div class="col-sm-10">
-									<input type="text" class="form-control" id="title2" placeholder="Enter Title">
-									</div>
-									<br/><br/><br/>
-									<div class="col-sm-12">
-										<input type="file" id="inputfile2">
-									</div>
-								</fieldset>
-								<br/><br/>
-								<div align="right">
-									<button type="submit" id="resetBt" class="btn btn-primary active"> Reset</button> &nbsp;&nbsp;&nbsp;
-									<button type="submit" id="modelBt" class="btn btn-primary active"> Fit Model</button>
 								</div>
 							</div>
+
+							<div class="row">
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label class="control-label" for="startYear">Start Year</label>
+										<div>
+											<input type="text" class="input-small input-sm" id="startYear" />
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label class="control-label" for="startAge">Start Age</label>
+										<div>
+											<input type="text" class="input-small input-sm" id="startAge" />
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label class="control-label" for="interval">Interval (Years)</label>
+										<div>
+											<select class="form-control input-small input-sm" id="interval">
+												<option value=""></option>
+												<option value="1">1</option>
+												<option value="2">2</option>
+												<option value="3">3</option>
+												<option value="4">4</option>
+												<option value="5">5</option>
+												<option value="6">6</option>
+												<option value="7">7</option>
+												<option value="8">8</option>
+												<option value="9">9</option>
+												<option value="10">10</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label>Copy and paste into table on right or upload a csv with population and count information.</label>
+							</div>
+
+							<div class="row">
+								<div class="col-xs-12">
+									<legend>Data File 1</legend>
+								</div>
+								<div class="col-xs-12">
+									<div class="form-group">
+										<label for="title1" class="control-label\">Title</label>
+										<div>
+											<input type="text" class="form-control" id="title1" placeholder="Enter Title">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-xs-12">
+										<input type="file" class="vertical-spacer" id="inputfile1" accept=".csv">
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-xs-12">
+									<legend>Data File 2</legend>
+								</div>
+								<div class="col-xs-12">
+									<div class="form-group">
+										<label for="title2" class="control-label">Title</label>
+										<div>
+											<input type="text" class="form-control" id="title2" placeholder="Enter Title">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-xs-12">
+										<input type="file" class="vertical-spacer" id="inputfile2" accept=".csv">
+									</div>
+								</div>
+							</div>
+
+							<div class="btn-toolbar offset">
+								<button type="submit" id="modelBt" class="btn btn-primary btn-sm pull-right">Fit Model</button>
+								<button type="submit" id="resetBt" class="btn btn-default btn-sm pull-right">Clear</button>
+							</div>
+						</form>
 					</div>
 				</div>
-			</div> <!-- end left panel -->
-			<div class="col-lg-8" id="right_panel"><!-- right panel -->
-				<ul id="myTab" class="nav nav-tabs responsive">
-							<li class="active" ><a href="#input" data-toggle="tab" title="Input" data-content="Input">Input</a></li>
+			</div>
+			<div class="col-lg-8 col-md-7 col-sm-12 col-xs-12">
+				<div class="large loading">
+					<div>Loading…</div>
+				</div>
+				<nav class="navbar navbar-default">
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse" id="crosstalk-tab-nav">
+						<ul class="nav nav-pills">
+							<li class="active"><a href="#input" data-toggle="tab" title="Input" data-content="Input">Input</a></li>
 							<li><a href="#rates" data-toggle="tab" title="Rates" data-content="Rates">Rates</a></li>
 							<li><a href="#rateRatios" data-toggle="tab" title="Rate Ratios" data-content="Rate Ratios"> Rate Ratios</a></li>
 							<li><a href="#goodness" data-toggle="tab" title="Goodness of Fit" data-content="Goodness of Fit">Goodness of Fit</a></li>
 							<li><a href="#apcRate" data-toggle="tab" title="APC of Rates" data-content="APC of Rates">APC of Rates</a></li>
 							<li><a href="#apcRatios" data-toggle="tab" title="APC of Rate Ratios" data-content="APC of Rate Ratios">APC of Rate Ratios</a></li>
 							<li><a href="#help" data-toggle="tab" title="Help" data-content="Help">Help</a></li>
-				</ul>
-				<div class="tab-content">
-					<div class="tab-pane fade in active" id="input">
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+				</nav>
+				<div class="tab-content grey-border">
+					<div class="tab-pane active" id="input">
 						<br/>
 						<fieldset>
 							<legend><font size="2"><b>Data 1 (Numerator)</b></font></legend>
-						    <div id="dataset1">
-						    	<center><img src="images/dataset.jpg" class="img-responsive" alt="Dataset 1" height="200" width="400"></center>
+							<div id="dataset1">
+								<center><img src="images/dataset.jpg" class="img-responsive" alt="Dataset 1" height="200" width="400"></center>
 							</div>
 						</fieldset>
 						<br/>
 						<fieldset>
 							<legend><font size="2"><b>Data 2 (Denominator)</b></font></legend>
-						    <div id="dataset2">
-						    	<center><img src="images/dataset.jpg" class="img-responsive" alt="Dataset 2" height="200" width="400"></center>
+							<div id="dataset2">
+								<center><img src="images/dataset.jpg" class="img-responsive" alt="Dataset 2" height="200" width="400"></center>
 							</div>
 						</fieldset>
 						<br/>
@@ -125,7 +212,7 @@
 						 <button type="submit" id="modelBt" class="btn btn-primary active"> Flip Two Data in Ratio Calculation</button>
 						</div>
 					</div>
-					<div class="tab-pane fade" id="rates">
+					<div class="tab-pane" id="rates">
 						<br/>
 						<div id="ratePane" style="display:none">
 						<div class="col-sm-6">
@@ -138,7 +225,7 @@
 						</div>
 						</div>
 					</div>
-					<div class="tab-pane fade" id="rateRatios">
+					<div class="tab-pane" id="rateRatios">
 						<br/>
 						<div class="col-sm-12"><font size="4"><b>Plot Options</b></font></div>
 						<div class="col-sm-12" id="showNumber" style="display:none"><font size="2">Show numbers in circle</font>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="showSwitch" checked></div>
@@ -148,7 +235,7 @@
 						</div>
 
 					</div>
-					<div class="tab-pane fade" id="goodness">
+					<div class="tab-pane" id="goodness">
 						<br/>
 						<div class="col-sm-12">
 							Show warning and explanation about zero/sparse data. Also explain how to fix the data using example in help.
@@ -162,7 +249,7 @@
 							<button type="submit" id="modelBt" class="btn btn-primary active"> Export Cropped Datasets </button>
 						</div>
 					</div>
-					<div class="tab-pane fade" id="apcRate">
+					<div class="tab-pane" id="apcRate">
 						 <br/>
 						 <div id="apcRatePane" class="col-sm-12" style="display:none">
 							<nav class="navbar navbar-default col-sm-6" role="navigation">
@@ -283,7 +370,7 @@
 							</div>
 					   </div>
 					</div>
-					<div class="tab-pane fade" id="apcRatios">
+					<div class="tab-pane" id="apcRatios">
 						<!-- start accordion -->
 						<div id="apcRatioPane" class="accordion" style="display:none">
 							<div class="panel-group" id="accordion2">
@@ -385,11 +472,11 @@
 											</div>
 										</div>
 									</div>
- 								</div>
+								</div>
 							</div>
 						</div>		<!-- end of caccordion -->
 					</div>
-					<div class="tab-pane fade" id="help">
+					<div class="tab-pane" id="help">
 						<br/>
 						<!-- help page content -->
 						<div style="overflow-y: auto; height:600px;">
@@ -438,31 +525,41 @@
 						</div>
 					</div>
 				</div>
-			</div> <!-- end right panel -->
-		</div>
-		<!-- footer -->
-		<br/>
-		<div id="portal-footer">
-			<div class="footerLinks">
-				<a href="http://www.cancer.gov/" title="Home">Home</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-				<a href="mailto:NCIAPCWebToolAdmin@mail.nih.gov" title="Support">Support</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-				<a href="http://www.cancer.gov/global/web/policies" title="Policies">Policies</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-				<a href="http://www.cancer.gov/global/web/policies/accessibility"
-					title="Accessibility">Accessibility</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-					href="http://cancer.gov/global/viewing-files" target="_blank"
-					title="Viewing Files">Viewing Files</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-					href="http://www.cancer.gov/global/web/policies/foia" title="FOIA">FOIA</a><br />
-				<br /> <a href="http://www.dhhs.gov/">Department of Health and
-					Human Services</a>&nbsp;&nbsp;|&nbsp;&nbsp; <a
-					href="http://www.nih.gov/">National Institutes of Health</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-				<a href="http://www.cancer.gov/">National Cancer Institute</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
-					href="http://www.usa.gov/">USA.gov</a>
 			</div>
-			<br /> <br /> NIH...Turning Discovery Into Health<sup>&reg;</sup>
 		</div>
 	</div>
-
-
-
+	<div class="container footer">
+		<div class="center-block">
+			<div class="row">
+				<div class="col-xs-12 well">
+					<ul class="list-inline">
+						<li><a href="http://www.cancer.gov/" title="Home" target="_blank">Home</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="mailto:NCIAPCWebToolAdmin@mail.nih.gov" target="_top" title="Support">Support</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://www.cancer.gov/global/web/policies" title="Policies" target="_blank">Policies</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://www.cancer.gov/global/web/policies/accessibility" title="Accessibility" target="_blank">Accessibility</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://cancer.gov/global/viewing-files" title="Viewing Files" target="_blank">Viewing Files</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://www.cancer.gov/global/web/policies/foia" title="FOIA" target="_blank">FOIA</a></li>
+					</ul>
+					<ul class="list-inline">
+						<li><a href="http://www.hhs.gov/" target="_blank">U.S. Department of Health and Human Services</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://www.nih.gov" target="_blank">National Institutes of Health</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://www.cancer.gov/" target="_blank">National Cancer Institute</a></li>
+						<li class="footer-spacer">|</li>
+						<li><a href="http://usa.gov" target="_blank">USA.gov</a></li>
+					</ul>
+					<div class="text-center">
+						NIH ... Turning Discovery Into Health<sup>®</sup>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

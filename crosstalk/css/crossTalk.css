@@ -75,11 +75,6 @@
 }
 */
 
-body {
-	font-family: Arial, Helvetica, sans-serif;
-	color: #444;
-}
-
 a.help {
 	background-image: url('/common/images/help.png');
 	background-repeat: no-repeat;
@@ -369,4 +364,598 @@ legend.legend-border {
     width: 100%;
 }
 
-    
+
+/* Additional styles/overrides for Bootstrap */
+/*==========  Mobile First Method  ==========*/
+
+/* Custom, iPhone Retina */
+@media only screen and (min-width : 320px) {
+    .header-logo {
+        display:block;
+        width: 296px;
+        height: 52px;
+        background: url('/common/images/dceg_28px_logo.png');
+    }
+
+    input + span {
+    	display:block;
+    	padding: 3px 0 10px 0;
+    }
+
+    .footer {
+        padding:25px 0 0 16px;
+    }
+
+    .footer ul {
+        text-align:left;
+    }
+
+    .footer ul li {
+        display:block;
+    }
+
+    .footer .footer-spacer {
+        display:none;
+    }
+
+    .footer .well {
+        border: none;
+        box-shadow:none;
+        border-radius:0;
+        margin-bottom:0;
+    }
+
+    .loading {
+        top:20%;
+        left:38%;
+    }
+
+    .large.loading {
+    	font-size: 18px;
+    }
+}
+
+/* Extra Small Devices, Phones */
+legend {
+	color: #666;
+	font-size: 100%;
+	font-weight: bold;
+}
+
+@media only screen and (min-width : 480px) {
+    .header-logo {
+        display:block;
+        width: 389px;
+        height: 72px;
+        background: url('/common/images/dceg_36px_logo.png');
+    }
+
+    .footer {
+        padding: 25px 0;
+    }
+
+    .footer ul {
+        text-align:center;
+    }
+
+    .footer ul li {
+        display:inline-block;
+    }
+
+    .footer .footer-spacer {
+        display:inline-block;
+    }
+
+    .footer .well {
+        background-image: none;
+        border: none;
+        box-shadow:none;
+        background-color:transparent;
+    }
+
+    .loading {
+        top:20%;
+        left:45%;
+    }
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+    .header-logo {
+        display: block;
+        width: 608px;
+        height: 100px;
+        background: url('/common/images/dceg_54px_logo.png');
+    }
+
+    .form-horizontal .control-label {
+        padding-top: 3px;
+    }
+
+    .loading {
+        top:50%;
+        left:45%;
+    }
+
+    .large.loading {
+    	font-size: 24px;
+    }
+}
+
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #666;
+}
+
+label {
+	font-size:12px;
+}
+
+.data-table {
+    margin-bottom: 20px;
+    width:100% !important;
+    border-bottom: 1px solid #DDD !important;
+}
+
+.data-table thead tr th {
+    border-right: 1px solid #EEE;
+    border-top: 1px solid #EEE;
+    border-bottom: none !important;
+}
+
+.data-table tbody tr:first-child td {
+    border-top: 1px solid #EEE !important;
+}
+
+.data-table thead tr th:first-child {
+    border-left: 1px solid #EEE;
+}
+
+table.dataTable.compact thead th, table.dataTable.compact thead td {
+    padding: 4px 10px;
+}
+
+.example-data-table {
+	font-size: 10px;
+}
+
+.grey {
+    background-color: #EEE;
+}
+
+.ageGroups {
+    font-size: 0.8em;
+}
+
+.nav-pills {
+    padding: 8px 0px !important;
+}
+
+ .nav-pills li {
+    padding: 1px 0px  !important;
+    margin: 1px 4px !important;
+}
+
+ .nav-pills li a {
+    padding:  6px 10px!important;
+    margin: 0px !important;
+}
+
+.grey-border {
+    border-top: 1px solid #F8F8F8;
+    border-left: 1px solid #F8F8F8;
+    border-right: 1px solid #F8F8F8;
+    border-bottom: 1px solid #F2F2F2;
+    box-shadow: 0px 1px 4px 1px #F9F9F9;
+}
+
+#refAge, #refYear {
+    max-width: 110px;
+    padding-left: 4px;
+    margin-right: 5px;
+}
+
+#cohort {
+    max-width: 60px;
+    min-height: 28px;
+}
+
+/* coefficients.tfoot {
+ 	display:none;
+ }*/
+
+td.data {
+	text-align:right;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+td.header {
+	text-align:right;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight:bold;
+	font-size: 12px;
+	text-align:center;
+	background-color:#EEE;
+}
+
+.row-header {
+    text-align: center;
+	vertical-align:middle;
+	width:50px;
+	max-width:50px;
+	background-color:#EEE;
+}
+
+tr {
+    border: none !important;
+}
+
+th.header {
+	text-align:center;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+    background-color:#DDD;
+}
+
+.border-top {
+	border-top: 1px solid #CCC;
+}
+
+.border-left {
+	border-left: 1px solid #CCC;
+
+}
+
+.border-right {
+	border-right: 1px solid #CCC;
+}
+
+.border-dotted-left {
+	border-left: 1px dotted #CCC;
+}
+
+.border-dotted-right {
+	border-right: 1px dotted #CCC;
+}
+
+.border-bottom {
+	border-bottom: 1px solid #CCC;
+}
+.border-dotted-bottom {
+	border-bottom: 1px dotted #CCC;
+}
+
+.dotted {
+	border: 1px dotted #CCC;
+}
+
+.white-border {
+    border: 1px solid white !important;
+}
+
+#paste_here_image {
+	position:absolute;
+	filter: alpha(opacity = 50);
+	opacity:0.5;
+	overflow:auto;
+    width:80%;
+    z-index: 999;
+}
+
+#paste {
+    opacity: 0;
+    position: absolute;
+    z-index: 999;
+    text-indent: -9999em;
+}
+
+.paste_area {
+	position:absolute;
+	background-color:green;
+	overflow:hidden;
+	filter: alpha(opacity = 00);
+	opacity:0.0;
+}
+
+.blue {
+    color: #126390;
+}
+
+.vertical-spacer {
+	display: block;
+    margin: 10px 0 20px 0;
+    font-size: 12px;
+}
+
+.panel-group {
+    margin-bottom: 0px;
+}
+
+#description {
+    resize: vertical;
+}
+
+/* Used for jquery dialog to remove close botton */
+.no-close .ui-dialog-titlebar-close {display: none }
+
+.ui-widget-header {
+margin-left: 1px;
+margin-right: 1px;
+margin-top: 1px;
+padding-left: 8px !important;
+padding-top: 5px !important;
+padding-bottom: 3px !important;
+padding-right: 0px !important;
+background: #EEE;
+color: #444;
+border-radius: 3px;
+border: none;
+font-weight: normal;
+font-size: 1.01em;
+box-shadow: 0px 0px 4px 2px #999;
+text-shadow: 0px 0px 1px #CCC;
+text-align: center;
+}
+
+/* Loading Animation */
+
+
+@keyframes sweep {
+from { transform: rotate(0deg); }
+to { transform: rotate(359deg); }
+}
+
+#please_wait {
+    overflow: hidden;
+    padding: 25px;
+}
+
+.vertical-text {
+	text-align:center;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  margin:170px 0px 0px 10px;
+}
+
+#sampledatatable #datavalues{
+   width:700px;
+}
+
+#sampledatatable.functions tr, th{
+  border-bottom:1px solid;
+}
+
+#blockcontent {padding-top:25px;}
+
+.spacer {
+padding-left:13px;
+}
+
+table#NetDrift.bordered-table.zebra-striped.dataTable{
+border:1px solid #303995;
+}
+
+table#NetDrift.bordered-table.zebra-striped.dataTable th{
+background-color:#303995;
+}
+
+hr.style-two {
+    height: 5px;
+    border: 0;
+    margin-left:-20px;
+    padding-right:302px;
+    box-shadow: inset 0 4px 2px -4px black;
+}
+
+.rates {
+    padding-bottom:10px;
+}
+
+#helpcolumn1 {width: 600px; float: left;}
+#helpcolumn2 {margin-left: 620px;}
+#glossary {float:left;width:1000px;}
+
+#login {
+        width: 935px;
+        margin: 0 auto;
+        border: solid 1px #322e82;
+        margin-top: 30px;
+}
+
+.footer {
+    bottom: 0;
+    color: #444;
+}
+.footer ul li a {
+    color: #444;
+}
+
+.division-logo {
+    max-width: 60%;
+    min-width: 400px;
+}
+
+.tab-content {
+	padding: 10px;
+	width: 100%;
+	-webkit-overflow-scrolling: touch;
+	background: white;
+	border-width: 0;
+	border-style: solid;
+	border-color: #d9d9d9;
+	border-radius: 0 0 4px 4px;
+	overflow: hidden;
+}
+.ui-widget{
+	font-size:90%;
+}
+
+
+/* Modified Styles */
+.col-lg-1, .col-lg-10, .col-lg-11,
+.col-lg-12, .col-lg-2, .col-lg-3,
+.col-lg-4, .col-lg-5, .col-lg-6,
+.col-lg-7, .col-lg-8, .col-lg-9,
+.col-md-1, .col-md-10, .col-md-11,
+.col-md-12, .col-md-2, .col-md-3,
+.col-md-4, .col-md-5, .col-md-6,
+.col-md-7, .col-md-8, .col-md-9,
+.col-sm-1, .col-sm-10, .col-sm-11,
+.col-sm-12, .col-sm-2, .col-sm-3,
+.col-sm-4, .col-sm-5, .col-sm-6,
+.col-sm-7, .col-sm-8, .col-sm-9,
+.col-xs-1, .col-xs-10, .col-xs-11,
+.col-xs-12, .col-xs-2, .col-xs-3,
+.col-xs-4, .col-xs-5, .col-xs-6,
+.col-xs-7, .col-xs-8, .col-xs-9 {
+    padding-right: 5px;
+    padding-left: 10px;
+}
+
+.well-nested {
+    background: linear-gradient(to bottom, #feffff 0%, #feffff 50%, #e7f3fa 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    box-shadow: 0 2px 4px 0 rgba(1, 90, 129, 0.4);
+}
+
+label.label-bold {
+    font-weight: bold;
+    white-space:nowrap;
+}
+
+.input-small {
+    width:75%;
+}
+.input-tiny{
+    width:50%;
+}
+
+.input-sm {
+    height: 22px;
+}
+select.input-sm {
+    height: 29px;
+}
+
+.glyphicon-blue {
+    color: #337ab7;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.offset {
+    margin-bottom: 15px;
+}
+
+.top-offset {
+    margin-top: 15px;
+}
+
+.nav-pills li {
+    margin:5px;
+}
+
+.navbar-toggle {
+    margin-top: 14px;
+    margin-left: 10px;
+    float:none;
+}
+
+/* Responsive Bootstrap Table hack needed for FF */
+@-moz-document url-prefix() {
+  fieldset { display: table-cell; }
+}
+
+.wrappable {
+    white-space: normal;
+}
+
+pre {
+    line-height: 4em;
+}
+
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc {
+    background : none;
+}
+
+/**
+ * (C)Leanest CSS spinner ever
+ */
+
+@keyframes spin {
+	to { transform: rotate(1turn); }
+}
+
+.loading {
+	position: absolute;
+	display: none;
+	width: 5em;
+	height: 5em;
+	margin: 0 auto;
+	font-size: 12px;
+	text-indent: 999em;
+	overflow: hidden;
+	animation: spin 1s infinite steps(8);
+    z-index:100;
+}
+
+.loading:before,
+.loading:after,
+.loading > div:before,
+.loading > div:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 2.25em; /* (container width - part width)/2  */
+	width: .5em;
+	height: 1.5em;
+	border-radius: .2em;
+	background: #eee;
+	box-shadow: 0 3.5em #eee; /* container height - part height */
+	transform-origin: 50% 2.5em; /* container height / 2 */
+}
+
+.loading:before {
+	background: #555;
+}
+
+.loading:after {
+	transform: rotate(-45deg);
+	background: #777;
+}
+
+.loading > div:before {
+	transform: rotate(-90deg);
+	background: #999;
+}
+
+.loading > div:after {
+	transform: rotate(-135deg);
+	background: #bbb;
+}
+
+.form-group > a {
+	text-decoration: none;
+}
+
+.table-responsive>.table>tbody>tr>td {
+    min-width: 200px;
+    white-space: normal;
+}
+
+.table-responsive>.table.input-table>tbody>tr>td {
+    min-width: 25px;
+}
+
+.table > tbody > tr:last-child > th, .table > tbody > tr:last-child > td {
+    padding-bottom: 20px;
+}
