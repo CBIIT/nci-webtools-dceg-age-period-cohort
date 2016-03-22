@@ -8,7 +8,9 @@ source('crosstalk.R')
 csvA = 'Urban China.csv'
 csvB = 'NHW.csv'
 
-generatePlots <- function() {
+# generatePlots(csvA, csvB)
+
+generatePlots <- function(csvA, csvB) {
   
   resultsA = apc2(parseJSON(csvToJSON(csvA)))
   resultsB = apc2(parseJSON(csvToJSON(csvB)))
@@ -39,30 +41,50 @@ generatePlots <- function() {
   
   ## Comparision of Adjusted Rates: TODO
   
+  ## Generate Comparison
+  
+  
   # Fitted Cohort Pattern
-  resultsA$FittedCohortPattern
-  resultsB$FittedCohortPattern
+  fcpA = as.data.frame(resultsA$FittedCohortPattern)
+  fcpB = as.data.frame(resultsB$FittedCohortPattern)
   
-  ggplot(as.data.frame(resultsA$FittedCohortPattern), aes(Cohort)) + geom_line(aes(y = Rate)) + geom_ribbon(aes(ymin = CILo, ymax = CIHi), alpha = 0.1)  + geom_point(aes(y = Rate))
-  ggplot(as.data.frame(resultsB$FittedCohortPattern), aes(Cohort)) + geom_line(aes(y = Rate)) + geom_ribbon(aes(ymin = CILo, ymax = CIHi), alpha = 0.1)  + geom_point(aes(y = Rate))
-  
+  ggplot() +
+    geom_point(data = fcpA, aes(x = Cohort, y = Rate)) +
+    geom_line(data = fcpA, aes(x = Cohort, y = Rate)) +
+    geom_ribbon(data = fcpA, aes(x = Cohort, ymin = CILo, ymax = CIHi), alpha = 0.1, fill = "blue") +
+    
+    geom_point(data = fcpB, aes(x = Cohort, y = Rate)) +
+    geom_line(data = fcpB, aes(x = Cohort, y = Rate)) +
+    geom_ribbon(data = fcpB, aes(x = Cohort, ymin = CILo, ymax = CIHi), alpha = 0.1, fill = "red")
+
   
   # Fitted Temporal Trends
-  resultsA$FittedTemporalTrends
-  resultsB$FittedTemporalTrends
+  fttA = as.data.frame(resultsA$FittedTemporalTrends)
+  fttB = as.data.frame(resultsB$FittedTemporalTrends)
   
-  ggplot(as.data.frame(resultsA$FittedTemporalTrends), aes(Period)) + geom_line(aes(y = Rate)) + geom_ribbon(aes(ymin = CILo, ymax = CIHi), alpha = 0.1)  + geom_point(aes(y = Rate))
-  ggplot(as.data.frame(resultsB$FittedTemporalTrends), aes(Period)) + geom_line(aes(y = Rate)) + geom_ribbon(aes(ymin = CILo, ymax = CIHi), alpha = 0.1)  + geom_point(aes(y = Rate))
+  ggplot() +
+    geom_point(data = fttA, aes(x = Period, y = Rate)) +
+    geom_line(data = fttA, aes(x = Period, y = Rate)) +
+    geom_ribbon(data = fttA, aes(x = Period, ymin = CILo, ymax = CIHi), alpha = 0.1, fill = "blue") +
   
-  
+    geom_point(data = fttB, aes(x = Period, y = Rate)) +
+    geom_line(data = fttB, aes(x = Period, y = Rate)) +
+    geom_ribbon(data = fttB, aes(x = Period, ymin = CILo, ymax = CIHi), alpha = 0.1, fill = "red")
+    
+
   # Cross-Sectional Age Curve
-  resultsA$CrossAge
-  resultsB$CrossAge
+  cacA = as.data.frame(resultsA$CrossAge)
+  cacB = as.data.frame(resultsB$CrossAge)
   
-  ggplot(as.data.frame(resultsA$CrossAge), aes(Age)) + geom_line(aes(y = Rate)) + geom_ribbon(aes(ymin = CILo, ymax = CIHi), alpha = 0.1)  + geom_point(aes(y = Rate))
-  ggplot(as.data.frame(resultsB$CrossAge), aes(Age)) + geom_line(aes(y = Rate)) + geom_ribbon(aes(ymin = CILo, ymax = CIHi), alpha = 0.1)  + geom_point(aes(y = Rate))
-  
-  
+  ggplot() +
+    geom_point(data = cacA, aes(x = Age, y = Rate)) +
+    geom_line(data = cacA, aes(x = Age, y = Rate)) +
+    geom_ribbon(data = cacA, aes(x = Age, ymin = CILo, ymax = CIHi), alpha = 0.1, fill = "blue") +
+    
+    geom_point(data = cacB, aes(x = Age, y = Rate)) +
+    geom_line(data = cacB, aes(x = Age, y = Rate)) +
+    geom_ribbon(data = cacB, aes(x = Age, ymin = CILo, ymax = CIHi), alpha = 0.1, fill = "red")
+
   ########## APC of Rate Ratios ##########
   
   # Fitted Cohort Pattern
