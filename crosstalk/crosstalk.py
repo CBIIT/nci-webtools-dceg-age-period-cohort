@@ -1,5 +1,4 @@
 from flask import Flask, request
-from socket import gethostname
 import rpy2.robjects as robjects
 
 app = Flask(__name__)
@@ -18,5 +17,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     port_num = int(args.port_number)
 
-    hostname = gethostname()
     app.run(host='0.0.0.0', port=port_num, debug=True, use_evalex=False) 
