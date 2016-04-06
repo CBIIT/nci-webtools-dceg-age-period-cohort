@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Cross Talk Analysis Tool</title>
+
+		<!-- CSS STYLES -->
+		<link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="https://cdn.datatables.net/t/bs/dt-1.10.11,b-1.1.2,b-html5-1.1.2/datatables.min.css">
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+		<link rel="stylesheet" href="crosstalk.css">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/0.7.3/purify.min.js"></script>
+		<script src="https://cdn.datatables.net/t/bs/dt-1.10.11,b-1.1.2,b-html5-1.1.2/datatables.min.js"></script>
+		<script src="https://cdn.rawgit.com/flatlogic/bootstrap-tabcollapse/master/bootstrap-tabcollapse.js"></script>
+		<script src="crosstalk.js"></script>
+	</head>
+	
+	<body>
+		
+		<h3>CrossTalk File Processing Demo</h3>
+
+		Description
+		<textarea id="description"></textarea>
+		<br>
+
+		Start Year
+		<input type="text" class="input-small borderless" id="startYear" />
+		<br>
+		
+		Start Age
+		<input type="text" class="input-small" id="startAge" />
+		<br>
+
+		Interval
+		<input type="text" class="input-small" id="interval" value="1"/>
+		<br>
+
+		<br>
+		Title 1
+		<input type="text" class="input-small" id="title1" />
+		<input type="file" id="inputfile1" accept=".csv">
+		<br>
+
+
+		Title 2
+		<input type="text" class="input-small" id="title2" />
+		<input type="file" id="inputfile2" accept=".csv">
+
+		<br>
+
+
+		<button id="process">Process Files</button>
+
+		<br>
+		<div id="table1">
+		</div>
+
+		<br>
+		<div id="table2">
+			<table id="tableB"></table>
+		</div>
+
+	</body>
+</html>
