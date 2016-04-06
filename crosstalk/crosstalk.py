@@ -2,12 +2,15 @@ from flask import Flask, request
 import rpy2.robjects as robjects
 
 app = Flask(__name__)
-#robjects.r['source']('CrossTalkWrapper.R')
+
+wrapper = robjects.r
+#wrapper['source']('rcode/test.R')
+
 
 @app.route('/crossTalkRest/', methods = ['POST'])
 def calculation():
     return '' 
-    #robjects.r['getCrossTalkDataJSON'](request.stream.read())[0]
+    #wrapper['processClientJSON'](request.stream.read())[0]
 
 import argparse
 if __name__ == '__main__':
