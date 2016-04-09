@@ -15,32 +15,8 @@ $(document).ready(function() {
 	// Add event listeners
 	for (element in cfg)
 		cfg[element].change(crosstalk.update);
-	
-	$('#startYear').spinner({
-        min: 1800,
-        max: 2200,
-        step: 1,
-        spin: crosstalk.update,
-        stop: crosstalk.update
-    });
 
-	$('#startAge').spinner({
-        min: 0,
-        max: 120,
-        step: 1,
-        spin: crosstalk.update,
-        stop: crosstalk.update
-    });
-
-	$('#interval').spinner({
-        min: 1,
-        max: 10,
-        step: 1,
-        spin: crosstalk.update,
-        stop: crosstalk.update
-    });
-
-	$('#process').click(crosstalk.log);
+	$('#log').click(crosstalk.log);
 });
 
 /* ---------- ReadFile Module - Parses an input file as a crosstalk model ---------- */
