@@ -4,7 +4,7 @@ import rpy2.robjects as robjects
 app = Flask(__name__)
 
 wrapper = robjects.r
-#wrapper['source']('rcode/CrossTalkWrapper.R')
+wrapper['source']('rcode/CrossTalkWrapper.R')
 
 
 @app.route('/crossTalkRest/', methods = ['POST'])
