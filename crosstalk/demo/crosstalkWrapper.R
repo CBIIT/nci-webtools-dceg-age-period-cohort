@@ -1,4 +1,6 @@
 library(jsonlite)
+library(ggplot2)
+library(gridSVG)
 
 source('apcversion2.R')
 source('crosstalk.R')
@@ -7,61 +9,20 @@ OUTPUT_DIR <- "./tmp/"
 dir.create(OUTPUT_DIR)
 
 
-
-SECTION_KEYS = c(
-  'Incidence Rates',
-  'Incidence Rates Ratios',
-  'APC of Incidence Rates',
-  'APC of Rate Ratios'
-)
-
-
-
-keys = c(
-  # [section] Incidence Rates
-    'IncidenceRatesA',
-    'IncidenceRatesB',
-  # [end-section] Incidence Rates
-  
-  # [section] Incidence Rate Ratios
-    'IncidenceRateRatios',
-  # [end-section] Incidence Rate Ratios
-  
-  # [section] APC of Incidence Rates
-  
-    ## [tab] Local Drifts
-    'LocalDriftsA',
-    'LocalDriftsB',
-
-    ## [tab] Net Drifts
-    'NetDrifts',
-  
-    ## [tab] Adjusted Rates
-      #### [section] Comparison of Adjusted Rates
-      'ComparisonOfAdjustedRates',
-
-      #### [section] Fitted Cohort Pattern
-      'FittedCohortPatternA',
-      'FittedCohortPatternB',
-  
-      #### [section] Fitted Temporal Trends
-      'FittedTemporalTrendsA',
-      'FittedTemporalTrendsB',
-
-      #### [section] Cross-Sectional Age Curve
-      'CrossSectionalAgeCurveA',
-      'CrossSectionalAgeCurveB'
-
-    ## [end-tab] Adjusted Rates
-  # [end-section] APC of Incidence Rates
-
-    
-  # [section] APC of Rate Ratios
-)
-
+#-------------------------------------------------------
+# parseJSON
+# 
+# Parses a json string from the client as a list
+# Inputs:   (1) The JSON string from the client
+# Outputs:  (1) A list containing calculation parameters
+#-------------------------------------------------------
 parseJSON <- function(data) {
-  data = fromJSON(txt = 'input_new.json')
-  # data = fromJSON(data)
+  
+  if (length(data) < 2)
+    data = fromJSON(txt = 'input_new.json')
+  
+  else
+    data = fromJSON(data)
   
   data$interval   = as.numeric(data$interval)
   data$startAge   = as.numeric(data$startAge)
@@ -100,7 +61,7 @@ parseJSON <- function(data) {
 #-------------------------------------------------------
 # getCrossTalkDataJSON
 # 
-# Function: Returns a JSON representation of the APC calculation results
+# Function: Returns a JSON representation of the CrossTalk calculation results
 # Inputs:   (1) The JSON string from the client
 # Outputs:  (1) A JSON string that contains the calculation results
 #-------------------------------------------------------
@@ -152,6 +113,15 @@ process <- function(data) {
 # }
 
 
+
+#-------------------------------------------------------
+# retrieveData
+# 
+# Inputs:   (1) A list containing calculation results
+#           (2) The type of result to retrieve
+#
+# Outputs:  (1) A list containing the tables and graph filepaths for the section
+#-------------------------------------------------------
 retrieveData <- function(results, key) {
   print(key)
   
@@ -251,6 +221,12 @@ retrieveData <- function(results, key) {
   output
 }
 
+
+
+#-------------------------------------------------------
+# getRates
+# Outputs:  (1) A dataframe containing incidence rates
+#-------------------------------------------------------
 getRates <- function(data) {
   
   interval = diff(data$periods)[1] - 1
@@ -270,9 +246,13 @@ getRates <- function(data) {
   output
 }
 
+
+
+#-------------------------------------------------------
+# getRatesGraph
+# Outputs:  (1) The filename of the generated rates graph
+#-------------------------------------------------------
 getRatesGraph <- function(data) {
-  
-  #  output = as.data.frame((data$A$offset/data$A$events) / (data$B$offset/data$B$events))
 
   interval = diff(data$periods)[1] - 1
   offset_tick = data$offset_tick
@@ -318,7 +298,10 @@ getRatesGraph <- function(data) {
 
 
 
-
+#-------------------------------------------------------
+# Calculates rate ratios
+# Outputs:  (1) A data frame containing rate ratios results
+#-------------------------------------------------------
 getRateRatios <- function(data) {
 
   interval = diff(data$A$periods)[1] - 1
@@ -336,7 +319,12 @@ getRateRatios <- function(data) {
 
 
 
-
+#-------------------------------------------------------
+# getResultsTemplate
+# 
+# Function: Returns a list template used to hold calculation results
+# Outputs:  (1) A list representing the results
+#-------------------------------------------------------
 resultsTemplate <- function() {
   list(
     `Incidence Rates` = list(
@@ -408,6 +396,8 @@ resultsTemplate <- function() {
     )
   )
 }
+
+
 
 #-------------------------------------------------------
 # getTimestamp
