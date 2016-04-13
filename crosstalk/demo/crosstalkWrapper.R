@@ -134,6 +134,23 @@ process <- function(data) {
   output
 }
 
+# 
+# createOutput <- function(results, output, section) {
+#   
+#   if (!is.null(output[[section]]$tables))
+#     output[[section]] = retrieveData(results, section)
+#   
+#   else
+#     for (subsection in names(output[[section]])) {
+#       
+#       print (paste(section, subsection))
+#   
+#       sub = output[[section]][[subsection]]
+#       if (class(sub) == 'list' && is.null(sub$tables))
+#         createOutput(results, output[[section]], subsection)
+#     }
+# }
+
 
 retrieveData <- function(results, key) {
   print(key)
@@ -144,6 +161,11 @@ retrieveData <- function(results, key) {
     output$tables = list(
       as.data.frame(getRates(results$input$A)),
       as.data.frame(getRates(results$input$B))
+    )
+    
+    output$graphs = list(
+      getRatesGraph(results$input$A),
+      getRatesGraph(results$input$B)
     )
   }
   
@@ -161,8 +183,15 @@ retrieveData <- function(results, key) {
   }
   
   else if (key == 'APC of Incidence Rates Net Drifts') {
+
+    netDriftA = as.data.frame(results$A$NetDrift)
+    netDriftB = as.data.frame(results$B$NetDrift)
+    
+    netDriftA = cbind(Cohort = results$A$Inputs$D$name, netDriftA)
+    netDriftB = cbind(Cohort = results$B$Inputs$D$name, netDriftB)
+
     output$tables = list(
-      as.data.frame(rbind(results$A$NetDrift, results$B$NetDrift))
+      as.data.frame(rbind(netDriftA, netDriftB))
     )
   }
   
@@ -224,23 +253,87 @@ retrieveData <- function(results, key) {
 
 getRates <- function(data) {
   
+  interval = diff(data$periods)[1] - 1
+  offset_tick = data$offset_tick
+  events = data$events
+  offset = data$offset
+
+  output = offset_tick * events / offset
+  output = as.data.frame(output)
+  
+  periods = data$periods[1:ncol(output)]
+  ages = data$ages[1:nrow(output)]
+  
+  colnames(output) = paste(periods, periods + interval, sep = ' - ')
+  rownames(output) = paste(ages, ages + interval, sep = ' - ')
+
+  output
+}
+
+getRatesGraph <- function(data) {
+  
+  #  output = as.data.frame((data$A$offset/data$A$events) / (data$B$offset/data$B$events))
+
+  interval = diff(data$periods)[1] - 1
   offset_tick = data$offset_tick
   events = data$events
   offset = data$offset
   
-  data = offset_tick * events / offset
-  data = as.data.frame(data)
+  output = offset_tick * events / offset
+  output = as.data.frame(output)
   
-  colnames(data) = data$periods[1:ncol(data)]
-  rownames(data) = data$ages[1:nrow(data)]
+  periods = data$periods[1:ncol(output)]
+  ages = data$ages[1:nrow(output)]
   
-  data
+  graph = data.frame()
+  
+  for (i in 1:length(ages))
+    for (j in 1:length(periods))
+      graph = rbind(graph, list(
+        age = ages[i],
+        period = periods[j],
+        ratio = output[i,j]
+      ))
+
+  graph
+  
+  ggplot(graph, aes(x = period, y = ratio, group = as.factor(age), color = as.factor(age))) +
+    geom_line() + 
+    geom_point(size = 2.5) + 
+    theme_bw() +
+    labs(
+      title = data$name,
+      x = 'Calendar Periods',
+      y = 'Rate per 100000 units'
+    ) +
+    scale_shape_discrete(
+      name = 'Age groups'
+    ) 
+  
+  filename = paste0(OUTPUT_DIR, 'RatesGraph_', getTimestamp(), '.png')
+  ggsave(file = filename, width = 10, height = 10)
+
+  filename
 }
+
+
 
 
 getRateRatios <- function(data) {
-  (data$A$offset/data$A$events) / (data$B$offset/data$B$events)
+
+  interval = diff(data$A$periods)[1] - 1
+
+  output = as.data.frame((data$A$offset/data$A$events) / (data$B$offset/data$B$events))
+  
+  periods = data$A$periods[1:ncol(output)]
+  ages = data$A$ages[1:nrow(output)]
+  
+  colnames(output) = paste(periods, periods + interval, sep = ' - ')
+  rownames(output) = paste(ages, ages + interval, sep = ' - ')
+  
+  output
 }
+
 
 
 
@@ -315,8 +408,6 @@ resultsTemplate <- function() {
     )
   )
 }
-
-
 
 #-------------------------------------------------------
 # getTimestamp
