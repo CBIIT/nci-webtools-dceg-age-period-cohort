@@ -387,7 +387,7 @@ getRateRatiosGraph <- function(output, labels = F) {
 #     as.data.frame(results$comparison$FVAP$CAC)
 # 
 
-generateRatesGraph <- function(results, key) {
+generateRatesGraph <- function(resultsA, resultsB, key) {
   
   setA = as.data.frame(resultsA[[key]])
   setB = as.data.frame(resultsB[[key]])
