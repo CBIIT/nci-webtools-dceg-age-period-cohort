@@ -1,4 +1,3 @@
-# Version 2 of APC 
 apc2 <- function(R, ...)
 {
   PVP <- checkPVPPAIRS(R, ...)
@@ -30,7 +29,7 @@ apc2 <- function(R, ...)
   #
   # (1) Coefficents
   #
-  XCO <- matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1), nrow=4, byrow=T)
+  XCO <- matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1), nrow=4, byrow=TRUE)
   b <- XCO%*%B[1:3]
   v <- XCO%*%s2VAR[1:3,1:3]%*%t(XCO)
   s <- matrix(sqrt(diag(v)))
@@ -122,21 +121,41 @@ apc2 <- function(R, ...)
   # (5) Longitudinal Age Curve, centered on the reference cohort
   #
   
-  XLA <- cbind(matrix(1, A), a-a0, D$XAD, matrix(1, A)%*%D$XCD[c0LOC,])
+  D$XLA <- cbind(matrix(1, A), a-a0, D$XAD, matrix(1, A)%*%D$XCD[c0LOC,])
   lot <- log(PVP$offset_tick)
-  lar <- lot + XLA%*%B[c(1, 2, D$Pt[[4]], D$Pt[[6]])]
-  lav <- XLA%*%s2VAR[c(1, 2, D$Pt[[4]], D$Pt[[6]]), c(1, 2, D$Pt[[4]], D$Pt[[6]])]%*%t(XLA)
+  lar <- lot + D$XLA%*%B[c(1, 2, D$Pt[[4]], D$Pt[[6]])]
+  lav <- D$XLA%*%s2VAR[c(1, 2, D$Pt[[4]], D$Pt[[6]]), c(1, 2, D$Pt[[4]], D$Pt[[6]])]%*%t(D$XLA)
   las <- matrix(sqrt(diag(lav)))
   lac <- cbind(lar - 1.96*las, lar + 1.96*las)
   LongAge <- cbind(a, exp(lar), exp(lac))
   dimnames(LongAge) <- list(c(), c("Age", "Rate", "CILo", "CIHi"))
   
+  
+  
+  #
+  # (5b) Longitudinal Age Rate Ratios
+  #
+  TMP1 <- cbind(matrix(1, A), a-a0, D$XAD)
+  TMP2 <- diag(0,nrow=A)
+  TMP2[, is.element(a, a0)] <- 1
+  TMP2 <- diag(A) - TMP2
+  D$LAR <- TMP2%*%TMP1  
+  larr <- D$LAR%*%B[c(1, 2, D$Pt[[4]])]
+  larrv <- D$LAR%*%s2VAR[c(1, 2, D$Pt[[4]]), c(1, 2, D$Pt[[4]])]%*%t(D$LAR)
+  larrs <- matrix(sqrt(diag(larrv)))
+  larrc <- cbind(larr - 1.96*larrs, larr + 1.96*larrs)
+  LongAgeRR <- cbind(a, exp(larr), exp(larrc))
+  dimnames(LongAgeRR) <- list(c(), c("Age", "Rate Ratio", "CILo", "CIHi"))
+  
+  
+  
+  
   #
   # (6) Cross-Sectional Age Curve, centered on the reference period
   #
-  XXA <- cbind(matrix(1, A), a-a0, -1*(a-a0), D$XAD, matrix(1, A)%*%D$XPD[p0LOC,])
-  xar <- lot + XXA%*%B[c(1, 2, 3, D$Pt[[4]], D$Pt[[5]])]
-  xav <- XXA%*%s2VAR[c(1, 2, 3, D$Pt[[4]], D$Pt[[5]]), c(1, 2, 3, D$Pt[[4]], D$Pt[[5]])]%*%t(XXA)
+  D$XXA <- cbind(matrix(1, A), a-a0, -1*(a-a0), D$XAD, matrix(1, A)%*%D$XPD[p0LOC,])
+  xar <- lot + D$XXA%*%B[c(1, 2, 3, D$Pt[[4]], D$Pt[[5]])]
+  xav <- D$XXA%*%s2VAR[c(1, 2, 3, D$Pt[[4]], D$Pt[[5]]), c(1, 2, 3, D$Pt[[4]], D$Pt[[5]])]%*%t(D$XXA)
   xas <- matrix(sqrt(diag(xav)))
   xac <- cbind(xar - 1.96*xas, xar + 1.96*xas)
   CrossAge <- cbind(a, exp(xar), exp(xac))
@@ -145,9 +164,9 @@ apc2 <- function(R, ...)
   #
   # (6c) Ratio of Longitudinal-to-Cross-Sectional Age Curves
   #
-  XLX <- cbind(a-a0, matrix(1,A)%*%D$XCD[c0LOC,], matrix(-1,A)%*%D$XPD[p0LOC,])
-  lcr <- XLX%*%B[c(3, D$Pt[[6]], D$Pt[[5]])]
-  lcv <- XLX%*%s2VAR[c(3, D$Pt[[6]], D$Pt[[5]]), c(3, D$Pt[[6]], D$Pt[[5]])]%*%t(XLX)
+  D$XLX <- cbind(a-a0, matrix(1,A)%*%D$XCD[c0LOC,], matrix(-1,A)%*%D$XPD[p0LOC,])
+  lcr <- D$XLX%*%B[c(3, D$Pt[[6]], D$Pt[[5]])]
+  lcv <- D$XLX%*%s2VAR[c(3, D$Pt[[6]], D$Pt[[5]]), c(3, D$Pt[[6]], D$Pt[[5]])]%*%t(D$XLX)
   lcs <- matrix(sqrt(diag(lcv)))
   lcc <- cbind(lcr - 1.96*lcs, lcr + 1.96*lcs)
   Long2CrossRR <- cbind(a, exp(lcr), exp(lcc))
@@ -156,9 +175,9 @@ apc2 <- function(R, ...)
   #
   # (7) Fitted Temporal Trends centered on reference age
   #
-  XPT <- cbind(matrix(1, P), p-p0, D$XPD, matrix(1,P)%*%D$XAD[a0LOC,])
-  ftt <- lot + XPT%*%B[c(1, 3, D$Pt[[5]], D$Pt[[4]])]
-  ftv <- XPT%*%s2VAR[c(1, 3, D$Pt[[5]], D$Pt[[4]]), c(1, 3, D$Pt[[5]], D$Pt[[4]])]%*%t(XPT)
+  D$XPT <- cbind(matrix(1, P), p-p0, D$XPD, matrix(1,P)%*%D$XAD[a0LOC,])
+  ftt <- lot + D$XPT%*%B[c(1, 3, D$Pt[[5]], D$Pt[[4]])]
+  ftv <- D$XPT%*%s2VAR[c(1, 3, D$Pt[[5]], D$Pt[[4]]), c(1, 3, D$Pt[[5]], D$Pt[[4]])]%*%t(D$XPT)
   fts <- matrix(sqrt(diag(ftv)))
   ftc <- cbind(ftt - 1.96*fts, ftt + 1.96*fts)
   FittedTemporalTrends <- cbind(p, exp(ftt), exp(ftc))
@@ -171,9 +190,9 @@ apc2 <- function(R, ...)
   TMP <- diag(0,nrow=P)
   TMP[, is.element(p, p0)] <- 1
   PRR <- diag(P) - TMP
-  XPR <- PRR%*%Xp
-  pr <- XPR%*%B[c(1, 3, D$Pt[[5]])]
-  vpr <- XPR%*%s2VAR[c(1, 3, D$Pt[[5]]), c(1, 3, D$Pt[[5]])]%*%t(XPR)
+  D$XPR <- PRR%*%Xp
+  pr <- D$XPR%*%B[c(1, 3, D$Pt[[5]])]
+  vpr <- D$XPR%*%s2VAR[c(1, 3, D$Pt[[5]]), c(1, 3, D$Pt[[5]])]%*%t(D$XPR)
   sd <- matrix(sqrt(diag(vpr)))
   ci <- cbind(pr - 1.96*sd, pr + 1.96*sd)
   epr <- exp(pr)
@@ -196,9 +215,9 @@ apc2 <- function(R, ...)
   TMP <- diag(0,nrow=C)
   TMP[, is.element(c, c0)] <- 1
   CRR <- diag(C) - TMP
-  XCR <- CRR%*%Xc
-  cr <- XCR%*%B[c(1, 3, D$Pt[[6]])]
-  vcr <- XCR%*%s2VAR[c(1, 3, D$Pt[[6]]), c(1, 3, D$Pt[[6]])]%*%t(XCR)
+  D$XCR <- CRR%*%Xc
+  cr <- D$XCR%*%B[c(1, 3, D$Pt[[6]])]
+  vcr <- D$XCR%*%s2VAR[c(1, 3, D$Pt[[6]]), c(1, 3, D$Pt[[6]])]%*%t(D$XCR)
   sd <- matrix(sqrt(diag(vcr)))
   ci <- cbind(cr - 1.96*sd, cr + 1.96*sd)
   ecr <- exp(cr)
@@ -217,9 +236,9 @@ apc2 <- function(R, ...)
   #
   # (9b) Fitted Cohort Pattern centered on the reference age
   #
-  XCT <- cbind(matrix(1,C), c-c0, D$XCD, matrix(1,C)%*%D$XAD[a0LOC,])
-  fcp <- lot + XCT%*%B[c(1, 3, D$Pt[[6]], D$Pt[[4]])]
-  vcp <- XCT%*%s2VAR[c(1, 3, D$Pt[[6]], D$Pt[[4]]), c(1, 3, D$Pt[[6]], D$Pt[[4]])]%*%t(XCT)
+  D$XCT <- cbind(matrix(1,C), c-c0, D$XCD, matrix(1,C)%*%D$XAD[a0LOC,])
+  fcp <- lot + D$XCT%*%B[c(1, 3, D$Pt[[6]], D$Pt[[4]])]
+  vcp <- D$XCT%*%s2VAR[c(1, 3, D$Pt[[6]], D$Pt[[4]]), c(1, 3, D$Pt[[6]], D$Pt[[4]])]%*%t(D$XCT)
   sd <- matrix(sqrt(diag(vcp)))
   ci <- cbind(fcp - 1.96*sd, fcp + 1.96*sd)
   efcp <- exp(fcp)
@@ -282,7 +301,7 @@ apc2 <- function(R, ...)
     c(X21, df1, PVAL1, X22, df2, PVAL2, 
       X23, df3, PVAL3, X24, df4, PVAL4, 
       X28, df8, PVAL8, X29, df9, PVAL9,
-      X210, df10, PVAL10), 7, 3, byrow = T)
+      X210, df10, PVAL10), 7, 3, byrow = TRUE)
   dimnames(WaldTests) <- list(
     c("NetDrift = 0", 
       "All Age Deviations = 0", 
@@ -302,7 +321,7 @@ apc2 <- function(R, ...)
             vpr = vpr,
             vcr = vcr,
             vld = vld)
-  
+
   M <- list(Inputs = PVP,
             FittedRates = FittedRates,
             Coefficients = Coefficients,
@@ -310,6 +329,7 @@ apc2 <- function(R, ...)
             PerDeviations = PerDeviations,
             CohDeviations = CohDeviations,
             LongAge = LongAge, 
+            LongAgeRR = LongAgeRR,
             CrossAge = CrossAge,
             Long2CrossRR = Long2CrossRR,
             FittedTemporalTrends = FittedTemporalTrends,
@@ -321,7 +341,8 @@ apc2 <- function(R, ...)
             Variances = V,
             APCModel = apcM,
             Pt = D$Pt,
-            NetDrift = NetDrift)
+            NetDrift = NetDrift,
+            Matrices = D)
   
   
 }
@@ -394,17 +415,14 @@ checkPVPPAIRS <- function(R, OverDispersion = 1, offset_tick = 10^5, zero_fill =
 rates2data_set <- function(R) {
   
   
-  R$events
-  R$offset
-  
   M <- nrow(R$events)
   N <- ncol(R$events)
   
-  da <- R$a[2:(M+1)] - R$a[1:M]
-  D.a <- R$a[1:M] + 0.5*da
+  da <- R$ages[2:(M+1)] - R$ages[1:M]
+  D.a <- R$ages[1:M] + 0.5*da
   
-  dp <- R$p[2:(N+1)] - R$p[1:N]
-  D.p <- R$p[1:N] + 0.5*dp
+  dp <- R$periods[2:(N+1)] - R$periods[1:N]
+  D.p <- R$periods[1:N] + 0.5*dp
   
   
   
@@ -544,17 +562,17 @@ designmatrix <- function(PVP)
   Xa <- cbind(matrix(1, nrow = aM), matrix(avals) - abar)
   Ra <- solve(t(Xa)%*%Xa,t(Xa))
   XAD <- diag(aM) - Xa%*%Ra
-  XAD <- XAD[,2:(aM-1)]
+  XAD <- matrix(XAD[,2:(aM-1)], nrow = aM)
   
   Xp <- cbind(matrix(1, nrow = pN), matrix(pvals) - pbar)
   Rp <- solve(t(Xp)%*%Xp,t(Xp))
   XPD <- diag(pN) - Xp%*%Rp
-  XPD <- XPD[,2:(pN-1)]
+  XPD <- matrix(XPD[,2:(pN-1)], nrow = pN)
   
   Xc <- cbind(matrix(1, nrow = cK), matrix(cvals) - cbar)
   Rc <- solve(t(Xc)%*%Xc,t(Xc))
   XCD <- diag(cK) - Xc%*%Rc
-  XCD <- XCD[,2:(cK-1)]
+  XCD <- matrix(XCD[,2:(cK-1)], nrow = cK)
   
   
   D <- list(X = X, Pt = Pt, XAD = XAD, XPD = XPD, XCD = XCD)
@@ -717,7 +735,7 @@ rateratio <- function(R1, R2)
   
   rr = r1/r2
   
-  RR <- list(name = paste(R1$name, R2$name, sep = " vs. "), RateRatio = rr, ages = R1$ages, periods = R1$periods) 
+  RR <- list(name = paste(R1$fullname, R2$fullname, sep = " vs. "), RateRatio = rr, ages = R1$ages, periods = R1$periods) 
   
   
 }
@@ -729,15 +747,15 @@ type <- function(R, comp = 'r')
   
   if (comp == "r") {
     T <- R$offset_tick*R$events/R$offset
-    dn <- paste('Rates - ', R$name)
+    dn <- paste('Rates - ', R$fullname)
     
   } else if (comp == "e") {
     T <- R$events
-    dn <- paste("Events -", R$name)
+    dn <- paste("Events -", R$fullname)
     
   } else if (comp == "o") {
     T <- R$offset
-    dn <- paste('Offset - ', R$name)
+    dn <- paste('Offset - ', R$fullname)
     
   } else if (comp == "eo") {
   
@@ -745,7 +763,7 @@ type <- function(R, comp = 'r')
     DATA[,seq.int(1, 2*P, 2)]<-R$events
     DATA[,seq.int(2, 2*P, 2)]<-R$offset
     T <- DATA
-    dn <- paste("Events & Offset -", R$name)
+    dn <- paste("Events & Offset -", R$fullname)
     
   } else if (comp == "er") {
     r <- R$offset_tick*R$events/R$offset
@@ -753,7 +771,7 @@ type <- function(R, comp = 'r')
     DATA[,seq.int(1, 2*P, 2)]<-R$events
     DATA[,seq.int(2, 2*P, 2)]<-r
     T <- DATA
-    dn <- paste("Events and Rates - ", R$name)
+    dn <- paste("Events and Rates - ", R$fullname)
    
   } else if (comp == "eor") {
     
@@ -763,7 +781,7 @@ type <- function(R, comp = 'r')
     DATA[,seq.int(2, 3*P, 3)]<-R$offset
     DATA[,seq.int(3, 3*P, 3)]<-r
     T <- DATA
-    dn <- paste("Events, offset, and Rates - ", R$name)
+    dn <- paste("Events, offset, and Rates - ", R$fullname)
     
   } else if (comp == "rci") {
     
@@ -777,7 +795,7 @@ type <- function(R, comp = 'r')
     DATA[,seq.int(2, 3*P, 3)]<-cilo
     DATA[,seq.int(3, 3*P, 3)]<-cihi
     T <- DATA
-    dn <- paste("Rates and 95% CI - ", R$name)
+    dn <- paste("Rates and 95% CI - ", R$fullname)
     
   } else {
     
