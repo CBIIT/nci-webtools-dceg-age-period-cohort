@@ -95,7 +95,7 @@ process <- function(data) {
     else
       output[[tab]] = retrieveData(results, tab)
   
-  output
+  toJSON(output)
 }
 
 # 
