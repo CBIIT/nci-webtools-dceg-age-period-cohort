@@ -4,13 +4,12 @@ import rpy2.robjects as robjects
 app = Flask(__name__)
 
 wrapper = robjects.r
-#wrapper['source']('rcode/test.R')
+#wrapper['source']('rcode/CrossTalkWrapper.R')
 
 
 @app.route('/crossTalkRest/', methods = ['POST'])
 def calculation():
-    return '' 
-    #wrapper['processClientJSON'](request.stream.read())[0]
+    return wrapper['process'](request.stream.read())[0]
 
 import argparse
 if __name__ == '__main__':
