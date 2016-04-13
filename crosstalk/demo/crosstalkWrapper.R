@@ -219,17 +219,26 @@ retrieveData <- function(results, key) {
     output$tables = list(
       as.data.frame(results$comparison$FVCA$FCP)
     )
+    output$graphs = list(
+      generateRatiosGraph(results, 'FittedCohortPattern')
+    )
   }
   
   else if (key == 'ApcOfRateRatios_FittedTemporalTrends') {
     output$tables = list(
       as.data.frame(results$comparison$FVPA$FTT)
     )
+    output$graphs = list(
+      generateRatiosGraph(results, 'FittedTemporalTrends')
+    )
   }
   
   else if (key == 'ApcOfRateRatios_CrossSectionalAgeCurve') {
     output$tables = list(
       as.data.frame(results$comparison$FVAP$CAC)
+    )
+    output$graphs = list(
+      generateRatiosGraph(results, 'CrossAge')
     )
   }
   
@@ -368,10 +377,17 @@ getRateRatiosGraph <- function(output, labels = F) {
   filename
 }
 
+#Fitted 
+# as.data.frame(results$comparison$FVCA$FCP)
+# 
+# else if (key == 'ApcOfRateRatios_FittedTemporalTrends') {
+#     as.data.frame(results$comparison$FVPA$FTT)
+# 
+# else if (key == 'ApcOfRateRatios_CrossSectionalAgeCurve') {
+#     as.data.frame(results$comparison$FVAP$CAC)
+# 
 
-
-
-generateRatesGraph <- function(resultsA, resultsB, key) {
+generateRatesGraph <- function(results, key) {
   
   setA = as.data.frame(resultsA[[key]])
   setB = as.data.frame(resultsB[[key]])
@@ -382,6 +398,7 @@ generateRatesGraph <- function(resultsA, resultsB, key) {
   filename = paste0(OUTPUT_DIR, key, '_', getTimestamp(), '.svg')
 
   if (key == 'FittedCohortPattern') {
+    
     title = 'Fitted Cohort Pattern'
     xAxis = 'Birth Cohort and Calendar Period'
     yAxis = 'Adjusted Rate'
@@ -414,6 +431,70 @@ generateRatesGraph <- function(resultsA, resultsB, key) {
   mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', group = 'key', col = 'key', fill = 'key')
   
   ggplot(rbind(setA, setB), mapping) +
+    scale_fill_manual(values = colors) + 
+    scale_color_manual(values = c('black', 'black')) +
+    geom_ribbon(alpha = 0.35) +
+    geom_line(alpha = 0.35) +
+    geom_point(alpha = 0.7) +
+    scale_y_continuous(expand = c(0.2, 0)) +
+    labs(
+      title = title,
+      x = xAxis,
+      y = yAxis
+    ) +
+    theme_light() +
+    theme(
+      legend.title = element_blank(),
+      legend.position = c(0.1, 0.92)
+    )
+  
+  ggsave(file = filename, width = 10, height = 10)
+  
+  filename
+}
+
+
+generateRatiosGraph <- function(results, key) {
+  
+  filename = paste0(OUTPUT_DIR, key, '_', getTimestamp(), '.svg')
+  
+  if (key == 'FittedCohortPattern') {
+    set = as.data.frame(results$comparison$FVCA$FCP)
+    title = 'Fitted Cohort Pattern'
+    xAxis = 'Birth Cohort and Calendar Period'
+    yAxis = 'Adjusted Rate'
+    xMap = 'Coh'
+    yMap = 'FCP'
+    
+    colors = c('#0074D9', '#FF851B')
+  }
+  
+  else if (key == 'FittedTemporalTrends') {
+    set = as.data.frame(results$comparison$FVPA$FTT)
+    title = 'Fitted Temporal Trends'
+    xAxis = 'Age'
+    yAxis = 'Adjusted Rate'
+    xMap = 'Per'
+    yMap = 'FTT'
+    
+    colors = c('#2ECC40', '#7FDBFF')
+  }
+  
+  else if (key == 'CrossAge') {
+    set = as.data.frame(results$comparison$FVAP$CAC)
+    title = 'Cross-Sectional Age Curve'
+    xAxis = 'Age'
+    yAxis = 'Adjusted Rate'
+    xMap = 'Age'
+    yMap = 'CAC'
+    
+    colors = c('#FFDC00', '#FF4136')
+  }
+  title = paste(results$input$A$name, results$input$B$name)
+  
+  mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', group = 'key', col = 'key', fill = 'key')
+  
+  ggplot(set, mapping) +
     scale_fill_manual(values = colors) + 
     scale_color_manual(values = c('black', 'black')) +
     geom_ribbon(alpha = 0.35) +
