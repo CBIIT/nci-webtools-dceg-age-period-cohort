@@ -1,0 +1,13 @@
+[adamant-pastable] {
+  position: relative;
+}
+[adamant-pastable] textarea {
+  height: 100%;
+  left: 0px;
+  opacity: 0;
+  position: absolute;
+  text-indent: -9999em;
+  top: 0px;
+  width: 100%;
+  z-index: 999;
+}

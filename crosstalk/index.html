@@ -37,6 +37,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/0.7.3/purify.min.js"></script>
 	<script src="https://cdn.rawgit.com/flatlogic/bootstrap-tabcollapse/master/bootstrap-tabcollapse.js"></script>
 
+  <script src="adamant-pastable/adamant-pastable.js"/></script>
 	<script src="js/crossTalk.js"></script>
 	<link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
 </head>
@@ -52,7 +53,7 @@
 	   <div class="row offset">
 		   <!-- sub-Banner div -->
 		   <div class="col-xs-12 col-md-10">
-			   <img src="../common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" title="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
+			   <img src="/common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" title="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
 		   </div>
 		   <div class="col-xs-12 col-md-2">
 			   <img src="images/apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" title="Age-Period-Cohort Web Tool" height="33" />
@@ -196,15 +197,15 @@
 						<br/>
 						<fieldset>
 							<legend><font size="2"><b>Data 1 (Numerator)</b></font></legend>
-							<div id="dataset1">
-								<center><img src="images/dataset.jpg" class="img-responsive" alt="Dataset 1" height="200" width="400"></center>
+							<div id="dataset1" adamant-pastable="crosstalk-input">
+                <img class="img-responsive paste-here" alt="paste here" src="/common/images/paste-here.gif">
 							</div>
 						</fieldset>
 						<br/>
 						<fieldset>
 							<legend><font size="2"><b>Data 2 (Denominator)</b></font></legend>
-							<div id="dataset2">
-								<center><img src="images/dataset.jpg" class="img-responsive" alt="Dataset 2" height="200" width="400"></center>
+							<div id="dataset2" adamant-pastable="crosstalk-input">
+                <img class="img-responsive paste-here" alt="paste here" src="/common/images/paste-here.gif">
 							</div>
 						</fieldset>
 						<br/>

@@ -959,3 +959,15 @@ table.dataTable thead .sorting_desc {
 .table > tbody > tr:last-child > th, .table > tbody > tr:last-child > td {
     padding-bottom: 20px;
 }
+.img-responsive {
+  width: 100%;
+}
+.paste-here {
+  left: 0px;
+  opacity: 0.5;
+  overflow: auto;
+  position: absolute;
+  top: 0px;
+  width: 80%;
+  z-index: 999;
+}
