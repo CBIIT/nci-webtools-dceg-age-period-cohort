@@ -1,42 +1,43 @@
 $(document).ready(function () {
+
     // Save DOM references to minimize queries
     var cfg = crosstalk.config({
-        description: $('#description')
-        , startYear: $('#startYear')
-        , startAge: $('#startAge')
-        , interval: $('#interval')
-        , titleA: $('#title1')
-        , titleB: $('#title2')
-        , inputFileA: $('#inputfile1')
-        , inputFileB: $('#inputfile2')
-    , });
+        description: $('#description'),
+        startYear: $('#startYear'),
+        startAge: $('#startAge'),
+        interval: $('#interval'),
+        titleA: $('#title1'),
+        titleB: $('#title2'),
+        inputFileA: $('#inputfile1'),
+        inputFileB: $('#inputfile2'),
+    });
 
     // Add event listeners
     for (element in cfg)
         cfg[element].change(crosstalk.update);
 
     $('#startYear').spinner({
-        min: 1800
-        , max: 2200
-        , step: 1
-        , spin: crosstalk.update
-        , stop: crosstalk.update
+        min: 1800,
+        max: 2200,
+        step: 1,
+        spin: crosstalk.update,
+        stop: crosstalk.update
     });
 
     $('#startAge').spinner({
-        min: 0
-        , max: 120
-        , step: 1
-        , spin: crosstalk.update
-        , stop: crosstalk.update
+        min: 0,
+        max: 120,
+        step: 1,
+        spin: crosstalk.update,
+        stop: crosstalk.update
     });
 
     $('#interval').spinner({
-        min: 1
-        , max: 10
-        , step: 1
-        , spin: crosstalk.update
-        , stop: crosstalk.update
+        min: 1,
+        max: 10,
+        step: 1,
+        spin: crosstalk.update,
+        stop: crosstalk.update
     });
 
     $('#process').click(crosstalk.log);
@@ -57,12 +58,12 @@ var readfile = (function () {
     function createModel(element, callback) {
         readFile(element, function (contents) {
             callback(element.id, {
-                title: parseHeader(contents.shift())
-                , description: parseHeader(contents.shift())
-                , startYear: parseInt(parseHeader(contents.shift()))
-                , startAge: parseInt(parseHeader(contents.shift()))
-                , interval: parseInt(parseHeader(contents.shift()))
-                , table: parseTable(contents)
+                title: parseHeader(contents.shift()),
+                description: parseHeader(contents.shift()),
+                startYear: parseInt(parseHeader(contents.shift())),
+                startAge: parseInt(parseHeader(contents.shift())),
+                interval: parseInt(parseHeader(contents.shift())),
+                table: parseTable(contents)
             });
         });
     }
@@ -112,120 +113,183 @@ var crosstalk = (function ($, ReadFile) {
 
     // Holds DOM references
     self.cfg = {
-        description: null
-        , startYear: null
-        , startAge: null
-        , interval: null
-        , titleA: null
-        , titleB: null
-        , inputFileA: null
-        , inputFileB: null
-    , };
+        description: null,
+        startYear: null,
+        startAge: null,
+        interval: null,
+        titleA: null,
+        titleB: null,
+        inputFileA: null,
+        inputFileB: null,
+    };
 
     // Holds values from the DOM in a model
     self.model = {
-        description: null
-        , startYear: null
-        , startAge: null
-        , interval: null
-        , titleA: null
-        , titleB: null
-        , inputfile1: null
-        , inputfile2: null
-    , };
-
-    self.modeltable = {
-        a: null
-        , b: null
+        description: null,
+        startYear: null,
+        startAge: null,
+        interval: null,
+        titleA: null,
+        titleB: null,
+        inputfile1: null,
+        inputfile2: null
     };
 
+
+    // set default datatable options
+    $.extend(true, $.fn.dataTable.defaults, {
+        "destroy": true,
+        "bSort": false,
+        "bFilter": false,
+        "paging": false,
+        "responsive": true,
+        "dom": 't',
+        "scrollX": true
+    });
+
     return {
-        calculate: calculate
-        , update: update
-        , config: config
-        , log: log
-        , getData: getData
-        , reset: reset
-        , model: self.model
+        calculate: calculate,
+        update: update,
+        config: config,
+        log: log,
+        getData: getData,
+        reset: reset,
+        model: self.model,
+        dtDefaults: self.tableDefaults
     };
 
     function getData() {
-        ajaxCall = $.post(crosstalk_form.action, crosstalk.model, function (result) {
+        $.ajax({
+            method: "POST",
+            url: crosstalk_form.action,
+            data: JSON.stringify(crosstalk.model),
+            beforeSend: function () {
+                $(".loading").css("display", "block");
+            }
+        }).done(function (data) {
+            var result = data;
             for (var key in result.data) {
                 var resultSet = result.data[key];
-                var formatted_key = key.replace(" ", "_").toLowerCase();
-                if (formatted_key == "incidence_rates")
-                    ratesTab(resultSet, formatted_key);
+
+                $("table, #rateGraphs, #irrGraphs").empty();
+                if (key == "IncidenceRates")
+                    incRatesTab(resultSet);
+                //                else if(key == "IncidenceRateRatios")
+                //                    incRateRatioTab(resultSet);
             }
-        }, "json");
-
-        ajaxCall.fail(function () {
-            console.log(this)
-        });
-
-        ajaxCall.always(function () {
+        }).fail(function () {
+            console.log("failed");
+        }).always(function () {
             $(".loading").css("display", "none");
         });
     }
 
-    function ratesTab(result, key) {
-        // result has tables, headers and graphs properties
-        var headers = [];
+    function incRatesTab(result) {
+        var t1 = $("#rateTable1");
+        var t2 = $("#rateTable2");
 
-        for (var i = 0; i < result.headers.length / 2; i++) {
+        // result has tables, headers and graphs properties
+        var headers = [{
+            data: "_row",
+            title: "Age Group"
+        }];
+
+        for (var i = 0; i < result.headers.length; i++) {
             headers.push({
+                data: result.headers[i].toString(),
                 title: result.headers[i].toString()
             });
         }
 
-        var t1 = $("#rateTable1");
-        var t2 = $("#rateTable2");
-
-        $("table, #rateGraphs").empty();
+        $("#rateTables .title").html("");
 
         if (result.tables[0]) {
+            if ($.fn.DataTable.isDataTable("#" + t1[0].id)) {
+                t1.DataTable().destroy();
+            }
+
+            t1.empty().html("");
+            t1.before("<h4 class='title'>" + model.titleA + "</h4>");
+
             $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" +
                 result.graphs[0] + "' />");
-            t1.empty().before("<h4 class='title'>" + model.titleA + "</h4>");
-            t1.DataTable({
-                "destroy": true
-                , "data": result.tables[0]
-                , "columns": headers
-                , "bSort": false
-                , "bFilter": false
-                , "paging": false
-                , "responsive": true
-                , "dom": 't'
-                , scrollX: true
+
+            var dTbl1 = t1.DataTable({
+                "data": result.tables[0],
+                "columns": headers
             });
 
-            t1.find("thead").append("<tr role='row'><th>Rate</th><th colspan='9'>Calendar Period</th></tr>");
-        t1.DataTable();
+            $(dTbl1.table().header()).prepend(
+                "<tr role='row'><th>Rate</th><th colspan='" +
+                result.headers.length +
+                "'>Calendar Period</th></tr>");
+            t1.dataTable().fnDraw();
         }
+
         if (result.tables[1]) {
+            if ($.fn.DataTable.isDataTable("#" + t2[0].id)) {
+                t2.DataTable().destroy();
+            }
+
             $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" +
                 result.graphs[1] + "' />");
 
-            t2.empty().before("<h4 class='title'>" + model.titleB + "</h4>");
+            if ($.fn.DataTable.isDataTable("#" + t2[0].id)) {
+                t2.DataTable().destroy();
+            }
 
-            t2.DataTable({
-                "destroy": true
-                , "data": result.tables[1]
-                , "columns": headers
-                , "bSort": false
-                , "bFilter": false
-                , "paging": false
-                , "responsive": true
-                , "dom": 't'
-                , scrollX: true
+            t2.empty().html("").before("<h4 class='title'>" + model.titleB + "</h4>");
+
+            var dTbl2 = t2.DataTable({
+                "data": result.tables[1],
+                "columns": headers
             });
 
-            t2.find("thead").append("<tr role='row'><th>Rate</th><th colspan='9'>Calendar Period</th></tr>");
-            t2.DataTable();
+            $(dTbl2.table().header()).prepend(
+                "<tr role='row'><th>Rate</th><th colspan='" +
+                result.headers.length +
+                "'>Calendar Period</th></tr>");
+            t2.dataTable().fnDraw();
+        }
+    }
+
+    function incRateRatioTab(result) {
+        // result has tables, headers and graphs properties
+        var headers = [{
+            title: "Age Group"
+        }];
+
+        for (var i = 0; i < result.headers.length; i++) {
+            headers.push({
+                data: result.headers[i].toString(),
+                title: result.headers[i].toString()
+            });
         }
 
+        var t1 = $("#irrTable1");
 
+        if (result.tables[0]) {
+            $("#irrGraphs").append("<img class='img-responsive' src='" +
+                result.graphs[0] + "' /><div id='showPlot' style='display:none'></div><img class='img-responsive hide' src='" + result.graphs[1] + "' />");
+
+            t1.empty().before("<h4 class='title'>" + model.titleA + " vs " + model.titleB + "</h4>");
+            t1.DataTable({
+                "destroy": true,
+                "data": result.tables[0],
+                "columns": headers,
+                "bSort": false,
+                "bFilter": false,
+                "paging": false,
+                "responsive": true,
+                "dom": 't',
+                "scrollX": true
+            });
+
+            t1.find("thead").append("<tr role='row'><th>Rate Ratios</th><th colspan='9'>Calendar Period</th></tr>");
+            t1.DataTable();
+        }
     }
+
 
     function calculate() {
         console.log('JSON object for calculations: ' + self.model);
@@ -238,7 +302,6 @@ var crosstalk = (function ($, ReadFile) {
         // Updates the model based on the contents of the file
         if (self.type == 'file')
             ReadFile.createModel(self, updateModel);
-
         else
             syncModel();
     }
@@ -303,14 +366,14 @@ var crosstalk = (function ($, ReadFile) {
             })
 
         $('#tableA').DataTable({
-            'destroy': true
-            , 'columns': headers
-            , 'data': self.model.inputfile1.table
-            , 'bSort': false
-            , 'bFilter': false
-            , 'paging': false
-            , 'responsive': true
-            , 'dom': 't'
+            'destroy': true,
+            'columns': headers,
+            'data': self.model.inputfile1.table,
+            'bSort': false,
+            'bFilter': false,
+            'paging': false,
+            'responsive': true,
+            'dom': 't'
         });
 
     }

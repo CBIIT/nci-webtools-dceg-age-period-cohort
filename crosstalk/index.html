@@ -38,7 +38,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/0.7.3/purify.min.js"></script>
     <script src="https://cdn.rawgit.com/flatlogic/bootstrap-tabcollapse/master/bootstrap-tabcollapse.js"></script>
 
-    <script src="demo/crossTalk.js"></script>
+    <script src="crossTalk.js"></script>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
 </head>
 
@@ -233,11 +233,12 @@
                         <div class="col-sm-12" id="showNumber" style="display:none"><font size="2">Show numbers in circle</font>&nbsp;&nbsp;&nbsp;
                             <input type="checkbox" name="showSwitch" checked>
                         </div>
-                        <div class="col-sm-12" id="showPlot" style="display:none">
-                            <center><img src="images/plot.jpg" class="img-responsive" alt="Plot" height="900" width="500"></center>
-                            <br/>
-                            <br/>
-                            <center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49 vs NHW 30-49</a></center>
+
+                        <div id="irrGraphs" class="col-sm-12 graphsContainers">
+                        </div>
+                        <div id="irrTables" class="col-sm-12 tablesContainers">
+                            <table id="irrTable1" class="data-table stripe compact" width="100%">
+                            </table>
                         </div>
 
                     </div>

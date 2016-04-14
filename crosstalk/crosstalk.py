@@ -5,21 +5,15 @@ import json
 app = Flask(__name__)
 
 wrapper = robjects.r
-#wrapper['source']('rcode/test.R')
+#wrapper['source']('CrossTalkWrapper.R')
+wrapper['source']('crosstalkWrapper.R')
 
 @app.route('/crosstalkRest', methods = ['POST'])
 @app.route('/crosstalkRest/', methods = ['POST'])
 def calculation():
-    try:
-        #wrapper['processClientJSON'](request.stream.read())[0]
-        ex = example_file()
-        print ex
-        return jsonify(data=ex, complete=True)
-    except Exception as e :
-        return jsonify(data={}, error=e, complete=False)
-
-def example_file():
-    return json.loads(open('examples/example.json').read())
+    print(request.get_data())
+    response = jsonify(data=json.loads(wrapper['process'](request.get_data())[0]), complete=True)
+    return response
 
 import argparse
 if __name__ == '__main__':
