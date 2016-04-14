@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>SVG Toooltips</title>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+		<style>
+		.tooltip {
+			z-index: 999 !important;
+		}
+
+		object {
+			z-index: -999 !important;
+		}
+		</style>
+
+		<script>
+			$(window).load(function() {
+
+
+				$('#o1').contents().find('[data-toggle="tooltip"]').tooltip({container:'body'});
+				$('#o2').contents().find('[data-toggle="tooltip"]').tooltip({container:'body'});
+				$('#o3').contents().find('[data-toggle="tooltip"]').tooltip({container:'body'});
+			})
+		</script>
+	</head>
+	
+	<body>
+		SVG 1
+		<div id="c1">
+		<object id="o1" type="image/svg+xml" data="grid.svg">No SVG</object>
+		</div>
+
+		SVG 2
+		<div id="c2">
+		<object id="o2" type="image/svg+xml" data="grid2.svg">No SVG</object>
+		</div>
+
+		SVG 3
+		<div id="c3">
+		<object id="o3" type="image/svg+xml" data="grid2.svg">No SVG</object>
+		</div>
+	</body>
+</html>
+
