@@ -5,7 +5,7 @@ import json
 app = Flask(__name__)
 
 wrapper = robjects.r
-wrapper['source']('crosstalkWrapper.R',chdir=True)
+wrapper['source']('crosstalkWrapper.R')
 
 @app.route('/crosstalkRest', methods = ['POST'])
 @app.route('/crosstalkRest/', methods = ['POST'])
