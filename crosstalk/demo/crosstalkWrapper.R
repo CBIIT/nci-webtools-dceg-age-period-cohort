@@ -1,67 +1,30 @@
 library(jsonlite)
+library(ggplot2)
+library(gridSVG)
+library(corrplot)
+library(svglite)
 
 source('apcversion2.R')
 source('crosstalk.R')
 
-OUTPUT_DIR <- "./tmp/"
+OUTPUT_DIR <- './tmp/'
 dir.create(OUTPUT_DIR)
 
 
-
-SECTION_KEYS = c(
-  'Incidence Rates',
-  'Incidence Rates Ratios',
-  'APC of Incidence Rates',
-  'APC of Rate Ratios'
-)
-
-
-
-keys = c(
-  # [section] Incidence Rates
-    'IncidenceRatesA',
-    'IncidenceRatesB',
-  # [end-section] Incidence Rates
-  
-  # [section] Incidence Rate Ratios
-    'IncidenceRateRatios',
-  # [end-section] Incidence Rate Ratios
-  
-  # [section] APC of Incidence Rates
-  
-    ## [tab] Local Drifts
-    'LocalDriftsA',
-    'LocalDriftsB',
-
-    ## [tab] Net Drifts
-    'NetDrifts',
-  
-    ## [tab] Adjusted Rates
-      #### [section] Comparison of Adjusted Rates
-      'ComparisonOfAdjustedRates',
-
-      #### [section] Fitted Cohort Pattern
-      'FittedCohortPatternA',
-      'FittedCohortPatternB',
-  
-      #### [section] Fitted Temporal Trends
-      'FittedTemporalTrendsA',
-      'FittedTemporalTrendsB',
-
-      #### [section] Cross-Sectional Age Curve
-      'CrossSectionalAgeCurveA',
-      'CrossSectionalAgeCurveB'
-
-    ## [end-tab] Adjusted Rates
-  # [end-section] APC of Incidence Rates
-
-    
-  # [section] APC of Rate Ratios
-)
-
+#-------------------------------------------------------
+# parseJSON
+# 
+# Parses a json string from the client as a list
+# Inputs:   (1) The JSON string from the client
+# Outputs:  (1) A list containing calculation parameters
+#-------------------------------------------------------
 parseJSON <- function(data) {
-  data = fromJSON(txt = 'input_new.json')
-  # data = fromJSON(data)
+  
+  if (length(data) < 2)
+    data = fromJSON(txt = 'input_new.json')
+  
+  else
+    data = fromJSON(data)
   
   data$interval   = as.numeric(data$interval)
   data$startAge   = as.numeric(data$startAge)
@@ -97,10 +60,11 @@ parseJSON <- function(data) {
 }
 
 
+
 #-------------------------------------------------------
 # getCrossTalkDataJSON
 # 
-# Function: Returns a JSON representation of the APC calculation results
+# Function: Returns a JSON representation of the CrossTalk calculation results
 # Inputs:   (1) The JSON string from the client
 # Outputs:  (1) A JSON string that contains the calculation results
 #-------------------------------------------------------
@@ -123,95 +87,162 @@ process <- function(data) {
       for (section in names(output[[tab]]))
         if (is.null(output[[tab]][[section]]$tables))
           for (subsection in names(output[[tab]][[section]]))
-            output[[tab]][[section]][[subsection]] = retrieveData(results, paste(tab, section, subsection))
+            output[[tab]][[section]][[subsection]] = retrieveData(results, paste(tab, section, subsection, sep = '_'))
 
         else  
-          output[[tab]][[section]] = retrieveData(results, paste(tab, section))
+          output[[tab]][[section]] = retrieveData(results, paste(tab, section, sep = '_'))
   
     else
       output[[tab]] = retrieveData(results, tab)
   
-  output
+  toJSON(output)
 }
 
+# 
+# createOutput <- function(results, output, section) {
+#   
+#   if (!is.null(output[[section]]$tables))
+#     output[[section]] = retrieveData(results, section)
+#   
+#   else
+#     for (subsection in names(output[[section]])) {
+#       
+#       print (paste(section, subsection))
+#   
+#       sub = output[[section]][[subsection]]
+#       if (class(sub) == 'list' && is.null(sub$tables))
+#         createOutput(results, output[[section]], subsection)
+#     }
+# }
 
+
+
+#-------------------------------------------------------
+# retrieveData
+# 
+# Inputs:   (1) A list containing calculation results
+#           (2) The type of result to retrieve
+#
+# Outputs:  (1) A list containing the tables and graph filepaths for the section
+#-------------------------------------------------------
 retrieveData <- function(results, key) {
   print(key)
   
   output = list()
   
-  if (key == 'Incidence Rates') {
+  if (key == 'IncidenceRates') {
     output$tables = list(
       as.data.frame(getRates(results$input$A)),
       as.data.frame(getRates(results$input$B))
     )
+    
+    output$graphs = list(
+      getRatesGraph(results$input$A),
+      getRatesGraph(results$input$B)
+    )
   }
   
-  else if (key == 'Incidence Rate Ratios') {
-   output$tables =  list(
-     as.data.frame(getRateRatios(results$input))
+  else if (key == 'IncidenceRateRatios') {
+   
+    rateRatios = getRateRatios(results$input$A, results$input$B)
+    output$tables =  list(
+     as.data.frame(rateRatios)
+   )
+   
+   output$graphs = list(
+     getRateRatiosGraph(rateRatios, T),
+     getRateRatiosGraph(rateRatios)
    )
   }
   
-  else if (key == 'APC of Incidence Rates Local Drifts') {
+  else if (key == 'ApcOfIncidenceRates_LocalDrifts') {
     output$tables = list(
       as.data.frame(results$A$LocalDrifts),
       as.data.frame(results$B$LocalDrifts)
     )
   }
   
-  else if (key == 'APC of Incidence Rates Net Drifts') {
+  else if (key == 'ApcOfIncidenceRates_NetDrifts') {
+
+    netDriftA = as.data.frame(results$A$NetDrift)
+    netDriftB = as.data.frame(results$B$NetDrift)
+    
+    netDriftA = cbind(Cohort = results$A$Inputs$D$name, netDriftA)
+    netDriftB = cbind(Cohort = results$B$Inputs$D$name, netDriftB)
+
     output$tables = list(
-      as.data.frame(rbind(results$A$NetDrift, results$B$NetDrift))
+      as.data.frame(rbind(netDriftA, netDriftB))
     )
   }
   
-  else if (key == 'APC of Incidence Rates Adjusted Rates Comparison of Adjusted Rates') {
+  else if (key == 'ApcOfIncidenceRates_AdjustedRates_ComparisonOfAdjustedRates') {
     output$tables = list(
       as.data.frame(results$wald$W[14:17,])
     )
+    output$graphs = list(
+      
+    )
   }
   
-  else if (key == 'APC of Incidence Rates Adjusted Rates Fitted Cohort Pattern') {
+  else if (key == 'ApcOfIncidenceRates_AdjustedRates_FittedCohortPattern') {
     output$tables = list(
       as.data.frame(results$A$FittedCohortPattern),
       as.data.frame(results$B$FittedCohortPattern)
     )
+    
+    output$graphs = list(
+      generateRatesGraph(results$A, results$B, 'FittedCohortPattern')
+    )
   }
   
-  else if (key == 'APC of Incidence Rates Adjusted Rates Fitted Temporal Trends') {
+  else if (key == 'ApcOfIncidenceRates_AdjustedRates_FittedTemporalTrends') {
     output$tables = list(
       as.data.frame(results$A$FittedTemporalTrends),
       as.data.frame(results$B$FittedTemporalTrends)
     )
+    output$graphs = list(
+      generateRatesGraph(results$A, results$B, 'FittedTemporalTrends')
+    )
   }
   
-  else if (key == 'APC of Incidence Rates Adjusted Rates Cross-Sectional Age Curve') {
+  else if (key == 'ApcOfIncidenceRates_AdjustedRates_CrossSectionalAgeCurve') {
     output$tables = list(
       as.data.frame(results$A$CrossAge),
       as.data.frame(results$B$CrossAge)
     )
+    output$graphs = list(
+      generateRatesGraph(results$A, results$B, 'CrossAge')
+    )
   }
   
-  else if (key == 'APC of Rate Ratios Fitted Cohort Pattern') {
+  else if (key == 'ApcOfRateRatios_FittedCohortPattern') {
     output$tables = list(
       as.data.frame(results$comparison$FVCA$FCP)
     )
+    output$graphs = list(
+      generateRatiosGraph(results, 'FittedCohortPattern')
+    )
   }
   
-  else if (key == 'APC of Rate Ratios Fitted Temporal Trends') {
+  else if (key == 'ApcOfRateRatios_FittedTemporalTrends') {
     output$tables = list(
       as.data.frame(results$comparison$FVPA$FTT)
     )
-  }
-  
-  else if (key == 'APC of Rate Ratios Cross-Sectional Age Curve') {
-    output$tables = list(
-      as.data.frame(results$comparison$FVAP$CAC)
+    output$graphs = list(
+      generateRatiosGraph(results, 'FittedTemporalTrends')
     )
   }
   
-  else if (key == 'APC of Rate Ratios IO') {
+  else if (key == 'ApcOfRateRatios_CrossSectionalAgeCurve') {
+    output$tables = list(
+      as.data.frame(results$comparison$FVAP$CAC)
+    )
+    output$graphs = list(
+      generateRatiosGraph(results, 'CrossAge')
+    )
+  }
+  
+  else if (key == 'ApcOfRateRatios_IO') {
     output$tables = list(
       as.data.frame(results$comparison$IO)
     )
@@ -222,93 +253,344 @@ retrieveData <- function(results, key) {
   output
 }
 
+
+
+#-------------------------------------------------------
+# getRates
+# Outputs:  (1) A dataframe containing incidence rates
+#-------------------------------------------------------
 getRates <- function(data) {
   
+  interval = diff(data$periods)[1] - 1
+  offset_tick = data$offset_tick
+  events = data$events
+  offset = data$offset
+
+  output = offset_tick * events / offset
+  output = as.data.frame(output)
+  
+  periods = data$periods[1:ncol(output)]
+  ages = data$ages[1:nrow(output)]
+  
+  colnames(output) = paste(periods, periods + interval, sep = ' - ')
+  rownames(output) = paste(ages, ages + interval, sep = ' - ')
+
+  output
+}
+
+
+
+#-------------------------------------------------------
+# getRatesGraph
+# Outputs:  (1) The filename of the generated rates graph
+#-------------------------------------------------------
+getRatesGraph <- function(data) {
+
+  interval = diff(data$periods)[1] - 1
   offset_tick = data$offset_tick
   events = data$events
   offset = data$offset
   
-  data = offset_tick * events / offset
-  data = as.data.frame(data)
+  output = offset_tick * events / offset
+  output = as.data.frame(output)
   
-  colnames(data) = data$periods[1:ncol(data)]
-  rownames(data) = data$ages[1:nrow(data)]
+  periods = data$periods[1:ncol(output)]
+  ages = data$ages[1:nrow(output)]
   
-  data
+  graph = data.frame()
+  
+  for (i in 1:length(ages))
+    for (j in 1:length(periods))
+      graph = rbind(graph, list(
+        age = ages[i],
+        period = periods[j],
+        ratio = output[i,j]
+      ))
+
+  graph
+  
+  ggplot(graph, aes(x = period, y = ratio, group = as.factor(age), color = as.factor(age))) +
+    geom_line() + 
+    geom_point(size = 2.5) + 
+    theme_bw() +
+    labs(
+      title = data$name,
+      x = 'Calendar Periods',
+      y = 'Rate per 100000 units'
+    ) +
+    scale_shape_discrete(
+      name = 'Age groups'
+    ) 
+  
+  filename = paste0(OUTPUT_DIR, 'RatesGraph_', getTimestamp(), '.png')
+  ggsave(file = filename, width = 10, height = 10)
+
+  filename
 }
 
 
-getRateRatios <- function(data) {
-  (data$A$offset/data$A$events) / (data$B$offset/data$B$events)
+
+#-------------------------------------------------------
+# Calculates rate ratios
+# Outputs:  (1) A data frame containing rate ratios results
+#-------------------------------------------------------
+getRateRatios <- function(A, B) {
+
+  interval = diff(A$periods)[1] - 1
+
+  output = as.data.frame((A$offset/A$events) / (B$offset/B$events))
+  
+  periods = A$periods[1:ncol(output)]
+  ages = A$ages[1:nrow(output)]
+  
+  colnames(output) = paste(periods, periods + interval, sep = ' - ')
+  rownames(output) = paste(ages, ages + interval, sep = ' - ')
+
+  if (max(unlist(output)) > 1)
+      return (getRateRatios(B, A))
+      
+  output
+}
+
+getRateRatiosGraph <- function(output, labels = F) {
+  
+  col1 <- colorRampPalette(c("cyan", "#007FFF", "blue", "#871414", "red", "#FF7F00", "yellow", "white" ))
+  
+  filename = paste0(OUTPUT_DIR, 'RatesRatioGraph_', getTimestamp(), '.svg')
+  
+  svg(height = 10, width = 10, pointsize = 10, file = filename)
+  
+  if (labels)
+    corrplot(as.matrix(output), method = "circle",
+           addCoef.col = "black",
+           tl.col="black", tl.srt=45,
+           cl.lim = c(0, 1),
+           col = col1(100))
+  else
+    corrplot(as.matrix(output), method = "circle",
+             tl.col="black", tl.srt=45,
+             cl.lim = c(0, 1),
+             col = col1(100))
+  
+  dev.off()
+  
+  filename
+}
+
+#Fitted 
+# as.data.frame(results$comparison$FVCA$FCP)
+# 
+# else if (key == 'ApcOfRateRatios_FittedTemporalTrends') {
+#     as.data.frame(results$comparison$FVPA$FTT)
+# 
+# else if (key == 'ApcOfRateRatios_CrossSectionalAgeCurve') {
+#     as.data.frame(results$comparison$FVAP$CAC)
+# 
+
+generateRatesGraph <- function(resultsA, resultsB, key) {
+  
+  setA = as.data.frame(resultsA[[key]])
+  setB = as.data.frame(resultsB[[key]])
+  
+  setA$key = resultsA$Inputs$D$name
+  setB$key = resultsB$Inputs$D$name
+  
+  filename = paste0(OUTPUT_DIR, key, '_', getTimestamp(), '.svg')
+
+  if (key == 'FittedCohortPattern') {
+    
+    title = 'Fitted Cohort Pattern'
+    xAxis = 'Birth Cohort and Calendar Period'
+    yAxis = 'Adjusted Rate'
+    xMap = 'Cohort'
+    yMap = 'Rate'
+    
+    colors = c('#0074D9', '#FF851B')
+  }
+  
+  else if (key == 'FittedTemporalTrends') {
+    title = 'Fitted Temporal Trends'
+    xAxis = 'Age'
+    yAxis = 'Adjusted Rate'
+    xMap = 'Period'
+    yMap = 'Rate'
+    
+    colors = c('#2ECC40', '#7FDBFF')
+  }
+  
+  else if (key == 'CrossAge') {
+    title = 'Cross-Sectional Age Curve'
+    xAxis = 'Age'
+    yAxis = 'Adjusted Rate'
+    xMap = 'Age'
+    yMap = 'Rate'
+    
+    colors = c('#FFDC00', '#FF4136')
+  }
+  
+  mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', group = 'key', col = 'key', fill = 'key')
+  
+  ggplot(rbind(setA, setB), mapping) +
+    scale_fill_manual(values = colors) + 
+    scale_color_manual(values = c('black', 'black')) +
+    geom_ribbon(alpha = 0.35) +
+    geom_line(alpha = 0.35) +
+    geom_point(alpha = 0.7) +
+    scale_y_continuous(expand = c(0.2, 0)) +
+    labs(
+      title = title,
+      x = xAxis,
+      y = yAxis
+    ) +
+    theme_light() +
+    theme(
+      legend.title = element_blank(),
+      legend.position = c(0.1, 0.92)
+    )
+  
+  ggsave(file = filename, width = 10, height = 10)
+  
+  filename
+}
+
+
+generateRatiosGraph <- function(results, key) {
+  
+  filename = paste0(OUTPUT_DIR, key, '_', getTimestamp(), '.svg')
+  
+  if (key == 'FittedCohortPattern') {
+    set = as.data.frame(results$comparison$FVCA$FCP)
+    title = 'Fitted Cohort Pattern'
+    xAxis = 'Birth Cohort and Calendar Period'
+    yAxis = 'Adjusted Rate'
+    xMap = 'Coh'
+    yMap = 'FCP'
+    
+    colors = c('#0074D9', '#FF851B')
+  }
+  
+  else if (key == 'FittedTemporalTrends') {
+    set = as.data.frame(results$comparison$FVPA$FTT)
+    title = 'Fitted Temporal Trends'
+    xAxis = 'Age'
+    yAxis = 'Adjusted Rate'
+    xMap = 'Per'
+    yMap = 'FTT'
+    
+    colors = c('#2ECC40', '#7FDBFF')
+  }
+  
+  else if (key == 'CrossAge') {
+    set = as.data.frame(results$comparison$FVAP$CAC)
+    title = 'Cross-Sectional Age Curve'
+    xAxis = 'Age'
+    yAxis = 'Adjusted Rate'
+    xMap = 'Age'
+    yMap = 'CAC'
+    
+    colors = c('#FFDC00', '#FF4136')
+  }
+  title = paste(results$input$A$name, results$input$B$name)
+  
+  mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', group = 'key', col = 'key', fill = 'key')
+  
+  ggplot(set, mapping) +
+    scale_fill_manual(values = colors) + 
+    scale_color_manual(values = c('black', 'black')) +
+    geom_ribbon(alpha = 0.35) +
+    geom_line(alpha = 0.35) +
+    geom_point(alpha = 0.7) +
+    scale_y_continuous(expand = c(0.2, 0)) +
+    labs(
+      title = title,
+      x = xAxis,
+      y = yAxis
+    ) +
+    theme_light() +
+    theme(
+      legend.title = element_blank(),
+      legend.position = c(0.1, 0.92)
+    )
+  
+  ggsave(file = filename, width = 10, height = 10)
+  
+  filename
 }
 
 
 
+
+#-------------------------------------------------------
+# getResultsTemplate
+# 
+# Function: Returns a list template used to hold calculation results
+# Outputs:  (1) A list representing the results
+#-------------------------------------------------------
 resultsTemplate <- function() {
   list(
-    `Incidence Rates` = list(
-      graphs = c('tmp/incidenceRatesA.png', 'tmp/incidenceRatesB.png'),
+    IncidenceRates = list(
+      graphs = c(list(), list()),
       tables = c(list(), list()),
       headers = c()
     ),
     
-    `Incidence Rate Ratios` = list(
-      graphs = c('tmp/incidenceRateRatiosA.png', 'tmp/incidenceRateRatiosB.png'),
+    IncidenceRateRatios = list(
+      graphs = c(list(), list()),
       tables = c(list(), list()),
       headers = c()
     ),
     
-    `APC of Incidence Rates` = list(
-      `Local Drifts` = list(
-        graphs = c('tmp/localDriftsA.svg', 'tmp/localDriftsB.svg'),
+    ApcOfIncidenceRates = list(
+      LocalDrifts = list(
+        graphs = c(list(), list()),
         tables = c(list(), list()),
         headers = list()
       ),
-      `Net Drifts` = list(
+      NetDrifts = list(
         tables = c(list()),
         headers = list()
       ),
-      `Adjusted Rates` = list(
-        `Comparison of Adjusted Rates` = list(
-          graphs = c('tmp/comparisonOfAdjustedRates.png'),
+      AdjustedRates = list(
+        ComparisonOfAdjustedRates = list(
+          graphs = c(list()),
           tables = c(list(), list()),
           headers = list()
         ),
-        `Fitted Cohort Pattern` = list(
-          graphs = c('tmp/incidenceRates_FittedCohortPattern.svg'),
+        FittedCohortPattern = list(
+          graphs = c(list()),
           tables = c(list(), list()),
           headers = list()
         ),
-        `Fitted Temporal Trends` = list(
-          graphs = c('tmp/incidenceRates_FittedTemporalTrends.svg'),
+        FittedTemporalTrends = list(
+          graphs = c(list()),
           tables = c(list(), list()),
           headers = list()
         ),
-        `Cross-Sectional Age Curve` = list(
-          graphs = c('tmp/incidenceRates_CrossSecionalAgeCurve.svg'),
+        CrossSectionalAgeCurve = list(
+          graphs = c(list()),
           tables = c(list(), list()),
           headers = list()
         )
       )
     ),
     
-    `APC of Rate Ratios` = list(
-      `Fitted Cohort Pattern` = list(
-        graphs = c('tmp/rateRatios_FittedCohortPattern.svg'),
+    ApcOfRateRatios = list(
+      FittedCohortPattern = list(
+        graphs = c(list()),
         tables = c(list()),
         headers = list()
       ),
-      `Fitted Temporal Trends` = list(
-        graphs = c('tmp/rateRatios_FittedTemporalTrends.svg'),
+      FittedTemporalTrends = list(
+        graphs = c(list()),
         tables = c(list()),
         headers = list()
       ),
-      `Cross-Sectional Age Curve` = list(
-        graphs = c('tmp/rateRatios_CrossSectionalAgeCurve.svg'),
+      CrossSectionalAgeCurve = list(
+        graphs = c(list()),
         tables = c(list()),
         headers = list()
       ),  
-      `IO` = list(
+      IO = list(
         tables = c(list()),
         headers = list()
       )
