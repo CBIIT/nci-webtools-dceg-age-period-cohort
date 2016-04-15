@@ -51,35 +51,81 @@ $( document ).ready(function() {
   }
   createInputTable("#dataset1",createHeaders(3),matrix);
   createInputTable("#dataset2",createHeaders(3),matrix);
-  $.adamant.pastable.functions["crosstalk-input"] = function(target,data) {
+  var table_input = function(target,data) {
     var target = $(target);
     target.children("textarea").val("");
-    var data = data.split(/[\r\n]/);
+    var data = data.split(/[\r\n]+/);
     if (data.length < 1) {
       alert('needs a message 1');
       return;
     }
     if (data[data.length-1] == "")
        data.pop();
-    data[0] = data[0].split(/[ \t,]/);
+    data[0] = data[0].split(/[ \t,]+/);
     var width = data[0].length;
-    data[0].unshift("");
+    data[0].unshift("&zwj;");
     for (var i = 1; i < data.length; i++) {
-      data[i] = data[i].split(/[ \t,]/)
+      data[i] = data[i].split(/[ \t,]+/)
       if (data[i].length != width) {
         alert('needs a message 2');
         return;        
       }
-      data[i].unshift("");
+      data[i].unshift("&zwj;");
     }
-    for (var i = 0; i < data.length; i++) {
-      for (var j = 0; j < data[i].length; j++)
-        void(0);
-    }
-    console.log(data);
     createInputTable("#"+target.prop("id"),createHeaders(width/2,data),data);
     target.children(".paste-here").remove();
   };
+  var parseHeader = function(line) {
+    var description = line.match(/"(.*?)"/);
+    if (description)
+      line = description[1];
+    else
+      line = line.split(',')[0];
+    return line.split(/: (.+)?/, 2)[1].trim();
+  };
+  var file_input = function(target,data) {
+    var target = $(target);
+    var data = data.substr(13);
+    try {
+      data = atob(data).split(/[\r\n]+/);
+    } catch (e) {
+      alert('needs a message 4');
+      return;
+    }
+    var title = parseHeader(data.shift());
+    var description = parseHeader(data.shift());
+    var startYear = parseHeader(data.shift());
+    var startAge = parseHeader(data.shift());
+    var interval = parseHeader(data.shift());
+    data = data.join("\n");
+    console.log(target);
+    table_input(target,data);
+  }
+  var file_read = function(target,files) {
+    for (var i = 0; i < files.length; i++) {
+      var file = files[0];
+      if (file.name.substr(-4) != ".csv") {
+        alert('needs a message 3');
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(e) {file_input(target,e.target.result);};
+      reader.readAsDataURL(file);
+    }
+  }
+  $.adamant.pastable.functions["crosstalk-input"] = table_input;
+  $('#dataset1, #dataset2').on('drop',function(e) {
+    e.preventDefault();
+    var target = $(e.delegateTarget);
+    var files = e.originalEvent.dataTransfer.files;
+    file_read(target,files);
+  });
+  $('#inputfile1, #inputfile2').on('change',function(e) {
+    var target = $(e.target);
+    file_read('#'+target.attr("data-target"),target[0].files);
+    target.wrap("<form>").closest("form")[0].reset();
+    target.unwrap();
+  });
 	//var spinbox1 = new SpinBox('sbox1', {'minimum' : 1, 'maximum' : 5});
 	//var spinbox2 = new SpinBox('sbox2', {'minimum' : 1, 'maximum' : 5});
 	//var spinbox3 = new SpinBox('sbox3', {'minimum' : 1, 'maximum' : 5});
