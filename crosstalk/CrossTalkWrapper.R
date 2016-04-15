@@ -20,7 +20,9 @@ dir.create(OUTPUT_DIR)
 #-------------------------------------------------------
 parseJSON <- function(data) {
 
+  
   data = fromJSON(data)
+  #data = fromJSON(txt = 'input_new.json')
 
   data$interval   = as.numeric(data$interval)
   data$startAge   = as.numeric(data$startAge)
@@ -342,15 +344,12 @@ getRateRatios <- function(A, B) {
   colnames(output) = paste(periods, periods + interval, sep = ' - ')
   rownames(output) = paste(ages, ages + interval, sep = ' - ')
 
-  if (max(unlist(output)) > 1)
-      return (getRateRatios(B, A))
-
   output
 }
 
 getRateRatiosGraph <- function(output, labels = F) {
 
-  col1 <- colorRampPalette(c("cyan", "#007FFF", "blue", "#871414", "red", "#FF7F00", "yellow", "white" ))
+#  col1 <- colorRampPalette(c("cyan", "#007FFF", "blue", "#871414", "red", "#FF7F00", "yellow", "white" ))
 
   filename = paste0(OUTPUT_DIR, 'RatesRatioGraph_', getTimestamp(), '.svg')
 
@@ -360,13 +359,15 @@ getRateRatiosGraph <- function(output, labels = F) {
     corrplot(as.matrix(output), method = "circle",
            addCoef.col = "black",
            tl.col="black", tl.srt=45,
-           cl.lim = c(0, 1),
-           col = col1(100))
+           cl.lim = c(0, ceiling(max(unlist(output)))),
+#           col = col1(100), 
+           is.corr = F)
   else
     corrplot(as.matrix(output), method = "circle",
              tl.col="black", tl.srt=45,
-             cl.lim = c(0, 1),
-             col = col1(100))
+             cl.lim = c(0, ceiling(max(unlist(output)))),
+#             col = col1(100),
+             is.corr = F)
 
   dev.off()
 
