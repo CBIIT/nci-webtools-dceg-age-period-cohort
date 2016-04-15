@@ -195,22 +195,20 @@
 				<div class="tab-content grey-border">
 					<div class="tab-pane active" id="input">
 						<br/>
-						<fieldset>
-							<legend><font size="2"><b>Data 1 (Numerator)</b></font></legend>
-							<div id="dataset1" adamant-pastable="crosstalk-input">
-                <img class="img-responsive paste-here" alt="paste here" src="/common/images/paste-here.gif">
-							</div>
-						</fieldset>
-						<br/>
-						<fieldset>
-							<legend><font size="2"><b>Data 2 (Denominator)</b></font></legend>
-							<div id="dataset2" adamant-pastable="crosstalk-input">
-                <img class="img-responsive paste-here" alt="paste here" src="/common/images/paste-here.gif">
-							</div>
-						</fieldset>
+            <div class="input-tables">
+              <fieldset>
+                <legend><font size="2"><b>Data 1 (Numerator)</b></font></legend>
+                <div id="dataset1" data-target="title1" adamant-pastable="crosstalk-input"></div>
+              </fieldset>
+              <br/>
+              <fieldset>
+                <legend><font size="2"><b>Data 2 (Denominator)</b></font></legend>
+                <div id="dataset2" data-target="title2" adamant-pastable="crosstalk-input"></div>
+              </fieldset>
+            </div>
 						<br/>
 						<div id="datasetButton" align="center">
-						 <button type="submit" id="modelBt" class="btn btn-primary active"> Flip Two Data in Ratio Calculation</button>
+						 <button type="submit" id="dataFlip" class="btn btn-primary active"> Flip Two Data in Ratio Calculation</button>
 						</div>
 					</div>
 					<div class="tab-pane" id="rates">

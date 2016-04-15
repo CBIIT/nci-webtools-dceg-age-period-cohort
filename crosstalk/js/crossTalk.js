@@ -1,4 +1,24 @@
 $( document ).ready(function() {
+  var resetForm = function(e) {
+    if (e !== undefined) e.preventDefault();
+		$('#ratePane').attr('style', 'display:none');
+		$('#showNumber').attr('style', 'display:none');
+		$('#showPlot').attr('style', 'display:none');
+		$('#apcRatePane').attr('style', 'display:none');
+		$('#apcRatioPane').attr('style', 'display:none');
+    var matrix = [];
+    for (var i = 0; i < 13; i++) {
+      var arr = [];
+      for (var j = 0; j < 7; j++) {
+        arr.push("&zwj;");
+      }
+      matrix.push(arr);
+    }
+    createInputTable("#dataset1",createHeaders(3),matrix);
+    $("#dataset1 textarea").before('<img class="img-responsive paste-here" alt="paste here" src="/common/images/paste-here.gif"/>');
+    createInputTable("#dataset2",createHeaders(3),matrix);
+    $("#dataset2 textarea").before('<img class="img-responsive paste-here" alt="paste here" src="/common/images/paste-here.gif"/>');
+  };
   var createHeaders = function(length,data) {
     var ageHeader = "Age";
     if (data !== undefined) ageHeader = '<span class = "ageGroups">' + data.length + " age groups </span>";
@@ -18,42 +38,43 @@ $( document ).ready(function() {
     }
     return headers;
   };
-  
   var createInputTable = function(containerID, headers, data) {
-    var table = document.createElement('table');
-
-    table.setAttribute('class', 'table display compact');
-    table.setAttribute('width', '100%');
+    var table = $(document.createElement('table'));
+    table.attr('class','table display compact');
+    table.attr('width','100%');
     $(containerID).children(".dataTables_wrapper").children(".dataTable").DataTable().destroy();
     $(containerID).children("table").remove();
     $(containerID).prepend(table);
-    $(table).DataTable({
-        "destroy": true,
-        "data": data,
-        "columns": headers,
-        "bSort": false,
-        "bFilter": false,
-        "paging": false,
-        "responsive": true,
-        "dom": 't'
+    table.DataTable({
+      "destroy": true,
+      "data": data,
+      "columns": headers,
+      "bSort": false,
+      "bFilter": false,
+      "paging": false,
+      "responsive": true,
+      "dom": 't'
     });
-
     $(containerID).find('#inputTable_wrapper').addClass('table-responsive');
     $(containerID).find('.table').addClass('input-table');
+    return table;
   };
-  var matrix = [];
-  for (var i = 0; i < 13; i++) {
-    var arr = [];
-    for (var j = 0; j < 7; j++) {
-      arr.push("&zwj;");
+  var create_line = function(line,startAge,interval,i) {
+    line = line.split(/[ \t,]+/).map(function(entry) {try{return parseFloat(entry);}catch(e){return entry;}});
+    var lead = "&zwj;";
+    if (startAge && interval) {
+      var age = startAge+(interval*i);
+      lead = age + "-" + (age+interval-1);
     }
-    matrix.push(arr);
-  }
-  createInputTable("#dataset1",createHeaders(3),matrix);
-  createInputTable("#dataset2",createHeaders(3),matrix);
+    line.unshift(lead);
+    return line;
+  };
   var table_input = function(target,data) {
     var target = $(target);
     target.children("textarea").val("");
+    var startAge = parseFloat($('#startAge').val());
+    var startYear = parseFloat($('#startYear').val());
+    var interval = parseFloat($('#interval').val());
     var data = data.split(/[\r\n]+/);
     if (data.length < 1) {
       alert('needs a message 1');
@@ -61,18 +82,25 @@ $( document ).ready(function() {
     }
     if (data[data.length-1] == "")
        data.pop();
-    data[0] = data[0].split(/[ \t,]+/);
+    data[0] = create_line(data[0],startAge,interval,0);
     var width = data[0].length;
-    data[0].unshift("&zwj;");
     for (var i = 1; i < data.length; i++) {
-      data[i] = data[i].split(/[ \t,]+/)
+      data[i] = create_line(data[i],startAge,interval,i);
       if (data[i].length != width) {
         alert('needs a message 2');
-        return;        
+        return;
       }
-      data[i].unshift("&zwj;");
     }
-    createInputTable("#"+target.prop("id"),createHeaders(width/2,data),data);
+    var headerRow = $('<tr><th class="white-border"></th></tr>');
+    for (var i = 0; i < (width-1)/2; i++) {
+      var header = startYear+interval*i;
+      headerRow.append($('<th class="header" colspan="2"></th>').html(header + "-" + (header+interval-1)));
+    }
+    var title = $('#'+target.attr("data-target")).val();
+    var description = $('#description').val();
+    var table = createInputTable("#"+target.prop("id"),createHeaders((width-1)/2,data),data).children('thead');
+    if (startYear && interval) table.prepend(headerRow);
+    if (title && description) table.prepend('<tr><th class="white-border"></th><th class="header" colspan="'+(width-1)+'">'+title+'<br/><span class="blue">'+description+'</span></th></tr>');
     target.children(".paste-here").remove();
   };
   var parseHeader = function(line) {
@@ -85,7 +113,7 @@ $( document ).ready(function() {
   };
   var file_input = function(target,data) {
     var target = $(target);
-    var data = data.substr(13);
+    var data = data.substr(data.indexOf("base64")+7);
     try {
       data = atob(data).split(/[\r\n]+/);
     } catch (e) {
@@ -93,12 +121,16 @@ $( document ).ready(function() {
       return;
     }
     var title = parseHeader(data.shift());
+    $('#'+target.attr("data-target")).val(title);
     var description = parseHeader(data.shift());
+    $('#description').val(description);
     var startYear = parseHeader(data.shift());
+    $('#startYear').val(startYear);
     var startAge = parseHeader(data.shift());
+    $('#startAge').val(startAge);
     var interval = parseHeader(data.shift());
+    $('#interval').val(interval);
     data = data.join("\n");
-    console.log(target);
     table_input(target,data);
   }
   var file_read = function(target,files) {
@@ -113,6 +145,7 @@ $( document ).ready(function() {
       reader.readAsDataURL(file);
     }
   }
+  resetForm();
   $.adamant.pastable.functions["crosstalk-input"] = table_input;
   $('#dataset1, #dataset2').on('drop',function(e) {
     e.preventDefault();
@@ -140,16 +173,20 @@ $( document ).ready(function() {
 
 	});
 
-	$("#resetBt").click(function() {
-		$('#ratePane').attr('style', 'display:none');
-		$('#showNumber').attr('style', 'display:none');
-		$('#showPlot').attr('style', 'display:none');
-		$('#apcRatePane').attr('style', 'display:none');
-		$('#apcRatioPane').attr('style', 'display:none');
+	$("#resetBt").click(resetForm);
 
-	});
+  $("#dataFlip").click(function(e) {
+    e.preventDefault();
+    var firstTitle = $('#title1').val();
+    $('#title1').val($('#title2').val());
+    $('#title2').val(firstTitle);
+    var firstSet = $('#dataset1').detach();
+    var secondSet = $('#dataset2').attr('id','dataset1').attr('data-target','title1');
+    secondSet.before(firstSet).prev().attr('id','dataset2').attr('data-target','title2');
+    firstSet.closest('fieldset').prevUntil('fieldset').eq(0).prev().append(secondSet.detach());
+  });
 
-    $('#crosstalk-tab-nav').tabCollapse();
+  $('#crosstalk-tab-nav').tabCollapse();
 
 	$('#startYear').spinner({
         min: 1800,
