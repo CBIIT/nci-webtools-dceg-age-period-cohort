@@ -6,6 +6,7 @@ $( document ).ready(function() {
 		$('#showPlot').attr('style', 'display:none');
 		$('#apcRatePane').attr('style', 'display:none');
 		$('#apcRatioPane').attr('style', 'display:none');
+    $('#description,#startAge,#startYear,#interval,#title1,#title2').val("");
     var matrix = [];
     for (var i = 0; i < 13; i++) {
       var arr = [];
@@ -72,6 +73,8 @@ $( document ).ready(function() {
   var table_input = function(target,data) {
     var target = $(target);
     target.children("textarea").val("");
+    var title = $('#'+target.attr("data-target")).val();
+    var description = $('#description').val();
     var startAge = parseFloat($('#startAge').val());
     var startYear = parseFloat($('#startYear').val());
     var interval = parseFloat($('#interval').val());
@@ -96,8 +99,6 @@ $( document ).ready(function() {
       var header = startYear+interval*i;
       headerRow.append($('<th class="header" colspan="2"></th>').html(header + "-" + (header+interval-1)));
     }
-    var title = $('#'+target.attr("data-target")).val();
-    var description = $('#description').val();
     var table = createInputTable("#"+target.prop("id"),createHeaders((width-1)/2,data),data).children('thead');
     if (startYear && interval) table.prepend(headerRow);
     if (title && description) table.prepend('<tr><th class="white-border"></th><th class="header" colspan="'+(width-1)+'">'+title+'<br/><span class="blue">'+description+'</span></th></tr>');
@@ -159,19 +160,15 @@ $( document ).ready(function() {
     target.wrap("<form>").closest("form")[0].reset();
     target.unwrap();
   });
-	//var spinbox1 = new SpinBox('sbox1', {'minimum' : 1, 'maximum' : 5});
-	//var spinbox2 = new SpinBox('sbox2', {'minimum' : 1, 'maximum' : 5});
-	//var spinbox3 = new SpinBox('sbox3', {'minimum' : 1, 'maximum' : 5});
-	//$("[name='showSwitch']").bootstrapSwitch();
 
-	$("#modelBt").click(function() {
-		$('#ratePane').attr('style', 'display:block');
-		$('#showNumber').attr('style', 'display:block');
-		$('#showPlot').attr('style', 'display:block');
-		$('#apcRatePane').attr('style', 'display:block');
-		$('#apcRatioPane').attr('style', 'display:block');
+  $("#modelBt").click(function() {
+      $('#ratePane').attr('style', 'display:block');
+      $('#showNumber').attr('style', 'display:block');
+      $('#showPlot').attr('style', 'display:block');
+      $('#apcRatePane').attr('style', 'display:block');
+      $('#apcRatioPane').attr('style', 'display:block');
 
-	});
+  });
 
 	$("#resetBt").click(resetForm);
 
@@ -188,77 +185,68 @@ $( document ).ready(function() {
 
   $('#crosstalk-tab-nav').tabCollapse();
 
-	$('#startYear').spinner({
-        min: 1800,
-        max: 2200,
-        step: 1,
-        spin: function(event, ui) {
-			// Needs redraw table code
-        },
-        stop: function(event, ui) {
-			// Needs redraw table code
-        }
-    });
+  $('#startYear').spinner({
+    min: 1800,
+    max: 2200,
+    step: 1,
+    spin: function(event, ui) {
+        // Needs redraw table code
+    },
+    stop: function(event, ui) {
+        // Needs redraw table code
+    }
+  });
 
-	$('#startAge').spinner({
-        min: 0,
-        max: 120,
-        step: 1,
-        spin: function(event, ui) {
-			// Needs redraw table code
-        },
-        stop: function(event, ui) {
-			// Needs redraw table code
-        }
-    });
+  $('#startAge').spinner({
+    min: 0,
+    max: 120,
+    step: 1,
+    spin: function(event, ui) {
+        // Needs redraw table code
+    },
+    stop: function(event, ui) {
+        // Needs redraw table code
+    }
+  });
 });
 
-  function changeContent(id){
-			hideAll();
-			$("#"+id).show();
-			$("#"+id +"li").attr("class", "active");
-	}
-	function hideAll(){
-		$("#local").hide();
-		$("#net").hide();
-		$("#adjust").hide();
-		$("#localli").attr("class", "");
-		$("#netli").attr("class", "");
-		$("#adjustli").attr("class", "");
-	}
+function changeContent(id){
+  hideAll();
+  $("#"+id).show();
+  $("#"+id +"li").attr("class", "active");
+}
+function hideAll(){
+  $("#local").hide();
+  $("#net").hide();
+  $("#adjust").hide();
+  $("#localli").attr("class", "");
+  $("#netli").attr("class", "");
+  $("#adjustli").attr("class", "");
+}
 
-	function Slide_menu_Horz(action)
-	 {
-	        if($("#icon").hasClass("fa fa-caret-left fa-2x")||action=='hide')
-	        {
-	         $('#icon').removeClass("fa fa-caret-left fa-2x");
-	         $('#icon').addClass("fa fa-caret-right fa-2x");
-	         $("#slideoutForm").fadeOut(300);
-
-
-	         $("#icon").animate({
-	                marginLeft: '1%'
-	                }, 300);
-
-	        $("#slideout").animate({
-	                transform: 'translate(-400px, 0px)'
-	                }, 300);
-
-	        setTimeout(function(){
-	                $("#right_panel").animate({
-	                width: '100%'
-	                        }, 300);
-	                }, 600);
-	    }
-	    else if($("#icon").hasClass("fa fa-caret-right fa-2x")||action=='show')
-	        {
-	         $('#icon').removeClass("fa fa-caret-right fa-2x");
-	         $('#icon').addClass("fa fa-caret-left fa-2x");
-	         $("#slideoutForm").fadeIn(500);
-	         $("#icon").animate({
-	                marginLeft: '31%'
-	                }, 20);
-
-	         $("#right_panel").animate({ width: '66.666666%'}, 10);
-	    }
-	 }
+function Slide_menu_Horz(action) {
+  if($("#icon").hasClass("fa fa-caret-left fa-2x") || action=='hide') {
+    $('#icon').removeClass("fa fa-caret-left fa-2x");
+    $('#icon').addClass("fa fa-caret-right fa-2x");
+    $("#slideoutForm").fadeOut(300);
+    $("#icon").animate({
+      marginLeft: '1%'
+    }, 300);
+    $("#slideout").animate({
+      transform: 'translate(-400px, 0px)'
+    }, 300);
+    setTimeout(function(){
+      $("#right_panel").animate({
+        width: '100%'
+      }, 300);
+    }, 600);
+  } else if ($("#icon").hasClass("fa fa-caret-right fa-2x")||action=='show') {
+    $('#icon').removeClass("fa fa-caret-right fa-2x");
+    $('#icon').addClass("fa fa-caret-left fa-2x");
+    $("#slideoutForm").fadeIn(500);
+    $("#icon").animate({
+      marginLeft: '31%'
+    }, 20);
+    $("#right_panel").animate({ width: '66.666666%'}, 10);
+  }
+}

@@ -1,23 +1,24 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import rpy2.robjects as robjects
+import json
 
 app = Flask(__name__)
 
 wrapper = robjects.r
-#wrapper['source']('rcode/test.R')
+wrapper['source']('crosstalkWrapper.R')
 
-
-@app.route('/crossTalkRest/', methods = ['POST'])
+@app.route('/crosstalkRest', methods = ['POST'])
+@app.route('/crosstalkRest/', methods = ['POST'])
 def calculation():
-    return '' 
-    #wrapper['processClientJSON'](request.stream.read())[0]
+    print(request.get_data())
+    response = jsonify(data=json.loads(wrapper['process'](request.get_data())[0]), complete=True)
+    return response
 
 import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", dest="port_number", default="9140", help="Sets the Port") 
     # Default port is production value; prod, stage, dev = 8140, sandbox = 9140
+    parser.add_argument('-p', dest = 'port_num', default='9140', help='Sets the Port')
+    parser.add_argument('--debug', action = 'store_true')
     args = parser.parse_args()
-    port_num = int(args.port_number)
-
-    app.run(host='0.0.0.0', port=port_num, debug=True, use_evalex=False) 
+    app.run(host = '0.0.0.0', port = int(args.port_num), debug = args.debug, use_evalex = False)

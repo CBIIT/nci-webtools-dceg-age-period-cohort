@@ -1,564 +1,617 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Cross Talk Analysis Tool</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cross Talk Analysis Tool</title>
 
-	<!-- CSS STYLES -->
-	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- CSS STYLES -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-	<link rel="stylesheet" href="/common/css/style.css">
-	<link href="css/crossTalk.css" rel="stylesheet">
+    <link rel="stylesheet" href="/common/css/style.css">
+    <link href="css/crossTalk.css" rel="stylesheet">
 
-	<!--
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/crossTalk.css" rel="stylesheet">
-	<link href="css/spin.css" rel="stylesheet">
-	<link href="css/bootstrap-switch.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
-	<link href="css/bootstrap-theme.min.css" rel="stylesheet">
-	<script src="js/jquery.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/SpinBox.js"></script>
-	<script src="js/bootstrap-switch.js"></script>
+    <!--
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/crossTalk.css" rel="stylesheet">
+    <link href="css/spin.css" rel="stylesheet">
+    <link href="css/bootstrap-switch.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/SpinBox.js"></script>
+    <script src="js/bootstrap-switch.js"></script>
 
-	-->
+    -->
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/0.7.3/purify.min.js"></script>
-	<script src="https://cdn.rawgit.com/flatlogic/bootstrap-tabcollapse/master/bootstrap-tabcollapse.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/0.7.3/purify.min.js"></script>
+    <script src="https://cdn.rawgit.com/flatlogic/bootstrap-tabcollapse/master/bootstrap-tabcollapse.js"></script>
 
-  <script src="adamant-pastable/adamant-pastable.js"/></script>
-	<script src="js/crossTalk.js"></script>
-	<link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
+    <script src="adamant-pastable/adamant-pastable.js"/></script>
+    <script src="js/crossTalk.js"></script>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
 </head>
+
 <body>
-	<div class="container">
-	   <div class="row">
-		   <!-- Banner div -->
-		   <div class="col-xs-12">
-			   <a href="http://dceg.cancer.gov" target="_blank" class="header-logo" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics"></a>
-		   </div>
-	   </div>
-	   <!-- end of banner div -->
-	   <div class="row offset">
-		   <!-- sub-Banner div -->
-		   <div class="col-xs-12 col-md-10">
-			   <img src="/common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" title="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
-		   </div>
-		   <div class="col-xs-12 col-md-2">
-			   <img src="images/apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" title="Age-Period-Cohort Web Tool" height="33" />
-		   </div>
-	   </div>
-	   <!--  end of header -->
-	   <!--  start of body content -->
-
-	   <div class="row">
-		   <!--
-				<div id="slideoutTab">
-					<i id ="icon" class="fa fa-caret-left fa-2x" onclick="Slide_menu_Horz()" style="margin-left:31%"></i>
-        		</div>
-			<div class="col-lg-4" id="slideoutForm">
-				<div id="slideout">
-		 	-->
-			<div class="col-lg-4 col-md-5 col-sm-12">
-				<div class="well" >
-					<div class="well well-nested">
-						<form class="form" name="crosstalk_form">
-							<div class="row">
-								<div class="col-xs-12">
-									<div class="form-group">
-										<label for="description" class="control-label">Description</label>
-										<a id="help" class="pull-right" href="#"><span class="glyphicon glyphicon-info-sign glyphicon-blue"></span> Help</a>
-										<textarea class="form-control" rows="3" id="description" ></textarea>
-									</div>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-sm-4">
-									<div class="form-group">
-										<label class="control-label" for="startYear">Start Year</label>
-										<div>
-											<input type="text" class="input-small input-sm" id="startYear" />
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-4">
-									<div class="form-group">
-										<label class="control-label" for="startAge">Start Age</label>
-										<div>
-											<input type="text" class="input-small input-sm" id="startAge" />
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-4">
-									<div class="form-group">
-										<label class="control-label" for="interval">Interval (Years)</label>
-										<div>
-											<select class="form-control input-small input-sm" id="interval">
-												<option value=""></option>
-												<option value="1">1</option>
-												<option value="2">2</option>
-												<option value="3">3</option>
-												<option value="4">4</option>
-												<option value="5">5</option>
-												<option value="6">6</option>
-												<option value="7">7</option>
-												<option value="8">8</option>
-												<option value="9">9</option>
-												<option value="10">10</option>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label>Copy and paste into table on right or upload a csv with population and count information.</label>
-							</div>
-
-							<div class="row">
-								<div class="col-xs-12">
-									<legend>Data File 1</legend>
-								</div>
-								<div class="col-xs-12">
-									<div class="form-group">
-										<label for="title1" class="control-label\">Title</label>
-										<div>
-											<input type="text" class="form-control" id="title1" placeholder="Enter Title">
-										</div>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-xs-12">
-										<input type="file" data-target="dataset1" class="vertical-spacer" id="inputfile1" accept=".csv">
-									</div>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-xs-12">
-									<legend>Data File 2</legend>
-								</div>
-								<div class="col-xs-12">
-									<div class="form-group">
-										<label for="title2" class="control-label">Title</label>
-										<div>
-											<input type="text" class="form-control" id="title2" placeholder="Enter Title">
-										</div>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-xs-12">
-										<input type="file" data-target="dataset2" class="vertical-spacer" id="inputfile2" accept=".csv">
-									</div>
-								</div>
-							</div>
-
-							<div class="btn-toolbar offset">
-								<button type="submit" id="modelBt" class="btn btn-primary btn-sm pull-right">Fit Model</button>
-								<button type="submit" id="resetBt" class="btn btn-default btn-sm pull-right">Clear</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-8 col-md-7 col-sm-12 col-xs-12">
-				<div class="large loading">
-					<div>Loading…</div>
-				</div>
-				<nav class="navbar navbar-default">
-					<!-- Collect the nav links, forms, and other content for toggling -->
-					<div class="collapse navbar-collapse" id="crosstalk-tab-nav">
-						<ul class="nav nav-pills">
-							<li class="active"><a href="#input" data-toggle="tab" title="Input" data-content="Input">Input</a></li>
-							<li><a href="#rates" data-toggle="tab" title="Rates" data-content="Rates">Rates</a></li>
-							<li><a href="#rateRatios" data-toggle="tab" title="Rate Ratios" data-content="Rate Ratios"> Rate Ratios</a></li>
-							<li><a href="#goodness" data-toggle="tab" title="Goodness of Fit" data-content="Goodness of Fit">Goodness of Fit</a></li>
-							<li><a href="#apcRate" data-toggle="tab" title="APC of Rates" data-content="APC of Rates">APC of Rates</a></li>
-							<li><a href="#apcRatios" data-toggle="tab" title="APC of Rate Ratios" data-content="APC of Rate Ratios">APC of Rate Ratios</a></li>
-							<li><a href="#help" data-toggle="tab" title="Help" data-content="Help">Help</a></li>
-						</ul>
-					</div>
-					<!-- /.navbar-collapse -->
-				</nav>
-				<div class="tab-content grey-border">
-					<div class="tab-pane active" id="input">
-						<br/>
-            <div class="input-tables">
-              <fieldset>
-                <legend><font size="2"><b>Data 1 (Numerator)</b></font></legend>
-                <div id="dataset1" data-target="title1" adamant-pastable="crosstalk-input"></div>
-              </fieldset>
-              <br/>
-              <fieldset>
-                <legend><font size="2"><b>Data 2 (Denominator)</b></font></legend>
-                <div id="dataset2" data-target="title2" adamant-pastable="crosstalk-input"></div>
-              </fieldset>
+    <div class="container">
+        <div class="row">
+            <!-- Banner div -->
+            <div class="col-xs-12">
+                <a href="http://dceg.cancer.gov" target="_blank" class="header-logo" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics"></a>
             </div>
-						<br/>
-						<div id="datasetButton" align="center">
-						 <button type="submit" id="dataFlip" class="btn btn-primary active"> Flip Two Data in Ratio Calculation</button>
-						</div>
-					</div>
-					<div class="tab-pane" id="rates">
-						<br/>
-						<div id="ratePane" style="display:none">
-						<div class="col-sm-6">
-							<center><img src="images/rate1.jpg" class="img-responsive" alt="Rate 1" height="500" width="300"></center><br/>
-							<center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49</a></center>
-						</div>
-						<div class="col-sm-6">
-							<center><img src="images/rate2.jpg" class="img-responsive" alt="Rate 2" height="500" width="300"></center><br/><br/>
-							<center><a href="javascript:alert('To be implemented')">View Data NHW 30-49</a></center>
-						</div>
-						</div>
-					</div>
-					<div class="tab-pane" id="rateRatios">
-						<br/>
-						<div class="col-sm-12"><font size="4"><b>Plot Options</b></font></div>
-						<div class="col-sm-12" id="showNumber" style="display:none"><font size="2">Show numbers in circle</font>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="showSwitch" checked></div>
-						<div class="col-sm-12" id="showPlot" style="display:none">
-							<center><img src="images/plot.jpg" class="img-responsive" alt="Plot" height="900" width="500"></center><br/><br/>
-							<center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49 vs NHW 30-49</a></center>
-						</div>
+        </div>
+        <!-- end of banner div -->
+        <div class="row offset">
+            <!-- sub-Banner div -->
+            <div class="col-xs-12 col-md-10">
+                <img src="/common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" title="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <img src="../apc/images/apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" title="Age-Period-Cohort Web Tool" height="33" />
+            </div>
+        </div>
+        <!--  end of header -->
+        <!--  start of body content -->
 
-					</div>
-					<div class="tab-pane" id="goodness">
-						<br/>
-						<div class="col-sm-12">
-							Show warning and explanation about zero/sparse data. Also explain how to fix the data using example in help.
-							<br/><br/>
-							Two spie plots, estimates of over dispersion, sigma, residuals.
-							<br/><br/>
-							Add cropping options, e.g. sliders to select year and age.
-						</div>
-						<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-						<div class="col-sm-12" align="right">
-							<button type="submit" id="modelBt" class="btn btn-primary active"> Export Cropped Datasets </button>
-						</div>
-					</div>
-					<div class="tab-pane" id="apcRate">
-						 <br/>
-						 <div id="apcRatePane" class="col-sm-12" style="display:none">
-							<nav class="navbar navbar-default col-sm-6" role="navigation">
-								<div>
-									<ul class="nav navbar-nav">
-										<li id="localli" class="active"><a href="javaScript:changeContent('local');">Local Drifts</a></li>
-										<li id="netli"><a href="javaScript:changeContent('net');">Net Drifts</a></li>
-										<li id="adjustli"><a href="javaScript:changeContent('adjust');">Adjust Rates</a></li>
-									</ul>
-								</div>
-							</nav>
-							<div id="navbar-content">
-								<div class="active col-sm-12" id="local">
-									<div class="col-sm-6">
-										<center><img src="images/localDrifts.jpg" class="img-responsive" alt="Rate 1" width="500"></center><br/>
-										<center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49</a></center>
-									</div>
-									<div class="col-sm-6">
-										<br/>
-										<center><img src="images/comparisonDrifts.jpg" class="img-responsive" alt="Rate 2" width="500"></center><br/><br>
-										<center><a href="javascript:alert('To be implemented')">View Data NHW 30-49</a></center>
-									</div>
-								</div>
-								<div style="display:none" class="col-sm-12" id="net">
-									<br/>
-									<table class="table table-striped table-bordered">
-										<thead>
-											<tr>
-												<th>Cohort</th>
-												<th>%/yr</th>
-												<th>COLo</th>
-												<th>CIHi</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Urban China 30-49</td>
-												<td>1.561562764</td>
-												<td>1.318259693</td>
-												<td>1.805450098</td>
-											</tr>
-											<tr>
-												<td>NHW 30-49 &nbsp;0.235639525</td>
-												<td>0.079603778</td>
-												<td>0.39191855</td>
-												<td>&nbsp;</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div style="display:none" class="col-sm-12" id="adjust">
-									<!-- start sccordion -->
-									<div class="accordion">
-										<div class="panel-group" id="accordion">
-											<div class="panel panel-default">
-												<div class="panel-heading">
-													<h4 class="panel-title">
-														<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Comparison of Adjusted Rates</a>
-													</h4>
-												</div>
-												<div id="collapseOne" class="panel-collapse collapse in">
-													<div class="panel-body">
-														<br/>
-														<div class="col-sm-6">
-															<center><img src="images/comparison1.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
-														</div>
-														<div class="col-sm-6">
-															<center><img src="images/comparison2.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="panel panel-default">
-												<div class="panel-heading">
-													<h4 class="panel-title">
-														<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Fitted Cohort Pattern</a>
-													</h4>
-												</div>
-												<div id="collapseTwo" class="panel-collapse collapse">
-													<div class="panel-body">
-														<div class="col-sm-12">
-															<center><img src="images/cohort.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="panel panel-default">
-												<div class="panel-heading">
-													<h4 class="panel-title">
-														<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Fitted Temporal Trends</a>
-													</h4>
-												</div>
-												<div id="collapseThree" class="panel-collapse collapse">
-													<div class="panel-body">
-														<div class="col-sm-12">
-															<center><img src="images/temporal.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="panel panel-default">
-												<div class="panel-heading">
-													<h4 class="panel-title">
-														<a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">Cross-Sectional Age Curve</a>
-													</h4>
-												</div>
-												<div id="collapseFour" class="panel-collapse collapse">
-													<div class="panel-body">
-														<div class="col-sm-12">
-															<center><img src="images/cross-sectional.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>		<!-- end of caccordion -->
-								</div>
-							</div>
-					   </div>
-					</div>
-					<div class="tab-pane" id="apcRatios">
-						<!-- start accordion -->
-						<div id="apcRatioPane" class="accordion" style="display:none">
-							<div class="panel-group" id="accordion2">
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion2" href="#collapse1">Fitted Cohort Pattern</a>
-										</h4>
-									</div>
-									<div id="collapse1" class="panel-collapse collapse in">
-										<div class="panel-body">
-											<br/>
-											<div class="col-sm-12">
-												<center><img src="images/ratioCohort.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
-												<center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49 vs NHW 30-49</a></center>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion2" href="#collapse2">Fitted Temporal Trends</a>
-										</h4>
-									</div>
-									<div id="collapse2" class="panel-collapse collapse">
-										<div class="panel-body">
-											<div class="col-sm-12">
-												<center><img src="images/ratioTemporal.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
-												<center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49 vs NHW 30-49</a></center>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion2" href="#collapse3">Cross-Sectional Age Curve</a>
-										</h4>
-									</div>
-									<div id="collapse3" class="panel-collapse collapse">
-										<div class="panel-body">
-											<div class="col-sm-12">
-												<center><img src="images/ratioCrossSection.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
-												<center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49 vs NHW 30-49</a></center>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="panel panel-default">
-									<div class="panel-heading">
-										<h4 class="panel-title">
-											<a data-toggle="collapse" data-parent="#accordion2" href="#collapse4">Intercepts</a>
-										</h4>
-									</div>
-									<div id="collapse4" class="panel-collapse collapse">
-										<div class="panel-body">
-											<div class="col-sm-12">
-											<br/>
-												<table class="table table-striped table-bordered">
-													<caption>Urban China 30-49 vs NHW 30-49</caption>
-													<thead>
-														<tr>
-															<th>&nbsp;</th>
-															<th>Lo</th>
-															<th>Hi</th>
-															<th>IO</th>
-															<th>CI Lo</th>
-															<th>CI Hi</th>
-														</tr>
-													</thead>
-													<tbody>
-														<tr>
-															<td>age</td>
-															<td>31</td>
-															<td>49</td>
-															<td>0.473241514</td>
-															<td>0.464802678</td>
-															<td>0.481833563</td>
-														</tr>
-														<tr>
-															<td>Period</td>
-															<td>1992</td>
-															<td>2008</td>
-															<td>0.473241514</td>
-															<td>0.464802678</td>
-															<td>0.481833563</td>
-														</tr>
-														<tr>
-															<td>cohort</td>
-															<td>1943</td>
-															<td>1977</td>
-															<td>0.473241514</td>
-															<td>0.464802678</td>
-															<td>0.481833563</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>		<!-- end of caccordion -->
-					</div>
-					<div class="tab-pane" id="help">
-						<br/>
-						<!-- help page content -->
-						<div style="overflow-y: auto; height:600px;">
-							<center><h3> Cross Talk Help</h3></center>
-							<p>Age-Period-Cohort analysis identifies patterns in cancer incidence or mortality rates from
-							population-based <b><i> Count </i></b> (numerator) and <b><i> Population </i></b> (denominator) data. Often the data come
-							from a <B>Cancer Registry</B> (e.g., <a href='http://seer.cancer.gov/registries/' target='seer'> SEER</a>) in the form of a table showing the numbers of cancer cases or cancer deaths
-							(counts) and corresponding person-years at risk (population) for particular age groups and
-							calendar time periods. In cancer research, the Age-Period-Cohort (APC) framework is a fundamental
-							model to analyze these data. The APC Model includes <i> parameters </i> that describe the mathematical
-							relationships between the <b><i>Rate</i></b> of cancer and attained age, calendar period (year of diagnosis),
-							and birth cohort (year of birth). The cancer <b><i>Rate</i></b> is expressed as the number of cancers per 100,000
-							persons at risk, which is calculated from the data using the formula: <b><i>(Count/Population) x 100,000.</i></b> </p>
+        <div class="row">
+            <!--
+                <div id="slideoutTab">
+                    <i id ="icon" class="fa fa-caret-left fa-2x" onclick="Slide_menu_Horz()" style="margin-left:31%"></i>
+                </div>
+            <div class="col-lg-4" id="slideoutForm">
+                <div id="slideout">
+             -->
+            <div class="col-lg-4 col-md-5 col-sm-12">
+                <div class="well">
+                    <div class="well well-nested">
+                        <form class="form" name="crosstalk_form" action="/crosstalkRest/">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label for="description" class="control-label">Description</label>
+                                        <a id="help" class="pull-right" href="#"><span class="glyphicon glyphicon-info-sign glyphicon-blue"></span> Help</a>
+                                        <textarea class="form-control" rows="3" id="description"></textarea>
+                                    </div>
+                                </div>
+                            </div>
 
-							<p>This web tool uses the inputted count and population data to fit the APC Model and returns a number of <b><i>Outputs.</i></b>
-							To use this tool, the width of the age and period intervals must all be equal. When this is so, the diagonals
-							of the rate table represent birth cohorts.</p>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="startYear">Start Year</label>
+                                        <div>
+                                            <input type="text" class="input-small input-sm" id="startYear" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="startAge">Start Age</label>
+                                        <div>
+                                            <input type="text" class="input-small input-sm" id="startAge" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="interval">Interval (Years)</label>
+                                        <div>
+                                            <select class="form-control input-small input-sm" id="interval">
+                                                <option value=""></option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-							<p> Visit the following sections to learn more about the APC web tool:</p>
-							<ul>
-								<li><a href='#started'>Getting started</a> - Learn how to enter data into the tool.</li>
-								<li><a href='#example'>Sample data</a> - Enter any of these sample datasets to see the tool in action. </li>
-								<li><a href='#whatitdoes'>What it does</a> - Find out what outputs are produced. </li>
-								<li><a href='#savingyourresults'>Saving your results</a> - Find out how to save raw output as an Excel Workbook, R Workspace, or text file. </li>
-									<li><a href='#faq'>FAQ</a> - Find out answers to some common questions about the APC tool.</li>
-							</ul>
-							<a name='started'></a><h3>Getting started </h3>
-							<p>Input data for the web tool consist of <B>Count and Population</B> data for particular age groups over calendar time, in the form of a matrix of rows with paired columns. Rows correspond to particular age groups and columns correspond to calendar time periods. The age and period intervals must all be equal, i.e. if 5-year age groups are used then 5-year calendar periods must also be used.
-							The data can be input by copy-and-paste from an Excel worksheet or file upload of a comma-separated-values (csv) file. </p>
+                            <div class="form-group">
+                                <label>Copy and paste into table on right or upload a csv with population and count information.</label>
+                            </div>
 
-							<p><h5>To input from Excel:</h5></p>
-							<ol>
-								<li>Copy the paired columns of data you want to analyze from your spreadsheet,
-								right-click inside the empty matrix on the Input tab, and paste your selection.</li>
-								<li>Fill in the information (meta-data) on the left hand side of the Input page:
-								<ul>
-									<li><B>Title</B> - describe your data</li>
-									<li><B>Description</B> - add optional details </li>
-									<li><B>Start Year</B> - list the first calendar year of the first calendar period of your data, for example, use 1990 for the interval 1990 - 1994</li>
-									<li><B>Start Age</B> - list the first age of the first age group of your data, for example use 30 for the interval 30 - 34</li>
-									<li><B>Interval (Years)</B> - the width of the age and period intervals, for example use 1 for single-year data, 2 for two-year data, 5 for five-year data (e.g., 1990 - 1994), etc.</li>
-								</ul>
-								<li>Click the Calculate button.</li>
-								</li>
-							</ol>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="container footer">
-		<div class="center-block">
-			<div class="row">
-				<div class="col-xs-12 well">
-					<ul class="list-inline">
-						<li><a href="http://www.cancer.gov/" title="Home" target="_blank">Home</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="mailto:NCIAPCWebToolAdmin@mail.nih.gov" target="_top" title="Support">Support</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://www.cancer.gov/global/web/policies" title="Policies" target="_blank">Policies</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://www.cancer.gov/global/web/policies/accessibility" title="Accessibility" target="_blank">Accessibility</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://cancer.gov/global/viewing-files" title="Viewing Files" target="_blank">Viewing Files</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://www.cancer.gov/global/web/policies/foia" title="FOIA" target="_blank">FOIA</a></li>
-					</ul>
-					<ul class="list-inline">
-						<li><a href="http://www.hhs.gov/" target="_blank">U.S. Department of Health and Human Services</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://www.nih.gov" target="_blank">National Institutes of Health</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://www.cancer.gov/" target="_blank">National Cancer Institute</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://usa.gov" target="_blank">USA.gov</a></li>
-					</ul>
-					<div class="text-center">
-						NIH ... Turning Discovery Into Health<sup>®</sup>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <legend>Data File 1</legend>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label for="title1" class="control-label\">Title</label>
+                                        <div>
+                                            <input type="text" class="form-control" id="title1" placeholder="Enter Title">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        <input type="file" data-target="dataset1" class="vertical-spacer" id="inputfile1" accept=".csv">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <legend>Data File 2</legend>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label for="title2" class="control-label">Title</label>
+                                        <div>
+                                            <input type="text" class="form-control" id="title2" placeholder="Enter Title">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-12">
+                                        <input type="file" data-target="dataset2" class="vertical-spacer" id="inputfile2" accept=".csv">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="btn-toolbar offset">
+                                <button type="button" id="modelBt" class="btn btn-primary btn-sm pull-right">Fit Model</button>
+                                <button type="reset" id="resetBt" class="btn btn-default btn-sm pull-right">Clear</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-7 col-sm-12 col-xs-12">
+                <div class="large loading">
+                    <div>Loading…</div>
+                </div>
+                <nav class="navbar navbar-default">
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="crosstalk-tab-nav">
+                        <ul class="nav nav-pills">
+                            <li class="active"><a href="#input" data-toggle="tab" title="Input" data-content="Input">Input</a></li>
+                            <li><a href="#rates" data-toggle="tab" title="Rates" data-content="Rates">Rates</a></li>
+                            <li><a href="#rateRatios" data-toggle="tab" title="Rate Ratios" data-content="Rate Ratios"> Rate Ratios</a></li>
+                            <li><a href="#goodness" data-toggle="tab" title="Goodness of Fit" data-content="Goodness of Fit">Goodness of Fit</a></li>
+                            <li><a href="#apcRate" data-toggle="tab" title="APC of Rates" data-content="APC of Rates">APC of Rates</a></li>
+                            <li><a href="#apcRatios" data-toggle="tab" title="APC of Rate Ratios" data-content="APC of Rate Ratios">APC of Rate Ratios</a></li>
+                            <li><a href="#help" data-toggle="tab" title="Help" data-content="Help">Help</a></li>
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+                </nav>
+                <div class="tab-content grey-border">
+                    <div class="tab-pane active" id="input">
+                        <br/>
+                        <div class="input-tables">
+                          <fieldset>
+                              <legend><font size="2"><b>Data 1 (Numerator)</b></font></legend>
+                              <div id="dataset1" data-target="title1" adamant-pastable="crosstalk-input"></div>
+                          </fieldset>
+                          <br/>
+                          <fieldset>
+                              <legend><font size="2"><b>Data 2 (Denominator)</b></font></legend>
+                              <div id="dataset2" data-target="title2" adamant-pastable="crosstalk-input"></div>
+                          </fieldset>
+                        </div>
+                        <br/>
+                        <div id="datasetButton" align="center">
+                            <button type="submit" id="dataFlip" class="btn btn-primary active"> Flip Two Data in Ratio Calculation</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="rates">
+                        <br/>
+                        <div id="ratePane">
+                            <div id="rateGraphs" class="col-sm-12 graphsContainers">
+                            </div>
+                            <div id="rateTables" class="col-sm-12 tablesContainers">
+                                <table id="rateTable1" class="data-table stripe compact" width="100%">
+                                </table>
+                                <table id="rateTable2" class="data-table stripe compact" width="100%">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="rateRatios">
+                        <br/>
+                        <div class="col-sm-12"><font size="4"><b>Plot Options</b></font></div>
+                        <div class="col-sm-12" id="showNumber">
+<!--
+                            <font size="2">Show numbers in circle</font>&nbsp;&nbsp;&nbsp;
+                            <input type="checkbox" id="showSwitch" checked>
+-->
+                            Numbers in circle
+                            <label for="showSwitch" class="btn btn-primary btn-sm">
+                                <span id="on" class="show">
+                                    SHOW
+                                    <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+                                </span>
+                                <span id="off">
+                                    HIDE
+                                    <span class="glyphicon glyphicon-chevron-left pull-left"></span>
+                                </span>
+                                <input type="checkbox" id="showSwitch" checked>
+                            </label>
+                        </div>
+
+                        <div id="irrGraphs" class="col-sm-12 graphsContainers">
+                        </div>
+                        <div id="irrTables" class="col-sm-12 tablesContainers">
+                            <table id="irrTable" class="data-table stripe compact" width="100%">
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="tab-pane" id="goodness">
+                        <br/>
+                        <div class="col-sm-12">
+                            Show warning and explanation about zero/sparse data. Also explain how to fix the data using example in help.
+                            <br/>
+                            <br/> Two spie plots, estimates of over dispersion, sigma, residuals.
+                            <br/>
+                            <br/> Add cropping options, e.g. sliders to select year and age.
+                        </div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div class="col-sm-12" align="right">
+                            <button type="submit" id="modelBt" class="btn btn-primary active"> Export Cropped Datasets </button>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="apcRate">
+                        <br/>
+                        <div id="apcRatePane" class="col-sm-12" style="display:none">
+                            <nav class="navbar navbar-default col-sm-6" role="navigation">
+                                <div>
+                                    <ul class="nav navbar-nav">
+                                        <li id="localli" class="active"><a href="javaScript:changeContent('local');">Local Drifts</a></li>
+                                        <li id="netli"><a href="javaScript:changeContent('net');">Net Drifts</a></li>
+                                        <li id="adjustli"><a href="javaScript:changeContent('adjust');">Adjust Rates</a></li>
+                                    </ul>
+                                </div>
+                            </nav>
+                            <div id="navbar-content">
+                                <div class="active col-sm-12" id="local">
+                                    <div class="col-sm-6">
+                                        <center><img src="images/localDrifts.jpg" class="img-responsive" alt="Rate 1" width="500"></center>
+                                        <br/>
+                                        <center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49</a></center>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <br/>
+                                        <center><img src="images/comparisonDrifts.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
+                                        <br/>
+                                        <br>
+                                        <center><a href="javascript:alert('To be implemented')">View Data NHW 30-49</a></center>
+                                    </div>
+                                </div>
+                                <div style="display:none" class="col-sm-12" id="net">
+                                    <br/>
+                                    <table class="table table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Cohort</th>
+                                                <th>%/yr</th>
+                                                <th>COLo</th>
+                                                <th>CIHi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Urban China 30-49</td>
+                                                <td>1.561562764</td>
+                                                <td>1.318259693</td>
+                                                <td>1.805450098</td>
+                                            </tr>
+                                            <tr>
+                                                <td>NHW 30-49 &nbsp;0.235639525</td>
+                                                <td>0.079603778</td>
+                                                <td>0.39191855</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="display:none" class="col-sm-12" id="adjust">
+                                    <!-- start sccordion -->
+                                    <div class="accordion">
+                                        <div class="panel-group" id="accordion">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Comparison of Adjusted Rates</a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapseOne" class="panel-collapse collapse in">
+                                                    <div class="panel-body">
+                                                        <br/>
+                                                        <div class="col-sm-6">
+                                                            <center><img src="images/comparison1.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <center><img src="images/comparison2.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Fitted Cohort Pattern</a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapseTwo" class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        <div class="col-sm-12">
+                                                            <center><img src="images/cohort.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Fitted Temporal Trends</a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapseThree" class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        <div class="col-sm-12">
+                                                            <center><img src="images/temporal.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">Cross-Sectional Age Curve</a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapseFour" class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        <div class="col-sm-12">
+                                                            <center><img src="images/cross-sectional.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- end of caccordion -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="apcRatios">
+                        <!-- start accordion -->
+                        <div id="apcRatioPane" class="accordion" style="display:none">
+                            <div class="panel-group" id="accordion2">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion2" href="#collapse1">Fitted Cohort Pattern</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse1" class="panel-collapse collapse in">
+                                        <div class="panel-body">
+                                            <br/>
+                                            <div class="col-sm-12">
+                                                <center><img src="images/ratioCohort.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
+                                                <center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49 vs NHW 30-49</a></center>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion2" href="#collapse2">Fitted Temporal Trends</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse2" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <div class="col-sm-12">
+                                                <center><img src="images/ratioTemporal.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
+                                                <center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49 vs NHW 30-49</a></center>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion2" href="#collapse3">Cross-Sectional Age Curve</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse3" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <div class="col-sm-12">
+                                                <center><img src="images/ratioCrossSection.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
+                                                <center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49 vs NHW 30-49</a></center>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion2" href="#collapse4">Intercepts</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse4" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <div class="col-sm-12">
+                                                <br/>
+                                                <table class="table table-striped table-bordered">
+                                                    <caption>Urban China 30-49 vs NHW 30-49</caption>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>&nbsp;</th>
+                                                            <th>Lo</th>
+                                                            <th>Hi</th>
+                                                            <th>IO</th>
+                                                            <th>CI Lo</th>
+                                                            <th>CI Hi</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>age</td>
+                                                            <td>31</td>
+                                                            <td>49</td>
+                                                            <td>0.473241514</td>
+                                                            <td>0.464802678</td>
+                                                            <td>0.481833563</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Period</td>
+                                                            <td>1992</td>
+                                                            <td>2008</td>
+                                                            <td>0.473241514</td>
+                                                            <td>0.464802678</td>
+                                                            <td>0.481833563</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>cohort</td>
+                                                            <td>1943</td>
+                                                            <td>1977</td>
+                                                            <td>0.473241514</td>
+                                                            <td>0.464802678</td>
+                                                            <td>0.481833563</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end of caccordion -->
+                    </div>
+                    <div class="tab-pane" id="help">
+                        <br/>
+                        <!-- help page content -->
+                        <div style="overflow-y: auto; height:600px;">
+                            <center>
+                                <h3> Cross Talk Help</h3></center>
+                            <p>Age-Period-Cohort analysis identifies patterns in cancer incidence or mortality rates from population-based <b><i> Count </i></b> (numerator) and <b><i> Population </i></b> (denominator) data. Often the data come from a
+                                <B>Cancer Registry</B> (e.g., <a href='http://seer.cancer.gov/registries/' target='seer'> SEER</a>) in the form of a table showing the numbers of cancer cases or cancer deaths (counts) and corresponding person-years at risk (population) for particular age groups and calendar time periods. In cancer research, the Age-Period-Cohort (APC) framework is a fundamental model to analyze these data. The APC Model includes <i> parameters </i> that describe the mathematical relationships between the <b><i>Rate</i></b> of cancer and attained age, calendar period (year of diagnosis), and birth cohort (year of birth). The cancer <b><i>Rate</i></b> is expressed as the number of cancers per 100,000 persons at risk, which is calculated from the data using the formula: <b><i>(Count/Population) x 100,000.</i></b> </p>
+
+                            <p>This web tool uses the inputted count and population data to fit the APC Model and returns a number of <b><i>Outputs.</i></b> To use this tool, the width of the age and period intervals must all be equal. When this is so, the diagonals of the rate table represent birth cohorts.</p>
+
+                            <p> Visit the following sections to learn more about the APC web tool:</p>
+                            <ul>
+                                <li><a href='#started'>Getting started</a> - Learn how to enter data into the tool.</li>
+                                <li><a href='#example'>Sample data</a> - Enter any of these sample datasets to see the tool in action. </li>
+                                <li><a href='#whatitdoes'>What it does</a> - Find out what outputs are produced. </li>
+                                <li><a href='#savingyourresults'>Saving your results</a> - Find out how to save raw output as an Excel Workbook, R Workspace, or text file. </li>
+                                <li><a href='#faq'>FAQ</a> - Find out answers to some common questions about the APC tool.</li>
+                            </ul>
+                            <a name='started'></a>
+                            <h3>Getting started </h3>
+                            <p>Input data for the web tool consist of
+                                <B>Count and Population</B> data for particular age groups over calendar time, in the form of a matrix of rows with paired columns. Rows correspond to particular age groups and columns correspond to calendar time periods. The age and period intervals must all be equal, i.e. if 5-year age groups are used then 5-year calendar periods must also be used. The data can be input by copy-and-paste from an Excel worksheet or file upload of a comma-separated-values (csv) file. </p>
+
+                            <p>
+                                <h5>To input from Excel:</h5></p>
+                            <ol>
+                                <li>Copy the paired columns of data you want to analyze from your spreadsheet, right-click inside the empty matrix on the Input tab, and paste your selection.</li>
+                                <li>Fill in the information (meta-data) on the left hand side of the Input page:
+                                    <ul>
+                                        <li>
+                                            <B>Title</B> - describe your data</li>
+                                        <li>
+                                            <B>Description</B> - add optional details </li>
+                                        <li>
+                                            <B>Start Year</B> - list the first calendar year of the first calendar period of your data, for example, use 1990 for the interval 1990 - 1994</li>
+                                        <li>
+                                            <B>Start Age</B> - list the first age of the first age group of your data, for example use 30 for the interval 30 - 34</li>
+                                        <li>
+                                            <B>Interval (Years)</B> - the width of the age and period intervals, for example use 1 for single-year data, 2 for two-year data, 5 for five-year data (e.g., 1990 - 1994), etc.</li>
+                                    </ul>
+                                    <li>Click the Calculate button.</li>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container footer">
+        <div class="center-block">
+            <div class="row">
+                <div class="col-xs-12 well">
+                    <ul class="list-inline">
+                        <li><a href="http://www.cancer.gov/" title="Home" target="_blank">Home</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="mailto:NCIAPCWebToolAdmin@mail.nih.gov" target="_top" title="Support">Support</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://www.cancer.gov/global/web/policies" title="Policies" target="_blank">Policies</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://www.cancer.gov/global/web/policies/accessibility" title="Accessibility" target="_blank">Accessibility</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://cancer.gov/global/viewing-files" title="Viewing Files" target="_blank">Viewing Files</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://www.cancer.gov/global/web/policies/foia" title="FOIA" target="_blank">FOIA</a></li>
+                    </ul>
+                    <ul class="list-inline">
+                        <li><a href="http://www.hhs.gov/" target="_blank">U.S. Department of Health and Human Services</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://www.nih.gov" target="_blank">National Institutes of Health</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://www.cancer.gov/" target="_blank">National Cancer Institute</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://usa.gov" target="_blank">USA.gov</a></li>
+                    </ul>
+                    <div class="text-center">
+                        NIH ... Turning Discovery Into Health<sup>®</sup>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>

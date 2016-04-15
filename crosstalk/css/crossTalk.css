@@ -3,51 +3,51 @@
 }
 
 a.help {
-	background-image: url('/common/images/help.png');
-	background-repeat: no-repeat;
-	background-size: 16px 16px;
-	padding-left: 22px;
-	padding-bottom: 5px;
-	text-decoration: none;
+    background-image: url('/common/images/help.png');
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    padding-left: 22px;
+    padding-bottom: 5px;
+    text-decoration: none;
 }
 
 #helpGlossaryLinks {
-	float: right;
+    float: right;
 }
 
 .termToDefine {
-	text-decoration: underline;
-	cursor: help;
+    text-decoration: underline;
+    cursor: help;
 }
 
 .popupDefinition {
-	display: none;
-	position: absolute;
-	border: solid #C4C4C0 1px;
-	padding: 10px;
-	background-color: #FFFFEB;
-	text-align: left;
-	font-size: 12px;
-	width: 250px;
-	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
-	z-index: 2;
+    display: none;
+    position: absolute;
+    border: solid #C4C4C0 1px;
+    padding: 10px;
+    background-color: #FFFFEB;
+    text-align: left;
+    font-size: 12px;
+    width: 250px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+    z-index: 2;
 }
 
 .enlarge {
-	text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
-	transform: scale(1.1);
+    text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+    transform: scale(1.1);
 }
 
 #landing-blockcontent h3 {
-	font-weight: bold;
-	font-size: 130%;
+    font-weight: bold;
+    font-size: 130%;
 }
 
 .tools-owner-title {
-	padding-top: 5px;
-	padding-bottom: 5px;
-	background-color: #F5FAFF;
-	color: #0C5C97;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #F5FAFF;
+    color: #0C5C97;
 }
 
 .tools-section {
@@ -56,20 +56,20 @@ a.help {
 }
 
 .tools-section h4 {
-	margin: 7px 0px 4px;
-	font-size:90%;
+    margin: 7px 0px 4px;
+    font-size:90%;
 }
 
 .tools-section h4 a {
-	font-weight: bold;
-	text-decoration: underline;
-	color: #0C5C97;
+    font-weight: bold;
+    text-decoration: underline;
+    color: #0C5C97;
 }
 
 .main-div {
-	 width: 1200px;
-	 margin-left: auto;
-	 margin-right: auto;
+     width: 1200px;
+     margin-left: auto;
+     margin-right: auto;
 }
 
 .paste-here {
@@ -89,11 +89,11 @@ a {
 }
 
 h3 {
-	margin-top: 0;
+    margin-top: 0;
 }
 
 header {
-	margin: 25px 0;
+    margin: 25px 0;
 }
 
 header img {
@@ -266,7 +266,7 @@ legend.legend-border {
         padding: .5em 0em 0em 0em;
 }
 .accordion{
-    	margin: 20px;
+        margin: 20px;
 }
 .tab-content {
     background: none repeat scroll 0 0 white;
@@ -294,8 +294,8 @@ legend.legend-border {
     }
 
     input + span {
-    	display:block;
-    	padding: 3px 0 10px 0;
+        display:block;
+        padding: 3px 0 10px 0;
     }
 
     .footer {
@@ -327,15 +327,15 @@ legend.legend-border {
     }
 
     .large.loading {
-    	font-size: 18px;
+        font-size: 18px;
     }
 }
 
 /* Extra Small Devices, Phones */
 legend {
-	color: #666;
-	font-size: 100%;
-	font-weight: bold;
+    color: #666;
+    font-size: 100%;
+    font-weight: bold;
 }
 
 @media only screen and (min-width : 480px) {
@@ -394,7 +394,7 @@ legend {
     }
 
     .large.loading {
-    	font-size: 24px;
+        font-size: 24px;
     }
 }
 
@@ -405,10 +405,11 @@ body {
 }
 
 label {
-	font-size:12px;
+    font-size:12px;
 }
 
 .data-table {
+    font-size: 0.9em;
     margin-bottom: 20px;
     width:100% !important;
     border-bottom: 1px solid #DDD !important;
@@ -433,7 +434,7 @@ table.dataTable.compact thead th, table.dataTable.compact thead td {
 }
 
 .example-data-table {
-	font-size: 10px;
+    font-size: 10px;
 }
 
 .grey {
@@ -479,30 +480,30 @@ table.dataTable.compact thead th, table.dataTable.compact thead td {
 }
 
 /* coefficients.tfoot {
- 	display:none;
+     display:none;
  }*/
 
 td.data {
-	text-align:right;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 12px;
+    text-align:right;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
 }
 
 td.header {
-	text-align:right;
-	font-family: Arial, Helvetica, sans-serif;
-	font-weight:bold;
-	font-size: 12px;
-	text-align:center;
-	background-color:#EEE;
+    text-align:right;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight:bold;
+    font-size: 12px;
+    text-align:center;
+    background-color:#EEE;
 }
 
 .row-header {
     text-align: center;
-	vertical-align:middle;
-	width:50px;
-	max-width:50px;
-	background-color:#EEE;
+    vertical-align:middle;
+    width:50px;
+    max-width:50px;
+    background-color:#EEE;
 }
 
 tr {
@@ -510,42 +511,42 @@ tr {
 }
 
 th.header {
-	text-align:center;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 12px;
+    text-align:center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
     background-color:#DDD;
 }
 
 .border-top {
-	border-top: 1px solid #CCC;
+    border-top: 1px solid #CCC;
 }
 
 .border-left {
-	border-left: 1px solid #CCC;
+    border-left: 1px solid #CCC;
 
 }
 
 .border-right {
-	border-right: 1px solid #CCC;
+    border-right: 1px solid #CCC;
 }
 
 .border-dotted-left {
-	border-left: 1px dotted #CCC;
+    border-left: 1px dotted #CCC;
 }
 
 .border-dotted-right {
-	border-right: 1px dotted #CCC;
+    border-right: 1px dotted #CCC;
 }
 
 .border-bottom {
-	border-bottom: 1px solid #CCC;
+    border-bottom: 1px solid #CCC;
 }
 .border-dotted-bottom {
-	border-bottom: 1px dotted #CCC;
+    border-bottom: 1px dotted #CCC;
 }
 
 .dotted {
-	border: 1px dotted #CCC;
+    border: 1px dotted #CCC;
 }
 
 .white-border {
@@ -557,7 +558,7 @@ th.header {
 }
 
 .vertical-spacer {
-	display: block;
+    display: block;
     margin: 10px 0 20px 0;
     font-size: 12px;
 }
@@ -606,7 +607,7 @@ to { transform: rotate(359deg); }
 }
 
 .vertical-text {
-	text-align:center;
+    text-align:center;
   -webkit-transform: rotate(-90deg);
   -moz-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
@@ -675,18 +676,18 @@ hr.style-two {
 }
 
 .tab-content {
-	padding: 10px;
-	width: 100%;
-	-webkit-overflow-scrolling: touch;
-	background: white;
-	border-width: 0;
-	border-style: solid;
-	border-color: #d9d9d9;
-	border-radius: 0 0 4px 4px;
-	overflow: hidden;
+    padding: 10px;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    background: white;
+    border-width: 0;
+    border-style: solid;
+    border-color: #d9d9d9;
+    border-radius: 0 0 4px 4px;
+    overflow: hidden;
 }
 .ui-widget{
-	font-size:90%;
+    font-size:90%;
 }
 
 
@@ -785,19 +786,19 @@ table.dataTable thead .sorting_desc {
  */
 
 @keyframes spin {
-	to { transform: rotate(1turn); }
+    to { transform: rotate(1turn); }
 }
 
 .loading {
-	position: absolute;
-	display: none;
-	width: 5em;
-	height: 5em;
-	margin: 0 auto;
-	font-size: 12px;
-	text-indent: 999em;
-	overflow: hidden;
-	animation: spin 1s infinite steps(8);
+    position: absolute;
+    display: none;
+    width: 5em;
+    height: 5em;
+    margin: 0 auto;
+    font-size: 12px;
+    text-indent: 999em;
+    overflow: hidden;
+    animation: spin 1s infinite steps(8);
     z-index:100;
 }
 
@@ -805,39 +806,39 @@ table.dataTable thead .sorting_desc {
 .loading:after,
 .loading > div:before,
 .loading > div:after {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 2.25em; /* (container width - part width)/2  */
-	width: .5em;
-	height: 1.5em;
-	border-radius: .2em;
-	background: #eee;
-	box-shadow: 0 3.5em #eee; /* container height - part height */
-	transform-origin: 50% 2.5em; /* container height / 2 */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 2.25em; /* (container width - part width)/2  */
+    width: .5em;
+    height: 1.5em;
+    border-radius: .2em;
+    background: #eee;
+    box-shadow: 0 3.5em #eee; /* container height - part height */
+    transform-origin: 50% 2.5em; /* container height / 2 */
 }
 
 .loading:before {
-	background: #555;
+    background: #555;
 }
 
 .loading:after {
-	transform: rotate(-45deg);
-	background: #777;
+    transform: rotate(-45deg);
+    background: #777;
 }
 
 .loading > div:before {
-	transform: rotate(-90deg);
-	background: #999;
+    transform: rotate(-90deg);
+    background: #999;
 }
 
 .loading > div:after {
-	transform: rotate(-135deg);
-	background: #bbb;
+    transform: rotate(-135deg);
+    background: #bbb;
 }
 
 .form-group > a {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 .table-responsive>.table>tbody>tr>td {
@@ -852,6 +853,13 @@ table.dataTable thead .sorting_desc {
 .table > tbody > tr:last-child > th, .table > tbody > tr:last-child > td {
     padding-bottom: 20px;
 }
-.img-responsive {
-  width: 100%;
+#showNumber:not(.show),
+#irrGraphs img:not(.show),
+#on:not(.show),
+#off:not(.show){
+    display: none;
+}
+
+label.btn > input[type='checkbox'] {
+    display: none;
 }
