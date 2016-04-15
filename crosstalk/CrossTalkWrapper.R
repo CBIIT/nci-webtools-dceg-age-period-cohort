@@ -336,7 +336,7 @@ getRateRatios <- function(A, B) {
 
   interval = diff(A$periods)[1] - 1
 
-  output = as.data.frame((A$offset/A$events) / (B$offset/B$events))
+  output = as.data.frame((A$offset_tick*A$events/A$offset) / (B$offset_tick*B$events/B$offset))
 
   periods = A$periods[1:ncol(output)]
   ages = A$ages[1:nrow(output)]
