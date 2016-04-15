@@ -230,14 +230,29 @@
                     <div class="tab-pane" id="rateRatios">
                         <br/>
                         <div class="col-sm-12"><font size="4"><b>Plot Options</b></font></div>
-                        <div class="col-sm-12" id="showNumber" style="display:none"><font size="2">Show numbers in circle</font>&nbsp;&nbsp;&nbsp;
-                            <input type="checkbox" name="showSwitch" checked>
+                        <div class="col-sm-12" id="showNumber">
+<!--
+                            <font size="2">Show numbers in circle</font>&nbsp;&nbsp;&nbsp;
+                            <input type="checkbox" id="showSwitch" checked>
+-->
+                            Numbers in circle
+                            <label for="showSwitch" class="btn btn-primary btn-sm">
+                                <span id="on" class="show">
+                                    SHOW
+                                    <span class="glyphicon glyphicon-chevron-right pull-right"></span>
+                                </span>
+                                <span id="off">
+                                    HIDE
+                                    <span class="glyphicon glyphicon-chevron-left pull-left"></span>
+                                </span>
+                                <input type="checkbox" id="showSwitch" checked>
+                            </label>
                         </div>
 
                         <div id="irrGraphs" class="col-sm-12 graphsContainers">
                         </div>
                         <div id="irrTables" class="col-sm-12 tablesContainers">
-                            <table id="irrTable1" class="data-table stripe compact" width="100%">
+                            <table id="irrTable" class="data-table stripe compact" width="100%">
                             </table>
                         </div>
 
