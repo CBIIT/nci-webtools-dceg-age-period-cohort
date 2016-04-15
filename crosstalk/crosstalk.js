@@ -40,6 +40,24 @@ $(document).ready(function () {
         stop: crosstalk.update
     });
 
+    $("#showSwitch").on("change", function () {
+
+        if (this.checked) {
+            $(this.labels[0]).addClass("btn-primary");
+            $(this.labels[0]).removeClass("btn-default");
+
+            $("#on, #irrGraphs img:first").addClass("show");
+            $("#off, #irrGraphs img:nth(1)").removeClass("show");
+        } else {
+            $(this.labels[0]).addClass("btn-default");
+            $(this.labels[0]).removeClass("btn-primary");
+
+            $("#on, #irrGraphs img:first").removeClass("show");
+            $("#off, #irrGraphs img:nth(1)").addClass("show");
+        }
+
+    })
+
     $('#process').click(crosstalk.log);
 
     $('#modelBt').click(crosstalk.getData);
@@ -167,15 +185,14 @@ var crosstalk = (function ($, ReadFile) {
                 $(".loading").css("display", "block");
             }
         }).done(function (data) {
+            $("table, #rateGraphs, #irrGraphs").empty();
             var result = data;
             for (var key in result.data) {
                 var resultSet = result.data[key];
-
-                $("table, #rateGraphs, #irrGraphs").empty();
                 if (key == "IncidenceRates")
                     incRatesTab(resultSet);
-                //                else if(key == "IncidenceRateRatios")
-                //                    incRateRatioTab(resultSet);
+                else if (key == "IncidenceRateRatios")
+                    incRateRatioTab(resultSet);
             }
         }).fail(function () {
             console.log("failed");
@@ -254,8 +271,10 @@ var crosstalk = (function ($, ReadFile) {
     }
 
     function incRateRatioTab(result) {
+        var t1 = $("#irrTable");
         // result has tables, headers and graphs properties
         var headers = [{
+            data: "_row",
             title: "Age Group"
         }];
 
@@ -266,27 +285,32 @@ var crosstalk = (function ($, ReadFile) {
             });
         }
 
-        var t1 = $("#irrTable1");
-
+        var t1 = $("#irrTable");
+        $("#irrTables .title").html("");
         if (result.tables[0]) {
-            $("#irrGraphs").append("<img class='img-responsive' src='" +
-                result.graphs[0] + "' /><div id='showPlot' style='display:none'></div><img class='img-responsive hide' src='" + result.graphs[1] + "' />");
+            if ($.fn.DataTable.isDataTable("#" + t1[0].id)) {
+                t1.DataTable().destroy();
+            }
 
+            t1.empty().html();
             t1.empty().before("<h4 class='title'>" + model.titleA + " vs " + model.titleB + "</h4>");
-            t1.DataTable({
-                "destroy": true,
+
+            $("#irrGraphs").append(
+                "<img class='img-responsive show' src='" + result.graphs[0][0] + "' />" +
+                "<img class='img-responsive' src='" + result.graphs[1][0] + "' />");
+
+            var dTbl1 = t1.DataTable({
                 "data": result.tables[0],
-                "columns": headers,
-                "bSort": false,
-                "bFilter": false,
-                "paging": false,
-                "responsive": true,
-                "dom": 't',
-                "scrollX": true
+                "columns": headers
             });
 
-            t1.find("thead").append("<tr role='row'><th>Rate Ratios</th><th colspan='9'>Calendar Period</th></tr>");
-            t1.DataTable();
+            $(dTbl1.table().header()).prepend(
+                "<tr role='row'><th>Rate</th><th colspan='" +
+                result.headers.length +
+                "'>Calendar Period</th></tr>");
+
+            $("#showNumber").addClass("show");
+            t1.dataTable().fnDraw();
         }
     }
 

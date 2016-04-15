@@ -960,3 +960,14 @@ table.dataTable thead .sorting_desc {
 .table > tbody > tr:last-child > th, .table > tbody > tr:last-child > td {
     padding-bottom: 20px;
 }
+
+#showNumber:not(.show),
+#irrGraphs img:not(.show),
+#on:not(.show),
+#off:not(.show){
+    display: none;
+}
+
+label.btn > input[type='checkbox'] {
+    display: none;
+}
