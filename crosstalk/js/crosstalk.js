@@ -211,28 +211,32 @@ var crosstalk = (function ($, ReadFile) {
     };
 
     function getData() {
-        $.ajax({
-            method: "POST",
-            url: crosstalk_form.action,
-            data: JSON.stringify(crosstalk.model),
-            beforeSend: function () {
-                $(".loading").css("display", "block");
-            }
-        }).done(function (data) {
-            $("table, #rateGraphs, #irrGraphs").empty();
-            var result = data;
-            for (var key in result.data) {
-                var resultSet = result.data[key];
-                if (key == "IncidenceRates")
-                    incRatesTab(resultSet);
-                else if (key == "IncidenceRateRatios")
-                    incRateRatioTab(resultSet);
-            }
-        }).fail(function () {
-            console.log("failed");
-        }).always(function () {
-            $(".loading").css("display", "none");
-        });
+        if (self.model.inputfile1&&self.model.inputfile2&&self.model.inputfile1.table.length==self.model.inputfile2.table.length&&self.model.inputfile1.table[0].length==self.model.inputfile2.table[0].length) {
+            $.ajax({
+                method: "POST",
+                url: crosstalk_form.action,
+                data: JSON.stringify(crosstalk.model),
+                beforeSend: function () {
+                    $(".loading").css("display", "block");
+                }
+            }).done(function (data) {
+                $("table, #rateGraphs, #irrGraphs").empty();
+                var result = data;
+                for (var key in result.data) {
+                    var resultSet = result.data[key];
+                    if (key == "IncidenceRates")
+                        incRatesTab(resultSet);
+                    else if (key == "IncidenceRateRatios")
+                        incRateRatioTab(resultSet);
+                }
+            }).fail(function () {
+                console.log("failed");
+            }).always(function () {
+                $(".loading").css("display", "none");
+            });
+        } else {
+            alert("needs a message 3")
+        }
     }
 
     function incRatesTab(result) {
