@@ -17,20 +17,6 @@
     <link rel="stylesheet" href="/common/css/style.css">
     <link href="css/crossTalk.css" rel="stylesheet">
 
-    <!--
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/crossTalk.css" rel="stylesheet">
-    <link href="css/spin.css" rel="stylesheet">
-    <link href="css/bootstrap-switch.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
-    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/SpinBox.js"></script>
-    <script src="js/bootstrap-switch.js"></script>
-
-    -->
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
@@ -38,7 +24,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/0.7.3/purify.min.js"></script>
     <script src="https://cdn.rawgit.com/flatlogic/bootstrap-tabcollapse/master/bootstrap-tabcollapse.js"></script>
 
-    <script src="adamant-pastable/adamant-pastable.js"/></script>
+    <script src="adamant-pastable/adamant-pastable.js"></script>
     <script src="js/crossTalk.js"></script>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
 </head>
@@ -65,13 +51,7 @@
         <!--  start of body content -->
 
         <div class="row">
-            <!--
-                <div id="slideoutTab">
-                    <i id ="icon" class="fa fa-caret-left fa-2x" onclick="Slide_menu_Horz()" style="margin-left:31%"></i>
-                </div>
-            <div class="col-lg-4" id="slideoutForm">
-                <div id="slideout">
-             -->
+
             <div class="col-lg-4 col-md-5 col-sm-12">
                 <div class="well">
                     <div class="well well-nested">
@@ -199,12 +179,12 @@
                         <br/>
                         <div class="input-tables">
                           <fieldset>
-                              <legend><font size="2"><b>Data 1 (Numerator)</b></font></legend>
+                              <legend><font size="2"><strong>Data 1 (Numerator)</strong></font></legend>
                               <div id="dataset1" data-target="inputfile1" adamant-pastable="crosstalk-input"></div>
                           </fieldset>
                           <br/>
                           <fieldset>
-                              <legend><font size="2"><b>Data 2 (Denominator)</b></font></legend>
+                              <legend><font size="2"><strong>Data 2 (Denominator)</strong></font></legend>
                               <div id="dataset2" data-target="inputfile2" adamant-pastable="crosstalk-input"></div>
                           </fieldset>
                         </div>
@@ -227,13 +207,9 @@
                         </div>
                     </div>
                     <div class="tab-pane" id="rateRatios">
-                        <br/>
-                        <div class="col-sm-12"><font size="4"><b>Plot Options</b></font></div>
+                        <div class="col-sm-12"><font size="4"><strong>Plot Options</strong></font>
+</div>
                         <div class="col-sm-12" id="showNumber">
-<!--
-                            <font size="2">Show numbers in circle</font>&nbsp;&nbsp;&nbsp;
-                            <input type="checkbox" id="showSwitch" checked>
--->
                             Numbers in circle
                             <label for="showSwitch" class="btn btn-primary btn-sm">
                                 <span id="on" class="show">
@@ -299,7 +275,7 @@
                     </div>
                     <div class="tab-pane" id="apcRate">
                         <br/>
-                        <div id="apcRatePane" class="col-sm-12" style="display:none">
+                        <div id="apcRatePane" class="col-sm-12">
                             <nav class="navbar navbar-default col-sm-6" role="navigation">
                                 <div>
                                     <ul class="nav navbar-nav">
@@ -312,46 +288,13 @@
                             <div id="navbar-content">
                                 <div class="active col-sm-12" id="local">
                                     <div class="col-sm-6">
-                                        <center><img src="images/localDrifts.jpg" class="img-responsive" alt="Rate 1" width="500"></center>
-                                        <br/>
-                                        <center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49</a></center>
                                     </div>
                                     <div class="col-sm-6">
-                                        <br/>
-                                        <center><img src="images/comparisonDrifts.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
-                                        <br/>
-                                        <br>
-                                        <center><a href="javascript:alert('To be implemented')">View Data NHW 30-49</a></center>
                                     </div>
                                 </div>
-                                <div style="display:none" class="col-sm-12" id="net">
-                                    <br/>
-                                    <table class="table table-striped table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Cohort</th>
-                                                <th>%/yr</th>
-                                                <th>COLo</th>
-                                                <th>CIHi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Urban China 30-49</td>
-                                                <td>1.561562764</td>
-                                                <td>1.318259693</td>
-                                                <td>1.805450098</td>
-                                            </tr>
-                                            <tr>
-                                                <td>NHW 30-49 &nbsp;0.235639525</td>
-                                                <td>0.079603778</td>
-                                                <td>0.39191855</td>
-                                                <td>&nbsp;</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div class="col-sm-12" id="net">
                                 </div>
-                                <div style="display:none" class="col-sm-12" id="adjust">
+                                <div class="col-sm-12" id="adjust">
                                     <!-- start sccordion -->
                                     <div class="accordion">
                                         <div class="panel-group" id="accordion">
@@ -365,10 +308,8 @@
                                                     <div class="panel-body">
                                                         <br/>
                                                         <div class="col-sm-6">
-                                                            <center><img src="images/comparison1.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
                                                         </div>
                                                         <div class="col-sm-6">
-                                                            <center><img src="images/comparison2.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -382,7 +323,6 @@
                                                 <div id="collapseTwo" class="panel-collapse collapse">
                                                     <div class="panel-body">
                                                         <div class="col-sm-12">
-                                                            <center><img src="images/cohort.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -396,7 +336,6 @@
                                                 <div id="collapseThree" class="panel-collapse collapse">
                                                     <div class="panel-body">
                                                         <div class="col-sm-12">
-                                                            <center><img src="images/temporal.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -410,7 +349,6 @@
                                                 <div id="collapseFour" class="panel-collapse collapse">
                                                     <div class="panel-body">
                                                         <div class="col-sm-12">
-                                                            <center><img src="images/cross-sectional.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -436,8 +374,7 @@
                                         <div class="panel-body">
                                             <br/>
                                             <div class="col-sm-12">
-                                                <center><img src="images/ratioCohort.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
-                                                <center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49 vs NHW 30-49</a></center>
+
                                             </div>
                                         </div>
                                     </div>
@@ -451,8 +388,7 @@
                                     <div id="collapse2" class="panel-collapse collapse">
                                         <div class="panel-body">
                                             <div class="col-sm-12">
-                                                <center><img src="images/ratioTemporal.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
-                                                <center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49 vs NHW 30-49</a></center>
+
                                             </div>
                                         </div>
                                     </div>
@@ -466,8 +402,7 @@
                                     <div id="collapse3" class="panel-collapse collapse">
                                         <div class="panel-body">
                                             <div class="col-sm-12">
-                                                <center><img src="images/ratioCrossSection.jpg" class="img-responsive" alt="Rate 2" width="500"></center>
-                                                <center><a href="javascript:alert('To be implemented')">View Data Urban China 30-49 vs NHW 30-49</a></center>
+
                                             </div>
                                         </div>
                                     </div>
@@ -535,10 +470,10 @@
                         <div style="overflow-y: auto; height:600px;">
                             <center>
                                 <h3> Cross Talk Help</h3></center>
-                            <p>Age-Period-Cohort analysis identifies patterns in cancer incidence or mortality rates from population-based <b><i> Count </i></b> (numerator) and <b><i> Population </i></b> (denominator) data. Often the data come from a
-                                <B>Cancer Registry</B> (e.g., <a href='http://seer.cancer.gov/registries/' target='seer'> SEER</a>) in the form of a table showing the numbers of cancer cases or cancer deaths (counts) and corresponding person-years at risk (population) for particular age groups and calendar time periods. In cancer research, the Age-Period-Cohort (APC) framework is a fundamental model to analyze these data. The APC Model includes <i> parameters </i> that describe the mathematical relationships between the <b><i>Rate</i></b> of cancer and attained age, calendar period (year of diagnosis), and birth cohort (year of birth). The cancer <b><i>Rate</i></b> is expressed as the number of cancers per 100,000 persons at risk, which is calculated from the data using the formula: <b><i>(Count/Population) x 100,000.</i></b> </p>
+                            <p>Age-Period-Cohort analysis identifies patterns in cancer incidence or mortality rates from population-based <strong><i> Count </i></strong> (numerator) and <strong><i> Population </i></strong> (denominator) data. Often the data come from a
+                                <strong>Cancer Registry</strong> (e.g., <a href='http://seer.cancer.gov/registries/' target='seer'> SEER</a>) in the form of a table showing the numbers of cancer cases or cancer deaths (counts) and corresponding person-years at risk (population) for particular age groups and calendar time periods. In cancer research, the Age-Period-Cohort (APC) framework is a fundamental model to analyze these data. The APC Model includes <i> parameters </i> that describe the mathematical relationships between the <strong><i>Rate</i></strong> of cancer and attained age, calendar period (year of diagnosis), and birth cohort (year of birth). The cancer <strong><i>Rate</i></strong> is expressed as the number of cancers per 100,000 persons at risk, which is calculated from the data using the formula: <strong><i>(Count/Population) x 100,000.</i></strong> </p>
 
-                            <p>This web tool uses the inputted count and population data to fit the APC Model and returns a number of <b><i>Outputs.</i></b> To use this tool, the width of the age and period intervals must all be equal. When this is so, the diagonals of the rate table represent birth cohorts.</p>
+                            <p>This web tool uses the inputted count and population data to fit the APC Model and returns a number of <strong><i>Outputs.</i></strong> To use this tool, the width of the age and period intervals must all be equal. When this is so, the diagonals of the rate table represent birth cohorts.</p>
 
                             <p> Visit the following sections to learn more about the APC web tool:</p>
                             <ul>
@@ -551,7 +486,7 @@
                             <a name='started'></a>
                             <h3>Getting started </h3>
                             <p>Input data for the web tool consist of
-                                <B>Count and Population</B> data for particular age groups over calendar time, in the form of a matrix of rows with paired columns. Rows correspond to particular age groups and columns correspond to calendar time periods. The age and period intervals must all be equal, i.e. if 5-year age groups are used then 5-year calendar periods must also be used. The data can be input by copy-and-paste from an Excel worksheet or file upload of a comma-separated-values (csv) file. </p>
+                                <strong>Count and Population</strong> data for particular age groups over calendar time, in the form of a matrix of rows with paired columns. Rows correspond to particular age groups and columns correspond to calendar time periods. The age and period intervals must all be equal, i.e. if 5-year age groups are used then 5-year calendar periods must also be used. The data can be input by copy-and-paste from an Excel worksheet or file upload of a comma-separated-values (csv) file. </p>
 
                             <p>
                                 <h5>To input from Excel:</h5></p>
@@ -560,15 +495,15 @@
                                 <li>Fill in the information (meta-data) on the left hand side of the Input page:
                                     <ul>
                                         <li>
-                                            <B>Title</B> - describe your data</li>
+                                            <strong>Title</strong> - describe your data</li>
                                         <li>
-                                            <B>Description</B> - add optional details </li>
+                                            <strong>Description</strong> - add optional details </li>
                                         <li>
-                                            <B>Start Year</B> - list the first calendar year of the first calendar period of your data, for example, use 1990 for the interval 1990 - 1994</li>
+                                            <strong>Start Year</strong> - list the first calendar year of the first calendar period of your data, for example, use 1990 for the interval 1990 - 1994</li>
                                         <li>
-                                            <B>Start Age</B> - list the first age of the first age group of your data, for example use 30 for the interval 30 - 34</li>
+                                            <strong>Start Age</strong> - list the first age of the first age group of your data, for example use 30 for the interval 30 - 34</li>
                                         <li>
-                                            <B>Interval (Years)</B> - the width of the age and period intervals, for example use 1 for single-year data, 2 for two-year data, 5 for five-year data (e.g., 1990 - 1994), etc.</li>
+                                            <strong>Interval (Years)</strong> - the width of the age and period intervals, for example use 1 for single-year data, 2 for two-year data, 5 for five-year data (e.g., 1990 - 1994), etc.</li>
                                     </ul>
                                     <li>Click the Calculate button.</li>
                                 </li>
