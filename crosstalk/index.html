@@ -39,7 +39,8 @@
     <script src="https://cdn.rawgit.com/flatlogic/bootstrap-tabcollapse/master/bootstrap-tabcollapse.js"></script>
 
     <script src="adamant-pastable/adamant-pastable.js"/></script>
-    <script src="js/crossTalk.js"></script>
+    <!--<script src="js/crossTalk.js"></script>-->
+    <script src="crossTalk.js"></script>
     <link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
 </head>
 
@@ -143,7 +144,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-xs-12">
-                                        <input type="file" data-target="dataset1" class="vertical-spacer" id="inputfile1" accept=".csv">
+                                        <input type="file" data-target="title1" class="vertical-spacer" id="inputfile1" accept=".csv">
                                     </div>
                                 </div>
                             </div>
@@ -162,7 +163,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-xs-12">
-                                        <input type="file" data-target="dataset2" class="vertical-spacer" id="inputfile2" accept=".csv">
+                                        <input type="file" data-target="title2" class="vertical-spacer" id="inputfile2" accept=".csv">
                                     </div>
                                 </div>
                             </div>
@@ -200,12 +201,12 @@
                         <div class="input-tables">
                           <fieldset>
                               <legend><font size="2"><b>Data 1 (Numerator)</b></font></legend>
-                              <div id="dataset1" data-target="title1" adamant-pastable="crosstalk-input"></div>
+                              <div id="dataset1" data-target="inputfile1" adamant-pastable="crosstalk-input"></div>
                           </fieldset>
                           <br/>
                           <fieldset>
                               <legend><font size="2"><b>Data 2 (Denominator)</b></font></legend>
-                              <div id="dataset2" data-target="title2" adamant-pastable="crosstalk-input"></div>
+                              <div id="dataset2" data-target="inputfile2" adamant-pastable="crosstalk-input"></div>
                           </fieldset>
                         </div>
                         <br/>
