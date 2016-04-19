@@ -245,6 +245,9 @@ var crosstalk = (function ($, ReadFile) {
                         incRatesTab(resultSet);
                     else if (key == "IncidenceRateRatios")
                         incRateRatioTab(resultSet);
+                    else if (key == "ApcOfRateRatios")
+                        apcRateRatiosTab(resultSet);
+
                     $("#showNumber").addClass("show");
                     $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').attr('style', 'display:block');
                 }
@@ -373,6 +376,54 @@ var crosstalk = (function ($, ReadFile) {
         }
     }
 
+    function apcRateRatiosTab(result) {
+        $("#intercept .title, #ftt .title, #fcp .title, #csac .title").text(
+            model.titleA + " vs " + model.titleB);
+
+        for (var resultKey in result) {
+            var t1 = $("#interceptTable");
+            // result has tables, headers and graphs properties
+            var headers = [];
+            var resultSet = result[resultKey];
+
+            if (resultSet.tables) {
+                for (var i = 0; i < resultSet.headers.length; i++) {
+                    headers.push({
+                        data: resultSet.headers[i].toString(),
+                        title: resultSet.headers[i].toString()
+                    });
+                }
+
+                if ($.fn.DataTable.isDataTable("#" + t1[0].id)) {
+                    t1.DataTable().destroy();
+                }
+
+                t1.empty().html();
+
+                var dTbl1 = t1.DataTable({
+                    "data": resultSet.tables[0],
+                    "columns": headers
+                });
+
+                dTbl1.draw();
+            }
+            if (resultSet.graphs) {
+                if (resultKey == "FittedTemporalTrends") {
+                    $("#fttGraphs").append(
+                        "<img class='img-responsive show' src='" +
+                        resultSet.graphs[0][0] + "' />");
+                } else if (resultKey == "FittedCohortPattern") {
+                    $("#fcpGraphs").append(
+                        "<img class='img-responsive show' src='" +
+                        resultSet.graphs[0][0] + "' />");
+                } else if (resultKey == "CrossSectionalAgeCurve") {
+                    $("#csacGraphs").append(
+                        "<img class='img-responsive show' src='" +
+                        resultSet.graphs[0][0] + "' />");
+                }
+            }
+        }
+    }
 
     function drop(e) {
         ReadFile.createModel({
