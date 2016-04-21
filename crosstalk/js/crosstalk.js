@@ -297,22 +297,14 @@ var crosstalk = (function ($, ReadFile) {
             title: "Age Group"
         }],result.headers);
 
-        for (var i = 0; i < result.headers.length; i++) {
-            headers.push({
-                data: result.headers[i].toString(),
-                title: result.headers[i].toString(),
-                className: 'dt-body-right'
-            });
-        }
-
         if (result.tables[0]) {
             createOutputTable("#rateTable1",model.titleA,result.tables[0],headers);
-            $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" + result.graphs[0] + "' />");
+            $("#rateGraphs").append("<a class='expandImg'data-toggle='modal' data-target='#imgPreview'><img class='img-responsive col-sm-6' src='" + result.graphs[0] + "' /></a>");
         }
 
         if (result.tables[1]) {
             createOutputTable("#rateTable2",model.titleB,result.tables[1],headers);
-            $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" + result.graphs[1] + "' />");
+            $("#rateGraphs").append("<a class='expandImg'data-toggle='modal' data-target='#imgPreview'><img class='img-responsive col-sm-6' src='" + result.graphs[1] + "' /></a>");
         }
     }
 
