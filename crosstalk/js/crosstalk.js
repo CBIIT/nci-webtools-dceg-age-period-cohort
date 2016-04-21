@@ -258,118 +258,71 @@ var crosstalk = (function ($, ReadFile) {
         }
     }
 
+    function createOutputHeaders(initial, headers) {
+      var returnHeaders = $.extend(true,[],initial);
+      for (var i = 0; i < headers.length; i++) {
+        returnHeaders.push({
+          data: headers[i].toString(),
+          title: headers[i].toString()
+        });
+      }
+      return returnHeaders;
+    }
+    
+    function createOutputTable(containerId,title,table,headers) {
+        var target = $(containerId);
+        if ($.fn.DataTable.isDataTable(containerId)) {
+            target.DataTable().destroy();
+        }
+        target.empty().html("").before("<h4 class='title'>" + title + "</h4>");
+        var dTbl = target.DataTable({
+            "data": table,
+            "columns": headers
+        });
+
+        $(dTbl.table().header()).prepend(
+            "<tr role='row'><th>Rate</th><th colspan='" + (headers.length-1) + "'>Calendar Period</th></tr>");
+        target.dataTable().fnDraw();
+    }
+
     function incRatesTab(result) {
-        var t1 = $("#rateTable1");
         var t2 = $("#rateTable2");
 
         // result has tables, headers and graphs properties
-        var headers = [{
+        var headers = createOutputHeaders([{
             data: "_row",
             title: "Age Group"
-        }];
-
-        for (var i = 0; i < result.headers.length; i++) {
-            headers.push({
-                data: result.headers[i].toString(),
-                title: result.headers[i].toString()
-            });
-        }
+        }],result.headers);
 
         $("#rateTables .title").html("");
 
         if (result.tables[0]) {
-            if ($.fn.DataTable.isDataTable("#" + t1[0].id)) {
-                t1.DataTable().destroy();
-            }
-
-            t1.empty().html("");
-            t1.before("<h4 class='title'>" + model.titleA + "</h4>");
-
-            $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" +
-                result.graphs[0] + "' />");
-
-            var dTbl1 = t1.DataTable({
-                "data": result.tables[0],
-                "columns": headers
-            });
-
-            $(dTbl1.table().header()).prepend(
-                "<tr role='row'><th>Rate</th><th colspan='" +
-                result.headers.length +
-                "'>Calendar Period</th></tr>");
-
-            dTbl1.draw();
+            createOutputTable("#rateTable1",model.titleA,result.tables[0],headers);
+            $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" + result.graphs[0] + "' />");
         }
 
         if (result.tables[1]) {
-            if ($.fn.DataTable.isDataTable("#" + t2[0].id)) {
-                t2.DataTable().destroy();
-            }
-
-            $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" +
-                result.graphs[1] + "' />");
-
-            if ($.fn.DataTable.isDataTable("#" + t2[0].id)) {
-                t2.DataTable().destroy();
-            }
-
-            t2.empty().html("").before("<h4 class='title'>" + model.titleB + "</h4>");
-
-            var dTbl2 = t2.DataTable({
-                "data": result.tables[1],
-                "columns": headers
-            });
-
-            $(dTbl2.table().header()).prepend(
-                "<tr role='row'><th>Rate</th><th colspan='" +
-                result.headers.length +
-                "'>Calendar Period</th></tr>");
-
-            dTbl2.draw();
+            createOutputTable("#rateTable2",model.titleB,result.tables[1],headers);
+            $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" + result.graphs[1] + "' />");
         }
     }
 
     function incRateRatioTab(result) {
         var t1 = $("#irrTable");
         // result has tables, headers and graphs properties
-        var headers = [{
+        var headers = createOutputHeaders([{
             data: "_row",
             title: "Age Group"
-        }];
-
-        for (var i = 0; i < result.headers.length; i++) {
-            headers.push({
-                data: result.headers[i].toString(),
-                title: result.headers[i].toString()
-            });
-        }
+        }],result.headers);
 
         var t1 = $("#irrTable");
         $("#irrTables .title").html("");
         if (result.tables[0]) {
-            if ($.fn.DataTable.isDataTable("#" + t1[0].id)) {
-                t1.DataTable().destroy();
-            }
-
-            t1.empty().html();
-            t1.empty().before("<h4 class='title'>" + model.titleA + " vs " + model.titleB + "</h4>");
-
+            createOutputTable("#irrTable",(model.titleA + " vs " + model.titleB),result.tables[0],headers);
             $("#irrGraphs").append(
                 "<img class='img-responsive show' src='" + result.graphs[0][0] + "' />" +
                 "<img class='img-responsive' src='" + result.graphs[1][0] + "' />");
-
-            var dTbl1 = t1.DataTable({
-                "data": result.tables[0],
-                "columns": headers
-            });
-
-            $(dTbl1.table().header()).prepend(
-                "<tr role='row'><th>Rate</th><th colspan='" +
-                result.headers.length +
-                "'>Calendar Period</th></tr>");
-
             $("#showNumber").addClass("show");
-            dTbl1.draw();
         }
     }
 
