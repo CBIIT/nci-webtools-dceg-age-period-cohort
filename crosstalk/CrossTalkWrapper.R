@@ -360,12 +360,10 @@ getRateRatios <- function(A, B) {
   colnames(output) = paste(periods, periods + interval, sep = ' - ')
   rownames(output) = paste(ages, ages + interval, sep = ' - ')
 
-  output
+  return(apply(output, c(1, 2), function(x) { return (if (is.nan(x) || x == Inf || x == -Inf) 0 else x) }))
 }
 
 getRateRatiosGraph <- function(output, labels = F) {
-  output = apply(output, c(1, 2), function(x) return (if (x == Inf || x == -Inf) 0 else x))
-  
   col1 <- colorRampPalette(c("cyan", "#007FFF", "blue", "#871414", "red", "#FF7F00", "yellow", "white" ))
   
   filename = paste0(OUTPUT_DIR, 'RatesRatioGraph_', getTimestamp(), '.svg')
