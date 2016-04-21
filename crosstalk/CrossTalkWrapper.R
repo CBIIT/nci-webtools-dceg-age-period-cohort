@@ -21,10 +21,10 @@ dir.create(OUTPUT_DIR)
 #-------------------------------------------------------
 parseJSON <- function(data) {
   
-  if (length(data) < 2)
-    data = fromJSON(txt = 'input_new.json') 
+#  if (length(data) < 2)
+#    data = fromJSON(txt = 'input_new.json') 
   
-  else
+#  else
     data = fromJSON(data)
   
   data$interval   = as.numeric(data$interval)
@@ -364,12 +364,14 @@ getRateRatios <- function(A, B) {
 }
 
 getRateRatiosGraph <- function(output, labels = F) {
+  output = apply(output, c(1, 2), function(x) return (if (x == Inf || x == -Inf) 0 else x))
   
   col1 <- colorRampPalette(c("cyan", "#007FFF", "blue", "#871414", "red", "#FF7F00", "yellow", "white" ))
   
   filename = paste0(OUTPUT_DIR, 'RatesRatioGraph_', getTimestamp(), '.svg')
   
   svg(height = 10, width = 10, pointsize = 10, file = filename)
+  
   
   if (labels)
     corrplot(as.matrix(output), method = "circle",
