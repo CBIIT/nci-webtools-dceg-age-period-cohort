@@ -429,6 +429,7 @@ var crosstalk = (function ($, ReadFile) {
         $("#imgPreview .modal-body").append("<img class='img-responsive' src='" + img.src + "' />");
     }
 
+
     function drop(e) {
         ReadFile.createModel({
             "id": $(e.delegateTarget).attr('data-target'),
