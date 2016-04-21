@@ -236,7 +236,7 @@ var crosstalk = (function ($, ReadFile) {
                     $(".loading").css("display", "block");
                 }
             }).done(function (data) {
-                $("#rateGraphs, #irrGraphs").empty();
+                $("#rateGraphs, #irrGraphs, #apcRateGraphs").empty();
                 var result = data;
                 for (var key in result.data) {
                     var resultSet = result.data[key];
@@ -245,7 +245,8 @@ var crosstalk = (function ($, ReadFile) {
                         incRatesTab(resultSet);
                     else if (key == "IncidenceRateRatios")
                         incRateRatioTab(resultSet);
-                    $("#showNumber").addClass("show");
+                    else if (key == "ApcOfIncidenceRates")
+                        apcRatesTab(resultSet);
                     $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').attr('style', 'display:block');
                 }
             }).fail(function () {
@@ -269,25 +270,22 @@ var crosstalk = (function ($, ReadFile) {
       return returnHeaders;
     }
     
-    function createOutputTable(containerId,title,table,headers) {
+    function createOutputTable(containerId,title,table,headers,extraHeaders="") {
         var target = $(containerId);
         if ($.fn.DataTable.isDataTable(containerId)) {
             target.DataTable().destroy();
         }
-        target.empty().html("").before("<h4 class='title'>" + title + "</h4>");
+        target.empty().before("<h4 class='title'>" + title + "</h4>");
         var dTbl = target.DataTable({
             "data": table,
             "columns": headers
         });
 
-        $(dTbl.table().header()).prepend(
-            "<tr role='row'><th>Rate</th><th colspan='" + (headers.length-1) + "'>Calendar Period</th></tr>");
+        $(dTbl.table().header()).prepend(extraHeaders);
         target.dataTable().fnDraw();
     }
 
     function incRatesTab(result) {
-        var t2 = $("#rateTable2");
-
         // result has tables, headers and graphs properties
         var headers = createOutputHeaders([{
             data: "_row",
@@ -295,34 +293,62 @@ var crosstalk = (function ($, ReadFile) {
         }],result.headers);
 
         $("#rateTables .title").html("");
+        var extraHeaders = "<tr role='row'><th>Rate</th><th colspan='" + (headers.length-1) + "'>Calendar Period</th></tr>";
 
         if (result.tables[0]) {
-            createOutputTable("#rateTable1",model.titleA,result.tables[0],headers);
+            createOutputTable("#rateTable1",model.titleA,result.tables[0],headers,extraHeaders);
             $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" + result.graphs[0] + "' />");
         }
 
         if (result.tables[1]) {
-            createOutputTable("#rateTable2",model.titleB,result.tables[1],headers);
+            createOutputTable("#rateTable2",model.titleB,result.tables[1],headers,extraHeaders);
             $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" + result.graphs[1] + "' />");
         }
     }
 
     function incRateRatioTab(result) {
-        var t1 = $("#irrTable");
         // result has tables, headers and graphs properties
         var headers = createOutputHeaders([{
             data: "_row",
-            title: "Age Group"
+            title: "Null Hypothesis"
         }],result.headers);
 
-        var t1 = $("#irrTable");
         $("#irrTables .title").html("");
+        var extraHeaders = "<tr role='row'><th>Rate</th><th colspan='" + (headers.length-1) + "'>Calendar Period</th></tr>";
+        
         if (result.tables[0]) {
-            createOutputTable("#irrTable",(model.titleA + " vs " + model.titleB),result.tables[0],headers);
+            createOutputTable("#irrTable",(model.titleA + " vs " + model.titleB),result.tables[0],headers,extraHeaders);
             $("#irrGraphs").append(
                 "<img class='img-responsive show' src='" + result.graphs[0][0] + "' />" +
                 "<img class='img-responsive' src='" + result.graphs[1][0] + "' />");
             $("#showNumber").addClass("show");
+        }
+    }
+    
+    function apcRatesTab(result) {
+        $("#local, #collapseOne > div > div:first-child").empty();
+        if (result.AdjustedRates) {
+            if (result.AdjustedRates.ComparisonOfAdjustedRates) {
+                var coar = result.AdjustedRates.ComparisonOfAdjustedRates;
+                var headers = createOutputHeaders([{
+                    data: "_row",
+                    title: "Age Group"
+                }],coar.headers);
+                if (coar.tables[0]) {
+                    createOutputTable("#coarTable",(model.titleA + " vs " + model.titleB),coar.tables[0],headers);
+                }
+                if (coar.graphs[0]) {
+                  $("#collapseOne > div > div:first-child").append("<img class='img-responsive show' src='" + coar.graphs[0][0] + "' />");
+                }
+            }
+        }
+        if (result.LocalDrifts) {
+            if (result.LocalDrifts.graphs[0]) {
+                $("#local").append("<div class=\"col-sm-6\"><img class='img-responsive' src='" + result.LocalDrifts.graphs[0][0] + "' /></div>");
+            }
+            if (result.LocalDrifts.graphs[1]) {
+                $("#local").append("<div class=\"col-sm-6\"><img class='img-responsive' src='" + result.LocalDrifts.graphs[1][0] + "' /></div>");
+            }
         }
     }
 
