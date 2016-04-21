@@ -88,6 +88,10 @@ a.help {
 
 
 /* Overriding Bootstrap Styles */
+.table {
+    margin: 0;
+    padding: 0;
+}
 
 a {
     cursor: pointer;
@@ -414,6 +418,12 @@ label {
     font-size: 12px;
 }
 
+/*
+.dataTables_wrapper {
+    border: 2px solid #666666;
+}
+*/
+
 .data-table {
     font-size: 0.9em;
     margin-bottom: 20px;
@@ -498,7 +508,7 @@ td.data {
     font-size: 12px;
 }
 
-td.header {
+td.header, .dataTable thead tr {
     text-align: right;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;

@@ -51,7 +51,6 @@
         <!--  start of body content -->
 
         <div class="row">
-
             <div class="col-lg-4 col-md-5 col-sm-12">
                 <div class="well">
                     <div class="well well-nested">
@@ -199,10 +198,10 @@
                             </div>
                             <div id="rateTables" class="col-sm-12 tablesContainers">
                                 <h4 id="rateTitle1" class="title"></h4>
-                                <table id="rateTable1" class="data-table stripe compact" width="100%">
+                                <table id="rateTable1" class="table display compact" width="100%">
                                 </table>
                                 <h4 id="rateTitle2" class="title"></h4>
-                                <table id="rateTable2" class="data-table stripe compact" width="100%">
+                                <table id="rateTable2" class="table display compact" width="100%">
                                 </table>
                             </div>
                         </div>
@@ -223,7 +222,7 @@
                             <div id="irrGraphs" class="col-sm-12 graphsContainers">
                             </div>
                             <div id="irrTables" class="col-sm-12 tablesContainers">
-                                <table id="irrTable" class="data-table stripe compact" width="100%">
+                                <table id="irrTable" class="table display compact" width="100%">
                                 </table>
                             </div>
                         </div>
@@ -247,9 +246,9 @@
                             <nav class="navbar navbar-default col-sm-6" role="navigation">
                                 <div>
                                     <ul class="nav navbar-nav">
-                                        <li id="localli" class="active"><a href="javaScript:changeContent('local');">Local Drifts</a></li>
-                                        <li id="netli"><a href="javaScript:changeContent('net');">Net Drifts</a></li>
-                                        <li id="adjustli"><a href="javaScript:changeContent('adjust');">Adjust Rates</a></li>
+                                        <li id="localli" class="active"><a>Local Drifts</a></li>
+                                        <li id="netli"><a>Net Drifts</a></li>
+                                        <li id="adjustli"><a>Adjust Rates</a></li>
                                     </ul>
                                 </div>
                             </nav>
@@ -387,7 +386,7 @@
                                         <div class="panel-body">
                                             <div class="col-sm-12">
                                                 <h4 class="title"></h4>
-                                                <table id="interceptTable">
+                                                <table id="interceptTable" class="table display compact">
                                                 </table>
                                             </div>
                                         </div>
@@ -480,6 +479,16 @@
             </div>
         </div>
     </div>
+
+<div id="imgPreview" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="imgPreviewLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-body">
+        </div>
+    </div>
+  </div>
+</div>
+
 </body>
 
 </html>

@@ -8,7 +8,7 @@ $(document).ready(function () {
         titleA: $('#title1'),
         titleB: $('#title2'),
         inputFileA: $('#inputfile1'),
-        inputFileB: $('#inputfile2'),
+        inputFileB: $('#inputfile2')
     });
 
     // Add event listeners
@@ -44,6 +44,10 @@ $(document).ready(function () {
                 $(this).dataTable().fnAdjustColumnSizing();
             });
         }
+    });
+
+    $(document).on("hidden.bs.modal", function () {
+        $("#imgPreview .modal-body").empty();
     });
 
     $('#dataset1, #dataset2').on('drop', function (e) {
@@ -86,8 +90,8 @@ $(document).ready(function () {
         stop: crosstalk.update
     });
 
-    $("#showNumber").on("click", function () {
-        $(this).find("#showSwitch").trigger("change");
+    $("#showNumber, #showNumber + button").on("click", function () {
+        $("#showSwitch").trigger("change");
     });
 
     $("#showSwitch").on("change", function () {
@@ -101,8 +105,6 @@ $(document).ready(function () {
         }
 
     });
-
-    $('#process').click(crosstalk.log);
 
     $('#modelBt').click(crosstalk.getData);
 
@@ -217,7 +219,6 @@ var crosstalk = (function ($, ReadFile) {
         drop: drop,
         update: update,
         config: config,
-        log: log,
         getData: getData,
         reset: reset,
         model: self.model,
@@ -247,6 +248,9 @@ var crosstalk = (function ($, ReadFile) {
                         apcRateRatioTab(resultSet);
                 }
                 $(".output").addClass("show");
+
+                // bind events to newly generated images
+                $(".expandImg").on("click", previewImage);
             }).fail(function () {
                 console.log("failed");
             }).always(function () {
@@ -292,7 +296,6 @@ var crosstalk = (function ($, ReadFile) {
             data: "_row",
             title: "Age Group"
         }],result.headers);
-
 
         for (var i = 0; i < result.headers.length; i++) {
             headers.push({
@@ -420,10 +423,6 @@ var crosstalk = (function ($, ReadFile) {
                         "columns": headers
                     });
 
-                    //                    $(dTbl1.table().header()).prepend(
-                    //                        "<tr role='row'><th>Rate</th><th colspan='" +
-                    //                        result.headers.length +
-                    //                        "'>Calendar Period</th></tr>");
 
                     dTbl1.draw();
                 }
@@ -431,6 +430,11 @@ var crosstalk = (function ($, ReadFile) {
             }
 
         }
+    }
+
+    function previewImage() {
+        var img = $(this).find("img")[0];
+        $("#imgPreview .modal-body").append("<img class='img-responsive' src='" + img.src + "' />");
     }
 
     function drop(e) {
@@ -527,14 +531,14 @@ var crosstalk = (function ($, ReadFile) {
         }
         var table = createInputTable("#" + target.prop("id"), createHeaders((width - 1) / 2, tableData), tableData).children('thead');
         if (self.model.startYear && self.model.interval) {
-            var headerRow = $('<tr><th class="white-border"></th></tr>');
+            var headerRow = $('<tr><th></th></tr>');
             for (var i = 0; i < (width - 1) / 2; i++) {
                 var header = self.model.startYear + self.model.interval * i;
                 headerRow.append($('<th class="header" colspan="2"></th>').html(header + "-" + (header + self.model.interval - 1)));
             }
             table.prepend(headerRow);
         }
-        if (data.title && self.model.description) table.prepend('<tr><th class="white-border"></th><th class="header" colspan="' + (width - 1) + '">' + data.title + '<br/><span class="blue">' + self.model.description + '</span></th></tr>');
+        if (data.title && self.model.description) table.prepend('<tr><th></th><th class="header" colspan="' + (width - 1) + '">' + data.title + '<br/><span class="blue">' + self.model.description + '</span></th></tr>');
         target.children(".paste-here").remove();
     };
 
@@ -560,12 +564,6 @@ var crosstalk = (function ($, ReadFile) {
     function config(cfg) {
         self.cfg = cfg;
         return self.cfg;
-    }
-
-    /* ---------- Logs the current configuration and model to the console ---------- */
-    function log() {
-        console.log('Configuration', self.cfg);
-        console.log('Model', self.model);
     }
 
     function createHeaders(length, data) {
