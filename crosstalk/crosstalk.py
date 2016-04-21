@@ -14,6 +14,13 @@ def calculation():
     response = jsonify(data=json.loads(wrapper['process'](request.get_data())[0]), complete=True)
     return response
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
+
 import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
