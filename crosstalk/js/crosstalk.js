@@ -15,36 +15,51 @@ $(document).ready(function () {
     for (element in cfg)
         cfg[element].change(crosstalk.update);
 
-    $.adamant.pastable.functions["crosstalk-input"] = function(target,data) {
+    $.adamant.pastable.functions["crosstalk-input"] = function (target, data) {
         var data = data.split(/[\r\n]+/);
-        while (data[data.length-1].trim() == "") {data.pop();}
-        data = data.map(function(line) {
+        while (data[data.length - 1].trim() == "") {
+            data.pop();
+        }
+        data = data.map(function (line) {
             var line = line.split(",");
-            line.map(function(entry) {
+            line.map(function (entry) {
                 return parseFloat(entry);
             });
             return line;
         });
         var datatarget = $(target).attr('data-target');
-        self.model[datatarget] = $.extend(self.model[datatarget]||{},{'table': data, 'title': $('#'+$('#'+datatarget).attr('data-target')).val()});
+        self.model[datatarget] = $.extend(self.model[datatarget] || {}, {
+            'table': data,
+            'title': $('#' + $('#' + datatarget).attr('data-target')).val()
+        });
         $(target).children("textarea").val("");
         crosstalk.update();
     };
-    
-    $('#dataset1, #dataset2').on('drop',function(e) {
-      e.preventDefault();
-      crosstalk.drop(e);
+
+    $(document).on("shown.bs.tab", function (event, ui) {
+        // fix dataTable column widths on tab change
+        var tables = $.fn.dataTable.fnTables(true);
+        if (tables.length > 0) {
+            $.each(tables, function () {
+                $(this).dataTable().fnAdjustColumnSizing();
+            });
+        }
     });
 
-    $("#dataFlip").click(function(e) {
-      e.preventDefault();
-      var swap = self.model.inputfile2;
-      self.model.inputfile2 = self.model.inputfile1;
-      self.model.inputfile1 = swap;
-      swap = cfg.titleB.val();
-      cfg.titleB.val(cfg.titleA.val());
-      cfg.titleA.val(swap);
-      crosstalk.update();
+    $('#dataset1, #dataset2').on('drop', function (e) {
+        e.preventDefault();
+        crosstalk.drop(e);
+    });
+
+    $("#dataFlip").click(function (e) {
+        e.preventDefault();
+        var swap = self.model.inputfile2;
+        self.model.inputfile2 = self.model.inputfile1;
+        self.model.inputfile1 = swap;
+        swap = cfg.titleB.val();
+        cfg.titleB.val(cfg.titleA.val());
+        cfg.titleA.val(swap);
+        crosstalk.update();
     });
 
     $('#startYear').spinner({
@@ -87,7 +102,7 @@ $(document).ready(function () {
             $("#off, #irrGraphs img:nth(1)").addClass("show");
         }
 
-    })
+    });
 
     $('#process').click(crosstalk.log);
 
@@ -135,7 +150,9 @@ var readfile = (function () {
 
     /* ---------- Parse an array of lines (from a csv) as a matrix of floats ---------- */
     function parseTable(table) {
-        while (table[table.length-1].trim() == "") {table.pop();}
+        while (table[table.length - 1].trim() == "") {
+            table.pop();
+        }
         return table.map(function (line) {
             return line.split(',').map(function (element) {
                 return parseFloat(element);
@@ -199,7 +216,6 @@ var crosstalk = (function ($, ReadFile) {
     });
 
     return {
-        calculate: calculate,
         drop: drop,
         update: update,
         config: config,
@@ -211,7 +227,7 @@ var crosstalk = (function ($, ReadFile) {
     };
 
     function getData() {
-        if (self.model.inputfile1&&self.model.inputfile2&&self.model.inputfile1.table.length==self.model.inputfile2.table.length&&self.model.inputfile1.table[0].length==self.model.inputfile2.table[0].length) {
+        if (self.model.inputfile1 && self.model.inputfile2 && self.model.inputfile1.table.length == self.model.inputfile2.table.length && self.model.inputfile1.table[0].length == self.model.inputfile2.table[0].length) {
             $.ajax({
                 method: "POST",
                 url: crosstalk_form.action,
@@ -220,14 +236,17 @@ var crosstalk = (function ($, ReadFile) {
                     $(".loading").css("display", "block");
                 }
             }).done(function (data) {
-                $("table, #rateGraphs, #irrGraphs").empty();
+                $("#rateGraphs, #irrGraphs").empty();
                 var result = data;
                 for (var key in result.data) {
                     var resultSet = result.data[key];
+
                     if (key == "IncidenceRates")
                         incRatesTab(resultSet);
                     else if (key == "IncidenceRateRatios")
                         incRateRatioTab(resultSet);
+                    $("#showNumber").addClass("show");
+                    $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').attr('style', 'display:block');
                 }
             }).fail(function () {
                 console.log("failed");
@@ -240,13 +259,14 @@ var crosstalk = (function ($, ReadFile) {
     }
 
     function createOutputHeaders(initial, headers) {
-      var headers = $.extend(true,[],initial);
+      var returnHeaders = $.extend(true,[],initial);
       for (var i = 0; i < headers.length; i++) {
-        headers.push({
+        returnHeaders.push({
           data: headers[i].toString(),
           title: headers[i].toString()
         });
       }
+      return returnHeaders;
     }
     
     function createOutputTable(containerId,title,table,headers) {
@@ -254,7 +274,7 @@ var crosstalk = (function ($, ReadFile) {
         if ($.fn.DataTable.isDataTable(containerId)) {
             target.DataTable().destroy();
         }
-        containerId.empty().html("").before("<h4 class='title'>" + title + "</h4>");
+        target.empty().html("").before("<h4 class='title'>" + title + "</h4>");
         var dTbl = target.DataTable({
             "data": table,
             "columns": headers
@@ -277,12 +297,12 @@ var crosstalk = (function ($, ReadFile) {
         $("#rateTables .title").html("");
 
         if (result.tables[0]) {
-            incRatesSection("#rateTable1",model.titleA,result.tables[0],headers);
+            createOutputTable("#rateTable1",model.titleA,result.tables[0],headers);
             $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" + result.graphs[0] + "' />");
         }
 
         if (result.tables[1]) {
-            incRatesSection("#rateTable2",model.titleB,result.tables[1],headers);
+            createOutputTable("#rateTable2",model.titleB,result.tables[1],headers);
             $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" + result.graphs[1] + "' />");
         }
     }
@@ -298,7 +318,7 @@ var crosstalk = (function ($, ReadFile) {
         var t1 = $("#irrTable");
         $("#irrTables .title").html("");
         if (result.tables[0]) {
-            createOutputTable("#irrTable",(model.titleA + " vs " + model.titleB,result.tables[0],headers);
+            createOutputTable("#irrTable",(model.titleA + " vs " + model.titleB),result.tables[0],headers);
             $("#irrGraphs").append(
                 "<img class='img-responsive show' src='" + result.graphs[0][0] + "' />" +
                 "<img class='img-responsive' src='" + result.graphs[1][0] + "' />");
@@ -307,14 +327,13 @@ var crosstalk = (function ($, ReadFile) {
     }
 
 
-    function calculate() {
-        console.log('JSON object for calculations: ' + self.model);
+    function drop(e) {
+        ReadFile.createModel({
+            "id": $(e.delegateTarget).attr('data-target'),
+            "files": e.originalEvent.dataTransfer.files
+        }, updateModel);
     }
 
-    function drop(e) {
-        ReadFile.createModel({"id": $(e.delegateTarget).attr('data-target'), "files": e.originalEvent.dataTransfer.files}, updateModel);
-    }
-    
     /* ---------- Updates the UI and Model ---------- */
     function update() {
         var self = this;
@@ -334,7 +353,7 @@ var crosstalk = (function ($, ReadFile) {
         if (e !== undefined) e.preventDefault();
         $(".graphsContainers").empty();
         $('#ratePane').attr('style', 'display:none');
-        $('#showNumber').attr('style', 'display:none');
+        $('#showNumber').removeClass('show');
         $('#showPlot').attr('style', 'display:none');
         $('#apcRatePane').attr('style', 'display:none');
         $('#apcRatioPane').attr('style', 'display:none');
@@ -354,8 +373,8 @@ var crosstalk = (function ($, ReadFile) {
             }
             matrix.push(arr);
         }
-        createInputTable("#dataset1",createHeaders(3),matrix);
-        createInputTable("#dataset2",createHeaders(3),matrix);
+        createInputTable("#dataset1", createHeaders(3), matrix);
+        createInputTable("#dataset2", createHeaders(3), matrix);
         $("#dataset1 .paste-here, #dataset2 .paste-here").remove();
         $("#dataset1 textarea, #dataset2 textarea").before('<img class="img-responsive paste-here" alt="paste here" src="/common/images/paste-here.gif"/>');
     }
@@ -370,49 +389,49 @@ var crosstalk = (function ($, ReadFile) {
         self.model.titleB = self.cfg.titleB.val();
         if (self.model.inputfile1) {
             self.model.inputfile1.title = self.model.titleA;
-            table_input($("#dataset1"),self.model.inputfile1);
+            table_input($("#dataset1"), self.model.inputfile1);
         }
         if (self.model.inputfile2) {
             self.model.inputfile2.title = self.model.titleB;
-            table_input($("#dataset2"),self.model.inputfile2);
+            table_input($("#dataset2"), self.model.inputfile2);
         }
     }
 
-    function create_line(line,i) {
-      var lead = "&zwj;";
-      if (self.model.startAge && self.model.interval) {
-        var age = self.model.startAge+(self.model.interval*i);
-        lead = age + "-" + (age+self.model.interval-1);
-      }
-      line.unshift(lead);
-      return line;
+    function create_line(line, i) {
+        var lead = "&zwj;";
+        if (self.model.startAge && self.model.interval) {
+            var age = self.model.startAge + (self.model.interval * i);
+            lead = age + "-" + (age + self.model.interval - 1);
+        }
+        line.unshift(lead);
+        return line;
     };
 
-    function table_input(target,data) {
+    function table_input(target, data) {
         var target = $(target);
-        var tableData = $.extend(true,[],data.table);
+        var tableData = $.extend(true, [], data.table);
         if (tableData.length < 1) {
             alert('needs a message 1');
             return;
         }
-        var width = tableData[0].length+1;
+        var width = tableData[0].length + 1;
         for (var i in tableData) {
-            tableData[i] = create_line(tableData[i],i);
+            tableData[i] = create_line(tableData[i], i);
             if (tableData[i].length != width) {
                 alert('needs a message 2');
                 return;
             }
         }
-        var table = createInputTable("#"+target.prop("id"),createHeaders((width-1)/2,tableData),tableData).children('thead');
+        var table = createInputTable("#" + target.prop("id"), createHeaders((width - 1) / 2, tableData), tableData).children('thead');
         if (self.model.startYear && self.model.interval) {
-          var headerRow = $('<tr><th class="white-border"></th></tr>');
-          for (var i = 0; i < (width-1)/2; i++) {
-              var header = self.model.startYear+self.model.interval*i;
-              headerRow.append($('<th class="header" colspan="2"></th>').html(header + "-" + (header+self.model.interval-1)));
-          }
-          table.prepend(headerRow);
+            var headerRow = $('<tr><th class="white-border"></th></tr>');
+            for (var i = 0; i < (width - 1) / 2; i++) {
+                var header = self.model.startYear + self.model.interval * i;
+                headerRow.append($('<th class="header" colspan="2"></th>').html(header + "-" + (header + self.model.interval - 1)));
+            }
+            table.prepend(headerRow);
         }
-        if (data.title && self.model.description) table.prepend('<tr><th class="white-border"></th><th class="header" colspan="'+(width-1)+'">'+data.title+'<br/><span class="blue">'+self.model.description+'</span></th></tr>');
+        if (data.title && self.model.description) table.prepend('<tr><th class="white-border"></th><th class="header" colspan="' + (width - 1) + '">' + data.title + '<br/><span class="blue">' + self.model.description + '</span></th></tr>');
         target.children(".paste-here").remove();
     };
 
@@ -446,30 +465,30 @@ var crosstalk = (function ($, ReadFile) {
         console.log('Model', self.model);
     }
 
-    function createHeaders(length,data) {
-      var ageHeader = "Age";
-      if (data !== undefined) ageHeader = '<span class = "ageGroups">' + data.length + " age groups </span>";
-      var headers = [{
-        title: ageHeader,
-        className: 'dt-center grey'
+    function createHeaders(length, data) {
+        var ageHeader = "Age";
+        if (data !== undefined) ageHeader = '<span class = "ageGroups">' + data.length + " age groups </span>";
+        var headers = [{
+            title: ageHeader,
+            className: 'dt-center grey'
       }];
-      for (var i = 0; i < length; i += 1) {
-        headers.push({
-          title: "Count",
-          className: 'dt-body-right'
-        });
-        headers.push({
-          title: "Population",
-          className: 'dt-body-right'
-        });
-      }
-      return headers;
+        for (var i = 0; i < length; i += 1) {
+            headers.push({
+                title: "Count",
+                className: 'dt-body-right'
+            });
+            headers.push({
+                title: "Population",
+                className: 'dt-body-right'
+            });
+        }
+        return headers;
     };
 
     function createInputTable(containerID, headers, data) {
         var table = $(document.createElement('table'));
-        table.attr('class','table display compact');
-        table.attr('width','100%');
+        table.attr('class', 'table display compact');
+        table.attr('width', '100%');
         $(containerID).children(".dataTables_wrapper").children(".dataTable").DataTable().destroy();
         $(containerID).children("table").remove();
         $(containerID).prepend(table);

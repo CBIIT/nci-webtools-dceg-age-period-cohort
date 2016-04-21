@@ -6,12 +6,33 @@ app = Flask(__name__)
 
 wrapper = robjects.r
 wrapper['source']('crosstalkWrapper.R')
+def buildFailure(data):
+  response = jsonify(data=data, complete=False)
+  response.mimetype = 'application/json'
+  response.status_code = 400
+  return response
+
+def buildSuccess(data):
+  response = jsonify(data=data, complete=True)
+  response.mimetype = 'application/json'
+  response.status_code = 200
+  return response
 
 @app.route('/crosstalkRest', methods = ['POST'])
 @app.route('/crosstalkRest/', methods = ['POST'])
 def calculation():
-    print(request.get_data())
-    response = jsonify(data=json.loads(wrapper['process'](request.get_data())[0]), complete=True)
+    try:
+      print(request.get_data())
+      response = buildSuccess(json.loads(wrapper['process'](request.get_data())[0]))
+    except:
+      response = buildFailure("")
+    return response
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
     return response
 
 import argparse
