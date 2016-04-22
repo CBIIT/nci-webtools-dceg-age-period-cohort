@@ -269,13 +269,19 @@ var crosstalk = (function ($, ReadFile) {
       }
       return returnHeaders;
     }
+
+    function createGraphImage(containerId, link, ratio=.5) {
+        var width = parseInt(12*ratio);
+        $(containerId).append("<img class='img-responsive col-sm-" + width + "' src='" + link + "' />")
+    }
     
     function createOutputTable(containerId,title,table,headers,extraHeaders="") {
         var target = $(containerId);
         if ($.fn.DataTable.isDataTable(containerId)) {
             target.DataTable().destroy();
         }
-        target.empty().before("<h4 class='title'>" + title + "</h4>");
+        target.empty().prev('h4').remove();
+        target.before("<h4 class='title'>" + title + "</h4>");
         var dTbl = target.DataTable({
             "data": table,
             "columns": headers
@@ -283,6 +289,10 @@ var crosstalk = (function ($, ReadFile) {
 
         $(dTbl.table().header()).prepend(extraHeaders);
         target.dataTable().fnDraw();
+    }
+    
+    function createDatasetLink(containerId,title,table) {
+      
     }
 
     function incRatesTab(result) {
@@ -297,12 +307,12 @@ var crosstalk = (function ($, ReadFile) {
 
         if (result.tables[0]) {
             createOutputTable("#rateTable1",model.titleA,result.tables[0],headers,extraHeaders);
-            $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" + result.graphs[0] + "' />");
+            createGraphImage("#rateGraphs",result.graphs[0]);
         }
 
         if (result.tables[1]) {
             createOutputTable("#rateTable2",model.titleB,result.tables[1],headers,extraHeaders);
-            $("#rateGraphs").append("<img class='img-responsive col-sm-6' src='" + result.graphs[1] + "' />");
+            createGraphImage("#rateGraphs",result.graphs[1]);
         }
     }
 
@@ -310,7 +320,7 @@ var crosstalk = (function ($, ReadFile) {
         // result has tables, headers and graphs properties
         var headers = createOutputHeaders([{
             data: "_row",
-            title: "Null Hypothesis"
+            title: "Age Group"
         }],result.headers);
 
         $("#irrTables .title").html("");
@@ -326,28 +336,45 @@ var crosstalk = (function ($, ReadFile) {
     }
     
     function apcRatesTab(result) {
-        $("#local, #collapseOne > div > div:first-child").empty();
+        $("#local, #collapseOne > div").empty();
         if (result.AdjustedRates) {
-            if (result.AdjustedRates.ComparisonOfAdjustedRates) {
-                var coar = result.AdjustedRates.ComparisonOfAdjustedRates;
+            var ar = result.AdjustedRates;
+            if (ar.ComparisonOfAdjustedRates) {
+                var coar = ar.ComparisonOfAdjustedRates;
                 var headers = createOutputHeaders([{
                     data: "_row",
-                    title: "Age Group"
+                    title: "Null Hypothesis"
                 }],coar.headers);
+                if (coar.graphs[0]) {
+                    createGraphImage("#collapseOne > div",coar.graphs[0][0]);
+                }
                 if (coar.tables[0]) {
+                    $("#collapseOne > div").append('<div class="col-sm-6"><table id="coarTable" class="data-table stripe compact" width="100%"></table></div>');
                     createOutputTable("#coarTable",(model.titleA + " vs " + model.titleB),coar.tables[0],headers);
                 }
-                if (coar.graphs[0]) {
-                  $("#collapseOne > div > div:first-child").append("<img class='img-responsive show' src='" + coar.graphs[0][0] + "' />");
+            }
+            if (ar.CrossSectionalAgeCurve) {
+                var csac = ar.CrossSectionalAgeCurve;
+                if (csac.graphs[0]) {
+                    
+                }
+            }
+            if (ar.FittedCohortPattern) {
+                var fcp = ar.FittedCohortPattern;
+                if (fcp.graphs[0]) {
+                    
+                }
+            }
+            if (ar.FittedTemporalTrends) {
+                var ftt = ar.FittedTemporalTrends;
+                if (ftt.graphs[0]) {
+                    
                 }
             }
         }
         if (result.LocalDrifts) {
-            if (result.LocalDrifts.graphs[0]) {
-                $("#local").append("<div class=\"col-sm-6\"><img class='img-responsive' src='" + result.LocalDrifts.graphs[0][0] + "' /></div>");
-            }
-            if (result.LocalDrifts.graphs[1]) {
-                $("#local").append("<div class=\"col-sm-6\"><img class='img-responsive' src='" + result.LocalDrifts.graphs[1][0] + "' /></div>");
+            for (index in result.LocalDrifts.graphs) {
+                createGraphImage("#local",result.LocalDrifts.graphs[index][0]);
             }
         }
     }
