@@ -1,6 +1,24 @@
+#apcRatePane .navbar {
+  display: inline-block;
+}
+
+.tabledownload {
+  text-align: center;
+}
+
+#local-content {
+  margin-bottom: 20px;
+}
+
 #input .input-tables {
   overflow: auto;
 }
+
+#local:not(.active),
+#adjust:not(.active) {
+  display: none;
+}
+
 
 a.help {
     background-image: url('/common/images/help.png');

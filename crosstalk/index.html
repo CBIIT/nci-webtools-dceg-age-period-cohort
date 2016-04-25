@@ -55,7 +55,7 @@
             <div class="col-lg-4 col-md-5 col-sm-12">
                 <div class="well">
                     <div class="well well-nested">
-                        <form class="form" name="crosstalk_form" action="http://localhost:9140/crosstalkRest/">
+                        <form class="form" name="crosstalk_form" action="crosstalkRest/">
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="form-group">
@@ -275,23 +275,31 @@
                     <div class="tab-pane" id="apcRate">
                         <br/>
                         <div id="apcRatePane" class="col-sm-12">
-                            <nav class="navbar navbar-default col-sm-6" role="navigation">
-                                <div>
-                                    <ul class="nav navbar-nav">
-                                        <li id="localli" class="active"><a href="javaScript:changeContent('local');">Local Drifts</a></li>
-                                        <li id="netli"><a href="javaScript:changeContent('net');">Net Drifts</a></li>
-                                        <li id="adjustli"><a href="javaScript:changeContent('adjust');">Adjust Rates</a></li>
-                                    </ul>
-                                </div>
+                            <nav class="navbar navbar-default" role="navigation">
+                                <ul class="nav navbar-nav">
+                                    <li id="localli" class="active"><a>Local Drifts</a></li>
+                                    <li id="adjustli"><a>Adjust Rates</a></li>
+                                </ul>
                             </nav>
                             <div id="navbar-content">
                                 <div class="active col-sm-12" id="local">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-12" id="local-content">
+                                        <div class="col-sm-6">
+                                        </div>
+                                        <div class="col-sm-6">
+                                        </div>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-12">
+                                        <nav class="navbar navbar-default" role="navigation">
+                                            <ul class="nav navbar-nav">
+                                                <li><a>Net Drifts</a></li>
+                                            </ul>
+                                        </nav>
+                                        <div class="col-sm-12" id="net">
+                                            <table id="netTable" class="data-table stripe compact" width="100%">
+                                            </table>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-sm-12" id="net">
                                 </div>
                                 <div class="col-sm-12" id="adjust">
                                     <!-- start sccordion -->
