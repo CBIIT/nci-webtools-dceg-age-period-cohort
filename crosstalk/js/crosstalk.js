@@ -235,7 +235,7 @@ var crosstalk = (function ($, ReadFile) {
                     $(".loading").css("display", "block");
                 }
             }).done(function (data) {
-                $("#rateGraphs, #irrGraphs, .graphsContainers").empty();
+                $("#rateGraphs, #irrGraphs, .graphsContainers, .title").empty();
                 var result = data;
                 for (var key in result.data) {
                     var resultSet = result.data[key];
@@ -262,17 +262,17 @@ var crosstalk = (function ($, ReadFile) {
     }
 
     function createOutputHeaders(initial, headers) {
-      var returnHeaders = $.extend(true,[],initial);
-      for (var i = 0; i < headers.length; i++) {
-        returnHeaders.push({
-          data: headers[i].toString(),
-          title: headers[i].toString()
-        });
-      }
-      return returnHeaders;
+        var returnHeaders = $.extend(true, [], initial);
+        for (var i = 0; i < headers.length; i++) {
+            returnHeaders.push({
+                data: headers[i].toString(),
+                title: headers[i].toString()
+            });
+        }
+        return returnHeaders;
     }
 
-    function createOutputTable(containerId,title,table,headers) {
+    function createOutputTable(containerId, title, table, headers) {
         var target = $(containerId);
         if ($.fn.DataTable.isDataTable(containerId)) {
             target.DataTable().destroy();
@@ -284,7 +284,7 @@ var crosstalk = (function ($, ReadFile) {
         });
 
         $(dTbl.table().header()).prepend(
-            "<tr role='row'><th>Rate</th><th colspan='" + (headers.length-1) + "'>Calendar Period</th></tr>");
+            "<tr role='row'><th>Rate</th><th colspan='" + (headers.length - 1) + "'>Calendar Period</th></tr>");
         target.dataTable().fnDraw();
     }
 
@@ -295,15 +295,15 @@ var crosstalk = (function ($, ReadFile) {
         var headers = createOutputHeaders([{
             data: "_row",
             title: "Age Group"
-        }],result.headers);
+        }], result.headers);
 
         if (result.tables[0]) {
-            createOutputTable("#rateTable1",model.titleA,result.tables[0],headers);
+            createOutputTable("#rateTable1", model.titleA, result.tables[0], headers);
             $("#rateGraphs").append("<a class='expandImg'data-toggle='modal' data-target='#imgPreview'><img class='img-responsive col-sm-6' src='" + result.graphs[0] + "' /></a>");
         }
 
         if (result.tables[1]) {
-            createOutputTable("#rateTable2",model.titleB,result.tables[1],headers);
+            createOutputTable("#rateTable2", model.titleB, result.tables[1], headers);
             $("#rateGraphs").append("<a class='expandImg'data-toggle='modal' data-target='#imgPreview'><img class='img-responsive col-sm-6' src='" + result.graphs[1] + "' /></a>");
         }
     }
@@ -314,64 +314,19 @@ var crosstalk = (function ($, ReadFile) {
         var headers = createOutputHeaders([{
             data: "_row",
             title: "Age Group"
-        }],result.headers);
+        }], result.headers);
 
         var t1 = $("#irrTable");
-        $("#irrTables .title").html("");
         if (result.tables[0]) {
-            createOutputTable("#irrTable",(model.titleA + " vs " + model.titleB),result.tables[0],headers);
+            createOutputTable("#irrTable", (model.titleA + " vs " + model.titleB), result.tables[0], headers);
             $("#irrGraphs").append(
-                "<img class='img-responsive show' src='" + result.graphs[0][0] + "' />" +
+                "<img class='img-responsive' src='" + result.graphs[0][0] + "' />" +
                 "<img class='img-responsive' src='" + result.graphs[1][0] + "' />");
-            $("#showNumber").addClass("show");
-        }
-    }
 
-    function apcRateRatiosTab(result) {
-        $("#intercept .title, #ftt .title, #fcp .title, #csac .title").text(
-            model.titleA + " vs " + model.titleB);
-
-        for (var resultKey in result) {
-            var t1 = $("#interceptTable");
-            // result has tables, headers and graphs properties
-            var headers = [];
-            var resultSet = result[resultKey];
-
-            if (resultSet.tables) {
-                for (var i = 0; i < resultSet.headers.length; i++) {
-                    headers.push({
-                        data: resultSet.headers[i].toString(),
-                        title: resultSet.headers[i].toString()
-                    });
-                }
-
-                if ($.fn.DataTable.isDataTable("#" + t1[0].id)) {
-                    t1.DataTable().destroy();
-                }
-
-                t1.empty().html();
-
-                var dTbl1 = t1.DataTable({
-                    "data": resultSet.tables[0],
-                    "columns": headers
-                });
-
-                dTbl1.draw();
-            }
-            if (resultSet.graphs) {
-                if (resultKey == "FittedTemporalTrends") {
-                    $("#fttGraphs").append(
-                        "<img class='img-responsive show' src='" +
-                        resultSet.graphs[0][0] + "' />");
-                } else if (resultKey == "FittedCohortPattern") {
-                    $("#fcpGraphs").append(
-                        "<img class='img-responsive show' src='" +
-                        resultSet.graphs[0][0] + "' />");
-                } else if (resultKey == "CrossSectionalAgeCurve") {
-                    $("#csacGraphs").append(
-                        "<img class='img-responsive show' src='" +
-                        resultSet.graphs[0][0] + "' />");
-                }
+            if (!$("#showSwitch").is(":checked")) {
+                $("#irrGraphs img:nth-child(2)").addClass("show");
+            } else {
+                $("#irrGraphs img:first").addClass("show");
             }
         }
     }
@@ -389,30 +344,24 @@ var crosstalk = (function ($, ReadFile) {
                 $("#ftt .graphsContainers").append(
                     "<img class='img-responsive show' src='" + resultSet.graphs[0][0] + "' />");
             } else if (resultGroup == "IO") {
-                // result has tables, headers
-                // and graphs properties
-                var t1 = $("#interceptTable");
-
 
                 $("#intercept .title").html(model.titleA + " vs " + model.titleB);
 
                 if (resultSet.tables[0]) {
-                    var headers = [];
-
-                    for (var i = 0; i < resultSet.headers.length; i++) {
-                        headers.push({
-                            data: resultSet.headers[i].toString(),
-                            title: resultSet.headers[i].toString(),
-                            className: 'dt-body-right'
-                        });
-                    }
-
+                    var t1 = $("#interceptTable");
                     if ($.fn.DataTable.isDataTable("#" + t1[0].id)) t1.DataTable().destroy();
                     t1.empty();
 
+                    var headers = createOutputHeaders([{
+                        data: "_row",
+                        title: "Age Group",
+                        className: 'dt-body-right'
+        }], resultSet.headers);
+
                     var dTbl1 = t1.DataTable({
                         "data": resultSet.tables[0],
-                        "columns": headers
+                        "columns": headers,
+                        "scrollX": false
                     });
 
 
