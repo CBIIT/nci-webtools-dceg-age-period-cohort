@@ -420,18 +420,18 @@ var crosstalk = (function ($, ReadFile) {
     }
 
     function apcRateRatioTab(result) {
-        $("#csac, #fcp, #ftt").empty()
+        $("#csac, #fcp, #ftt").children(".panel-body").empty()
         if (result.CrossSectionalAgeCurve) {
             var csac = result.CrossSectionalAgeCurve;
-            createGraphImage("#csac",csac.graphs[0][0]);
+            createGraphImage("#csac .panel-body",csac.graphs[0][0]);
         }
         if (result.FittedCohortPattern) {
             var fcp = result.FittedCohortPattern;
-            createGraphImage("#fcp",fcp.graphs[0][0]);
+            createGraphImage("#fcp .panel-body",fcp.graphs[0][0]);
         }
         if (result.FittedTemporalTrends) {
             var ftt = result.FittedTemporalTrends;
-            createGraphImage("#ftt",ftt.graphs[0][0]);
+            createGraphImage("#ftt .panel-body",ftt.graphs[0][0]);
         }
         if (result.IO) {
             var io = result.IO;
