@@ -240,7 +240,7 @@ var crosstalk = (function ($, ReadFile) {
                     $(".loading").css("display", "block");
                 }
             }).done(function (data) {
-                $(".graphsContainers").empty();
+                $(".graphsContainers, .title").empty();
                 var result = data;
                 for (var key in result.data) {
                     var resultSet = result.data[key];
@@ -270,14 +270,14 @@ var crosstalk = (function ($, ReadFile) {
     }
 
     function createOutputHeaders(initial, headers) {
-      var returnHeaders = $.extend(true,[],initial);
-      for (var i = 0; i < headers.length; i++) {
-        returnHeaders.push({
-          data: headers[i].toString(),
-          title: headers[i].toString()
-        });
-      }
-      return returnHeaders;
+        var returnHeaders = $.extend(true, [], initial);
+        for (var i = 0; i < headers.length; i++) {
+            returnHeaders.push({
+                data: headers[i].toString(),
+                title: headers[i].toString()
+            });
+        }
+        return returnHeaders;
     }
 
     function createGraphImage(containerId, link, ratio=1) {
@@ -311,7 +311,7 @@ var crosstalk = (function ($, ReadFile) {
         var headers = createOutputHeaders([{
             data: "_row",
             title: "Age Group"
-        }],result.headers);
+        }], result.headers);
 
         $("#rateTables .title").html("");
         var extraHeaders = "<tr role='row'><th>Rate</th><th colspan='" + (headers.length-1) + "'>Calendar Period</th></tr>";
@@ -332,17 +332,20 @@ var crosstalk = (function ($, ReadFile) {
         var headers = createOutputHeaders([{
             data: "_row",
             title: "Age Group"
-        }],result.headers);
+        }], result.headers);
 
-        $("#irrTables .title").html("");
         var extraHeaders = "<tr role='row'><th>Rate</th><th colspan='" + (headers.length-1) + "'>Calendar Period</th></tr>";
         
         if (result.tables[0]) {
             createOutputTable("#irrTable",(model.titleA + " vs " + model.titleB),result.tables[0],headers,extraHeaders);
             $("#irrGraphs").append(
-                "<img class='img-responsive show' src='" + result.graphs[0][0] + "' />" +
+                "<img class='img-responsive' src='" + result.graphs[0][0] + "' />" +
                 "<img class='img-responsive' src='" + result.graphs[1][0] + "' />");
-            $("#showNumber").addClass("show");
+            if (!$("#showSwitch").is(":checked")) {
+                $("#irrGraphs img:nth-child(2)").addClass("show");
+            } else {
+                $("#irrGraphs img:first").addClass("show");
+            }
         }
     }
     
