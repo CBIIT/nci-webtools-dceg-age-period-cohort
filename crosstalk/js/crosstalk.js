@@ -8,7 +8,7 @@ $(document).ready(function () {
         titleA: $('#title1'),
         titleB: $('#title2'),
         inputFileA: $('#inputfile1'),
-        inputFileB: $('#inputfile2'),
+        inputFileB: $('#inputfile2')
     });
 
     // Add event listeners
@@ -44,6 +44,10 @@ $(document).ready(function () {
                 $(this).dataTable().fnAdjustColumnSizing();
             });
         }
+    });
+
+    $(document).on("hidden.bs.modal", function () {
+        $("#imgPreview .modal-body").empty();
     });
 
     $('#dataset1, #dataset2').on('drop', function (e) {
@@ -86,20 +90,18 @@ $(document).ready(function () {
         stop: crosstalk.update
     });
 
+    $("#showNumber, #showNumber + button").on("click", function () {
+        $("#showSwitch").trigger("change");
+    });
+
     $("#showSwitch").on("change", function () {
 
         if (this.checked) {
-            $(this.labels[0]).addClass("btn-primary");
-            $(this.labels[0]).removeClass("btn-default");
-
-            $("#on, #irrGraphs img:first").addClass("show");
-            $("#off, #irrGraphs img:nth(1)").removeClass("show");
+            $("#irrGraphs img:first").addClass("show");
+            $("#irrGraphs img:nth(1)").removeClass("show");
         } else {
-            $(this.labels[0]).addClass("btn-default");
-            $(this.labels[0]).removeClass("btn-primary");
-
-            $("#on, #irrGraphs img:first").removeClass("show");
-            $("#off, #irrGraphs img:nth(1)").addClass("show");
+            $("#irrGraphs img:first").removeClass("show");
+            $("#irrGraphs img:nth(1)").addClass("show");
         }
 
     });
@@ -109,8 +111,6 @@ $(document).ready(function () {
         var id = target.attr("id");
         target.add($('#'+id.substr(0,id.length-2))).parent().children().toggleClass('active');
     });
-
-    $('#process').click(crosstalk.log);
 
     $('#modelBt').click(crosstalk.getData);
 
@@ -218,14 +218,12 @@ var crosstalk = (function ($, ReadFile) {
         "paging": false,
         "responsive": true,
         "dom": 't',
-        "scrollX": true
     });
 
     return {
         drop: drop,
         update: update,
         config: config,
-        log: log,
         getData: getData,
         reset: reset,
         model: self.model,
@@ -242,7 +240,7 @@ var crosstalk = (function ($, ReadFile) {
                     $(".loading").css("display", "block");
                 }
             }).done(function (data) {
-                $("#rateGraphs, #irrGraphs, #apcRateGraphs").empty();
+                $(".graphsContainers").empty();
                 var result = data;
                 for (var key in result.data) {
                     var resultSet = result.data[key];
@@ -253,15 +251,21 @@ var crosstalk = (function ($, ReadFile) {
                         incRateRatioTab(resultSet);
                     else if (key == "ApcOfIncidenceRates")
                         apcRatesTab(resultSet);
+                    else if (key == "ApcOfRateRatios")
+                        apcRateRatioTab(resultSet);
                     $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').attr('style', 'display:block');
                 }
+                $(".output").addClass("show");
+
+                // bind events to newly generated images
+                $(".expandImg").on("click", previewImage);
             }).fail(function () {
                 console.log("failed");
             }).always(function () {
                 $(".loading").css("display", "none");
             });
         } else {
-            alert("needs a message 3")
+            alert("needs a message 3");
         }
     }
 
@@ -278,7 +282,7 @@ var crosstalk = (function ($, ReadFile) {
 
     function createGraphImage(containerId, link, ratio=1) {
         var width = parseInt(12*ratio);
-        $(containerId).append('<div class="col-sm-' + width + '"><img class="img-responsive" src="' + link + '" /></div>')
+        $(containerId).append('<div class="col-sm-' + width + '"><div class="graphContainers"><a class="expandImg" data-toggle="modal" data-target="#imgPreview"><img class="img-responsive" src="'+link+'" /></a></div></div>')
     }
     
     function createOutputTable(containerId,title,table,headers,extraHeaders="") {
@@ -408,9 +412,33 @@ var crosstalk = (function ($, ReadFile) {
         }
         if (result.NetDrifts) {
             var nd = result.NetDrifts;
-            var headers = createOutputHeaders({},nd.headers);
-            createOutputTable("#netTable",undefined,nd.tables[0],headers);
+            createOutputTable("#netTable",undefined,nd.tables[0],createOutputHeaders({},nd.headers));
         }
+    }
+
+    function apcRateRatioTab(result) {
+        $("#csac, #fcp, #ftt").empty()
+        if (result.CrossSectionalAgeCurve) {
+            var csac = result.CrossSectionalAgeCurve;
+            createGraphImage("#csac",csac.graphs[0][0]);
+        }
+        if (result.FittedCohortPattern) {
+            var fcp = result.FittedCohortPattern;
+            createGraphImage("#fcp",fcp.graphs[0][0]);
+        }
+        if (result.FittedTemporalTrends) {
+            var ftt = result.FittedTemporalTrends;
+            createGraphImage("#ftt",ftt.graphs[0][0]);
+        }
+        if (result.IO) {
+            var io = result.IO;
+            createOutputTable("#interceptTable",(model.titleA+" vs "+model.titleB),io.tables[0],createOutputHeaders({},io.headers));
+        }
+    }
+
+    function previewImage() {
+        var img = $(this).find("img")[0];
+        $("#imgPreview .modal-body").append("<img class='img-responsive' src='" + img.src + "' />");
     }
 
 
@@ -439,18 +467,15 @@ var crosstalk = (function ($, ReadFile) {
     function reset(e) {
         if (e !== undefined) e.preventDefault();
         $(".graphsContainers").empty();
-        $('#ratePane').attr('style', 'display:none');
-        $('#showNumber').removeClass('show');
-        $('#showPlot').attr('style', 'display:none');
-        $('#apcRatePane').attr('style', 'display:none');
-        $('#apcRatioPane').attr('style', 'display:none');
+        $('.output').removeClass('show');
+
         $('#description,#startAge,#startYear,#interval,#title1,#title2').val("");
         $(".tablesContainers table").each(function () {
             if ($.fn.DataTable.isDataTable(this)) {
                 $(this).DataTable().destroy();
             }
             $(this).empty();
-            $("h4.title").empty();
+            $(".title").empty();
         });
         var matrix = [];
         for (var i = 0; i < 13; i++) {
@@ -511,14 +536,14 @@ var crosstalk = (function ($, ReadFile) {
         }
         var table = createInputTable("#" + target.prop("id"), createHeaders((width - 1) / 2, tableData), tableData).children('thead');
         if (self.model.startYear && self.model.interval) {
-            var headerRow = $('<tr><th class="white-border"></th></tr>');
+            var headerRow = $('<tr><th></th></tr>');
             for (var i = 0; i < (width - 1) / 2; i++) {
                 var header = self.model.startYear + self.model.interval * i;
                 headerRow.append($('<th class="header" colspan="2"></th>').html(header + "-" + (header + self.model.interval - 1)));
             }
             table.prepend(headerRow);
         }
-        if (data.title && self.model.description) table.prepend('<tr><th class="white-border"></th><th class="header" colspan="' + (width - 1) + '">' + data.title + '<br/><span class="blue">' + self.model.description + '</span></th></tr>');
+        if (data.title && self.model.description) table.prepend('<tr><th></th><th class="header" colspan="' + (width - 1) + '">' + data.title + '<br/><span class="blue">' + self.model.description + '</span></th></tr>');
         target.children(".paste-here").remove();
     };
 
@@ -544,12 +569,6 @@ var crosstalk = (function ($, ReadFile) {
     function config(cfg) {
         self.cfg = cfg;
         return self.cfg;
-    }
-
-    /* ---------- Logs the current configuration and model to the console ---------- */
-    function log() {
-        console.log('Configuration', self.cfg);
-        console.log('Model', self.model);
     }
 
     function createHeaders(length, data) {

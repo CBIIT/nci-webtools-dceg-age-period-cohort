@@ -51,7 +51,6 @@
         <!--  start of body content -->
 
         <div class="row">
-
             <div class="col-lg-4 col-md-5 col-sm-12">
                 <div class="well">
                     <div class="well well-nested">
@@ -60,7 +59,7 @@
                                 <div class="col-xs-12">
                                     <div class="form-group">
                                         <label for="description" class="control-label">Description</label>
-                                        <a id="help" class="pull-right" href="#"><span class="glyphicon glyphicon-info-sign glyphicon-blue"></span> Help</a>
+                                        <a id="helpBtn" class="pull-right" href="#"><span class="glyphicon glyphicon-info-sign glyphicon-blue"></span> Help</a>
                                         <textarea class="form-control" rows="3" id="description"></textarea>
                                     </div>
                                 </div>
@@ -178,15 +177,15 @@
                     <div class="tab-pane active" id="input">
                         <br/>
                         <div class="input-tables">
-                          <fieldset>
-                              <legend><font size="2"><strong>Data 1 (Numerator)</strong></font></legend>
-                              <div id="dataset1" data-target="inputfile1" adamant-pastable="crosstalk-input"></div>
-                          </fieldset>
-                          <br/>
-                          <fieldset>
-                              <legend><font size="2"><strong>Data 2 (Denominator)</strong></font></legend>
-                              <div id="dataset2" data-target="inputfile2" adamant-pastable="crosstalk-input"></div>
-                          </fieldset>
+                            <fieldset>
+                                <legend><font size="2"><strong>Data 1 (Numerator)</strong></font></legend>
+                                <div id="dataset1" data-target="inputfile1" adamant-pastable="crosstalk-input"></div>
+                            </fieldset>
+                            <br/>
+                            <fieldset>
+                                <legend><font size="2"><strong>Data 2 (Denominator)</strong></font></legend>
+                                <div id="dataset2" data-target="inputfile2" adamant-pastable="crosstalk-input"></div>
+                            </fieldset>
                         </div>
                         <br/>
                         <div id="datasetButton" align="center">
@@ -194,87 +193,55 @@
                         </div>
                     </div>
                     <div class="tab-pane" id="rates">
-                        <br/>
-                        <div id="ratePane">
-                            <div id="rateGraphs" class="col-sm-12 graphsContainers">
+                        <div id="ratePane" class="output">
+                            <div id="rateGraphs" class="col-sm-12">
                             </div>
                             <div id="rateTables" class="col-sm-12 tablesContainers">
-                                <table id="rateTable1" class="data-table stripe compact" width="100%">
+                                <h4 id="rateTitle1" class="title"></h4>
+                                <table id="rateTable1" class="table display compact" width="100%">
                                 </table>
-                                <table id="rateTable2" class="data-table stripe compact" width="100%">
+                                <h4 id="rateTitle2" class="title"></h4>
+                                <table id="rateTable2" class="table display compact" width="100%">
                                 </table>
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane" id="rateRatios">
-                        <div class="col-sm-12"><font size="4"><strong>Plot Options</strong></font></div>
-                        <div class="col-sm-12" id="showNumber">
-                            Numbers in circle
-                            <label for="showSwitch" class="btn btn-primary btn-sm">
-                                <span id="on" class="show">
-                                    SHOW
-                                    <span class="glyphicon glyphicon-chevron-right pull-right"></span>
-                                </span>
-                                <span id="off">
-                                    HIDE
-                                    <span class="glyphicon glyphicon-chevron-left pull-left"></span>
-                                </span>
-                                <input type="checkbox" id="showSwitch" checked>
-                            </label>
+                        <div class="output">
+                            <div class="col-sm-12">
+                                <h4><strong>Plot Options</strong></h4>
+                                <div id="showNumber">
+                                    <div class="switch col-sm-6">
+                                        <input type="checkbox" id="showSwitch" checked>
+                                        <label class="switch-label" for="showSwitch"></label>
+                                    </div>
+                                    <span class="col-sm-6">Numbers in circle</span>
+                                </div>
+                            </div>
+                            <div id="irrGraphs" class="col-sm-12">
+                            </div>
+                            <div id="irrTables" class="col-sm-12 tablesContainers">
+                                <table id="irrTable" class="data-table stripe compact" width="100%">
+                                </table>
+                            </div>
                         </div>
-
-                        <div id="irrGraphs" class="col-sm-12 graphsContainers">
-                        </div>
-                        <div id="irrTables" class="col-sm-12 tablesContainers">
-                            <table id="irrTable" class="data-table stripe compact" width="100%">
-                            </table>
-                        </div>
-
                     </div>
                     <div class="tab-pane" id="goodness">
-                        <br/>
-                        <div class="col-sm-12">
-                            Show warning and explanation about zero/sparse data. Also explain how to fix the data using example in help.
-                            <br/>
-                            <br/> Two spie plots, estimates of over dispersion, sigma, residuals.
-                            <br/>
-                            <br/> Add cropping options, e.g. sliders to select year and age.
-                        </div>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <div class="col-sm-12" align="right">
-                            <button type="submit" id="modelBt" class="btn btn-primary active"> Export Cropped Datasets </button>
+                        <div class="output">
+                            <div class="col-sm-12">
+                                Show warning and explanation about zero/sparse data. Also explain how to fix the data using example in help.
+                                <br/>
+                                <br/> Two spie plots, estimates of over dispersion, sigma, residuals.
+                                <br/>
+                                <br/> Add cropping options, e.g. sliders to select year and age.
+                            </div>
+                            <div class="col-sm-12" align="right">
+                                <button type="submit" id="modelBt" class="btn btn-primary active"> Export Cropped Datasets</button>
+                            </div>
                         </div>
                     </div>
                     <div class="tab-pane" id="apcRate">
-                        <br/>
-                        <div id="apcRatePane" class="col-sm-12">
+                        <div id="apcRatePane" class="col-sm-12 output">
                             <nav class="navbar navbar-default" role="navigation">
                                 <ul class="nav navbar-nav">
                                     <li id="localli" class="active"><a>Local Drifts</a></li>
@@ -382,18 +349,49 @@
                     </div>
                     <div class="tab-pane" id="apcRatios">
                         <!-- start accordion -->
-                        <div id="apcRatioPane" class="accordion" style="display:none">
+                        <div id="apcRatioPane" class="accordion output">
                             <div class="panel-group" id="accordion2">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordion2" href="#collapse1">Fitted Cohort Pattern</a>
+                                            <a data-toggle="collapse" data-parent="#accordion2" href="#fcp">Fitted Cohort Pattern</a>
                                         </h4>
                                     </div>
-                                    <div id="collapse1" class="panel-collapse collapse in">
+                                    <div id="fcp" class="panel-collapse collapse in">
                                         <div class="panel-body">
-                                            <br/>
                                             <div class="col-sm-12">
+                                                <div class="graphsContainers">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion2" href="#ftt">Fitted Temporal Trends</a>
+                                        </h4>
+                                    </div>
+                                    <div id="ftt" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <div class="col-sm-12">
+                                                <div class="graphsContainers">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion2" href="#csac">Cross-Sectional Age Curve</a>
+                                        </h4>
+                                    </div>
+                                    <div id="csac" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <div class="col-sm-12">
+                                                <div class="graphsContainers">
+                                                </div>
 
                                             </div>
                                         </div>
@@ -402,79 +400,14 @@
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordion2" href="#collapse2">Fitted Temporal Trends</a>
+                                            <a data-toggle="collapse" data-parent="#accordion2" href="#intercept">Intercepts</a>
                                         </h4>
                                     </div>
-                                    <div id="collapse2" class="panel-collapse collapse">
+                                    <div id="intercept" class="panel-collapse collapse">
                                         <div class="panel-body">
                                             <div class="col-sm-12">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordion2" href="#collapse3">Cross-Sectional Age Curve</a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapse3" class="panel-collapse collapse">
-                                        <div class="panel-body">
-                                            <div class="col-sm-12">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4 class="panel-title">
-                                            <a data-toggle="collapse" data-parent="#accordion2" href="#collapse4">Intercepts</a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapse4" class="panel-collapse collapse">
-                                        <div class="panel-body">
-                                            <div class="col-sm-12">
-                                                <br/>
-                                                <table class="table table-striped table-bordered">
-                                                    <caption>Urban China 30-49 vs NHW 30-49</caption>
-                                                    <thead>
-                                                        <tr>
-                                                            <th>&nbsp;</th>
-                                                            <th>Lo</th>
-                                                            <th>Hi</th>
-                                                            <th>IO</th>
-                                                            <th>CI Lo</th>
-                                                            <th>CI Hi</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>age</td>
-                                                            <td>31</td>
-                                                            <td>49</td>
-                                                            <td>0.473241514</td>
-                                                            <td>0.464802678</td>
-                                                            <td>0.481833563</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Period</td>
-                                                            <td>1992</td>
-                                                            <td>2008</td>
-                                                            <td>0.473241514</td>
-                                                            <td>0.464802678</td>
-                                                            <td>0.481833563</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>cohort</td>
-                                                            <td>1943</td>
-                                                            <td>1977</td>
-                                                            <td>0.473241514</td>
-                                                            <td>0.464802678</td>
-                                                            <td>0.481833563</td>
-                                                        </tr>
-                                                    </tbody>
+                                                <h4 class="title"></h4>
+                                                <table id="interceptTable" class="table display compact">
                                                 </table>
                                             </div>
                                         </div>
@@ -567,6 +500,16 @@
             </div>
         </div>
     </div>
+
+<div id="imgPreview" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="imgPreviewLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-body">
+        </div>
+    </div>
+  </div>
+</div>
+
 </body>
 
 </html>
