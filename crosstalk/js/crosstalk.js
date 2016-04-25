@@ -106,6 +106,12 @@ $(document).ready(function () {
 
     });
 
+    $('#apcRatePane > nav li').on('click',function(e) {
+        var target = $(e.delegateTarget);
+        var id = target.attr("id");
+        target.add($('#'+id.substr(0,id.length-2))).parent().children().toggleClass('active');
+    });
+
     $('#modelBt').click(crosstalk.getData);
 
     $('[type="reset"]').click(crosstalk.reset);
@@ -212,7 +218,6 @@ var crosstalk = (function ($, ReadFile) {
         "paging": false,
         "responsive": true,
         "dom": 't',
-        "scrollX": true
     });
 
     return {
@@ -235,7 +240,7 @@ var crosstalk = (function ($, ReadFile) {
                     $(".loading").css("display", "block");
                 }
             }).done(function (data) {
-                $("#rateGraphs, #irrGraphs, .graphsContainers, .title").empty();
+                $(".graphsContainers, .title").empty();
                 var result = data;
                 for (var key in result.data) {
                     var resultSet = result.data[key];
@@ -244,8 +249,11 @@ var crosstalk = (function ($, ReadFile) {
                         incRatesTab(resultSet);
                     else if (key == "IncidenceRateRatios")
                         incRateRatioTab(resultSet);
+                    else if (key == "ApcOfIncidenceRates")
+                        apcRatesTab(resultSet);
                     else if (key == "ApcOfRateRatios")
                         apcRateRatioTab(resultSet);
+                    $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').attr('style', 'display:block');
                 }
                 $(".output").addClass("show");
 
@@ -272,57 +280,67 @@ var crosstalk = (function ($, ReadFile) {
         return returnHeaders;
     }
 
-    function createOutputTable(containerId, title, table, headers) {
+    function createGraphImage(containerId, link, ratio=1) {
+        var width = parseInt(12*ratio);
+        $(containerId).append('<div class="col-sm-' + width + '"><div class="graphContainers"><a class="expandImg" data-toggle="modal" data-target="#imgPreview"><img class="img-responsive" src="'+link+'" /></a></div></div>')
+    }
+    
+    function createOutputTable(containerId,title,table,headers,extraHeaders="") {
         var target = $(containerId);
         if ($.fn.DataTable.isDataTable(containerId)) {
             target.DataTable().destroy();
         }
-        target.empty().html("").before("<h4 class='title'>" + title + "</h4>");
+        target.empty().prev('h4').remove();
+        if (title) target.before("<h4 class='title'>" + title + "</h4>");
         var dTbl = target.DataTable({
             "data": table,
             "columns": headers
         });
 
-        $(dTbl.table().header()).prepend(
-            "<tr role='row'><th>Rate</th><th colspan='" + (headers.length - 1) + "'>Calendar Period</th></tr>");
+        $(dTbl.table().header()).prepend(extraHeaders);
         target.dataTable().fnDraw();
+    }
+    
+    function createDatasetLink(containerId, title, table, ratio=1) {
+        var width = parseInt(12*ratio);
+        $(containerId).append('<div class="tabledownload col-sm-'+width+'"><a href="javascript:void(0);">View Dataset '+title+'</a></div>');
     }
 
     function incRatesTab(result) {
-        var t2 = $("#rateTable2");
-
         // result has tables, headers and graphs properties
         var headers = createOutputHeaders([{
             data: "_row",
             title: "Age Group"
         }], result.headers);
 
+        $("#rateTables .title").html("");
+        var extraHeaders = "<tr role='row'><th>Rate</th><th colspan='" + (headers.length-1) + "'>Calendar Period</th></tr>";
+
         if (result.tables[0]) {
-            createOutputTable("#rateTable1", model.titleA, result.tables[0], headers);
-            $("#rateGraphs").append("<a class='expandImg'data-toggle='modal' data-target='#imgPreview'><img class='img-responsive col-sm-6' src='" + result.graphs[0] + "' /></a>");
+            createOutputTable("#rateTable1",model.titleA,result.tables[0],headers,extraHeaders);
+            createGraphImage("#rateGraphs",result.graphs[0],.5);
         }
 
         if (result.tables[1]) {
-            createOutputTable("#rateTable2", model.titleB, result.tables[1], headers);
-            $("#rateGraphs").append("<a class='expandImg'data-toggle='modal' data-target='#imgPreview'><img class='img-responsive col-sm-6' src='" + result.graphs[1] + "' /></a>");
+            createOutputTable("#rateTable2",model.titleB,result.tables[1],headers,extraHeaders);
+            createGraphImage("#rateGraphs",result.graphs[1],.5);
         }
     }
 
     function incRateRatioTab(result) {
-        var t1 = $("#irrTable");
         // result has tables, headers and graphs properties
         var headers = createOutputHeaders([{
             data: "_row",
             title: "Age Group"
         }], result.headers);
 
-        var t1 = $("#irrTable");
+        var extraHeaders = "<tr role='row'><th>Rate</th><th colspan='" + (headers.length-1) + "'>Calendar Period</th></tr>";
+        
         if (result.tables[0]) {
-            createOutputTable("#irrTable", (model.titleA + " vs " + model.titleB), result.tables[0], headers);
+            createOutputTable("#irrTable",(model.titleA + " vs " + model.titleB),result.tables[0],headers,extraHeaders);
             $("#irrGraphs").append(
                 "<img class='img-responsive' src='" + result.graphs[0][0] + "' />" +
                 "<img class='img-responsive' src='" + result.graphs[1][0] + "' />");
-
             if (!$("#showSwitch").is(":checked")) {
                 $("#irrGraphs img:nth-child(2)").addClass("show");
             } else {
@@ -330,46 +348,94 @@ var crosstalk = (function ($, ReadFile) {
             }
         }
     }
+    
+    function apcRatesTab(result) {
+        $("#collapseOne, #collapseTwo, #collapseThree, #collapseFour").children(".panel-body").add("#local-content").empty();
+        if (result.AdjustedRates) {
+            var ar = result.AdjustedRates;
+            if (ar.ComparisonOfAdjustedRates) {
+                var coarTarget = $("#collapseOne .panel-body");
+                var coar = ar.ComparisonOfAdjustedRates;
+                var headers = createOutputHeaders([{
+                    data: "_row",
+                    title: "Null Hypothesis"
+                }],coar.headers);
+                if (coar.graphs) {
+                    createGraphImage(coarTarget,coar.graphs[0][0],.5);
+                }
+                if (coar.tables) {
+                    $(coarTarget).append('<div class="col-sm-6"><table id="coarTable" class="data-table stripe compact" width="100%"></table></div>');
+                    createOutputTable("#coarTable",(model.titleA + " vs " + model.titleB),coar.tables[0],headers);
+                }
+            }
+            if (ar.CrossSectionalAgeCurve) {
+                var csacTarget = $("#collapseFour .panel-body");
+                var csac = ar.CrossSectionalAgeCurve;
+                if (csac.graphs) {
+                    createGraphImage(csacTarget,csac.graphs[0][0]);
+                }
+                if (csac.tables) {
+                    createDatasetLink(csacTarget,model.titleA,csac.tables[0],.5)
+                    createDatasetLink(csacTarget,model.titleB,csac.tables[1],.5)
+                }
+            }
+            if (ar.FittedCohortPattern) {
+                var fcpTarget = $("#collapseTwo .panel-body");
+                var fcp = ar.FittedCohortPattern;
+                if (fcp.graphs) {
+                    createGraphImage(fcpTarget,fcp.graphs[0][0]);
+                }
+                if (csac.tables) {
+                    createDatasetLink(fcpTarget,model.titleA,fcp.tables[0],.5)
+                    createDatasetLink(fcpTarget,model.titleB,fcp.tables[1],.5)
+                }
+            }
+            if (ar.FittedTemporalTrends) {
+                var fttTarget = $("#collapseThree .panel-body");
+                var ftt = ar.FittedTemporalTrends;
+                if (ftt.graphs) {
+                    createGraphImage(fttTarget,ftt.graphs[0][0]);
+                }
+                if (csac.tables) {
+                    createDatasetLink(fttTarget,model.titleA,fcp.tables[0],.5)
+                    createDatasetLink(fttTarget,model.titleB,fcp.tables[1],.5)
+                }
+            }
+        }
+        if (result.LocalDrifts) {
+            var ld = result.LocalDrifts;
+            if (ld.graphs) {
+                createGraphImage("#local-content",ld.graphs[0][0],.5);
+                createGraphImage("#local-content",ld.graphs[1][0],.5);
+            }
+            if (result.LocalDrifts.tables) {
+                createDatasetLink("#local-content",model.titleA,ld.tables[0],.5)
+                createDatasetLink("#local-content",model.titleB,ld.tables[1],.5)
+            }
+        }
+        if (result.NetDrifts) {
+            var nd = result.NetDrifts;
+            createOutputTable("#netTable",undefined,nd.tables[0],createOutputHeaders({},nd.headers));
+        }
+    }
 
     function apcRateRatioTab(result) {
-        for (var resultGroup in result) {
-            var resultSet = result[resultGroup];
-            if (resultGroup == "CrossSectionalAgeCurve") {
-                $("#csac .graphsContainers").append(
-                    "<img class='img-responsive show' src='" + resultSet.graphs[0][0] + "' />");
-            } else if (resultGroup == "FittedCohortPattern") {
-                $("#fcp .graphsContainers").append(
-                    "<img class='img-responsive show' src='" + resultSet.graphs[0][0] + "' />");
-            } else if (resultGroup == "FittedTemporalTrends") {
-                $("#ftt .graphsContainers").append(
-                    "<img class='img-responsive show' src='" + resultSet.graphs[0][0] + "' />");
-            } else if (resultGroup == "IO") {
-
-                $("#intercept .title").html(model.titleA + " vs " + model.titleB);
-
-                if (resultSet.tables[0]) {
-                    var t1 = $("#interceptTable");
-                    if ($.fn.DataTable.isDataTable("#" + t1[0].id)) t1.DataTable().destroy();
-                    t1.empty();
-
-                    var headers = createOutputHeaders([{
-                        data: "_row",
-                        title: "Age Group",
-                        className: 'dt-body-right'
-        }], resultSet.headers);
-
-                    var dTbl1 = t1.DataTable({
-                        "data": resultSet.tables[0],
-                        "columns": headers,
-                        "scrollX": false
-                    });
-
-
-                    dTbl1.draw();
-                }
-
-            }
-
+        $("#csac, #fcp, #ftt").empty()
+        if (result.CrossSectionalAgeCurve) {
+            var csac = result.CrossSectionalAgeCurve;
+            createGraphImage("#csac",csac.graphs[0][0]);
+        }
+        if (result.FittedCohortPattern) {
+            var fcp = result.FittedCohortPattern;
+            createGraphImage("#fcp",fcp.graphs[0][0]);
+        }
+        if (result.FittedTemporalTrends) {
+            var ftt = result.FittedTemporalTrends;
+            createGraphImage("#ftt",ftt.graphs[0][0]);
+        }
+        if (result.IO) {
+            var io = result.IO;
+            createOutputTable("#interceptTable",(model.titleA+" vs "+model.titleB),io.tables[0],createOutputHeaders({},io.headers));
         }
     }
 
