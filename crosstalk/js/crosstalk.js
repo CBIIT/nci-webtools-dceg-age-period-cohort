@@ -386,6 +386,7 @@ var crosstalk = (function ($, ReadFile) {
                     createGraphImage(csacTarget,csac.graphs[0][0]);
                 }
                 if (csac.tables) {
+                    for (var i in csac.tables) csac.tables[i].unshift(csac.headers);
                     createDatasetLink(csacTarget,"Cross Sectional Age Curve",model.titleA,csac.tables[0],.5)
                     createDatasetLink(csacTarget,"Cross Sectional Age Curve",model.titleB,csac.tables[1],.5)
                 }
@@ -396,7 +397,8 @@ var crosstalk = (function ($, ReadFile) {
                 if (fcp.graphs) {
                     createGraphImage(fcpTarget,fcp.graphs[0][0]);
                 }
-                if (csac.tables) {
+                if (fcp.tables) {
+                    for (var i in fcp.tables) fcp.tables[i].unshift(fcp.headers);
                     createDatasetLink(fcpTarget,"Fitted Cohort Pattern",model.titleA,fcp.tables[0],.5)
                     createDatasetLink(fcpTarget,"Fitted Cohort Pattern",model.titleB,fcp.tables[1],.5)
                 }
@@ -407,9 +409,10 @@ var crosstalk = (function ($, ReadFile) {
                 if (ftt.graphs) {
                     createGraphImage(fttTarget,ftt.graphs[0][0]);
                 }
-                if (csac.tables) {
-                    createDatasetLink(fttTarget,"Fitted Temporal Trends",model.titleA,fcp.tables[0],.5)
-                    createDatasetLink(fttTarget,"Fitted Temporal Trends",model.titleB,fcp.tables[1],.5)
+                if (ftt.tables) {
+                    for (var i in ftt.tables) ftt.tables[i].unshift(ftt.headers);
+                    createDatasetLink(fttTarget,"Fitted Temporal Trends",model.titleA,ftt.tables[0],.5)
+                    createDatasetLink(fttTarget,"Fitted Temporal Trends",model.titleB,ftt.tables[1],.5)
                 }
             }
         }
@@ -419,7 +422,8 @@ var crosstalk = (function ($, ReadFile) {
                 createGraphImage("#local-content",ld.graphs[0][0],.5);
                 createGraphImage("#local-content",ld.graphs[1][0],.5);
             }
-            if (result.LocalDrifts.tables) {
+            if (ld.tables) {
+                for (var i in ld.tables) ld.tables[i].unshift(ld.headers);
                 createDatasetLink("#local-content","Local Drifts",model.titleA,ld.tables[0],.5)
                 createDatasetLink("#local-content","Local Drifts",model.titleB,ld.tables[1],.5)
             }
