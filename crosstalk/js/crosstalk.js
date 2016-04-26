@@ -387,7 +387,7 @@ var crosstalk = (function ($, ReadFile) {
                 }
                 if (csac.tables) {
                     createDatasetLink(csacTarget,"Cross Sectional Age Curve",model.titleA,csac.tables[0],.5)
-                    createDatasetLink(csacTarget,"Cross Sectional Age Curve",csac.tables[1],.5)
+                    createDatasetLink(csacTarget,"Cross Sectional Age Curve",model.titleB,csac.tables[1],.5)
                 }
             }
             if (ar.FittedCohortPattern) {
@@ -397,8 +397,8 @@ var crosstalk = (function ($, ReadFile) {
                     createGraphImage(fcpTarget,fcp.graphs[0][0]);
                 }
                 if (csac.tables) {
-                    createDatasetLink(fcpTarget,"Fitted Cohort Pattern",fcp.tables[0],.5)
-                    createDatasetLink(fcpTarget,"Fitted Cohort Pattern",fcp.tables[1],.5)
+                    createDatasetLink(fcpTarget,"Fitted Cohort Pattern",model.titleA,fcp.tables[0],.5)
+                    createDatasetLink(fcpTarget,"Fitted Cohort Pattern",model.titleB,fcp.tables[1],.5)
                 }
             }
             if (ar.FittedTemporalTrends) {
@@ -408,8 +408,8 @@ var crosstalk = (function ($, ReadFile) {
                     createGraphImage(fttTarget,ftt.graphs[0][0]);
                 }
                 if (csac.tables) {
-                    createDatasetLink(fttTarget,"Fitted Temporal Trends",fcp.tables[0],.5)
-                    createDatasetLink(fttTarget,"Fitted Temporal Trends",fcp.tables[1],.5)
+                    createDatasetLink(fttTarget,"Fitted Temporal Trends",model.titleA,fcp.tables[0],.5)
+                    createDatasetLink(fttTarget,"Fitted Temporal Trends",model.titleB,fcp.tables[1],.5)
                 }
             }
         }
