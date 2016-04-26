@@ -5,7 +5,7 @@ import json
 app = Flask(__name__)
 
 wrapper = robjects.r
-wrapper['source']('crosstalkWrapper.R')
+wrapper['source']('CrossTalkWrapper.R')
 def buildFailure(data):
   response = jsonify(data=data, complete=False)
   response.mimetype = 'application/json'
