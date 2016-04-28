@@ -1,14 +1,14 @@
 $(document).ready(function () {
     // Save DOM references to minimize queries
     var cfg = crosstalk.config({
-        description: $('#description'),
-        startYear: $('#startYear'),
-        startAge: $('#startAge'),
-        interval: $('#interval'),
-        titleA: $('#title1'),
-        titleB: $('#title2'),
-        inputFileA: $('#inputfile1'),
-        inputFileB: $('#inputfile2')
+        description: $('#description')
+        , startYear: $('#startYear')
+        , startAge: $('#startAge')
+        , interval: $('#interval')
+        , titleA: $('#title1')
+        , titleB: $('#title2')
+        , inputFileA: $('#inputfile1')
+        , inputFileB: $('#inputfile2')
     });
 
     // Add event listeners
@@ -29,8 +29,8 @@ $(document).ready(function () {
         });
         var datatarget = $(target).attr('data-target');
         self.model[datatarget] = $.extend(self.model[datatarget] || {}, {
-            'table': data,
-            'title': $('#' + $('#' + datatarget).attr('data-target')).val()
+            'table': data
+            , 'title': $('#' + $('#' + datatarget).attr('data-target')).val()
         });
         $(target).children("textarea").val("");
         crosstalk.update();
@@ -46,8 +46,8 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on("hidden.bs.modal", function () {
-        $("#imgPreview .modal-body").empty();
+    $(document).on("hidden.bs.modal", function (e) {
+        $(e.target).find(".modal-body").empty();
     });
 
     $('#dataset1, #dataset2').on('drop', function (e) {
@@ -66,36 +66,31 @@ $(document).ready(function () {
         crosstalk.update();
     });
 
-    $('#startYear').spinner({
-        min: 1800,
-        max: 2200,
-        step: 1,
-        spin: crosstalk.update,
-        stop: crosstalk.update
-    });
-
-    $('#startAge').spinner({
-        min: 0,
-        max: 120,
-        step: 1,
-        spin: crosstalk.update,
-        stop: crosstalk.update
-    });
-
-    $('#interval').spinner({
-        min: 1,
-        max: 10,
-        step: 1,
-        spin: crosstalk.update,
-        stop: crosstalk.update
-    });
-
-    $("#showNumber, #showNumber + button").on("click", function () {
-        $("#showSwitch").trigger("change");
-    });
+    //    $('#startYear').spinner({
+    //        min: 1800
+    //        , max: 2200
+    //        , step: 1
+    //        , spin: crosstalk.update
+    //        , stop: crosstalk.update
+    //    });
+    //
+    //    $('#startAge').spinner({
+    //        min: 0
+    //        , max: 120
+    //        , step: 1
+    //        , spin: crosstalk.update
+    //        , stop: crosstalk.update
+    //    });
+    //
+    //    $('#interval').spinner({
+    //        min: 1
+    //        , max: 10
+    //        , step: 1
+    //        , spin: crosstalk.update
+    //        , stop: crosstalk.update
+    //    });
 
     $("#showSwitch").on("change", function () {
-
         if (this.checked) {
             $("#irrGraphs img:first").addClass("show");
             $("#irrGraphs img:nth(1)").removeClass("show");
@@ -103,16 +98,20 @@ $(document).ready(function () {
             $("#irrGraphs img:first").removeClass("show");
             $("#irrGraphs img:nth(1)").addClass("show");
         }
-
     });
 
-    $('#apcRatePane > nav li').on('click',function(e) {
+    $("#showNumber *").on("click keypress", function (e) {
+        if (e.keyCode == 13 || e.type == "click") $("#showSwitch").trigger("click");
+    });
+
+
+    $('#apcRatePane > nav li, #gafPane > nav li').on('click keypress', function (e) {
         var target = $(e.delegateTarget);
         var id = target.attr("id");
-        target.add($('#'+id.substr(0,id.length-2))).parent().children().toggleClass('active');
+        target.add($('#' + id.substr(0, id.length - 2))).parent().children().toggleClass('active');
     });
 
-    $('#modelBt').click(crosstalk.getData);
+    $('#modelBt').click(crosstalk.validate);
 
     $('[type="reset"]').click(crosstalk.reset);
     crosstalk.reset();
@@ -129,12 +128,12 @@ var readfile = (function () {
     function createModel(element, callback) {
         readFile(element, function (contents) {
             callback(element.id, {
-                title: parseHeader(contents.shift()),
-                description: parseHeader(contents.shift()),
-                startYear: parseInt(parseHeader(contents.shift())),
-                startAge: parseInt(parseHeader(contents.shift())),
-                interval: parseInt(parseHeader(contents.shift())),
-                table: parseTable(contents)
+                title: parseHeader(contents.shift())
+                , description: parseHeader(contents.shift())
+                , startYear: parseInt(parseHeader(contents.shift()))
+                , startAge: parseInt(parseHeader(contents.shift()))
+                , interval: parseInt(parseHeader(contents.shift()))
+                , table: parseTable(contents)
             });
         });
     }
@@ -187,105 +186,162 @@ var crosstalk = (function ($, ReadFile) {
 
     // Holds DOM references
     self.cfg = {
-        description: null,
-        startYear: null,
-        startAge: null,
-        interval: null,
-        titleA: null,
-        titleB: null,
-        inputFileA: null,
-        inputFileB: null,
-    };
+        description: null
+        , startYear: null
+        , startAge: null
+        , interval: null
+        , titleA: null
+        , titleB: null
+        , inputFileA: null
+        , inputFileB: null
+    , };
 
     // Holds values from the DOM in a model
     self.model = {
-        description: null,
-        startYear: null,
-        startAge: null,
-        interval: null,
-        titleA: null,
-        titleB: null,
-        inputfile1: null,
-        inputfile2: null
+        description: null
+        , startYear: null
+        , startAge: null
+        , interval: null
+        , titleA: null
+        , titleB: null
+        , inputfile1: null
+        , inputfile2: null
     };
 
 
     // set default datatable options
     $.extend(true, $.fn.dataTable.defaults, {
-        "destroy": true,
-        "bSort": false,
-        "bFilter": false,
-        "paging": false,
-        "responsive": true,
-        "dom": 't',
-    });
+        "destroy": true
+        , "bSort": false
+        , "bFilter": false
+        , "paging": false
+        , "responsive": true
+        , "dom": 't'
+    , });
 
     return {
-        drop: drop,
-        update: update,
-        config: config,
-        getData: getData,
-        reset: reset,
-        model: self.model,
-        dtDefaults: self.tableDefaults
+        drop: drop
+        , update: update
+        , config: config
+        , getData: getData
+        , reset: reset
+        , model: self.model
+        , failure: requestFailure
+        , validate: checkForm
     };
 
-    function getData() {
-        if (self.model.inputfile1 && self.model.inputfile2 && self.model.inputfile1.table.length == self.model.inputfile2.table.length && self.model.inputfile1.table[0].length == self.model.inputfile2.table[0].length) {
-            $.ajax({
-                method: "POST",
-                url: crosstalk_form.action,
-                data: JSON.stringify(crosstalk.model),
-                beforeSend: function () {
-                    $(".loading").css("display", "block");
-                }
-            }).done(function (data) {
-                $(".graphsContainers, .title").empty();
-                var result = data;
-                for (var key in result.data) {
-                    var resultSet = result.data[key];
-
-                    if (key == "IncidenceRates")
-                        incRatesTab(resultSet);
-                    else if (key == "IncidenceRateRatios")
-                        incRateRatioTab(resultSet);
-                    else if (key == "ApcOfIncidenceRates")
-                        apcRatesTab(resultSet);
-                    else if (key == "ApcOfRateRatios")
-                        apcRateRatioTab(resultSet);
-                    $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').attr('style', 'display:block');
-                }
-                $(".output").addClass("show");
-
-                // bind events to newly generated images
-                $(".expandImg").on("click", previewImage);
-            }).fail(function () {
-                console.log("failed");
-            }).always(function () {
-                $(".loading").css("display", "none");
-            });
-        } else {
-            alert("needs a message 3");
+    function requestFailure(xhr, error, statusText) {
+        var message = "";
+        switch (xhr.status) {
+        case 503:
+            message = "The service that the request is trying to reach is currently down, Please try again later";
+            break;
+        case 404:
+            message = "The request returned with a response of  '" + statusText + "'. Please try again later.";
+            break;
+        case 400:
+            message = xhr.responseJSON.data;
+            break;
+        default:
+            message = "The request has failed for an unknown reason";
+            break;
         }
+
+        $(".tab-pane#input").children("#error").remove().prepend($("<div id='error' class='alert alert-danger'>").html(message));
+    }
+
+    function checkForm() {
+        var valid = crosstalk_form.checkValidity();
+
+        if (valid) {
+            $(".errors").removeClass("errors");
+            $("#input.tab-pane").children("#errors").remove();
+            crosstalk.getData();
+        } else {
+            $("#input.tab-pane").children("#errors").remove();
+            $("#input.tab-pane").prepend("<div id='errors' class='alert alert-danger'></div>");
+
+            $.each($("input:invalid, select:invalid"), function (i, el) {
+                displayErrors(el);
+            });
+
+            $("form").addClass("submitted");
+            alert("ERRORS");
+        }
+    }
+
+    function displayErrors(el) {
+        $(el.labels[0]).addClass("errors");
+        var msg = "";
+
+        if (el.validity.badInput) {
+            msg += "'" + el.labels[0].innerText + "' contains an invalid value </br>";
+        }
+        if (el.validity.valueMissing) {
+            msg += "'" + el.labels[0].innerText + "' is required </br>";
+        }
+
+        $("#errors").append(msg);
+    }
+
+    function getData() {
+
+        $.ajax({
+            method: "POST"
+            , url: crosstalk_form.action
+            , data: JSON.stringify(crosstalk.model)
+            , beforeSend: function () {
+                $(".loading").css("display", "block");
+                $(".tab-content").children("#error").remove();
+
+            }
+        }).done(function (data) {
+            $(".graphContainers, .title").empty();
+            var result = data;
+            for (var key in result.data) {
+                var resultSet = result.data[key];
+
+                if (key == "IncidenceRates")
+                    incRatesTab(resultSet);
+                else if (key == "IncidenceRateRatios")
+                    incRateRatioTab(resultSet);
+                else if (key == "ApcOfIncidenceRates")
+                    apcRatesTab(resultSet);
+                else if (key == "ApcOfRateRatios")
+                    apcRateRatioTab(resultSet);
+                else if (key == "GoodnessOfFit")
+                    goodFitTab(resultSet);
+                $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').attr('style', 'display:block');
+            }
+            $(".output").addClass("show");
+
+            // bind events to newly generated images
+            $(".expandImg").on("click keypress", previewImage);
+        }).fail(crosstalk.failure).always(function () {
+            $(".loading").css("display", "none");
+        });
     }
 
     function createOutputHeaders(initial, headers) {
         var returnHeaders = $.extend(true, [], initial);
         for (var i = 0; i < headers.length; i++) {
             returnHeaders.push({
-                data: headers[i].toString(),
-                title: headers[i].toString()
+                data: headers[i].toString()
+                , title: headers[i].toString()
             });
         }
         return returnHeaders;
     }
 
-    function createGraphImage(containerId, link, ratio=1) {
-        var width = parseInt(12*ratio);
-        $(containerId).append('<div class="col-sm-' + width + '"><div class="graphContainers"><a class="expandImg" data-toggle="modal" data-target="#imgPreview"><img class="img-responsive" src="'+link+'" /></a></div></div>')
+    function createGraphImage(containerId, link, ratio) {
+        if (ratio == undefined) ratio = 1;
+
+        var width = parseInt(12 * ratio);
+
+        $(containerId).append('<div class="col-sm-' + width + '"><div class="graphContainers"><a class="expandImg" data-toggle="modal" data-target="#imgPreview" tabindex="0"><img class="img-responsive" src="' + link + '" alt="generated graph image"/></a></div></div>')
     }
-    
-    function createOutputTable(containerId,title,table,headers,extraHeaders="") {
+
+    function createOutputTable(containerId, title, table, headers, extraHeaders = "") {
         var target = $(containerId);
         if ($.fn.DataTable.isDataTable(containerId)) {
             target.DataTable().destroy();
@@ -293,62 +349,65 @@ var crosstalk = (function ($, ReadFile) {
         target.empty().prev('h4').remove();
         if (title) target.before("<h4 class='title'>" + title + "</h4>");
         var dTbl = target.DataTable({
-            "data": table,
-            "columns": headers
+            "data": table
+            , "columns": headers
         });
 
         $(dTbl.table().header()).prepend(extraHeaders);
         target.dataTable().fnDraw();
     }
-    
-    function createDatasetLink(containerId, sectionName, displayTitle, table, ratio=1) {
+
+    function createDatasetLink(containerId, sectionName, displayTitle, table, ratio = 1) {
         var data = "";
         for (var i in table) {
-          for (var j in table[i]) {
-            data += table[i][j] + ",";
-          }
-          data += "\n";
+            for (var j in table[i]) {
+                data += table[i][j] + ",";
+            }
+            data += "\n";
         }
-        var blob = new Blob([data], {type: "text/csv;charset=UTF-8"});
-        var width = parseInt(12*ratio);
-        var link = $(containerId).append('<div class="tabledownload col-sm-'+width+'"><a href="javascript:void(0);" id="findme">View Dataset '+displayTitle+'</a></div>').find("#findme");
+        var blob = new Blob([data], {
+            type: "text/csv;charset=UTF-8"
+        });
+        var width = parseInt(12 * ratio);
+        var link = $(containerId).append('<div class="tabledownload col-sm-' + width + '"><a href="javascript:void(0);" id="findme">View Dataset ' + displayTitle + '</a></div>').find("#findme");
         link = link.removeAttr("id")[0];
-        link.href = window.URL.createObjectURL(blob );
-        link.download = sectionName+" for "+displayTitle+".csv";
+        link.href = window.URL.createObjectURL(blob);
+        link.download = sectionName + " for " + displayTitle + ".csv";
+
     }
 
     function incRatesTab(result) {
         // result has tables, headers and graphs properties
         var headers = createOutputHeaders([{
-            data: "_row",
-            title: "Age Group"
+            data: "_row"
+            , title: "Age Group"
         }], result.headers);
 
         $("#rateTables .title").html("");
-        var extraHeaders = "<tr role='row'><th>Rate</th><th colspan='" + (headers.length-1) + "'>Calendar Period</th></tr>";
+        var extraHeaders = "<tr role='row'><th class='header'>Rate</th><th class='header' colspan='" + (headers.length - 1) + "'>Calendar Period</th></tr>";
 
         if (result.tables[0]) {
-            createOutputTable("#rateTable1",model.titleA,result.tables[0],headers,extraHeaders);
-            createGraphImage("#rateGraphs",result.graphs[0],.5);
+            createOutputTable("#rateTable1", model.titleA, result.tables[0], headers, extraHeaders);
+            createGraphImage("#rateGraphs", result.graphs[0], .5);
         }
 
         if (result.tables[1]) {
-            createOutputTable("#rateTable2",model.titleB,result.tables[1],headers,extraHeaders);
-            createGraphImage("#rateGraphs",result.graphs[1],.5);
+            createOutputTable("#rateTable2", model.titleB, result.tables[1], headers, extraHeaders);
+            createGraphImage("#rateGraphs", result.graphs[1], .5);
         }
     }
 
     function incRateRatioTab(result) {
         // result has tables, headers and graphs properties
         var headers = createOutputHeaders([{
-            data: "_row",
-            title: "Age Group"
+            data: "_row"
+            , title: "Age Group"
         }], result.headers);
 
-        var extraHeaders = "<tr role='row'><th>Rate</th><th colspan='" + (headers.length-1) + "'>Calendar Period</th></tr>";
-        
+        var extraHeaders = "<tr role='row'><th class='header'>Rate</th><th class='header' colspan='" + (headers.length - 1) + "'>Calendar Period</th></tr>";
+
         if (result.tables[0]) {
-            createOutputTable("#irrTable",(model.titleA + " vs " + model.titleB),result.tables[0],headers,extraHeaders);
+            createOutputTable("#irrTable", (model.titleA + " vs " + model.titleB), result.tables[0], headers, extraHeaders);
             $("#irrGraphs").append(
                 "<img class='img-responsive' src='" + result.graphs[0][0] + "' />" +
                 "<img class='img-responsive' src='" + result.graphs[1][0] + "' />");
@@ -359,7 +418,7 @@ var crosstalk = (function ($, ReadFile) {
             }
         }
     }
-    
+
     function apcRatesTab(result) {
         $("#collapseOne, #collapseTwo, #collapseThree, #collapseFour").children(".panel-body").add("#local-content").empty();
         if (result.AdjustedRates) {
@@ -368,69 +427,71 @@ var crosstalk = (function ($, ReadFile) {
                 var coarTarget = $("#collapseOne .panel-body");
                 var coar = ar.ComparisonOfAdjustedRates;
                 var headers = createOutputHeaders([{
-                    data: "_row",
-                    title: "Null Hypothesis"
-                }],coar.headers);
+                    data: "_row"
+                    , title: "Null Hypothesis"
+                }], coar.headers);
                 if (coar.graphs) {
-                    createGraphImage(coarTarget,coar.graphs[0][0],.5);
+                    createGraphImage(coarTarget, coar.graphs[0][0], .5);
+
                 }
                 if (coar.tables) {
                     $(coarTarget).append('<div class="col-sm-6"><table id="coarTable" class="data-table stripe compact" width="100%"></table></div>');
-                    createOutputTable("#coarTable",(model.titleA + " vs " + model.titleB),coar.tables[0],headers);
+                    createOutputTable("#coarTable", (model.titleA + " vs " + model.titleB), coar.tables[0], headers);
                 }
             }
             if (ar.CrossSectionalAgeCurve) {
                 var csacTarget = $("#collapseFour .panel-body");
                 var csac = ar.CrossSectionalAgeCurve;
                 if (csac.graphs) {
-                    createGraphImage(csacTarget,csac.graphs[0][0]);
+                    createGraphImage(csacTarget, csac.graphs[0][0]);
                 }
                 if (csac.tables) {
                     for (var i in csac.tables) csac.tables[i].unshift(csac.headers);
-                    createDatasetLink(csacTarget,"Cross Sectional Age Curve",model.titleA,csac.tables[0],.5)
-                    createDatasetLink(csacTarget,"Cross Sectional Age Curve",model.titleB,csac.tables[1],.5)
+                    createDatasetLink(csacTarget, "Cross Sectional Age Curve", model.titleA, csac.tables[0], .5)
+                    createDatasetLink(csacTarget, "Cross Sectional Age Curve", model.titleB, csac.tables[1], .5)
                 }
             }
             if (ar.FittedCohortPattern) {
                 var fcpTarget = $("#collapseTwo .panel-body");
                 var fcp = ar.FittedCohortPattern;
                 if (fcp.graphs) {
-                    createGraphImage(fcpTarget,fcp.graphs[0][0]);
+                    createGraphImage(fcpTarget, fcp.graphs[0][0]);
                 }
                 if (fcp.tables) {
                     for (var i in fcp.tables) fcp.tables[i].unshift(fcp.headers);
-                    createDatasetLink(fcpTarget,"Fitted Cohort Pattern",model.titleA,fcp.tables[0],.5)
-                    createDatasetLink(fcpTarget,"Fitted Cohort Pattern",model.titleB,fcp.tables[1],.5)
+                    createDatasetLink(fcpTarget, "Fitted Cohort Pattern", model.titleA, fcp.tables[0], .5)
+                    createDatasetLink(fcpTarget, "Fitted Cohort Pattern", model.titleB, fcp.tables[1], .5)
                 }
             }
             if (ar.FittedTemporalTrends) {
                 var fttTarget = $("#collapseThree .panel-body");
                 var ftt = ar.FittedTemporalTrends;
                 if (ftt.graphs) {
-                    createGraphImage(fttTarget,ftt.graphs[0][0]);
+                    createGraphImage(fttTarget, ftt.graphs[0][0]);
                 }
                 if (ftt.tables) {
                     for (var i in ftt.tables) ftt.tables[i].unshift(ftt.headers);
-                    createDatasetLink(fttTarget,"Fitted Temporal Trends",model.titleA,ftt.tables[0],.5)
-                    createDatasetLink(fttTarget,"Fitted Temporal Trends",model.titleB,ftt.tables[1],.5)
+                    createDatasetLink(fttTarget, "Fitted Temporal Trends", model.titleA, ftt.tables[0], .5)
+                    createDatasetLink(fttTarget, "Fitted Temporal Trends", model.titleB, ftt.tables[1], .5)
                 }
             }
         }
         if (result.LocalDrifts) {
             var ld = result.LocalDrifts;
             if (ld.graphs) {
-                createGraphImage("#local-content",ld.graphs[0][0],.5);
-                createGraphImage("#local-content",ld.graphs[1][0],.5);
+                createGraphImage("#local-content", ld.graphs[0][0], .5);
+                createGraphImage("#local-content", ld.graphs[1][0], .5);
             }
             if (ld.tables) {
                 for (var i in ld.tables) ld.tables[i].unshift(ld.headers);
-                createDatasetLink("#local-content","Local Drifts",model.titleA,ld.tables[0],.5)
-                createDatasetLink("#local-content","Local Drifts",model.titleB,ld.tables[1],.5)
+                createDatasetLink("#local-content", "Local Drifts", model.titleA, ld.tables[0], .5)
+                createDatasetLink("#local-content", "Local Drifts", model.titleB, ld.tables[1], .5)
+
             }
         }
         if (result.NetDrifts) {
             var nd = result.NetDrifts;
-            createOutputTable("#netTable",undefined,nd.tables[0],createOutputHeaders({},nd.headers));
+            createOutputTable("#netTable", undefined, nd.tables[0], createOutputHeaders({}, nd.headers));
         }
     }
 
@@ -438,32 +499,50 @@ var crosstalk = (function ($, ReadFile) {
         $("#csac, #fcp, #ftt").children(".panel-body").empty()
         if (result.CrossSectionalAgeCurve) {
             var csac = result.CrossSectionalAgeCurve;
-            createGraphImage("#csac .panel-body",csac.graphs[0][0]);
+            createGraphImage("#csac .panel-body", csac.graphs[0][0]);
         }
         if (result.FittedCohortPattern) {
             var fcp = result.FittedCohortPattern;
-            createGraphImage("#fcp .panel-body",fcp.graphs[0][0]);
+            createGraphImage("#fcp .panel-body", fcp.graphs[0][0]);
         }
         if (result.FittedTemporalTrends) {
             var ftt = result.FittedTemporalTrends;
-            createGraphImage("#ftt .panel-body",ftt.graphs[0][0]);
+            createGraphImage("#ftt .panel-body", ftt.graphs[0][0]);
         }
         if (result.IO) {
             var io = result.IO;
-            createOutputTable("#interceptTable",(model.titleA+" vs "+model.titleB),io.tables[0],createOutputHeaders({},io.headers));
+            createOutputTable("#interceptTable", (model.titleA + " vs " + model.titleB), io.tables[0], createOutputHeaders({}, io.headers));
         }
     }
 
-    function previewImage() {
-        var img = $(this).find("img")[0];
-        $("#imgPreview .modal-body").append("<img class='img-responsive' src='" + img.src + "' />");
+    function goodFitTab(result) {
+        $("#gaf_item1 a, #gaf_item2 a").empty();
+
+        $("#gaf_item1 a, #gaf_pop1 .title").text(self.model.titleA);
+        $("#gaf_item2 a, #gaf_pop2 .title").text(self.model.titleB);
+
+        var graphs = result.graphs;
+
+        createGraphImage("#gaf_pop1", graphs[0][0], .5);
+        createGraphImage("#gaf_pop1", graphs[0][1], .5);
+        createGraphImage("#gaf_pop2", graphs[1][0], .5);
+        createGraphImage("#gaf_pop2", graphs[1][1], .5);
     }
 
+    function previewImage(e) {
+        var img = $(e.target)[0];
+
+        if (e.target.tagName != "IMG")
+            img = $(e.target).find("img")[0];
+
+        $("#imgPreview .modal-body").append("<img class='img-responsive' src='" + img.src + "' />");
+        if (e.keyCode == 13) $("#imgPreview").modal("show");
+    }
 
     function drop(e) {
         ReadFile.createModel({
-            "id": $(e.delegateTarget).attr('data-target'),
-            "files": e.originalEvent.dataTransfer.files
+            "id": $(e.delegateTarget).attr('data-target')
+            , "files": e.originalEvent.dataTransfer.files
         }, updateModel);
     }
 
@@ -482,12 +561,21 @@ var crosstalk = (function ($, ReadFile) {
         }
     }
 
+    window.reset = function (e) {
+        e.wrap('<form>').closest('form').get(0).reset();
+        e.unwrap();
+    }
+
     function reset(e) {
         if (e !== undefined) e.preventDefault();
+
+        $(".submitted").removeClass("submitted");
+
         $(".graphsContainers").empty();
         $('.output').removeClass('show');
 
         $('#description,#startAge,#startYear,#interval,#title1,#title2').val("");
+
         $(".tablesContainers table").each(function () {
             if ($.fn.DataTable.isDataTable(this)) {
                 $(this).DataTable().destroy();
@@ -507,6 +595,8 @@ var crosstalk = (function ($, ReadFile) {
         createInputTable("#dataset2", createHeaders(3), matrix);
         $("#dataset1 .paste-here, #dataset2 .paste-here").remove();
         $("#dataset1 textarea, #dataset2 textarea").before('<img class="img-responsive paste-here" alt="paste here" src="/common/images/paste-here.gif"/>');
+
+        $(".tab-content").children("#error").remove();
     }
 
     /* ---------- Updates the model with contents from the UI ---------- */
@@ -535,10 +625,10 @@ var crosstalk = (function ($, ReadFile) {
         }
         line.unshift(lead);
         return line;
-    };
+    }
 
     function table_input(target, data) {
-        var target = $(target);
+        var thisElement = $(target);
         var tableData = $.extend(true, [], data.table);
         if (tableData.length < 1) {
             alert('needs a message 1');
@@ -552,18 +642,18 @@ var crosstalk = (function ($, ReadFile) {
                 return;
             }
         }
-        var table = createInputTable("#" + target.prop("id"), createHeaders((width - 1) / 2, tableData), tableData).children('thead');
+        var table = createInputTable("#" + thisElement.prop("id"), createHeaders((width - 1) / 2, tableData), tableData).children('thead');
         if (self.model.startYear && self.model.interval) {
-            var headerRow = $('<tr><th></th></tr>');
+            var headerRow = $('<tr><th class="header"></th></tr>');
             for (var i = 0; i < (width - 1) / 2; i++) {
                 var header = self.model.startYear + self.model.interval * i;
                 headerRow.append($('<th class="header" colspan="2"></th>').html(header + "-" + (header + self.model.interval - 1)));
             }
             table.prepend(headerRow);
         }
-        if (data.title && self.model.description) table.prepend('<tr><th></th><th class="header" colspan="' + (width - 1) + '">' + data.title + '<br/><span class="blue">' + self.model.description + '</span></th></tr>');
-        target.children(".paste-here").remove();
-    };
+        if (data.title && self.model.description) table.prepend('<tr><th class="header"></th><th class="header" colspan="' + (width - 1) + '">' + data.title + '<br/><span class="blue">' + self.model.description + '</span></th></tr>');
+        thisElement.children(".paste-here").remove();
+    }
 
     /* ---------- Saves the file contents to the model ---------- */
     function updateModel(id, contents) {
@@ -593,17 +683,17 @@ var crosstalk = (function ($, ReadFile) {
         var ageHeader = "Age";
         if (data !== undefined) ageHeader = '<span class = "ageGroups">' + data.length + " age groups </span>";
         var headers = [{
-            title: ageHeader,
-            className: 'dt-center grey'
+            title: ageHeader
+            , className: 'dt-center grey'
       }];
         for (var i = 0; i < length; i += 1) {
             headers.push({
-                title: "Count",
-                className: 'dt-body-right'
+                title: "Count"
+                , className: 'dt-body-right'
             });
             headers.push({
-                title: "Population",
-                className: 'dt-body-right'
+                title: "Population"
+                , className: 'dt-body-right'
             });
         }
         return headers;
@@ -617,15 +707,15 @@ var crosstalk = (function ($, ReadFile) {
         $(containerID).children("table").remove();
         $(containerID).prepend(table);
         table.DataTable({
-            "destroy": true,
-            "data": data,
-            "columns": headers,
-            "bSort": false,
-            "bFilter": false,
-            "paging": false,
-            "responsive": true,
-            "dom": 't',
-            "scrollX": false
+            "destroy": true
+            , "data": data
+            , "columns": headers
+            , "bSort": false
+            , "bFilter": false
+            , "paging": false
+            , "responsive": true
+            , "dom": 't'
+            , "scrollX": false
         });
         $(containerID).find('#inputTable_wrapper').addClass('table-responsive');
         $(containerID).find('.table').addClass('input-table');

@@ -1,17 +1,17 @@
-#apcRatePane .navbar {
-  display: inline-block;
+#apcRatePane .navbar,#gafPane .navbar {
+    display: inline-block;
 }
 
 .tabledownload {
-  text-align: center;
+    text-align: center;
 }
 
 #local-content {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .title {
-  text-align: center;
+    text-align: center;
 }
 
 #input .input-tables {
@@ -19,10 +19,11 @@
 }
 
 #local:not(.active),
-#adjust:not(.active) {
-  display: none;
+#adjust:not(.active),
+#gaf_pop1:not(.active),
+#gaf_pop2:not(.active) {
+    display: none;
 }
-
 
 a.help {
     background-image: url('/common/images/help.png');
@@ -106,6 +107,7 @@ a.help {
 
 
 /* Overriding Bootstrap Styles */
+
 .table {
     margin: 0;
     padding: 0;
@@ -363,6 +365,10 @@ legend.legend-border {
     .large.loading {
         font-size: 18px;
     }
+
+    .input-small, .input-sm  {
+        width: 100%;
+    }
 }
 
 
@@ -403,6 +409,10 @@ legend {
         top: 20%;
         left: 45%;
     }
+
+    .input-small, .input-sm  {
+        width: 100%;
+    }
 }
 
 
@@ -425,6 +435,10 @@ legend {
     .large.loading {
         font-size: 24px;
     }
+
+    .input-small, .input-sm  {
+        width: 100%;
+    }
 }
 
 body {
@@ -435,6 +449,16 @@ body {
 label {
     font-size: 12px;
 }
+
+form.submitted label.errors {
+    color: crimson;
+}
+
+form.submitted input:invalid,
+form.submitted select:invalid {
+    border: 1px solid crimson;
+}
+
 
 /*
 .dataTables_wrapper {
@@ -526,7 +550,8 @@ td.data {
     font-size: 12px;
 }
 
-td.header, .dataTable thead tr {
+td.header,
+.dataTable thead tr {
     text-align: right;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
@@ -817,6 +842,7 @@ label.label-bold {
 
 .input-small {
     width: 75%;
+    height: 25px;
 }
 
 .input-tiny {
@@ -828,7 +854,7 @@ label.label-bold {
 }
 
 select.input-sm {
-    height: 29px;
+    height: 30px;
 }
 
 .glyphicon-blue {
@@ -960,12 +986,18 @@ table.dataTable thead .sorting_desc {
     padding-bottom: 20px;
 }
 
-.graphsContainers, .tablesContainers{
+.graphsContainers,
+.tablesContainers {
     margin: 10px auto;
-
 }
 
-.output:not(.show), #irrGraphs img:not(.show) {
+#irrGraphs,
+#irrTables {
+    margin: 10px auto;
+}
+
+.output:not(.show),
+#irrGraphs img:not(.show) {
     display: none;
 }
 
