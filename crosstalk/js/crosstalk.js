@@ -516,10 +516,10 @@ var crosstalk = (function ($, ReadFile) {
     }
 
     function goodFitTab(result) {
-        $("#gaf_item1 a, #gaf_item2 a").empty();
+        $("#gaf_pop1li a, #gaf_pop2li a").empty();
 
-        $("#gaf_item1 a, #gaf_pop1 .title").text(self.model.titleA);
-        $("#gaf_item2 a, #gaf_pop2 .title").text(self.model.titleB);
+        $("#gaf_pop1li a, #gaf_pop1 .title").text(self.model.titleA);
+        $("#gaf_pop2li a, #gaf_pop2 .title").text(self.model.titleB);
 
         var graphs = result.graphs;
 
@@ -569,9 +569,10 @@ var crosstalk = (function ($, ReadFile) {
     function reset(e) {
         if (e !== undefined) e.preventDefault();
 
+        $(".output").removeClass("show");
         $(".submitted").removeClass("submitted");
 
-        $(".graphsContainers").empty();
+        $(".graphContainers").empty();
         $('.output').removeClass('show');
 
         $('#description,#startAge,#startYear,#interval,#title1,#title2').val("");
