@@ -334,14 +334,13 @@ var crosstalk = (function ($, ReadFile) {
     }
 
     function createGraphImage(containerId, link, ratio) {
-        if (ratio == undefined) ratio = 1;
-
-        var width = parseInt(12 * ratio);
-
+        var ratio = ratio || 1;
+        var width = parseInt(12*ratio);
         $(containerId).append('<div class="col-sm-' + width + '"><div class="graphContainers"><a class="expandImg" data-toggle="modal" data-target="#imgPreview" tabindex="0"><img class="img-responsive" src="' + link + '" alt="generated graph image"/></a></div></div>')
     }
 
-    function createOutputTable(containerId, title, table, headers, extraHeaders = "") {
+    function createOutputTable(containerId,title,table,headers,extraHeaders) {
+        var extraHeaders = extraHeaders || "";
         var target = $(containerId);
         if ($.fn.DataTable.isDataTable(containerId)) {
             target.DataTable().destroy();
@@ -357,7 +356,8 @@ var crosstalk = (function ($, ReadFile) {
         target.dataTable().fnDraw();
     }
 
-    function createDatasetLink(containerId, sectionName, displayTitle, table, ratio = 1) {
+    function createDatasetLink(containerId, sectionName, displayTitle, table, ratio) {
+        var ratio = ratio || 1;
         var data = "";
         for (var i in table) {
             for (var j in table[i]) {
