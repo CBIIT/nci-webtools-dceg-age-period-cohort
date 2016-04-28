@@ -311,7 +311,8 @@ var crosstalk = (function ($, ReadFile) {
                     apcRateRatioTab(resultSet);
                 else if (key == "GoodnessOfFit")
                     goodFitTab(resultSet);
-                $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').attr('style', 'display:block');
+
+                $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').addClass('show');
             }
             $(".output").addClass("show");
 
