@@ -111,6 +111,10 @@ a.help {
     padding: 0;
 }
 
+.img-responsive {
+    width: 100%
+}
+
 a {
     cursor: pointer;
 }
