@@ -21,12 +21,10 @@ dir.create(OUTPUT_DIR)
 #-------------------------------------------------------
 parseJSON <- function(data) {
   
-#  if (length(data) < 2)
-#    data = fromJSON(txt = 'input_new.json') 
-  
-#  else
-    data = fromJSON(data)
-  
+  #todo: remove this block when finished
+  #data = fromJSON(txt = 'input_new.json') 
+  data = fromJSON(data)
+    
   data$interval   = as.numeric(data$interval)
   data$startAge   = as.numeric(data$startAge)
   data$startYear  = as.numeric(data$startYear)
@@ -154,6 +152,19 @@ retrieveData <- function(results, key) {
      getRateRatiosGraph(rateRatios, T),
      getRateRatiosGraph(rateRatios)
    )
+  }
+  
+  
+  else if (key == 'GoodnessOfFit') {
+    
+    output$tables =  list(
+      list()
+    )
+    
+    output$graphs = list(
+      plot.apc.resids(results$A),
+      plot.apc.resids(results$B)
+    )
   }
   
   else if (key == 'ApcOfIncidenceRates_LocalDrifts') {
@@ -639,6 +650,65 @@ generateTripleLogGraph <- function(A, B, C) {
 
 
 
+plot.apc.resids <- function(M) {
+  
+  par(mfrow = c(1, 2), pty = "m")
+  
+  a <- M$FittedRates$ages
+  A <- length(a)
+  p <- M$FittedRates$periods
+  P = length(p)
+  z <- matrix(M$APCModel$DevResids, nrow = A-1)
+  
+  XL <- c(min(p) - 0.25*diff(range(p)), max(p)+.05*diff(range(p)))
+  
+  YL <- c(min(a) - 0.05*diff(range(a)), max(a)+.075*diff(range(a)))
+  YL <- rev(YL)
+  
+  
+  ###
+  # Heat map of residuals
+  ###
+  
+  filenameA = paste0(OUTPUT_DIR, 'HeatMap_', getTimestamp(), '.svg')
+  filenameB = paste0(OUTPUT_DIR, 'QQPlot_', getTimestamp(), '.svg')
+  
+  svg(height = 10, width = 10, pointsize = 10, file = filenameA)
+
+  image(p, a, t(z), 
+        ylim = YL,
+        xlim = XL, 
+        zlim = c(-3.0, 3.0),
+        axes = FALSE, asp = 1,
+        col = topo.colors(128, alpha = 1), xlab = "", ylab = "")
+  
+  axis(2, a[c(seq(from = 1, to = A, by = 5), A)], pos = p[1], las = 2)
+  # text(median(p), 1.05*max(a), labels = 'Period', pos = 3, cex = 2, srt = 0)
+  
+  axis(3, p[c(seq(from = 1, to = P, by = 4), P)], pos = a[1], las = 3)
+  # text(XL[1], median(a), labels = 'Age', pos = 1, cex = 2, srt = -90)
+
+  dev.off()
+
+  ###
+  # normal probability plot
+  ###
+  svg(height = 10, width = 10, pointsize = 10, file = filenameB)
+  
+  par(pty = "s")
+  qqnorm(z, xlim = c(-3.5,3.5), ylim = c(-3.5,3.5))
+  qqline(z, xlim = c(-3.5,3.5), ylim = c(-3.5,3.5))
+  
+  # reset
+  par(mfrow = c(1, 1), pty = "m")
+  
+  dev.off()
+  
+  c(filenameA, filenameB)
+}
+
+
+
 #-------------------------------------------------------
 # getResultsTemplate
 # 
@@ -654,6 +724,12 @@ resultsTemplate <- function() {
     ),
     
     IncidenceRateRatios = list(
+      graphs = c(list(), list()),
+      tables = c(list(), list()),
+      headers = c()
+    ),
+    
+    GoodnessOfFit = list(
       graphs = c(list(), list()),
       tables = c(list(), list()),
       headers = c()
