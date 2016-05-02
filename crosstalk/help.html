@@ -1,0 +1,63 @@
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="/common/css/style.css">
+<link href="css/crossTalk.css" rel="stylesheet">
+
+<div class="row">
+    <!-- Banner div -->
+    <div>
+        <a href="http://dceg.cancer.gov" target="_blank" class="header-logo" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics"></a>
+    </div>
+</div>
+<!-- end of banner div -->
+<div class="row offset">
+    <!-- sub-Banner div -->
+    <div class="col-xs-12 col-md-10">
+        <img src="/common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" title="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
+    </div>
+    <div class="col-xs-12 col-md-2">
+        <img src="images/CrossTalk-WebTool.jpg" alt="Cross Talk Web Tool" title="Cross Talk Web Tool" height="40" />
+    </div>
+</div>
+
+<!-- help page content -->
+<div>
+    <center>
+        <h3> Cross Talk Help</h3></center>
+    <p>Age-Period-Cohort analysis identifies patterns in cancer incidence or mortality rates from population-based <strong><i> Count </i></strong> (numerator) and <strong><i> Population </i></strong> (denominator) data. Often the data come from a
+        <strong>Cancer Registry</strong> (e.g., <a href='http://seer.cancer.gov/registries/' target='seer'> SEER</a>) in the form of a table showing the numbers of cancer cases or cancer deaths (counts) and corresponding person-years at risk (population) for particular age groups and calendar time periods. In cancer research, the Age-Period-Cohort (APC) framework is a fundamental model to analyze these data. The APC Model includes <i> parameters </i> that describe the mathematical relationships between the <strong><i>Rate</i></strong> of cancer and attained age, calendar period (year of diagnosis), and birth cohort (year of birth). The cancer <strong><i>Rate</i></strong> is expressed as the number of cancers per 100,000 persons at risk, which is calculated from the data using the formula: <strong><i>(Count/Population) x 100,000.</i></strong> </p>
+
+    <p>This web tool uses the inputted count and population data to fit the APC Model and returns a number of <strong><i>Outputs.</i></strong> To use this tool, the width of the age and period intervals must all be equal. When this is so, the diagonals of the rate table represent birth cohorts.</p>
+
+    <p> Visit the following sections to learn more about the APC web tool:</p>
+    <ul>
+        <li><a href='#started'>Getting started</a> - Learn how to enter data into the tool.</li>
+        <li><a href='#example'>Sample data</a> - Enter any of these sample datasets to see the tool in action. </li>
+        <li><a href='#whatitdoes'>What it does</a> - Find out what outputs are produced. </li>
+        <li><a href='#savingyourresults'>Saving your results</a> - Find out how to save raw output as an Excel Workbook, R Workspace, or text file. </li>
+        <li><a href='#faq'>FAQ</a> - Find out answers to some common questions about the APC tool.</li>
+    </ul>
+    <a name='started'></a>
+    <h3>Getting started </h3>
+    <p>Input data for the web tool consist of <strong>Count and Population</strong> data for particular age groups over calendar time, in the form of a matrix of rows with paired columns. Rows correspond to particular age groups and columns correspond to calendar time periods. The age and period intervals must all be equal, i.e. if 5-year age groups are used then 5-year calendar periods must also be used. The data can be input by copy-and-paste from an Excel worksheet or file upload of a comma-separated-values (csv) file.</p>
+    <h5>To input from Excel:</h5>
+    <ol>
+        <li>Copy the paired columns of data you want to analyze from your spreadsheet, right-click inside the empty matrix on the Input tab, and paste your selection.</li>
+        <li>Fill in the information (meta-data) on the left hand side of the Input page:
+            <ul>
+                <li>
+                    <strong>Title</strong> - describe your data</li>
+                <li>
+                    <strong>Description</strong> - add optional details </li>
+                <li>
+                    <strong>Start Year</strong> - list the first calendar year of the first calendar period of your data, for example, use 1990 for the interval 1990 - 1994</li>
+                <li>
+                    <strong>Start Age</strong> - list the first age of the first age group of your data, for example use 30 for the interval 30 - 34</li>
+                <li>
+                    <strong>Interval (Years)</strong> - the width of the age and period intervals, for example use 1 for single-year data, 2 for two-year data, 5 for five-year data (e.g., 1990 - 1994), etc.</li>
+            </ul>
+        </li>
+        <li>Click the Calculate button.</li>
+    </ol>
+</div>

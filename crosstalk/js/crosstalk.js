@@ -90,6 +90,10 @@ $(document).ready(function () {
     //        , stop: crosstalk.update
     //    });
 
+    $(".helpLink").on("click", function () {
+        window.open("help.html", "Crosstalk Help", "width=750, height=550");
+    });
+
     $("#showSwitch").on("change", function () {
         if (this.checked) {
             $("#irrGraphs img:first").addClass("show");
@@ -251,14 +255,35 @@ var crosstalk = (function ($, ReadFile) {
     }
 
     function checkForm() {
+        var input1 = self.model.inputfile1;
+        var input2 = self.model.inputfile2;
+
         var valid = crosstalk_form.checkValidity();
 
-        if (valid) {
-            $(".errors").removeClass("errors");
-            $("#input.tab-pane").children("#errors").remove();
-            crosstalk.getData();
+        if (input1 && input2) {
+            if (input1.table.length != input2.table.length) {
+                $('#inputfile1')[0].setCustomValidity("The contents of Data Files must have the same dimensions");
+            } else {
+                $('#inputfile1')[0].setCustomValidity("");
+                $('#inputfile2')[0].setCustomValidity("");
+            }
         } else {
-            $("#input.tab-pane").children("#errors").remove();
+            if (!input1 || !input1.table)
+                $('#inputfile1')[0].setCustomValidity("Data File 1 is required");
+            else
+                $('#inputfile1')[0].setCustomValidity("");
+
+            if (!input2 || !input2.table)
+                $('#inputfile2')[0].setCustomValidity("Data File 2 is required");
+            else
+                $('#inputfile2')[0].setCustomValidity("");
+        }
+
+        $("#input.tab-pane").children("#errors").remove();
+        $(".errors").removeClass("errors");
+
+        var invalids = $("input:invalid, select:invalid");
+        if (invalids.length > 0) {
             $("#input.tab-pane").prepend("<div id='errors' class='alert alert-danger'></div>");
 
             $.each($("input:invalid, select:invalid"), function (i, el) {
@@ -266,19 +291,26 @@ var crosstalk = (function ($, ReadFile) {
             });
 
             $("form").addClass("submitted");
-            alert("ERRORS");
+        }
+        else {
+            crosstalk.getData();
         }
     }
 
     function displayErrors(el) {
-        $(el.labels[0]).addClass("errors");
+        var label = $("label[for='" + el.id + "']");
+        label.addClass("errors");
         var msg = "";
 
         if (el.validity.badInput) {
-            msg += "'" + el.labels[0].innerText + "' contains an invalid value </br>";
+            msg += "'" + label[0].innerText + "' contains an invalid value </br>";
         }
         if (el.validity.valueMissing) {
-            msg += "'" + el.labels[0].innerText + "' is required </br>";
+            msg += "'" + label[0].innerText + "' is required </br>";
+        }
+
+        if (el.validity.customError) {
+            msg += el.validationMessage + "</br>";
         }
 
         $("#errors").append(msg);
@@ -293,7 +325,6 @@ var crosstalk = (function ($, ReadFile) {
             , beforeSend: function () {
                 $(".loading").css("display", "block");
                 $(".tab-content").children("#error").remove();
-
             }
         }).done(function (data) {
             $(".graphContainers, .title").empty();
@@ -336,18 +367,21 @@ var crosstalk = (function ($, ReadFile) {
 
     function createGraphImage(containerId, link, ratio) {
         var ratio = ratio || 1;
-        var width = parseInt(12*ratio);
-        $(containerId).append('<div class="col-sm-' + width + '"><div class="graphContainers"><a class="expandImg" data-toggle="modal" data-target="#imgPreview" tabindex="0"><img class="img-responsive" src="' + link + '" alt="generated graph image"/></a></div></div>')
+        var width = parseInt(12 * ratio);
+        $(containerId).append('<div class="col-sm-' + width + '"><div class="graphContainers"><a class="expandImg" data-toggle="modal" data-target="#imgPreview" tabindex="0"><img class="img-responsive" src="' + link + '" alt="generated graph image"/></a></div></div>');
     }
 
-    function createOutputTable(containerId,title,table,headers,extraHeaders) {
+    function createOutputTable(containerId, title, table, headers, extraHeaders) {
         var extraHeaders = extraHeaders || "";
         var target = $(containerId);
         if ($.fn.DataTable.isDataTable(containerId)) {
             target.DataTable().destroy();
         }
         target.empty().prev('h4').remove();
-        if (title) target.before("<h4 class='title'>" + title + "</h4>");
+        if (title) {
+            var title = (title.length > 100) ? (title.substr(0, 100) + "...") : title;
+            target.before("<h4 class='title'>" + title + "</h4>");
+        }
         var dTbl = target.DataTable({
             "data": table
             , "columns": headers
@@ -570,13 +604,14 @@ var crosstalk = (function ($, ReadFile) {
     function reset(e) {
         if (e !== undefined) e.preventDefault();
 
-        $(".output").removeClass("show");
+        $(".tab-pane#input").children("#errors").remove();
         $(".submitted").removeClass("submitted");
 
         $(".graphContainers").empty();
         $('.output').removeClass('show');
 
         $('#description,#startAge,#startYear,#interval,#title1,#title2').val("");
+        crosstalk.update();
 
         $(".tablesContainers table").each(function () {
             if ($.fn.DataTable.isDataTable(this)) {
@@ -653,7 +688,12 @@ var crosstalk = (function ($, ReadFile) {
             }
             table.prepend(headerRow);
         }
-        if (data.title && self.model.description) table.prepend('<tr><th class="header"></th><th class="header" colspan="' + (width - 1) + '">' + data.title + '<br/><span class="blue">' + self.model.description + '</span></th></tr>');
+        if (data.title && self.model.description) {
+            var title = (data.title.length > 100) ? (data.title.substr(0, 100) + "...") : data.title;
+            var desc = (self.model.description.length > 100) ? (self.model.description.substr(0, 100) + "...") : self.model.description;
+
+            table.prepend('<tr><th class="header"></th><th class="header" colspan="' + (width - 1) + '">' + title + '<br/><span class="blue">' + desc + '</span></th></tr>');
+        }
         thisElement.children(".paste-here").remove();
     }
 
@@ -709,14 +749,8 @@ var crosstalk = (function ($, ReadFile) {
         $(containerID).children("table").remove();
         $(containerID).prepend(table);
         table.DataTable({
-            "destroy": true
-            , "data": data
+            "data": data
             , "columns": headers
-            , "bSort": false
-            , "bFilter": false
-            , "paging": false
-            , "responsive": true
-            , "dom": 't'
             , "scrollX": false
         });
         $(containerID).find('#inputTable_wrapper').addClass('table-responsive');
