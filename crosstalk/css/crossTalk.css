@@ -124,6 +124,10 @@ a.help {
     padding: 0;
 }
 
+table.table thead tr th {
+    font-size: 1.1em;
+}
+
 .img-responsive {
     width: 100%
 }
@@ -396,6 +400,9 @@ legend {
 }
 
 @media only screen and (min-width: 480px) {
+    img.logo {
+        width: 80%;
+    }
     .header-logo {
         display: block;
         width: 389px;
@@ -1004,6 +1011,10 @@ table.dataTable thead .sorting_desc {
 .graphsContainers,
 .tablesContainers {
     margin: 10px auto;
+}
+
+.tablesContainers {
+    overflow-x: auto;
 }
 
 #irrGraphs,

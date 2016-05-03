@@ -36,7 +36,12 @@ $(document).ready(function () {
         crosstalk.update();
     };
 
-    $(document).on("shown.bs.tab", function (event, ui) {
+    $(document).on("show.bs.tab", function (e) {
+        if ($(e.target.parentElement).hasClass("disabled"))
+            e.preventDefault();
+    });
+
+    $(document).on("shown.bs.tab", function (e) {
         // fix dataTable column widths on tab change
         var tables = $.fn.dataTable.fnTables(true);
         if (tables.length > 0) {
@@ -171,6 +176,7 @@ var readfile = (function () {
 
     /* ---------- Parse a header line - return the portion after the first colon ---------- */
     function parseHeader(line) {
+        //        try {
         var description = line.match(/"(.*?)"/);
 
         if (description)
@@ -178,7 +184,8 @@ var readfile = (function () {
         else
             line = line.split(',')[0];
 
-        return line.split(/:(.+)?/, 2)[1].trim();
+        if (line.split(/:(.+)?/, 2)[1])
+            return line.split(/:(.+)?/, 2)[1].trim();
     }
 
 })();
@@ -284,36 +291,15 @@ var crosstalk = (function ($, ReadFile) {
 
         var invalids = $("input:invalid, select:invalid");
         if (invalids.length > 0) {
-            $("#input.tab-pane").prepend("<div id='errors' class='alert alert-danger'></div>");
 
             $.each($("input:invalid, select:invalid"), function (i, el) {
                 displayErrors(el);
             });
 
             $("form").addClass("submitted");
-        }
-        else {
+        } else {
             crosstalk.getData();
         }
-    }
-
-    function displayErrors(el) {
-        var label = $("label[for='" + el.id + "']");
-        label.addClass("errors");
-        var msg = "";
-
-        if (el.validity.badInput) {
-            msg += "'" + label[0].innerText + "' contains an invalid value </br>";
-        }
-        if (el.validity.valueMissing) {
-            msg += "'" + label[0].innerText + "' is required </br>";
-        }
-
-        if (el.validity.customError) {
-            msg += el.validationMessage + "</br>";
-        }
-
-        $("#errors").append(msg);
     }
 
     function getData() {
@@ -346,6 +332,7 @@ var crosstalk = (function ($, ReadFile) {
                 $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').addClass('show');
             }
             $(".output").addClass("show");
+            $("ul.nav.nav-pills li").removeClass("disabled");
 
             // bind events to newly generated images
             $(".expandImg").on("click keypress", previewImage);
@@ -443,9 +430,10 @@ var crosstalk = (function ($, ReadFile) {
 
         if (result.tables[0]) {
             createOutputTable("#irrTable", (model.titleA + " vs " + model.titleB), result.tables[0], headers, extraHeaders);
-            $("#irrGraphs").append(
-                "<img class='img-responsive' src='" + result.graphs[0][0] + "' />" +
-                "<img class='img-responsive' src='" + result.graphs[1][0] + "' />");
+
+            createGraphImage("#irrGraphs", result.graphs[0][0]);
+            createGraphImage("#irrGraphs", result.graphs[1][0]);
+
             if (!$("#showSwitch").is(":checked")) {
                 $("#irrGraphs img:nth-child(2)").addClass("show");
             } else {
@@ -610,6 +598,8 @@ var crosstalk = (function ($, ReadFile) {
         $(".graphContainers").empty();
         $('.output').removeClass('show');
 
+        $("ul.nav.nav-pills li").not(":first").not(":last").addClass("disabled");
+
         $('#description,#startAge,#startYear,#interval,#title1,#title2').val("");
         crosstalk.update();
 
@@ -758,3 +748,26 @@ var crosstalk = (function ($, ReadFile) {
         return table;
     };
 })($, readfile);
+
+
+function displayErrors(el) {
+    if ($("#input.tab-pane #errors").length === 0)
+        $("#input.tab-pane").prepend("<div id='errors' class='alert alert-danger'></div>");
+
+    var label = $("label[for='" + el.id + "']");
+    label.addClass("errors");
+    var msg = "";
+
+    if (el.validity.badInput) {
+        msg += "'" + label[0].innerText + "' contains an invalid value </br>";
+    }
+    if (el.validity.valueMissing) {
+        msg += "'" + label[0].innerText + "' is required </br>";
+    }
+
+    if (el.validity.customError) {
+        msg += el.validationMessage + "</br>";
+    }
+
+    $("#errors").append(msg);
+}
