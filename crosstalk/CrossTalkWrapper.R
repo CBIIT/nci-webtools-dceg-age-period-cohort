@@ -68,9 +68,9 @@ parseJSON <- function(data) {
 # Outputs:  (1) A JSON string that contains the calculation results
 #-------------------------------------------------------
 process <- function(data) {
-
+  
   input = parseJSON(data)
-
+  
   results = list()
   results$A = apc2(input$A)
   results$B = apc2(input$B)
@@ -78,204 +78,199 @@ process <- function(data) {
   results$wald = apcwaldtests2(results$A, results$B)
   results$input = input
   
-  output = resultsTemplate()
-  
-  for (tab in names(output))
-    if (is.null(output[[tab]]$tables))
+  toJSON(list(
+    
+    # Generate Incidence Rates Graphs/Tables
+    IncidenceRates = list(
+      graphs = list(
+        getRatesGraph(results$input$A),
+        getRatesGraph(results$input$B)
+      ),
       
-      for (section in names(output[[tab]]))
-        if (is.null(output[[tab]][[section]]$tables))
-          for (subsection in names(output[[tab]][[section]]))
-            output[[tab]][[section]][[subsection]] = retrieveData(results, paste(tab, section, subsection, sep = '_'))
-
-        else  
-          output[[tab]][[section]] = retrieveData(results, paste(tab, section, sep = '_'))
-  
-    else
-      output[[tab]] = retrieveData(results, tab)
-  
-  toJSON(output)
-}
-
-# 
-# createOutput <- function(results, output, section) {
-#   
-#   if (!is.null(output[[section]]$tables))
-#     output[[section]] = retrieveData(results, section)
-#   
-#   else
-#     for (subsection in names(output[[section]])) {
-#       
-#       print (paste(section, subsection))
-#   
-#       sub = output[[section]][[subsection]]
-#       if (class(sub) == 'list' && is.null(sub$tables))
-#         createOutput(results, output[[section]], subsection)
-#     }
-# }
-
-
-
-#-------------------------------------------------------
-# retrieveData
-# 
-# Inputs:   (1) A list containing calculation results
-#           (2) The type of result to retrieve
-#
-# Outputs:  (1) A list containing the tables and graph filepaths for the section
-#-------------------------------------------------------
-retrieveData <- function(results, key) {
-  print(key)
-  
-  output = list()
-  
-  if (key == 'IncidenceRates') {
-    output$tables = list(
-      as.data.frame(getRates(results$input$A)),
-      as.data.frame(getRates(results$input$B))
-    )
+      tables = list(
+        as.data.frame(getRates(results$input$A)),
+        as.data.frame(getRates(results$input$B))
+      ),
+      
+      headers = colnames(getRates(results$input$A))
+    ),
     
-    output$graphs = list(
-      getRatesGraph(results$input$A),
-      getRatesGraph(results$input$B)
-    )
-  }
-  
-  else if (key == 'IncidenceRateRatios') {
-   
-    rateRatios = getRateRatios(results$input$A, results$input$B)
-    output$tables =  list(
-     as.data.frame(rateRatios)
-   )
-   
-   output$graphs = list(
-     getRateRatiosGraph(rateRatios, T),
-     getRateRatiosGraph(rateRatios)
-   )
-  }
-  
-  
-  else if (key == 'GoodnessOfFit') {
+    # Generate Incidence Rate Ratios
+    IncidenceRateRatios = list(
+      graphs = list(
+        getRateRatiosGraph(getRateRatios(results$input$A, results$input$B), T),
+        getRateRatiosGraph(getRateRatios(results$input$A, results$input$B))
+      ),
+      
+      tables = list(
+        as.data.frame(getRateRatios(results$input$A, results$input$B))
+      ),
+      
+      headers = colnames(getRateRatios(results$input$A, results$input$B))
+    ),
     
-    output$tables =  list(
-      list()
-    )
-    
-    output$graphs = list(
-      plot.apc.resids(results$A),
-      plot.apc.resids(results$B)
-    )
-  }
-  
-  else if (key == 'ApcOfIncidenceRates_LocalDrifts') {
-    output$tables = list(
-      as.data.frame(results$A$LocalDrifts),
-      as.data.frame(results$B$LocalDrifts)
-    )
-    
-    equalNetDrifts = results$wald$W[1, 3]
-    equalLocalDrifts = results$wald$W[7, 3]
-    
-    output$graphs = list(
-      generateRatesGraph(results$A, results$B, 'LocalDrifts'),
-      generateDualLogGraph(equalLocalDrifts, equalNetDrifts)
-    )
-  }
-  
-  else if (key == 'ApcOfIncidenceRates_NetDrifts') {
+    # Goodness of Fit
+    GoodnessOfFit = list(
+      graphs = list(
+        plot.apc.resids(results$A),
+        plot.apc.resids(results$B)
+      ),
+      
+      tables = c(list(), list()),
+      headers = c()
+    ),
 
-    netDriftA = as.data.frame(results$A$NetDrift)
-    netDriftB = as.data.frame(results$B$NetDrift)
-    
-    netDriftA = cbind(Cohort = results$A$Inputs$D$name, netDriftA)
-    netDriftB = cbind(Cohort = results$B$Inputs$D$name, netDriftB)
+    # APC of Incidence Rates
+    ApcOfIncidenceRates = list(
+      
+      # Local Drifts
+      LocalDrifts = list(
+        graphs = list(
+          generateRatesGraph(results$A, results$B, 'LocalDrifts'),
+          
+          generateDualLogGraph(
+            
+            # Equal Local Drifts
+            results$wald$W[7, 3], 
+            
+            # Equal Net Drifts
+            results$wald$W[1, 3])
+        ),
+        
+        tables = list(
+          as.data.frame(results$A$LocalDrifts),
+          as.data.frame(results$B$LocalDrifts)
+        ),
+        
+        headers = colnames(results$A$LocalDrifts)
+      ),
+      
+      # Net Drifts
+      NetDrifts = list(
+        tables = list(
+          as.data.frame(rbind(
+            cbind(Cohort = results$A$Inputs$D$name, results$A$NetDrift), 
+            cbind(Cohort = results$B$Inputs$D$name, results$B$NetDrift))
+          )
+        ),
 
-    output$tables = list(
-      as.data.frame(rbind(netDriftA, netDriftB))
-    )
-  }
-  
-  else if (key == 'ApcOfIncidenceRates_AdjustedRates_ComparisonOfAdjustedRates') {
+        headers = c('Cohort', colnames(results$A$NetDrift))
+      ),
 
-    parallelByCohort = 0
-    parallelByPeriod = 0
-    parallelByAge = 0
+      # Adjusted Rates
+      AdjustedRates = list(
+        ComparisonOfAdjustedRates = list(
+          
+          graphs = list(
+            generateTripleLogGraph(
+              0, #parallelByCohort
+              0, #parallelByPeriod 
+              0) #parallelByAge
+          ),
+          
+          tables = list(
+            as.data.frame(results$wald$W[14:17,])
+          ),
+          
+          headers = colnames(results$wald$W)
+        ),
+        
+        # Fitted Cohort Pattern
+        FittedCohortPattern = list(
+          graphs = list(
+            generateRatesGraph(results$A, results$B, 'FittedCohortPattern')
+          ),
+          
+          tables = list(
+            as.data.frame(results$A$FittedCohortPattern),
+            as.data.frame(results$B$FittedCohortPattern)
+          ),
+          
+          headers = colnames(results$A$FittedCohortPattern)
+        ),
+        
+        # Fitted Temporal Trends
+        FittedTemporalTrends = list(
+          graphs = list(
+            generateRatesGraph(results$A, results$B, 'FittedTemporalTrends')
+          ),
+          
+          tables = list(
+            as.data.frame(results$A$FittedTemporalTrends),
+            as.data.frame(results$B$FittedTemporalTrends)
+          ),
+          
+          headers = colnames(results$A$FittedTemporalTrends)
+        ),
+        
+        # Cross-Sectional Age Curve
+        CrossSectionalAgeCurve = list(
+          graphs = list(
+            generateRatesGraph(results$A, results$B, 'CrossAge')
+          ),
+          
+          tables = list(
+            as.data.frame(results$A$CrossAge),
+            as.data.frame(results$B$CrossAge)
+          ),
+          
+          headers = colnames(results$A$CrossAge)
+        )
+      )
+    ),
     
-    output$tables = list(
-      as.data.frame(results$wald$W[14:17,])
+    # APC of Rate Ratios
+    ApcOfRateRatios = list(
+      
+      # Fitted Cohort Pattern
+      FittedCohortPattern = list(
+        graphs = list(
+          generateRatiosGraph(results, 'FittedCohortPattern')
+        ),
+        
+        tables = list(
+          as.data.frame(results$comparison$FVCA$FCP)
+        ),
+        
+        headers = colnames(results$comparison$FVCA$FCP)
+      ),
+      
+      # Fittted Temporal Trends
+      FittedTemporalTrends = list(
+        graphs = list(
+          generateRatiosGraph(results, 'FittedTemporalTrends')
+        ),
+        
+        tables = list(
+          as.data.frame(results$comparison$FVPA$FTT)
+        ),
+        
+        headers = colnames(results$comparison$FVPA$FTT)
+      ),
+      
+      # Cross-sectional Age Curve
+      CrossSectionalAgeCurve = list(
+        graphs = list(
+          generateRatiosGraph(results, 'CrossAge')
+        ),
+        
+        tables = list(
+          as.data.frame(results$comparison$FVAP$CAC)
+        ),
+        
+        headers = colnames(results$comparison$FVAP$CAC)
+      ),
+      
+      # IO
+      IO = list(
+        tables = list(
+          as.data.frame(results$comparison$IO)
+        ),
+        headers = colnames(results$comparison$IO)
+      )
     )
-    output$graphs = list(
-      generateTripleLogGraph(parallelByCohort, parallelByPeriod, parallelByAge)
-    )
-  }
-  
-  else if (key == 'ApcOfIncidenceRates_AdjustedRates_FittedCohortPattern') {
-    output$tables = list(
-      as.data.frame(results$A$FittedCohortPattern),
-      as.data.frame(results$B$FittedCohortPattern)
-    )
-    
-    output$graphs = list(
-      generateRatesGraph(results$A, results$B, 'FittedCohortPattern')
-    )
-  }
-  
-  else if (key == 'ApcOfIncidenceRates_AdjustedRates_FittedTemporalTrends') {
-    output$tables = list(
-      as.data.frame(results$A$FittedTemporalTrends),
-      as.data.frame(results$B$FittedTemporalTrends)
-    )
-    output$graphs = list(
-      generateRatesGraph(results$A, results$B, 'FittedTemporalTrends')
-    )
-  }
-  
-  else if (key == 'ApcOfIncidenceRates_AdjustedRates_CrossSectionalAgeCurve') {
-    output$tables = list(
-      as.data.frame(results$A$CrossAge),
-      as.data.frame(results$B$CrossAge)
-    )
-    output$graphs = list(
-      generateRatesGraph(results$A, results$B, 'CrossAge')
-    )
-  }
-  
-  else if (key == 'ApcOfRateRatios_FittedCohortPattern') {
-    output$tables = list(
-      as.data.frame(results$comparison$FVCA$FCP)
-    )
-    output$graphs = list(
-      generateRatiosGraph(results, 'FittedCohortPattern')
-    )
-  }
-  
-  else if (key == 'ApcOfRateRatios_FittedTemporalTrends') {
-    output$tables = list(
-      as.data.frame(results$comparison$FVPA$FTT)
-    )
-    output$graphs = list(
-      generateRatiosGraph(results, 'FittedTemporalTrends')
-    )
-  }
-  
-  else if (key == 'ApcOfRateRatios_CrossSectionalAgeCurve') {
-    output$tables = list(
-      as.data.frame(results$comparison$FVAP$CAC)
-    )
-    output$graphs = list(
-      generateRatiosGraph(results, 'CrossAge')
-    )
-  }
-  
-  else if (key == 'ApcOfRateRatios_IO') {
-    output$tables = list(
-      as.data.frame(results$comparison$IO)
-    )
-  }
-  
-  output$headers = colnames(output$tables[[1]])
-  
-  output
+  ))
+
 }
 
 
@@ -705,92 +700,6 @@ plot.apc.resids <- function(M) {
   dev.off()
   
   c(filenameA, filenameB)
-}
-
-
-
-#-------------------------------------------------------
-# getResultsTemplate
-# 
-# Function: Returns a list template used to hold calculation results
-# Outputs:  (1) A list representing the results
-#-------------------------------------------------------
-resultsTemplate <- function() {
-  list(
-    IncidenceRates = list(
-      graphs = c(list(), list()),
-      tables = c(list(), list()),
-      headers = c()
-    ),
-    
-    IncidenceRateRatios = list(
-      graphs = c(list(), list()),
-      tables = c(list(), list()),
-      headers = c()
-    ),
-    
-    GoodnessOfFit = list(
-      graphs = c(list(), list()),
-      tables = c(list(), list()),
-      headers = c()
-    ),
-    
-    ApcOfIncidenceRates = list(
-      LocalDrifts = list(
-        graphs = c(list(), list()),
-        tables = c(list(), list()),
-        headers = list()
-      ),
-      NetDrifts = list(
-        tables = c(list()),
-        headers = list()
-      ),
-      AdjustedRates = list(
-        ComparisonOfAdjustedRates = list(
-          graphs = c(list()),
-          tables = c(list(), list()),
-          headers = list()
-        ),
-        FittedCohortPattern = list(
-          graphs = c(list()),
-          tables = c(list(), list()),
-          headers = list()
-        ),
-        FittedTemporalTrends = list(
-          graphs = c(list()),
-          tables = c(list(), list()),
-          headers = list()
-        ),
-        CrossSectionalAgeCurve = list(
-          graphs = c(list()),
-          tables = c(list(), list()),
-          headers = list()
-        )
-      )
-    ),
-    
-    ApcOfRateRatios = list(
-      FittedCohortPattern = list(
-        graphs = c(list()),
-        tables = c(list()),
-        headers = list()
-      ),
-      FittedTemporalTrends = list(
-        graphs = c(list()),
-        tables = c(list()),
-        headers = list()
-      ),
-      CrossSectionalAgeCurve = list(
-        graphs = c(list()),
-        tables = c(list()),
-        headers = list()
-      ),  
-      IO = list(
-        tables = c(list()),
-        headers = list()
-      )
-    )
-  )
 }
 
 
