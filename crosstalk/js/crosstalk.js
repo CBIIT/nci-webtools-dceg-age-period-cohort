@@ -183,19 +183,6 @@ var crosstalk = (function ($, ReadFile) {
         , inputFileB: null
     , };
 
-    // Holds values from the DOM in a model
-    self.model = {
-        description: null
-        , startYear: null
-        , startAge: null
-        , interval: null
-        , titleA: null
-        , titleB: null
-        , inputfile1: null
-        , inputfile2: null
-    };
-
-
     // set default datatable options
     $.extend(true, $.fn.dataTable.defaults, {
         "destroy": true
@@ -567,6 +554,17 @@ var crosstalk = (function ($, ReadFile) {
     }
 
     function reset(e) {
+        // Holds values from the DOM in a model
+        self.model = {
+            description: null,
+            startYear: null,
+            startAge: null,
+            interval: null,
+            titleA: null,
+            titleB: null,
+            inputfile1: null,
+            inputfile2: null
+        };
         if (e !== undefined) e.preventDefault();
 
         $(".tab-pane#input").children("#errors").remove();
