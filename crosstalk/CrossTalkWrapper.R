@@ -126,7 +126,7 @@ process <- function(data) {
       # Local Drifts
       LocalDrifts = list(
         graphs = list(
-          generateRatesGraph(results$A, results$B, 'LocalDrifts'),
+          generateRatesGraph(results, 'LocalDrifts'),
           
           generateDualLogGraph(
             
@@ -182,7 +182,7 @@ process <- function(data) {
         # Fitted Cohort Pattern
         FittedCohortPattern = list(
           graphs = list(
-            generateRatesGraph(results$A, results$B, 'FittedCohortPattern')
+            generateRatesGraph(results, 'FittedCohortPattern')
           ),
           
           tables = list(
@@ -196,7 +196,7 @@ process <- function(data) {
         # Fitted Temporal Trends
         FittedTemporalTrends = list(
           graphs = list(
-            generateRatesGraph(results$A, results$B, 'FittedTemporalTrends')
+            generateRatesGraph(results, 'FittedTemporalTrends')
           ),
           
           tables = list(
@@ -210,7 +210,7 @@ process <- function(data) {
         # Cross-Sectional Age Curve
         CrossSectionalAgeCurve = list(
           graphs = list(
-            generateRatesGraph(results$A, results$B, 'CrossAge')
+            generateRatesGraph(results, 'CrossAge')
           ),
           
           tables = list(
@@ -412,7 +412,10 @@ getRateRatiosGraph <- function(output, labels = F) {
 # Generates a multiline graph from the rates
 # Outputs:  (1) The path to the output file
 #-------------------------------------------------------
-generateRatesGraph <- function(resultsA, resultsB, key) {
+generateRatesGraph <- function(results, key) {
+
+  resultsA = results$A
+  resultsB = results$B
   
   setA = as.data.frame(resultsA[[key]])
   setB = as.data.frame(resultsB[[key]])
@@ -465,7 +468,15 @@ generateRatesGraph <- function(resultsA, resultsB, key) {
   
   mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', group = 'key', col = 'key', fill = 'key')
   
-  ggplot(rbind(setA, setB), mapping) +
+  plot = ggplot(rbind(setA, setB), mapping)
+  
+  if (key == 'LocalDrifts') {
+    plot = plot + 
+      geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = results$A$NetDrift[,2], ymax = results$A$NetDrift[,3]), alpha = 0.015, linetype = "blank") + 
+      geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = results$B$NetDrift[,2], ymax = results$B$NetDrift[,3]), alpha = 0.015, linetype = "blank") 
+  }
+
+  plot = plot +
     geom_ribbon(alpha = 0.35) +
     geom_line(alpha = 0.35) +
     geom_point(alpha = 0.7) +
@@ -480,6 +491,7 @@ generateRatesGraph <- function(resultsA, resultsB, key) {
       legend.title = element_blank(),
       legend.position = c(0.15, 0.92)
     )
+  
 
   ggsave(file = filename, width = 10, height = 10)
   
