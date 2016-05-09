@@ -370,39 +370,28 @@ getRateRatios <- function(A, B) {
 }
 
 getRateRatiosGraph <- function(output, labels = F) {
-  col1 <- colorRampPalette(c("cyan", "#007FFF", "blue", "#871414", "red", "#FF7F00", "yellow", "white" ))
   
   filename = paste0(OUTPUT_DIR, 'RatesRatioGraph_', getTimestamp(), '.svg')
-  
   svg(height = 10, width = 10, pointsize = 10, file = filename)
-  
-  
+
+  min = floor(min(unlist(output)))
+  max = ceiling(max(unlist(output)))
+
   if (labels)
-    corrplot(as.matrix(output), method = "circle",
+    corrplot(as.matrix(output),
            addCoef.col = "black",
            tl.col="black", tl.srt=45,
-           cl.lim = c(0, ceiling(max(unlist(output)))),
+           cl.lim = c(min, max),
            is.corr = F)
   else
-    corrplot(as.matrix(output), method = "circle",
+    corrplot(as.matrix(output),
              tl.col="black", tl.srt=45,
-             cl.lim = c(0, ceiling(max(unlist(output)))),
+             cl.lim = c(min, max),
              is.corr = F)
   
   dev.off()
-  
   filename
 }
-
-#Fitted 
-# as.data.frame(results$comparison$FVCA$FCP)
-# 
-# else if (key == 'ApcOfRateRatios_FittedTemporalTrends') {
-#     as.data.frame(results$comparison$FVPA$FTT)
-# 
-# else if (key == 'ApcOfRateRatios_CrossSectionalAgeCurve') {
-#     as.data.frame(results$comparison$FVAP$CAC)
-# 
 
 generateRatesGraph <- function(resultsA, resultsB, key) {
   
@@ -472,11 +461,7 @@ generateRatesGraph <- function(resultsA, resultsB, key) {
       legend.title = element_blank(),
       legend.position = c(0.1, 0.92)
     )
-#  +
-#    scale_fill_manual(values = colors) + 
-#    scale_color_manual(values = c('black', 'black'))
-    
-  
+
   ggsave(file = filename, width = 10, height = 10)
   
   filename
@@ -576,7 +561,7 @@ generateDualLogGraph <- function(A, B) {
           theme_bw() + 
           theme(axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
           geom_vline(xintercept = 1, linetype = "longdash", color = "slategray2") +
-          geom_rect(aes(xmin = -Inf, xmax = 1, ymin = -Inf, ymax = Inf), alpha = 0.2, fill = "slategray2") + 
+          geom_rect(aes(xmin = -Inf, xmax = 1, ymin = -Inf, ymax = Inf), alpha = 0.1, fill = "slategray2") + 
           labs(
             title = "Comparison of Drifts",
             x = "-Log10(P-Value)",
@@ -628,7 +613,7 @@ generateTripleLogGraph <- function(A, B, C) {
     theme_bw() + 
     theme(axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
     geom_vline(xintercept = 1, linetype = "longdash", color = "slategray2") +
-    geom_rect(aes(xmin = -Inf, xmax = 1, ymin = -Inf, ymax = Inf), alpha = 0.2, fill = "slategray2") + 
+    geom_rect(aes(xmin = -Inf, xmax = 1, ymin = -Inf, ymax = Inf), alpha = 0.1, fill = "slategray2") + 
     labs(
       title = "Comparison of Adjusted Rates",
       x = "-Log10(P-Value)",
