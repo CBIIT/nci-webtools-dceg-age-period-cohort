@@ -165,7 +165,11 @@ process <- function(data) {
             generateTripleLogGraph(
               0, #parallelByCohort
               0, #parallelByPeriod 
-              0) #parallelByAge
+              0, #parallelByAge 
+              'parallelByCohort',
+              'parallelByPeriod',
+              'parallelByAge'
+              ) 
           ),
           
           tables = list(
@@ -266,11 +270,11 @@ process <- function(data) {
         tables = list(
           as.data.frame(results$comparison$IO)
         ),
+        
         headers = colnames(results$comparison$IO)
       )
     )
   ))
-
 }
 
 
@@ -346,7 +350,7 @@ getRatesGraph <- function(data) {
       method =  list("last.points", hjust = -0.5)
     )
   
-  filename = paste0(OUTPUT_DIR, 'RatesGraph_', getTimestamp(), '.png')
+  filename = paste0(OUTPUT_DIR, 'RatesGraph_', getTimestamp(), '.svg')
   ggsave(file = filename, width = 10, height = 10)
 
   filename
@@ -372,6 +376,7 @@ getRateRatios <- function(A, B) {
 
   return(apply(output, c(1, 2), function(x) { return (if (is.nan(x) || x == Inf || x == -Inf) 0 else x) }))
 }
+
 
 
 #-------------------------------------------------------
@@ -403,6 +408,10 @@ getRateRatiosGraph <- function(output, labels = F) {
 }
 
 
+#-------------------------------------------------------
+# Generates a multiline graph from the rates
+# Outputs:  (1) The path to the output file
+#-------------------------------------------------------
 generateRatesGraph <- function(resultsA, resultsB, key) {
   
   setA = as.data.frame(resultsA[[key]])
@@ -482,6 +491,9 @@ generateRatiosGraph <- function(results, key) {
   
   filename = paste0(OUTPUT_DIR, key, '_', getTimestamp(), '.svg')
   
+  min = min(results$comparison$IO[,4])
+  max = max(results$comparison$IO[,5])
+  
   if (key == 'FittedCohortPattern') {
     set = as.data.frame(results$comparison$FVCA$FCP)
     title = 'Fitted Cohort Pattern'
@@ -508,14 +520,15 @@ generateRatiosGraph <- function(results, key) {
     xMap = 'Age'
     yMap = 'CAC'
   }
-  title = paste(results$input$A$name, results$input$B$name)
   
+  title = paste(results$input$A$name, results$input$B$name)
   mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', color = 'key', fill = 'key')
   
   ggplot(set, mapping) +
     scale_color_discrete(guide = F) +
     scale_fill_discrete(guide = F) +
     guides(color = F) +
+    geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = min, ymax = max), alpha = 0.1, linetype = "blank", fill = "slategray2") + 
     geom_ribbon(alpha = 0.35) +
     geom_line(alpha = 0.35) +
     geom_point(alpha = 0.7) +
@@ -579,7 +592,7 @@ generateDualLogGraph <- function(A, B) {
 }
 
 
-generateTripleLogGraph <- function(A, B, C) {
+generateTripleLogGraph <- function(A, B, C, labelA, labelB, labelC) {
   
   logA = -log10(A)
   logB = -log10(B)
@@ -591,17 +604,17 @@ generateTripleLogGraph <- function(A, B, C) {
   
   graphA = rbind(data.frame(), c(-10, 1))
   graphA = rbind(graphA, c(logA, 1))
-  graphA$group = "Parallel by Cohort"
+  graphA$group = labelA
   names(graphA) = c('x', 'y', 'group')
   
   graphB = rbind(data.frame(), c(-10, 2))
   graphB = rbind(graphB, c(logB, 2))
-  graphB$group = "Parallel by Period"
+  graphB$group = labelB
   names(graphB) = c('x', 'y', 'group')
 
   graphC = rbind(data.frame(), c(-10, 3))
   graphC = rbind(graphC, c(logC, 3))
-  graphC$group = "Parallel by Age"
+  graphC$group = labelC
   names(graphC) = c('x', 'y', 'group')
 
   graph = rbind(graphA, graphB, graphC)  
