@@ -71,30 +71,6 @@ $(document).ready(function () {
         crosstalk.update();
     });
 
-    //    $('#startYear').spinner({
-    //        min: 1800
-    //        , max: 2200
-    //        , step: 1
-    //        , spin: crosstalk.update
-    //        , stop: crosstalk.update
-    //    });
-    //
-    //    $('#startAge').spinner({
-    //        min: 0
-    //        , max: 120
-    //        , step: 1
-    //        , spin: crosstalk.update
-    //        , stop: crosstalk.update
-    //    });
-    //
-    //    $('#interval').spinner({
-    //        min: 1
-    //        , max: 10
-    //        , step: 1
-    //        , spin: crosstalk.update
-    //        , stop: crosstalk.update
-    //    });
-
     $(".helpLink").on("click", function () {
         window.open("help.html", "Crosstalk Help", "width=750, height=550");
     });
@@ -535,6 +511,7 @@ var crosstalk = (function ($, ReadFile) {
         if (result.IO) {
             var io = result.IO;
             createOutputTable("#interceptTable", (model.titleA + " vs " + model.titleB), io.tables[0], createOutputHeaders({}, io.headers));
+            createGraphImage("#intercept .graphsContainers", io.graphs[0][0]);
         }
     }
 
