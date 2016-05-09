@@ -489,8 +489,6 @@ generateRatiosGraph <- function(results, key) {
     yAxis = 'Adjusted Rate'
     xMap = 'Coh'
     yMap = 'FCP'
-    
-    colors = c('#0074D9', '#FF851B')
   }
   
   else if (key == 'FittedTemporalTrends') {
@@ -500,8 +498,6 @@ generateRatiosGraph <- function(results, key) {
     yAxis = 'Adjusted Rate'
     xMap = 'Per'
     yMap = 'FTT'
-    
-    colors = c('#2ECC40', '#7FDBFF')
   }
   
   else if (key == 'CrossAge') {
@@ -511,31 +507,26 @@ generateRatiosGraph <- function(results, key) {
     yAxis = 'Adjusted Rate'
     xMap = 'Age'
     yMap = 'CAC'
-    
-    colors = c('#FFDC00', '#FF4136')
   }
   title = paste(results$input$A$name, results$input$B$name)
   
-  mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', group = 'key', col = 'key', fill = 'key')
+  mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', color = 'key', fill = 'key')
   
   ggplot(set, mapping) +
-    scale_fill_manual(values = colors) + 
-    scale_color_manual(values = c('black', 'black')) +
+    scale_color_discrete(guide = F) +
+    scale_fill_discrete(guide = F) +
+    guides(color = F) +
     geom_ribbon(alpha = 0.35) +
     geom_line(alpha = 0.35) +
     geom_point(alpha = 0.7) +
-    scale_y_continuous(expand = c(0.2, 0)) +
+    scale_y_continuous(expand = c(0.2, 0.1)) +
     labs(
       title = title,
       x = xAxis,
       y = yAxis
     ) +
-    theme_light() +
-    theme(
-      legend.title = element_blank(),
-      legend.position = c(0.15, 0.92)
-    )
-  
+    theme_light()
+
   ggsave(file = filename, width = 10, height = 10)
   
   filename
@@ -578,7 +569,7 @@ generateDualLogGraph <- function(A, B) {
     ) +
     geom_dl(
       aes(label = group),
-      method = list("last.points", hjust = 1, vjust = -2)
+      method = list("last.points", hjust = 0, vjust = -2)
     )
 
   filename = paste0(OUTPUT_DIR, 'ComparisonOfDrifts', '_', getTimestamp(), '.svg')
@@ -631,7 +622,7 @@ generateTripleLogGraph <- function(A, B, C) {
     ) +
     geom_dl(
       aes(label = group),
-      method = list("last.points", hjust = 1, vjust = -2)
+      method = list("last.points", hjust = 0, vjust = -2)
     )
 
   filename = paste0(OUTPUT_DIR, 'ComparisonOfAdjustedRates', '_', getTimestamp(), '.svg')
