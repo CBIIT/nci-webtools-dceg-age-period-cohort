@@ -329,18 +329,22 @@ getRatesGraph <- function(data) {
 
   graph
   
-  ggplot(graph, aes(x = period, y = ratio, group = as.factor(age), color = as.factor(age))) +
+  ggplot(graph, aes(x = period, y = ratio, color = as.factor(age))) +
     geom_line() + 
     geom_point(size = 2.5) + 
     theme_bw() +
+    scale_color_discrete(
+      guide = F
+    ) +
     labs(
       title = data$name,
       x = 'Calendar Periods',
       y = 'Rate per 100000 units'
-    ) +
-    scale_shape_discrete(
-      name = 'Age groups'
-    ) 
+    ) + 
+    geom_dl(
+      aes(label = as.factor(age)), 
+      method =  list("last.points", hjust = -0.5)
+    )
   
   filename = paste0(OUTPUT_DIR, 'RatesGraph_', getTimestamp(), '.png')
   ggsave(file = filename, width = 10, height = 10)
@@ -369,6 +373,11 @@ getRateRatios <- function(A, B) {
   return(apply(output, c(1, 2), function(x) { return (if (is.nan(x) || x == Inf || x == -Inf) 0 else x) }))
 }
 
+
+#-------------------------------------------------------
+# Generates a bubble plot from the rate ratios
+# Outputs:  (1) The path to the output file
+#-------------------------------------------------------
 getRateRatiosGraph <- function(output, labels = F) {
   
   filename = paste0(OUTPUT_DIR, 'RatesRatioGraph_', getTimestamp(), '.svg')
@@ -392,6 +401,7 @@ getRateRatiosGraph <- function(output, labels = F) {
   dev.off()
   filename
 }
+
 
 generateRatesGraph <- function(resultsA, resultsB, key) {
   
@@ -459,7 +469,7 @@ generateRatesGraph <- function(resultsA, resultsB, key) {
     theme_light() +
     theme(
       legend.title = element_blank(),
-      legend.position = c(0.1, 0.92)
+      legend.position = c(0.15, 0.92)
     )
 
   ggsave(file = filename, width = 10, height = 10)
@@ -523,7 +533,7 @@ generateRatiosGraph <- function(results, key) {
     theme_light() +
     theme(
       legend.title = element_blank(),
-      legend.position = c(0.1, 0.92)
+      legend.position = c(0.15, 0.92)
     )
   
   ggsave(file = filename, width = 10, height = 10)
@@ -550,26 +560,27 @@ generateDualLogGraph <- function(A, B) {
   graphB$group = "Equal Net Drifts"
   names(graphB) = c('x', 'y', 'group')
   
-  graph = rbind(graphA, graphB)  
-  
-  rec = data.frame(x1 = -10, x2 = 1, y1 = -10, y2 = 10)
+  graph = rbind(graphA, graphB)
 
-  plot = ggplot(graph, aes(x, y, group = group, fill = group)) + 
-          geom_point(color="black", fill = "gold", size = 5, pch = 21) + 
-          geom_line(aes(color = group)) + 
-          coord_cartesian(xlim = c(0, 20), ylim = c(0.5, 2.5)) + 
-          theme_bw() + 
-          theme(axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-          geom_vline(xintercept = 1, linetype = "longdash", color = "slategray2") +
-          geom_rect(aes(xmin = -Inf, xmax = 1, ymin = -Inf, ymax = Inf), alpha = 0.1, fill = "slategray2") + 
-          labs(
-            title = "Comparison of Drifts",
-            x = "-Log10(P-Value)",
-            y = ""
-          ) 
-  
-  direct.label(plot, list(last.points, hjust = 0, vjust = -2))
-  
+  ggplot(graph, aes(x, y, group = group, fill = group)) + 
+    geom_point(color="black", fill = "gold", size = 5, pch = 21) + 
+    geom_line(aes(color = group)) + 
+    coord_cartesian(xlim = c(0, 20), ylim = c(0.5, 2.5)) + 
+    scale_color_discrete(guide = F) +
+    theme_bw() + 
+    theme(axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
+    geom_vline(xintercept = 1, linetype = "longdash", color = "slategray2") +
+    geom_rect(aes(xmin = -Inf, xmax = 1, ymin = -Inf, ymax = Inf), alpha = 0.1, fill = "slategray2") + 
+    labs(
+      title = "Comparison of Drifts",
+      x = "-Log10(P-Value)",
+      y = ""
+    ) +
+    geom_dl(
+      aes(label = group),
+      method = list("last.points", hjust = 1, vjust = -2)
+    )
+
   filename = paste0(OUTPUT_DIR, 'ComparisonOfDrifts', '_', getTimestamp(), '.svg')
   ggsave(file = filename, width = 10, height = 10)
   
@@ -604,12 +615,11 @@ generateTripleLogGraph <- function(A, B, C) {
 
   graph = rbind(graphA, graphB, graphC)  
   
-  rec = data.frame(x1 = -10, x2 = 1, y1 = -10, y2 = 10)
-  
-  plot = ggplot(graph, aes(x, y, group = group, fill = group)) + 
+  ggplot(graph, aes(x, y, group = group, fill = group)) + 
     geom_point(color="black", fill = "gold", size = 5, pch = 21) + 
     geom_line(aes(color = group)) + 
     coord_cartesian(xlim = c(0, 20), ylim = c(0.5, 3.5)) + 
+    scale_color_discrete(guide = F) +
     theme_bw() + 
     theme(axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
     geom_vline(xintercept = 1, linetype = "longdash", color = "slategray2") +
@@ -618,10 +628,12 @@ generateTripleLogGraph <- function(A, B, C) {
       title = "Comparison of Adjusted Rates",
       x = "-Log10(P-Value)",
       y = ""
-    ) 
-  
-  direct.label(plot, list(last.points, hjust = 0, vjust = -2))
-  
+    ) +
+    geom_dl(
+      aes(label = group),
+      method = list("last.points", hjust = 1, vjust = -2)
+    )
+
   filename = paste0(OUTPUT_DIR, 'ComparisonOfAdjustedRates', '_', getTimestamp(), '.svg')
   ggsave(file = filename, width = 10, height = 10)
   
