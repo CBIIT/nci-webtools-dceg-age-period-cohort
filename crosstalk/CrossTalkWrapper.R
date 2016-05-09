@@ -166,9 +166,9 @@ process <- function(data) {
               0, #parallelByCohort
               0, #parallelByPeriod 
               0, #parallelByAge 
-              'parallelByCohort',
-              'parallelByPeriod',
-              'parallelByAge'
+              'Parallel By Cohort',
+              'Parallel By Period',
+              'Parallel By Age'
               ) 
           ),
           
@@ -267,6 +267,17 @@ process <- function(data) {
       
       # IO
       IO = list(
+        graphs = list(
+          generateTripleLogGraph(
+            results$wald$W[11,3], #Parallel Cross-Sectional Age Curves
+            results$wald$W[12,3], #Parallel Fitted Temporal Trends 
+            results$wald$W[13,3], #Parallel Fitted Cohort Pattern 
+            'Cross-Sectional Age Curves',
+            'Fitted Temporal Trends',
+            'Fitted Cohort Pattern'
+          ) 
+        ),
+        
         tables = list(
           as.data.frame(results$comparison$IO)
         ),
@@ -634,7 +645,7 @@ generateTripleLogGraph <- function(A, B, C, labelA, labelB, labelC) {
   ggplot(graph, aes(x, y, group = group, fill = group)) + 
     geom_point(color="black", fill = "gold", size = 5, pch = 21) + 
     geom_line(aes(color = group)) + 
-    coord_cartesian(xlim = c(0, 20), ylim = c(0.5, 3.5)) + 
+    coord_cartesian(xlim = c(0, 25), ylim = c(0.5, 3.5)) + 
     scale_color_discrete(guide = F) +
     theme_bw() + 
     theme(axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
@@ -650,7 +661,7 @@ generateTripleLogGraph <- function(A, B, C, labelA, labelB, labelC) {
       method = list("last.points", hjust = 0, vjust = -2)
     )
 
-  filename = paste0(OUTPUT_DIR, 'ComparisonOfAdjustedRates', '_', getTimestamp(), '.svg')
+  filename = paste0(OUTPUT_DIR, 'Parallel', '_', getTimestamp(), '.svg')
   ggsave(file = filename, width = 10, height = 10)
   
   filename
