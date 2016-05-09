@@ -381,7 +381,7 @@ getRateRatios <- function(A, B) {
 getRateRatiosGraph <- function(output, labels = F) {
   
   filename = paste0(OUTPUT_DIR, 'RatesRatioGraph_', getTimestamp(), '.svg')
-  svg(height = 10, width = 10, pointsize = 10, file = filename)
+  svg(width = 2*ncol(output), height = nrow(output), pointsize = 10 + ncol(output), file = filename)
 
   min = floor(min(unlist(output)))
   max = ceiling(max(unlist(output)))
