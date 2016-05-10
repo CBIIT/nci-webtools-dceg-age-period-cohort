@@ -436,12 +436,12 @@ var crosstalk = (function ($, ReadFile) {
         var extraHeaders = "<tr role='row'><th class='header'>Rate</th><th class='header' colspan='" + (headers.length - 1) + "'>Calendar Period</th></tr>";
 
         if (result.tables[0]) {
-            createOutputTable("#rateTable1", model.titleA, result.tables[0], headers, extraHeaders);
+            createOutputTable("#rateTable1", self.model.titleA, result.tables[0], headers, extraHeaders);
             createGraphImage("#rateGraphs", result.graphs[0], .5);
         }
 
         if (result.tables[1]) {
-            createOutputTable("#rateTable2", model.titleB, result.tables[1], headers, extraHeaders);
+            createOutputTable("#rateTable2", self.model.titleB, result.tables[1], headers, extraHeaders);
             createGraphImage("#rateGraphs", result.graphs[1], .5);
         }
     }
@@ -456,7 +456,7 @@ var crosstalk = (function ($, ReadFile) {
         var extraHeaders = "<tr role='row'><th class='header'>Rate</th><th class='header' colspan='" + (headers.length - 1) + "'>Calendar Period</th></tr>";
 
         if (result.tables[0]) {
-            createOutputTable("#irrTable", (model.titleA + " vs " + model.titleB), result.tables[0], headers, extraHeaders);
+            createOutputTable("#irrTable", (self.model.titleA + " vs " + self.model.titleB), result.tables[0], headers, extraHeaders);
 
             createGraphImage("#irrGraphs", result.graphs[0][0]);
             createGraphImage("#irrGraphs", result.graphs[1][0]);
