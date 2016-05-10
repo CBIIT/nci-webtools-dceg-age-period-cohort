@@ -629,7 +629,7 @@ var crosstalk = (function ($, ReadFile) {
         }
         var table = createInputTable("#" + thisElement.prop("id"), createHeaders((width - 1) / 2, tableData), tableData).children('thead');
         if (self.model.startYear && self.model.interval) {
-            var headerRow = $('<tr><th class="header"></th></tr>');
+            var headerRow = $('<tr><th class="white"></th></tr>');
             for (var i = 0; i < (width - 1) / 2; i++) {
                 var header = self.model.startYear + self.model.interval * i;
                 headerRow.append($('<th class="header" colspan="2"></th>').html(header + "-" + (header + self.model.interval - 1)));
@@ -640,7 +640,7 @@ var crosstalk = (function ($, ReadFile) {
             var title = (data.title.length > 100) ? (data.title.substr(0, 100) + "...") : data.title;
             var desc = (self.model.description.length > 100) ? (self.model.description.substr(0, 100) + "...") : self.model.description;
 
-            table.prepend('<tr><th class="header"></th><th class="header" colspan="' + (width - 1) + '">' + title + '<br/><span class="blue">' + desc + '</span></th></tr>');
+            table.prepend('<tr><th class="white"></th><th class="header" colspan="' + (width - 1) + '">' + title + '<br/><span class="blue">' + desc + '</span></th></tr>');
         }
         thisElement.children(".paste-here").remove();
     }
@@ -669,7 +669,7 @@ var crosstalk = (function ($, ReadFile) {
         var headers = [{
             title: ageHeader
             , className: 'dt-center grey'
-      }];
+        }];
         for (var i = 0; i < length; i += 1) {
             headers.push({
                 title: "Count"

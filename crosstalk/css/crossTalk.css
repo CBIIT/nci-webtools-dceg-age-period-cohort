@@ -15,7 +15,7 @@
 }
 
 #input .input-tables {
-    overflow: auto;
+    overflow-x: auto;
 }
 
 #local:not(.active),
@@ -481,34 +481,6 @@ form.submitted select:invalid {
     border: 1px solid crimson;
 }
 
-
-/*
-.dataTables_wrapper {
-    border: 2px solid #666666;
-}
-*/
-
-.data-table {
-    font-size: 0.9em;
-    margin-bottom: 20px;
-    width: 100% !important;
-    border-bottom: 1px solid #DDD !important;
-}
-
-.data-table thead tr th {
-    border-right: 1px solid #EEE;
-    border-top: 1px solid #EEE;
-    border-bottom: none !important;
-}
-
-.data-table tbody tr:first-child td {
-    border-top: 1px solid #EEE !important;
-}
-
-.data-table thead tr th:first-child {
-    border-left: 1px solid #EEE;
-}
-
 table.dataTable.compact thead th,
 table.dataTable.compact thead td {
     padding: 4px 10px;
@@ -565,6 +537,30 @@ table.dataTable.compact thead td {
 /* coefficients.tfoot {
      display:none;
  }*/
+
+table.dataTable tbody td {
+    border-left: 1px solid #DDD;
+}
+table.dataTable tbody td:last-child {
+    border-right: 1px solid #DDD;
+}
+
+table.dataTable thead tr:last-child th:not(.grey),
+table.dataTable thead tr th.white {
+    background-color: #FFF;
+}
+
+table.dataTable thead tr th.white {
+    border-bottom: none;
+}
+
+table.dataTable thead tr th.white {
+    border-top: none;
+}
+
+table.dataTable thead tr:first-child ~ tr th.header {
+    background-color: transparent;
+}
 
 td.data {
     text-align: right;
