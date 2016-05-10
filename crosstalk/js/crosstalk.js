@@ -72,7 +72,8 @@ $(document).ready(function () {
         crosstalk.update();
     });
 
-    $(".helpLink").on("click", function () {
+    $("#helpBtn").on("click", function (e) {
+        e.preventDefault();
         window.open("help.html", "Crosstalk Help", "width=750, height=550");
     });
 
