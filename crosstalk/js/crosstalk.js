@@ -169,62 +169,56 @@ var readfile = (function () {
 
 /* ---------- CrossTalk Module - Syncs the model and calculation results with the UI ---------- */
 var crosstalk = (function ($, ReadFile) {
-    var self = this;
+    // set default datatable options
+    $.extend(true, $.fn.dataTable.defaults, {
+        "destroy": true,
+        "bSort": false,
+        "bFilter": false,
+        "paging": false,
+        "responsive": true,
+        "dom": 't'
+    });
+    var self = {};
 
     // Holds DOM references
     self.cfg = {
-        description: null
-        , startYear: null
-        , startAge: null
-        , interval: null
-        , titleA: null
-        , titleB: null
-        , inputFileA: null
-        , inputFileB: null
-    , };
+        description: null,
+        startYear: null,
+        startAge: null,
+        interval: null,
+        titleA: null,
+        titleB: null,
+        inputFileA: null,
+        inputFileB: null
+    };
+    self.drop = function(e) {
+        ReadFile.createModel({
+            "id": $(e.delegateTarget).attr('data-target'),
+            "files": e.originalEvent.dataTransfer.files
+        }, updateModel);
+    };
+    /* ---------- Updates the UI and Model ---------- */
+    self.update = function() {
+        var self = this;
 
-    // set default datatable options
-    $.extend(true, $.fn.dataTable.defaults, {
-        "destroy": true
-        , "bSort": false
-        , "bFilter": false
-        , "paging": false
-        , "responsive": true
-        , "dom": 't'
-    , });
-
-    return {
-        drop: drop
-        , update: update
-        , config: config
-        , getData: getData
-        , reset: reset
-        , model: self.model
-        , failure: requestFailure
-        , validate: checkForm
+        // Updates the model based on the contents of the file
+        if (self.type == 'file') {
+            ReadFile.createModel(self, updateModel);
+            var target = $('#inputfile1, #inputfile2');
+            target.wrap("<form>").closest("form")[0].reset();
+            target.unwrap();
+        } else {
+            syncModel();
+        }
     };
 
-    function requestFailure(xhr, error, statusText) {
-        var message = "";
-        switch (xhr.status) {
-        case 503:
-            message = "The service that the request is trying to reach is currently down, Please try again later";
-            break;
-        case 404:
-            message = "The request returned with a response of  '" + statusText + "'. Please try again later.";
-            break;
-        case 400:
-            message = xhr.responseJSON.data;
-            break;
-        default:
-            message = "The request has failed for an unknown reason";
-            break;
-        }
+    /* ---------- Saves DOM references in the configuration ---------- */
+    self.config = function(cfg) {
+        self.cfg = cfg;
+        return self.cfg;
+    };
 
-        $(".tab-pane#input").children("#error").remove().prepend($("<div id='error' class='alert alert-danger'>").html(message));
-    }
-
-    function checkForm() {
+    self.validate = function() {
         var input1 = self.model.inputfile1;
         var input2 = self.model.inputfile2;
 
@@ -264,9 +258,28 @@ var crosstalk = (function ($, ReadFile) {
             crosstalk.getData();
         }
     }
+    
+    self.failure = function(xhr, error, statusText) {
+        var message = "";
+        switch (xhr.status) {
+        case 503:
+            message = "The service that the request is trying to reach is currently down, Please try again later";
+            break;
+        case 404:
+            message = "The request returned with a response of  '" + statusText + "'. Please try again later.";
+            break;
+        case 400:
+            message = xhr.responseJSON.data;
+            break;
+        default:
+            message = "The request has failed for an unknown reason";
+            break;
+        }
 
-    function getData() {
-
+        $(".tab-pane#input").children("#error").remove().prepend($("<div id='error' class='alert alert-danger'>").html(message));
+    }
+    
+    self.getData = function() {
         $.ajax({
             method: "POST"
             , url: crosstalk_form.action
@@ -303,6 +316,57 @@ var crosstalk = (function ($, ReadFile) {
             $(".loading").css("display", "none");
         });
     }
+
+    self.reset = function(e) {
+        // Holds values from the DOM in a model
+        self.model = {
+            description: null,
+            startYear: null,
+            startAge: null,
+            interval: null,
+            titleA: null,
+            titleB: null,
+            inputfile1: null,
+            inputfile2: null
+        };
+        if (e !== undefined) e.preventDefault();
+
+        $(".tab-pane#input").children("#errors").remove();
+        $(".submitted").removeClass("submitted");
+
+        $(".graphContainers").empty();
+        $('.output').removeClass('show');
+
+        $("ul.nav.nav-pills li").not(":first").not(":last").addClass("disabled");
+
+        $('#description,#startAge,#startYear,#interval,#title1,#title2').val("");
+        crosstalk.update();
+
+        $(".tablesContainers table").each(function () {
+            if ($.fn.DataTable.isDataTable(this)) {
+                $(this).DataTable().destroy();
+            }
+            $(this).empty();
+            $(".title").empty();
+        });
+        var matrix = [];
+        for (var i = 0; i < 13; i++) {
+            var arr = [];
+            for (var j = 0; j < 7; j++) {
+                arr.push("&zwj;");
+            }
+            matrix.push(arr);
+        }
+        createInputTable("#dataset1", createHeaders(3), matrix);
+        createInputTable("#dataset2", createHeaders(3), matrix);
+        $("#dataset1 .paste-here, #dataset2 .paste-here").remove();
+        $("#dataset1 textarea, #dataset2 textarea").before('<img class="img-responsive paste-here" alt="paste here" src="/common/images/paste-here.gif"/>');
+
+        $(".tab-content").children("#error").remove();
+    }
+
+    return self;
+
 
     function createOutputHeaders(initial, headers) {
         var returnHeaders = $.extend(true, [], initial);
@@ -526,79 +590,9 @@ var crosstalk = (function ($, ReadFile) {
         if (e.keyCode == 13) $("#imgPreview").modal("show");
     }
 
-    function drop(e) {
-        ReadFile.createModel({
-            "id": $(e.delegateTarget).attr('data-target')
-            , "files": e.originalEvent.dataTransfer.files
-        }, updateModel);
-    }
-
-    /* ---------- Updates the UI and Model ---------- */
-    function update() {
-        var self = this;
-
-        // Updates the model based on the contents of the file
-        if (self.type == 'file') {
-            ReadFile.createModel(self, updateModel);
-            var target = $('#inputfile1, #inputfile2');
-            target.wrap("<form>").closest("form")[0].reset();
-            target.unwrap();
-        } else {
-            syncModel();
-        }
-    }
-
     window.reset = function (e) {
         e.wrap('<form>').closest('form').get(0).reset();
         e.unwrap();
-    }
-
-    function reset(e) {
-        // Holds values from the DOM in a model
-        self.model = {
-            description: null,
-            startYear: null,
-            startAge: null,
-            interval: null,
-            titleA: null,
-            titleB: null,
-            inputfile1: null,
-            inputfile2: null
-        };
-        if (e !== undefined) e.preventDefault();
-
-        $(".tab-pane#input").children("#errors").remove();
-        $(".submitted").removeClass("submitted");
-
-        $(".graphContainers").empty();
-        $('.output').removeClass('show');
-
-        $("ul.nav.nav-pills li").not(":first").not(":last").addClass("disabled");
-
-        $('#description,#startAge,#startYear,#interval,#title1,#title2').val("");
-        crosstalk.update();
-
-        $(".tablesContainers table").each(function () {
-            if ($.fn.DataTable.isDataTable(this)) {
-                $(this).DataTable().destroy();
-            }
-            $(this).empty();
-            $(".title").empty();
-        });
-        var matrix = [];
-        for (var i = 0; i < 13; i++) {
-            var arr = [];
-            for (var j = 0; j < 7; j++) {
-                arr.push("&zwj;");
-            }
-            matrix.push(arr);
-        }
-        createInputTable("#dataset1", createHeaders(3), matrix);
-        createInputTable("#dataset2", createHeaders(3), matrix);
-        $("#dataset1 .paste-here, #dataset2 .paste-here").remove();
-        $("#dataset1 textarea, #dataset2 textarea").before('<img class="img-responsive paste-here" alt="paste here" src="/common/images/paste-here.gif"/>');
-
-        $(".tab-content").children("#error").remove();
     }
 
     /* ---------- Updates the model with contents from the UI ---------- */
@@ -678,12 +672,6 @@ var crosstalk = (function ($, ReadFile) {
             self.cfg.titleB.val(self.model.inputfile2.title);
 
         syncModel();
-    }
-
-    /* ---------- Saves DOM references in the configuration ---------- */
-    function config(cfg) {
-        self.cfg = cfg;
-        return self.cfg;
     }
 
     function createHeaders(length, data) {
