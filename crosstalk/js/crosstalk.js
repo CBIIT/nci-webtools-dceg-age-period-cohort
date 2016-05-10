@@ -486,7 +486,7 @@ var crosstalk = (function ($, ReadFile) {
                 }
                 if (coar.tables) {
                     $(coarTarget).append('<div class="col-sm-6"><table id="coarTable" class="data-table stripe compact" width="100%"></table></div>');
-                    createOutputTable("#coarTable", (model.titleA + " vs " + model.titleB), coar.tables[0], headers);
+                    createOutputTable("#coarTable", (self.model.titleA + " vs " + self.model.titleB), coar.tables[0], headers);
                 }
             }
             if (ar.CrossSectionalAgeCurve) {
@@ -497,8 +497,8 @@ var crosstalk = (function ($, ReadFile) {
                 }
                 if (csac.tables) {
                     for (var i in csac.tables) csac.tables[i].unshift(csac.headers);
-                    createDatasetLink(csacTarget, "Cross Sectional Age Curve", model.titleA, csac.tables[0], .5)
-                    createDatasetLink(csacTarget, "Cross Sectional Age Curve", model.titleB, csac.tables[1], .5)
+                    createDatasetLink(csacTarget, "Cross Sectional Age Curve", self.model.titleA, csac.tables[0], .5)
+                    createDatasetLink(csacTarget, "Cross Sectional Age Curve", self.model.titleB, csac.tables[1], .5)
                 }
             }
             if (ar.FittedCohortPattern) {
@@ -509,8 +509,8 @@ var crosstalk = (function ($, ReadFile) {
                 }
                 if (fcp.tables) {
                     for (var i in fcp.tables) fcp.tables[i].unshift(fcp.headers);
-                    createDatasetLink(fcpTarget, "Fitted Cohort Pattern", model.titleA, fcp.tables[0], .5)
-                    createDatasetLink(fcpTarget, "Fitted Cohort Pattern", model.titleB, fcp.tables[1], .5)
+                    createDatasetLink(fcpTarget, "Fitted Cohort Pattern", self.model.titleA, fcp.tables[0], .5)
+                    createDatasetLink(fcpTarget, "Fitted Cohort Pattern", self.model.titleB, fcp.tables[1], .5)
                 }
             }
             if (ar.FittedTemporalTrends) {
@@ -521,8 +521,8 @@ var crosstalk = (function ($, ReadFile) {
                 }
                 if (ftt.tables) {
                     for (var i in ftt.tables) ftt.tables[i].unshift(ftt.headers);
-                    createDatasetLink(fttTarget, "Fitted Temporal Trends", model.titleA, ftt.tables[0], .5)
-                    createDatasetLink(fttTarget, "Fitted Temporal Trends", model.titleB, ftt.tables[1], .5)
+                    createDatasetLink(fttTarget, "Fitted Temporal Trends", self.model.titleA, ftt.tables[0], .5)
+                    createDatasetLink(fttTarget, "Fitted Temporal Trends", self.model.titleB, ftt.tables[1], .5)
                 }
             }
         }
@@ -534,8 +534,8 @@ var crosstalk = (function ($, ReadFile) {
             }
             if (ld.tables) {
                 for (var i in ld.tables) ld.tables[i].unshift(ld.headers);
-                createDatasetLink("#local-content", "Local Drifts", model.titleA, ld.tables[0], .5)
-                createDatasetLink("#local-content", "Local Drifts", model.titleB, ld.tables[1], .5)
+                createDatasetLink("#local-content", "Local Drifts", self.model.titleA, ld.tables[0], .5)
+                createDatasetLink("#local-content", "Local Drifts", self.model.titleB, ld.tables[1], .5)
 
             }
         }
@@ -561,7 +561,7 @@ var crosstalk = (function ($, ReadFile) {
         }
         if (result.IO) {
             var io = result.IO;
-            createOutputTable("#interceptTable", (model.titleA + " vs " + model.titleB), io.tables[0], createOutputHeaders({}, io.headers));
+            createOutputTable("#interceptTable", (self.model.titleA + " vs " + self.model.titleB), io.tables[0], createOutputHeaders({}, io.headers));
             createGraphImage("#intercept .graphsContainers", io.graphs[0][0]);
         }
     }
