@@ -483,8 +483,8 @@ generateRatesGraph <- function(results, key) {
   
   if (key == 'LocalDrifts') {
     plot = plot + 
-      geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = results$A$NetDrift[,2], ymax = results$A$NetDrift[,3]), alpha = 0.015, linetype = "blank") + 
-      geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = results$B$NetDrift[,2], ymax = results$B$NetDrift[,3]), alpha = 0.015, linetype = "blank") 
+      geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = results$A$NetDrift[,2], ymax = results$A$NetDrift[,3]), alpha = 0.01, linetype = "blank", fill = "#00BFC4") + 
+      geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = results$B$NetDrift[,2], ymax = results$B$NetDrift[,3]), alpha = 0.01, linetype = "blank", fill = "#F8766D") 
   }
 
   plot = plot +
