@@ -1,35 +1,3 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>SVG Toooltips</title>
-
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-
-		<style>
-		.tooltip {
-			z-index: 999 !important;
-		}
-
-		object {
-			z-index: -999 !important;
-		}
-		</style>
-
-		<script>
-			$(window).load(function() {
-				$('#c1').contents().find('[data-toggle="tooltip"]').tooltip({container:'body'});
-				$('#svg2').contents().find('[data-toggle="tooltip"]').tooltip({container:'body'});
-			})
-		</script>
-	</head>
-	
-	<body>
-		<div id="c1">
 <?xml version="1.0" encoding="ISO8859-1"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1159px" height="804px" viewBox="0 0 1159 804" version="1.1">
   <metadata xmlns:gridsvg="http://www.stat.auckland.ac.nz/~paul/R/gridSVG/">
@@ -438,8 +406,4 @@
       </g>
     </g>
   </g>
-</svg>		
-		</div>
-	</body>
-</html>
-
+</svg>
