@@ -1,19 +1,24 @@
 $(document).ready(function () {
     // Save DOM references to minimize queries
     var cfg = crosstalk.config({
-        description: $('#description')
-        , startYear: $('#startYear')
-        , startAge: $('#startAge')
-        , interval: $('#interval')
-        , titleA: $('#title1')
-        , titleB: $('#title2')
-        , inputFileA: $('#inputfile1')
-        , inputFileB: $('#inputfile2')
+        description: $('#description'),
+        startYear: $('#startYear'),
+        startAge: $('#startAge'),
+        interval: $('#interval'),
+        titleA: $('#title1'),
+        titleB: $('#title2'),
+        inputFileA: $('#inputfile1'),
+        inputFileB: $('#inputfile2')
     });
 
     // Add event listeners
     for (element in cfg)
         cfg[element].change(crosstalk.update);
+
+    window.reset = function (e) {
+        e.wrap('<form>').closest('form').get(0).reset();
+        e.unwrap();
+    }
 
     $.adamant.pastable.functions["crosstalk-input"] = function (target, data) {
         var data = data.split(/[\r\n]+/);
@@ -21,16 +26,17 @@ $(document).ready(function () {
             data.pop();
         }
         data = data.map(function (line) {
-            var line = line.split(",");
+            var line = line.split(/[,\t]+/);
             line.map(function (entry) {
                 return parseFloat(entry);
             });
             return line;
         });
         var datatarget = $(target).attr('data-target');
-        self.model[datatarget] = $.extend(self.model[datatarget] || {}, {
-            'table': data
-            , 'title': $('#' + $('#' + datatarget).attr('data-target')).val()
+        window.reset($('#'+datatarget));
+        crosstalk.model[datatarget] = $.extend(crosstalk.model[datatarget] || {}, {
+            'table': data,
+            'title': $('#' + $('#' + datatarget).attr('data-target')).val()
         });
         $(target).children("textarea").val("");
         crosstalk.update();
@@ -53,11 +59,6 @@ $(document).ready(function () {
 
     $(document).on("hidden.bs.modal", function (e) {
         $(e.target).find(".modal-body").empty();
-    });
-
-    $('#dataset1, #dataset2').on('drop', function (e) {
-        e.preventDefault();
-        crosstalk.drop(e);
     });
 
     $("#dataFlip").click(function (e) {
@@ -191,12 +192,7 @@ var crosstalk = (function ($, ReadFile) {
         inputFileA: null,
         inputFileB: null
     };
-    self.drop = function(e) {
-        ReadFile.createModel({
-            "id": $(e.delegateTarget).attr('data-target'),
-            "files": e.originalEvent.dataTransfer.files
-        }, updateModel);
-    };
+
     /* ---------- Updates the UI and Model ---------- */
     self.update = function() {
         var self = this;
@@ -204,9 +200,6 @@ var crosstalk = (function ($, ReadFile) {
         // Updates the model based on the contents of the file
         if (self.type == 'file') {
             ReadFile.createModel(self, updateModel);
-            var target = $('#inputfile1, #inputfile2');
-            target.wrap("<form>").closest("form")[0].reset();
-            target.unwrap();
         } else {
             syncModel();
         }
@@ -588,11 +581,6 @@ var crosstalk = (function ($, ReadFile) {
 
         $("#imgPreview .modal-body").append("<img class='img-responsive' src='" + img.src + "' />");
         if (e.keyCode == 13) $("#imgPreview").modal("show");
-    }
-
-    window.reset = function (e) {
-        e.wrap('<form>').closest('form').get(0).reset();
-        e.unwrap();
     }
 
     /* ---------- Updates the model with contents from the UI ---------- */
