@@ -1,19 +1,24 @@
 $(document).ready(function () {
     // Save DOM references to minimize queries
     var cfg = crosstalk.config({
-        description: $('#description')
-        , startYear: $('#startYear')
-        , startAge: $('#startAge')
-        , interval: $('#interval')
-        , titleA: $('#title1')
-        , titleB: $('#title2')
-        , inputFileA: $('#inputfile1')
-        , inputFileB: $('#inputfile2')
+        description: $('#description'),
+        startYear: $('#startYear'),
+        startAge: $('#startAge'),
+        interval: $('#interval'),
+        titleA: $('#title1'),
+        titleB: $('#title2'),
+        inputFileA: $('#inputfile1'),
+        inputFileB: $('#inputfile2')
     });
 
     // Add event listeners
     for (element in cfg)
         cfg[element].change(crosstalk.update);
+
+    window.reset = function (e) {
+        e.wrap('<form>').closest('form').get(0).reset();
+        e.unwrap();
+    }
 
     $.adamant.pastable.functions["crosstalk-input"] = function (target, data) {
         var data = data.split(/[\r\n]+/);
@@ -21,16 +26,17 @@ $(document).ready(function () {
             data.pop();
         }
         data = data.map(function (line) {
-            var line = line.split(",");
+            var line = line.split(/[,\t]+/);
             line.map(function (entry) {
                 return parseFloat(entry);
             });
             return line;
         });
         var datatarget = $(target).attr('data-target');
-        self.model[datatarget] = $.extend(self.model[datatarget] || {}, {
-            'table': data
-            , 'title': $('#' + $('#' + datatarget).attr('data-target')).val()
+        window.reset($('#'+datatarget));
+        crosstalk.model[datatarget] = $.extend(crosstalk.model[datatarget] || {}, {
+            'table': data,
+            'title': $('#' + $('#' + datatarget).attr('data-target')).val()
         });
         $(target).children("textarea").val("");
         crosstalk.update();
@@ -55,11 +61,6 @@ $(document).ready(function () {
         $(e.target).find(".modal-body").empty();
     });
 
-    $('#dataset1, #dataset2').on('drop', function (e) {
-        e.preventDefault();
-        crosstalk.drop(e);
-    });
-
     $("#dataFlip").click(function (e) {
         e.preventDefault();
         var swap = self.model.inputfile2;
@@ -71,7 +72,8 @@ $(document).ready(function () {
         crosstalk.update();
     });
 
-    $(".helpLink").on("click", function () {
+    $("#helpBtn").on("click", function (e) {
+        e.preventDefault();
         window.open("help.html", "Crosstalk Help", "width=750, height=550");
     });
 
@@ -191,12 +193,7 @@ var crosstalk = (function ($, ReadFile) {
         inputFileA: null,
         inputFileB: null
     };
-    self.drop = function(e) {
-        ReadFile.createModel({
-            "id": $(e.delegateTarget).attr('data-target'),
-            "files": e.originalEvent.dataTransfer.files
-        }, updateModel);
-    };
+
     /* ---------- Updates the UI and Model ---------- */
     self.update = function() {
         var self = this;
@@ -204,9 +201,6 @@ var crosstalk = (function ($, ReadFile) {
         // Updates the model based on the contents of the file
         if (self.type == 'file') {
             ReadFile.createModel(self, updateModel);
-            var target = $('#inputfile1, #inputfile2');
-            target.wrap("<form>").closest("form")[0].reset();
-            target.unwrap();
         } else {
             syncModel();
         }
@@ -590,11 +584,6 @@ var crosstalk = (function ($, ReadFile) {
         if (e.keyCode == 13) $("#imgPreview").modal("show");
     }
 
-    window.reset = function (e) {
-        e.wrap('<form>').closest('form').get(0).reset();
-        e.unwrap();
-    }
-
     /* ---------- Updates the model with contents from the UI ---------- */
     function syncModel() {
         self.model.description = self.cfg.description.val();
@@ -640,7 +629,7 @@ var crosstalk = (function ($, ReadFile) {
         }
         var table = createInputTable("#" + thisElement.prop("id"), createHeaders((width - 1) / 2, tableData), tableData).children('thead');
         if (self.model.startYear && self.model.interval) {
-            var headerRow = $('<tr><th class="header"></th></tr>');
+            var headerRow = $('<tr><th class="white"></th></tr>');
             for (var i = 0; i < (width - 1) / 2; i++) {
                 var header = self.model.startYear + self.model.interval * i;
                 headerRow.append($('<th class="header" colspan="2"></th>').html(header + "-" + (header + self.model.interval - 1)));
@@ -651,7 +640,7 @@ var crosstalk = (function ($, ReadFile) {
             var title = (data.title.length > 100) ? (data.title.substr(0, 100) + "...") : data.title;
             var desc = (self.model.description.length > 100) ? (self.model.description.substr(0, 100) + "...") : self.model.description;
 
-            table.prepend('<tr><th class="header"></th><th class="header" colspan="' + (width - 1) + '">' + title + '<br/><span class="blue">' + desc + '</span></th></tr>');
+            table.prepend('<tr><th class="white"></th><th class="header" colspan="' + (width - 1) + '">' + title + '<br/><span class="blue">' + desc + '</span></th></tr>');
         }
         thisElement.children(".paste-here").remove();
     }
@@ -680,7 +669,7 @@ var crosstalk = (function ($, ReadFile) {
         var headers = [{
             title: ageHeader
             , className: 'dt-center grey'
-      }];
+        }];
         for (var i = 0; i < length; i += 1) {
             headers.push({
                 title: "Count"
