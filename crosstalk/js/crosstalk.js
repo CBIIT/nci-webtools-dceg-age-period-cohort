@@ -219,7 +219,7 @@ var crosstalk = (function ($, ReadFile) {
         var valid = crosstalk_form.checkValidity();
 
         if (input1 && input2) {
-            if (input1.table.length != input2.table.length) {
+            if (input1.table.length != input2.table.length || input1.table[0].length != input2.table[0].length) {
                 $('#inputfile1')[0].setCustomValidity("The contents of Data Files must have the same dimensions");
             } else {
                 $('#inputfile1')[0].setCustomValidity("");
