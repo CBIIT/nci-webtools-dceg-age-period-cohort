@@ -1,3 +1,4 @@
+library(grid)
 library(jsonlite)
 library(ggplot2)
 library(gridSVG)
@@ -22,8 +23,8 @@ dir.create(OUTPUT_DIR)
 parseJSON <- function(data) {
   
   #todo: remove this block when finished
-  #data = fromJSON(txt = 'input_new.json') 
-  data = fromJSON(data)
+  data = fromJSON(txt = 'input_new.json') 
+  #data = fromJSON(data)
     
   data$interval   = as.numeric(data$interval)
   data$startAge   = as.numeric(data$startAge)
@@ -346,7 +347,8 @@ getRatesGraph <- function(data) {
   
   ggplot(graph, aes(x = period, y = ratio, color = as.factor(age))) +
     geom_line() + 
-    geom_point(size = 2.5) + 
+#    geom_point(size = 2.5) + 
+    geom_tooltip(size = 4) +
     theme_bw() +
     scale_color_discrete(
       guide = F
@@ -363,7 +365,10 @@ getRatesGraph <- function(data) {
   
   filename = paste0(OUTPUT_DIR, 'RatesGraph_', getTimestamp(), '.svg')
   ggsave(file = filename, width = 10, height = 10)
+#  grid.force()
 
+#  grid.export(name = filename, strict = F)
+  
   filename
 }
 
@@ -478,19 +483,21 @@ generateRatesGraph <- function(results, key) {
   }
   
   mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', group = 'key', col = 'key', fill = 'key')
-  
   plot = ggplot(rbind(setA, setB), mapping)
   
   if (key == 'LocalDrifts') {
+    start = setA[1,1]
+    end = setA[nrow(setA), 1]
+
     plot = plot + 
-      geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = results$A$NetDrift[,2], ymax = results$A$NetDrift[,3]), alpha = 0.01, linetype = "blank", fill = "#00BFC4") + 
-      geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = results$B$NetDrift[,2], ymax = results$B$NetDrift[,3]), alpha = 0.01, linetype = "blank", fill = "#F8766D") 
+      geom_rect(aes(xmin = start, xmax = end, ymin = results$A$NetDrift[,2], ymax = results$A$NetDrift[,3]), alpha = 0.01, color = "#00BFC4", fill = "#00BFC4") + 
+      geom_rect(aes(xmin = start, xmax = end, ymin = results$B$NetDrift[,2], ymax = results$B$NetDrift[,3]), alpha = 0.01, color = "#00BFC4", fill = "#F8766D") 
   }
 
   plot = plot +
     geom_ribbon(alpha = 0.35) +
     geom_line(alpha = 0.35) +
-    geom_point(alpha = 0.7) +
+    geom_tooltip(alpha = 0.7) +
     scale_y_continuous(expand = c(0.2, 0)) +
     labs(
       title = title,
@@ -502,10 +509,9 @@ generateRatesGraph <- function(results, key) {
       legend.title = element_blank(),
       legend.position = c(0.15, 0.92)
     )
-  
 
-  ggsave(file = filename, width = 10, height = 10)
-  
+  print(plot)
+  grid.export(name = filename, strict = F)
   filename
 }
 
@@ -513,12 +519,13 @@ generateRatesGraph <- function(results, key) {
 generateRatiosGraph <- function(results, key) {
   
   filename = paste0(OUTPUT_DIR, key, '_', getTimestamp(), '.svg')
-  
   min = min(results$comparison$IO[,4])
   max = max(results$comparison$IO[,5])
   
   if (key == 'FittedCohortPattern') {
     set = as.data.frame(results$comparison$FVCA$FCP)
+    start = set[1,1]
+    end = set[nrow(set), 1]
     title = 'Fitted Cohort Pattern'
     xAxis = 'Birth Cohort and Calendar Period'
     yAxis = 'Adjusted Rate'
@@ -528,6 +535,8 @@ generateRatiosGraph <- function(results, key) {
   
   else if (key == 'FittedTemporalTrends') {
     set = as.data.frame(results$comparison$FVPA$FTT)
+    start = set[1,1]
+    end = set[nrow(set), 1]
     title = 'Fitted Temporal Trends'
     xAxis = 'Age'
     yAxis = 'Adjusted Rate'
@@ -537,6 +546,8 @@ generateRatiosGraph <- function(results, key) {
   
   else if (key == 'CrossAge') {
     set = as.data.frame(results$comparison$FVAP$CAC)
+    start = set[1,1]
+    end = set[nrow(set), 1]
     title = 'Cross-Sectional Age Curve'
     xAxis = 'Age'
     yAxis = 'Adjusted Rate'
@@ -546,15 +557,16 @@ generateRatiosGraph <- function(results, key) {
   
   title = paste(results$input$A$name, results$input$B$name)
   mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', color = 'key', fill = 'key')
-  
-  ggplot(set, mapping) +
+
+  plot = ggplot(set, mapping) +
     scale_color_discrete(guide = F) +
     scale_fill_discrete(guide = F) +
     guides(color = F) +
-    geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = min, ymax = max), alpha = 0.1, linetype = "blank", fill = "slategray2") + 
+    geom_rect(aes(xmin = start, xmax = end, ymin = min, ymax = max), alpha = 0.01, colour = "slategray1") + 
     geom_ribbon(alpha = 0.35) +
     geom_line(alpha = 0.35) +
-    geom_point(alpha = 0.7) +
+    geom_tooltip(alpha = 0.7) +
+    
     scale_y_continuous(expand = c(0.2, 0.1)) +
     labs(
       title = title,
@@ -562,9 +574,9 @@ generateRatiosGraph <- function(results, key) {
       y = yAxis
     ) +
     theme_light()
-
-  ggsave(file = filename, width = 10, height = 10)
   
+  print(plot)
+  grid.export(name = filename, strict = F)
   filename
 }
 
@@ -610,6 +622,7 @@ generateDualLogGraph <- function(A, B) {
 
   filename = paste0(OUTPUT_DIR, 'ComparisonOfDrifts', '_', getTimestamp(), '.svg')
   ggsave(file = filename, width = 10, height = 10)
+#  grid.export(name = filename, strict = F)
   
   filename
 }
@@ -663,6 +676,7 @@ generateTripleLogGraph <- function(A, B, C, labelA, labelB, labelC) {
 
   filename = paste0(OUTPUT_DIR, 'Parallel', '_', getTimestamp(), '.svg')
   ggsave(file = filename, width = 10, height = 10)
+#  grid.export(name = filename, strict = F)
   
   filename
 }
@@ -726,6 +740,45 @@ plot.apc.resids <- function(M) {
   c(filenameA, filenameB)
 }
 
+
+# Adds a data attribute to each point
+
+#-------------------------------------------------------
+# Modifies geom_point to add a tooltip data attribute to each point
+# Outputs:  (1) a modified geom_ object
+#-------------------------------------------------------
+geom_tooltip = function(...) {
+  
+  point = geom_point(...)
+  
+  point$geom = ggproto('geom_tooltip', point$geom,
+    draw_panel = function(self, data, ...) {
+     grobs = list()
+
+     for (i in 1:nrow(data)) {
+
+       row = data[i,]
+       title = paste('x:', row$x, '<br />y:', row$y, '<br />CILo:', row$ymin, '<br />CIHi:', row$ymax)
+       grob = ggproto_parent(GeomPoint, self)$draw_panel(data = row, ...)
+       grobs[[i]] = garnishGrob(grob, `data-toggle` = "tooltip", `title` = title)
+     }
+
+
+     ggplot2:::ggname('geom_tooltip', gTree(
+       children = do.call('gList', grobs)
+     ))
+    }
+  )
+
+  point
+}
+
+
+savePlot <- function(filename, plot, plotWidth = 15, plotHeight = 10){
+  eval(call('gridsvg', name=filename, width=plotWidth, height=plotHeight))
+  print(plot)
+  dev.off(which = dev.cur())
+}
 
 
 #-------------------------------------------------------
