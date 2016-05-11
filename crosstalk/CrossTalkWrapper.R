@@ -23,8 +23,8 @@ dir.create(OUTPUT_DIR)
 parseJSON <- function(data) {
   
   #todo: remove this block when finished
-  data = fromJSON(txt = 'input_new.json') 
-  #data = fromJSON(data)
+  #data = fromJSON(txt = 'input_new.json') 
+  data = fromJSON(data)
     
   data$interval   = as.numeric(data$interval)
   data$startAge   = as.numeric(data$startAge)
