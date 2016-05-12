@@ -63,9 +63,9 @@ $(document).ready(function () {
 
     $("#dataFlip").click(function (e) {
         e.preventDefault();
-        var swap = self.model.inputfile2;
-        self.model.inputfile2 = self.model.inputfile1;
-        self.model.inputfile1 = swap;
+        var swap = crosstalk.model.inputfile2;
+        crosstalk.model.inputfile2 = crosstalk.model.inputfile1;
+        crosstalk.model.inputfile1 = swap;
         swap = cfg.titleB.val();
         cfg.titleB.val(cfg.titleA.val());
         cfg.titleA.val(swap);
