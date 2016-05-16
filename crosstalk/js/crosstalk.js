@@ -63,9 +63,9 @@ $(document).ready(function () {
 
     $("#dataFlip").click(function (e) {
         e.preventDefault();
-        var swap = self.model.inputfile2;
-        self.model.inputfile2 = self.model.inputfile1;
-        self.model.inputfile1 = swap;
+        var swap = crosstalk.model.inputfile2;
+        crosstalk.model.inputfile2 = crosstalk.model.inputfile1;
+        crosstalk.model.inputfile1 = swap;
         swap = cfg.titleB.val();
         cfg.titleB.val(cfg.titleA.val());
         cfg.titleA.val(swap);
@@ -115,12 +115,12 @@ var readfile = (function () {
     function createModel(element, callback) {
         readFile(element, function (contents) {
             callback(element.id, {
-                title: parseHeader(contents.shift())
-                , description: parseHeader(contents.shift())
-                , startYear: parseInt(parseHeader(contents.shift()))
-                , startAge: parseInt(parseHeader(contents.shift()))
-                , interval: parseInt(parseHeader(contents.shift()))
-                , table: parseTable(contents)
+                title: parseHeader(contents.shift()),
+                description: parseHeader(contents.shift()),
+                startYear: parseInt(parseHeader(contents.shift())),
+                startAge: parseInt(parseHeader(contents.shift())),
+                interval: parseInt(parseHeader(contents.shift())),
+                table: parseTable(contents)
             });
         });
     }
@@ -219,7 +219,7 @@ var crosstalk = (function ($, ReadFile) {
         var valid = crosstalk_form.checkValidity();
 
         if (input1 && input2) {
-            if (input1.table.length != input2.table.length) {
+            if (input1.table.length != input2.table.length || input1.table[0].length != input2.table[0].length) {
                 $('#inputfile1')[0].setCustomValidity("The contents of Data Files must have the same dimensions");
             } else {
                 $('#inputfile1')[0].setCustomValidity("");
@@ -647,19 +647,30 @@ var crosstalk = (function ($, ReadFile) {
 
     /* ---------- Saves the file contents to the model ---------- */
     function updateModel(id, contents) {
+        var checkAgainst = { "inputfile1": self.model["inputfile2"], "inputfile2": self.model["inputfile1"]}[id];
+        var overwrite = true;
+        if (checkAgainst) {
+            var missing = [];
+            if (contents.description != self.cfg.description.val()) missing[missing.length] = "Description";
+            if (contents.startYear != self.cfg.startYear.val()) missing[missing.length] = "Start Year";
+            if (contents.startAge != self.cfg.startAge.val()) missing[missing.length] = "Start Age";
+            if (contents.interval != self.cfg.interval.val()) missing[missing.length] = "Interval (Years)";
+            if (missing.length > 0) {
+                missing[Math.max(missing.length-2,0)] = missing.splice(-2).join(", and ");
+                overwrite = confirm("The "+missing.join(", ")+" header"+(missing.length>1?"s":"")+" in this file do not match the currently entered values. Click \"Okay\" to overwrite them.");
+            }
+        }
         self.model[id] = contents;
-
-        self.cfg.description.val(self.model[id].description);
-        self.cfg.startAge.val(self.model[id].startAge);
-        self.cfg.startYear.val(self.model[id].startYear);
-        self.cfg.interval.val(self.model[id].interval);
-
+        if (overwrite) {
+            self.cfg.description.val(contents.description);
+            self.cfg.startAge.val(contents.startAge);
+            self.cfg.startYear.val(contents.startYear);
+            self.cfg.interval.val(contents.interval);
+        }
         if (self.model.inputfile1)
             self.cfg.titleA.val(self.model.inputfile1.title);
-
         if (self.model.inputfile2)
             self.cfg.titleB.val(self.model.inputfile2.title);
-
         syncModel();
     }
 

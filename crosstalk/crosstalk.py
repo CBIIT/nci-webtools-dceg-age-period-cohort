@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
-import rpy2.robjects as robjects
 import json
+import os
+import rpy2.robjects as robjects
+import sys
 
 app = Flask(__name__)
 
@@ -24,8 +26,11 @@ def calculation():
     try:
       print(request.get_data())
       response = buildSuccess(json.loads(wrapper['process'](request.get_data())[0]))
-    except:
-      response = buildFailure("")
+    except Exception as e:
+      exc_type, exc_obj, exc_tb = sys.exc_info()
+      fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+      print("EXCEPTION------------------------------", exc_type, fname, exc_tb.tb_lineno)
+      response = buildFailure(str(e))
     return response
 
 @app.after_request
