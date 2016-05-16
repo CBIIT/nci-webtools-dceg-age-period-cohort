@@ -447,18 +447,14 @@ generateRatesGraph <- function(results, key) {
     yAxis = 'Adjusted Rate'
     xMap = 'Cohort'
     yMap = 'Rate'
-    
-    colors = c('#0074D9', '#FF851B')
   }
   
   else if (key == 'FittedTemporalTrends') {
     title = 'Fitted Temporal Trends'
-    xAxis = 'Age'
+    xAxis = 'Year'
     yAxis = 'Adjusted Rate'
     xMap = 'Period'
     yMap = 'Rate'
-    
-    colors = c('#2ECC40', '#7FDBFF')
   }
   
   else if (key == 'CrossAge') {
@@ -467,8 +463,6 @@ generateRatesGraph <- function(results, key) {
     yAxis = 'Adjusted Rate'
     xMap = 'Age'
     yMap = 'Rate'
-    
-    colors = c('#FFDC00', '#FF4136')
   }
   
   mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', group = 'key', col = 'key', fill = 'key')
@@ -479,8 +473,8 @@ generateRatesGraph <- function(results, key) {
     end = setA[nrow(setA), 1]
 
     plot = plot + 
-      geom_rect(aes(xmin = start, xmax = end, ymin = results$A$NetDrift[,2], ymax = results$A$NetDrift[,3]), alpha = 0.01, color = "#00BFC4", fill = "#00BFC4") + 
-      geom_rect(aes(xmin = start, xmax = end, ymin = results$B$NetDrift[,2], ymax = results$B$NetDrift[,3]), alpha = 0.01, color = "#F8766D", fill = "#F8766D") 
+      geom_rect(aes(xmin = start, xmax = end, ymin = results$A$NetDrift[,2], ymax = results$A$NetDrift[,3]), alpha = 0.01, color = "#F8766D", fill = "#F8766D") + 
+      geom_rect(aes(xmin = start, xmax = end, ymin = results$B$NetDrift[,2], ymax = results$B$NetDrift[,3]), alpha = 0.01, color = "#00BFC4", fill = "#00BFC4") 
   }
 
   plot = plot +
@@ -496,7 +490,7 @@ generateRatesGraph <- function(results, key) {
     theme_light() +
     theme(
       legend.title = element_blank(),
-      legend.position = c(0.15, 0.92)
+      legend.position = "left"
     )
 
   print(plot)
@@ -527,7 +521,7 @@ generateRatiosGraph <- function(results, key) {
     start = set[1,1]
     end = set[nrow(set), 1]
     title = 'Fitted Temporal Trends'
-    xAxis = 'Age'
+    xAxis = 'Year'
     yAxis = 'Adjusted Rate'
     xMap = 'Per'
     yMap = 'FTT'
@@ -553,7 +547,7 @@ generateRatiosGraph <- function(results, key) {
     guides(color = F) +
     geom_ribbon(alpha = 0.35) +
     geom_line(alpha = 0.35) +
-    geom_rect(aes(xmin = start, xmax = end, ymin = min, ymax = max), alpha = 0.01, color = "#F8766D", fill = "#F8766D") + 
+    geom_rect(aes(xmin = start, xmax = end, ymin = min, ymax = max), alpha = 0.01) + 
     geom_tooltip(alpha = 0.7) +
     
     scale_y_continuous(expand = c(0.2, 0.1)) +
