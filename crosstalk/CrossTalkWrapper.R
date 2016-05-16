@@ -338,7 +338,6 @@ getRatesGraph <- function(data) {
   
   ggplot(graph, aes(x = period, y = ratio, color = as.factor(age))) +
     geom_line() + 
-#    geom_point(size = 2.5) + 
     geom_tooltip(size = 4) +
     theme_bw() +
     scale_color_discrete(
@@ -356,10 +355,7 @@ getRatesGraph <- function(data) {
   
   filename = paste0(OUTPUT_DIR, 'RatesGraph_', getTimestamp(), '.svg')
   ggsave(file = filename, width = 10, height = 10)
-#  grid.force()
 
-#  grid.export(name = filename, strict = F)
-  
   filename
 }
 
@@ -489,8 +485,7 @@ generateRatesGraph <- function(results, key) {
     ) +
     theme_light() +
     theme(
-      legend.title = element_blank(),
-      legend.position = "left"
+      legend.title = element_blank()
     )
 
   print(plot)
@@ -556,13 +551,7 @@ generateRatiosGraph <- function(results, key) {
       x = xAxis,
       y = yAxis
     ) +
-    theme_light() +
-    theme(
-      legend.title = element_blank(),
-      legend.position = c(0.15, 0.92)
-    )
-    
-  
+    theme_light()
   
   print(plot)
   grid.export(name = filename, strict = F)
