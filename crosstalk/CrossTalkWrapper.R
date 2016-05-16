@@ -59,14 +59,10 @@ parseJSON <- function(data) {
   )
 }
 
-
-
 #-------------------------------------------------------
-# getCrossTalkDataJSON
-# 
-# Function: Returns a JSON representation of the CrossTalk calculation results
-# Inputs:   (1) The JSON string from the client
-# Outputs:  (1) A JSON string that contains the calculation results
+# Function: Returns JSON containing the CrossTalk calculation results
+# Input:    The JSON string from the client
+# Output:   A JSON string containing tables and paths to output files
 #-------------------------------------------------------
 process <- function(data) {
   
@@ -81,7 +77,7 @@ process <- function(data) {
   
   toJSON(list(
     
-    # Generate Incidence Rates Graphs/Tables
+    # Generate Incidence Rates Graphs/Tables 
     IncidenceRates = list(
       graphs = list(
         getRatesGraph(results$input$A),
@@ -96,7 +92,7 @@ process <- function(data) {
       headers = colnames(getRates(results$input$A))
     ),
     
-    # Generate Incidence Rate Ratios
+    # Generate Incidence Rate Ratios Section
     IncidenceRateRatios = list(
       graphs = list(
         getRateRatiosGraph(getRateRatios(results$input$A, results$input$B), T),
@@ -110,7 +106,7 @@ process <- function(data) {
       headers = colnames(getRateRatios(results$input$A, results$input$B))
     ),
     
-    # Goodness of Fit
+    # Goodness of Fit Section
     GoodnessOfFit = list(
       graphs = list(
         plot.apc.resids(results$A),
@@ -121,7 +117,7 @@ process <- function(data) {
       headers = c()
     ),
 
-    # APC of Incidence Rates
+    # APC of Incidence Rates Section
     ApcOfIncidenceRates = list(
       
       # Local Drifts
@@ -220,7 +216,7 @@ process <- function(data) {
       )
     ),
     
-    # APC of Rate Ratios
+    # APC of Rate Ratios Section
     ApcOfRateRatios = list(
       
       # Fitted Cohort Pattern
@@ -236,7 +232,7 @@ process <- function(data) {
         headers = colnames(results$comparison$FVCA$FCP)
       ),
       
-      # Fittted Temporal Trends
+      # Fitted Temporal Trends
       FittedTemporalTrends = list(
         graphs = list(
           generateRatiosGraph(results, 'FittedTemporalTrends')
@@ -371,7 +367,8 @@ getRatesGraph <- function(data) {
 
 #-------------------------------------------------------
 # Calculates rate ratios
-# Outputs:  (1) A data frame containing rate ratios results
+# Input:    Two input lists containing events and offsets tables
+# Output:   A data frame containing rate ratios
 #-------------------------------------------------------
 getRateRatios <- function(A, B) {
 
@@ -392,31 +389,28 @@ getRateRatios <- function(A, B) {
 
 #-------------------------------------------------------
 # Generates a bubble plot from the rate ratios
+# Input: A data frame containing 
 # Outputs:  (1) The path to the output file
 #-------------------------------------------------------
-getRateRatiosGraph <- function(output, labels = F) {
+getRateRatiosGraph <- function(output, label = F) {
   
-  filename = paste0(OUTPUT_DIR, 'RatesRatioGraph_', getTimestamp(), '.svg')
-  svg(width = 2*ncol(output), height = nrow(output), pointsize = 10 + ncol(output), file = filename)
-
+  
   min = floor(min(unlist(output)))
   max = ceiling(max(unlist(output)))
 
-  if (labels)
-    corrplot(as.matrix(output),
-           addCoef.col = "black",
-           tl.col="black", tl.srt=45,
-           cl.lim = c(min, max),
-           is.corr = F)
-  else
-    corrplot(as.matrix(output),
-             tl.col="black", tl.srt=45,
-             cl.lim = c(min, max),
-             is.corr = F)
-  
+  filename = paste0(OUTPUT_DIR, 'RatesRatioGraph_', getTimestamp(), '.svg')
+  svg(width = 2*ncol(output), height = nrow(output), pointsize = 8 + ncol(output), file = filename)
+
+  corrplot(as.matrix(output),
+         addCoef.col = if (label) "black" else NULL,
+         tl.col="black", tl.srt=45,
+         cl.lim = c(min, max),
+         is.corr = F)
+
   dev.off()
   filename
 }
+
 
 
 #-------------------------------------------------------
@@ -428,11 +422,11 @@ generateRatesGraph <- function(results, key) {
   resultsA = results$A
   resultsB = results$B
   
-  setA = as.data.frame(resultsA[[key]])
-  setB = as.data.frame(resultsB[[key]])
+  setA = as.data.frame(results$A[[key]])
+  setB = as.data.frame(results$B[[key]])
   
-  setA$key = resultsA$Inputs$D$name
-  setB$key = resultsB$Inputs$D$name
+  setA$key = results$A$Inputs$D$name
+  setB$key = results$B$Inputs$D$name
   
   filename = paste0(OUTPUT_DIR, key, '_', getTimestamp(), '.svg')
 
@@ -486,7 +480,7 @@ generateRatesGraph <- function(results, key) {
 
     plot = plot + 
       geom_rect(aes(xmin = start, xmax = end, ymin = results$A$NetDrift[,2], ymax = results$A$NetDrift[,3]), alpha = 0.01, color = "#00BFC4", fill = "#00BFC4") + 
-      geom_rect(aes(xmin = start, xmax = end, ymin = results$B$NetDrift[,2], ymax = results$B$NetDrift[,3]), alpha = 0.01, color = "#00BFC4", fill = "#F8766D") 
+      geom_rect(aes(xmin = start, xmax = end, ymin = results$B$NetDrift[,2], ymax = results$B$NetDrift[,3]), alpha = 0.01, color = "#F8766D", fill = "#F8766D") 
   }
 
   plot = plot +
@@ -550,16 +544,16 @@ generateRatiosGraph <- function(results, key) {
     yMap = 'CAC'
   }
   
-  title = paste(results$input$A$name, results$input$B$name)
-  mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', color = 'key', fill = 'key')
+  title = paste(results$input$A$name, 'vs', results$input$B$name)
+  mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', color = 'key', fill = 'key', group = 'key')
 
   plot = ggplot(set, mapping) +
     scale_color_discrete(guide = F) +
     scale_fill_discrete(guide = F) +
     guides(color = F) +
-    geom_rect(aes(xmin = start, xmax = end, ymin = min, ymax = max), alpha = 0.01, colour = "slategray1") + 
     geom_ribbon(alpha = 0.35) +
     geom_line(alpha = 0.35) +
+    geom_rect(aes(xmin = start, xmax = end, ymin = min, ymax = max), alpha = 0.01, color = "#F8766D", fill = "#F8766D") + 
     geom_tooltip(alpha = 0.7) +
     
     scale_y_continuous(expand = c(0.2, 0.1)) +
@@ -573,6 +567,7 @@ generateRatiosGraph <- function(results, key) {
       legend.title = element_blank(),
       legend.position = c(0.15, 0.92)
     )
+    
   
   
   print(plot)
@@ -581,6 +576,14 @@ generateRatiosGraph <- function(results, key) {
 }
 
 
+
+#-------------------------------------------------------
+# Creates a parallel plot
+#
+# Input:    (1) A data frame containing category and log value columns
+#           (2) The title of the plot
+# Outputs:  (1) The path to the generated plot
+#-------------------------------------------------------
 generateParallelGraph <- function(data, title) {
   
   data$log = pmin(-log10(data$log), 100)
@@ -613,7 +616,10 @@ generateParallelGraph <- function(data, title) {
 
 
 
-
+#-------------------------------------------------------
+# Creates the graphs for the goodness of fit section
+# Outputs:  Returns the filepaths of the generated graphs
+#-------------------------------------------------------
 plot.apc.resids <- function(M) {
   
   par(mfrow = c(1, 2), pty = "m")
@@ -671,9 +677,6 @@ plot.apc.resids <- function(M) {
   c(filenameA, filenameB)
 }
 
-
-# Adds a data attribute to each point
-
 #-------------------------------------------------------
 # Modifies geom_point to add a tooltip data attribute to each point
 # Outputs:  (1) a modified geom_ object
@@ -689,7 +692,7 @@ geom_tooltip = function(...) {
      for (i in 1:nrow(data)) {
 
        row = data[i,]
-       title = paste('x:', row$x, '<br />y:', row$y, '<br />CILo:', row$ymin, '<br />CIHi:', row$ymax)
+       title = paste('X:', row$x, '<br />Y:', row$y, '<br />CILo:', row$ymin, '<br />CIHi:', row$ymax)
        grob = ggproto_parent(GeomPoint, self)$draw_panel(data = row, ...)
        grobs[[i]] = garnishGrob(grob, `data-toggle` = "tooltip", `title` = title)
      }
@@ -711,12 +714,10 @@ geom_lollipop <- function(mapping = NULL, data = NULL, ...,
                           horizontal = FALSE,
                           point.colour = NULL, point.size = NULL,
                           na.rm = FALSE, show.legend = NA, inherit.aes = TRUE) {
-  
   layer(
     data = data,
     mapping = mapping,
     stat = "identity",
-    geom = GeomLollipop,
     position = "identity",
     show.legend = show.legend,
     inherit.aes = inherit.aes,
@@ -726,43 +727,44 @@ geom_lollipop <- function(mapping = NULL, data = NULL, ...,
       point.colour = point.colour,
       point.size = point.size,
       ...
+    ),
+    geom = ggproto("GeomLollipop", Geom,
+       required_aes = c("x", "y"),
+       non_missing_aes = c("size", "shape", "point.colour", "point.size", "horizontal"),
+       default_aes = aes(
+         shape = 19, colour = "black", size = 0.5, fill = NA,
+         alpha = NA, stroke = 0.5
+       ),
+       
+       setup_data = function(data, params) {
+         if (params$horizontal) {
+           transform(data, yend = y, xend = 0)
+         } else {
+           transform(data, xend = x, yend = 0)
+         }
+       },
+       
+       draw_group = function(data, panel_scales, coord,
+                             point.colour = NULL, point.size = NULL,
+                             horizontal = FALSE) {
+         
+         points <- data
+         points$colour <- point.colour
+         points$size <- point.size
+         
+         gList(
+           ggplot2::GeomSegment$draw_panel(data, panel_scales, coord),
+           ggplot2::GeomPoint$draw_panel(points, panel_scales, coord)
+         )
+         
+       },
+       
+       draw_key = draw_key_point
     )
   )
 }
 
-GeomLollipop <- ggproto("GeomLollipop", Geom,
-  required_aes = c("x", "y"),
-  non_missing_aes = c("size", "shape", "point.colour", "point.size", "horizontal"),
-  default_aes = aes(
-    shape = 19, colour = "black", size = 0.5, fill = NA,
-    alpha = NA, stroke = 0.5
-  ),
-  
-  setup_data = function(data, params) {
-    if (params$horizontal) {
-      transform(data, yend = y, xend = 0)
-    } else {
-      transform(data, xend = x, yend = 0)
-    }
-  },
-  
-  draw_group = function(data, panel_scales, coord,
-                        point.colour = NULL, point.size = NULL,
-                        horizontal = FALSE) {
-    
-    points <- data
-    points$colour <- point.colour
-    points$size <- point.size
-    
-    gList(
-      ggplot2::GeomSegment$draw_panel(data, panel_scales, coord),
-      ggplot2::GeomPoint$draw_panel(points, panel_scales, coord)
-    )
-    
-  },
-  
-  draw_key = draw_key_point
-)
+
 
 #-------------------------------------------------------
 # getTimestamp
