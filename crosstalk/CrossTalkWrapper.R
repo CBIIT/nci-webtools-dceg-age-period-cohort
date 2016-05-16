@@ -128,14 +128,11 @@ process <- function(data) {
       LocalDrifts = list(
         graphs = list(
           generateRatesGraph(results, 'LocalDrifts'),
-          
-          generateDualLogGraph(
-            
-            # Equal Local Drifts
-            results$wald$W[7, 3], 
-            
-            # Equal Net Drifts
-            results$wald$W[1, 3])
+          generateParallelGraph(
+            rbind(data.frame(category = 'Equal Local Drifts', log = results$wald$W[7, 3]),
+                  data.frame(category = 'Equal Net Drifts', log = results$wald$W[1, 3])),
+            title = 'Comparison of Drifts'
+          )
         ),
         
         tables = list(
@@ -163,14 +160,13 @@ process <- function(data) {
         ComparisonOfAdjustedRates = list(
           
           graphs = list(
-            generateTripleLogGraph(
-              0, #parallelByCohort
-              0, #parallelByPeriod 
-              0, #parallelByAge 
-              'Parallel By Cohort',
-              'Parallel By Period',
-              'Parallel By Age'
-              ) 
+            generateParallelGraph(
+              rbind(data.frame(category = 'Parallel By Cohort', log = 0),
+                    data.frame(category = 'Parallel By Period', log = 0),
+                    data.frame(category = 'Parallel By Age', log = 0)),
+            
+              title = 'Comparison of Adjusted Rates'
+            )
           ),
           
           tables = list(
@@ -269,14 +265,13 @@ process <- function(data) {
       # IO
       IO = list(
         graphs = list(
-          generateTripleLogGraph(
-            results$wald$W[11,3], #Parallel Cross-Sectional Age Curves
-            results$wald$W[12,3], #Parallel Fitted Temporal Trends 
-            results$wald$W[13,3], #Parallel Fitted Cohort Pattern 
-            'Cross-Sectional Age Curves',
-            'Fitted Temporal Trends',
-            'Fitted Cohort Pattern'
-          ) 
+          generateParallelGraph(
+            rbind(data.frame(category = 'Parallel Cross-Sectional Age Curves', log = results$wald$W[11,3]),
+                  data.frame(category = 'Parallel Fitted Temporal Trends ', log = results$wald$W[12,3]),
+                  data.frame(category = 'Parallel Fitted Cohort Pattern ', log = results$wald$W[13,3])),
+            
+            title = 'Comparison of Adjusted Rates'
+          )
         ),
         
         tables = list(
@@ -573,7 +568,12 @@ generateRatiosGraph <- function(results, key) {
       x = xAxis,
       y = yAxis
     ) +
-    theme_light()
+    theme_light() +
+    theme(
+      legend.title = element_blank(),
+      legend.position = c(0.15, 0.92)
+    )
+  
   
   print(plot)
   grid.export(name = filename, strict = F)
@@ -581,105 +581,36 @@ generateRatiosGraph <- function(results, key) {
 }
 
 
-generateDualLogGraph <- function(A, B) {
+generateParallelGraph <- function(data, title) {
   
-  logA = -log10(A)
-  logB = -log10(B)
-  
-  logA = if (logA > 16) 16 else logA
-  logB = if (logB > 16) 16 else logB
-  
-  graphA = rbind(data.frame(), c(-10, 1))
-  graphA = rbind(graphA, c(logA, 1))
-  graphA$group = "Equal Local Drifts"
-  names(graphA) = c('x', 'y', 'group')
-  
-  graphB = rbind(data.frame(), c(-10, 2))
-  graphB = rbind(graphB, c(logB, 2))
-  graphB$group = "Equal Net Drifts"
-  names(graphB) = c('x', 'y', 'group')
-  
-  graph = rbind(graphA, graphB)
+  data$log = pmin(-log10(data$log), 100)
 
-  ggplot(graph, aes(x, y, group = group, fill = group)) + 
-    geom_point(color="black", fill = "gold", size = 5, pch = 21) + 
-    geom_line(aes(color = group)) + 
-    coord_cartesian(xlim = c(0, 20), ylim = c(0.5, 2.5)) + 
-    scale_color_discrete(guide = F) +
-    theme_bw() + 
-    theme(axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-    geom_vline(xintercept = 1, linetype = "longdash", color = "slategray2") +
-    geom_rect(aes(xmin = -Inf, xmax = 1, ymin = -Inf, ymax = Inf), alpha = 0.1, fill = "slategray2") + 
+  ggplot(data, aes(category, log)) + 
+    geom_lollipop(point.colour = "steelblue", point.size = 3) + 
+    scale_y_continuous(expand = c(0, 0), limits=c(0, ceiling(1.2*max(data$log)))) + 
+
     labs(
-      title = "Comparison of Drifts",
-      x = "-Log10(P-Value)",
-      y = ""
+      title = title,
+      x = NULL,
+      y = expression(-log[10](P-Value))
     ) +
-    geom_dl(
-      aes(label = group),
-      method = list("last.points", hjust = 0, vjust = -2)
-    )
 
-  filename = paste0(OUTPUT_DIR, 'ComparisonOfDrifts', '_', getTimestamp(), '.svg')
-  ggsave(file = filename, width = 10, height = 10)
-#  grid.export(name = filename, strict = F)
+    theme_minimal() + 
+    theme(
+      panel.grid.major.y = element_blank(), 
+      panel.grid.minor = element_blank(), 
+      axis.line.y = element_line(color = "steelblue", size = 0.15),
+      axis.text.y=element_text(margin=margin(r=-5, l=0)),
+      plot.margin=unit(rep(30, 4), "pt")
+    ) +  
+    coord_flip() 
   
-  filename
-}
-
-
-generateTripleLogGraph <- function(A, B, C, labelA, labelB, labelC) {
-  
-  logA = -log10(A)
-  logB = -log10(B)
-  logC = -log10(C)
-  
-  logA = if (logA > 16) 16 else logA
-  logB = if (logB > 16) 16 else logB
-  logC = if (logC > 16) 16 else logC
-  
-  graphA = rbind(data.frame(), c(-10, 1))
-  graphA = rbind(graphA, c(logA, 1))
-  graphA$group = labelA
-  names(graphA) = c('x', 'y', 'group')
-  
-  graphB = rbind(data.frame(), c(-10, 2))
-  graphB = rbind(graphB, c(logB, 2))
-  graphB$group = labelB
-  names(graphB) = c('x', 'y', 'group')
-
-  graphC = rbind(data.frame(), c(-10, 3))
-  graphC = rbind(graphC, c(logC, 3))
-  graphC$group = labelC
-  names(graphC) = c('x', 'y', 'group')
-
-  graph = rbind(graphA, graphB, graphC)  
-  
-  ggplot(graph, aes(x, y, group = group, fill = group)) + 
-    geom_point(color="black", fill = "gold", size = 5, pch = 21) + 
-    geom_line(aes(color = group)) + 
-    coord_cartesian(xlim = c(0, 25), ylim = c(0.5, 3.5)) + 
-    scale_color_discrete(guide = F) +
-    theme_bw() + 
-    theme(axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
-    geom_vline(xintercept = 1, linetype = "longdash", color = "slategray2") +
-    geom_rect(aes(xmin = -Inf, xmax = 1, ymin = -Inf, ymax = Inf), alpha = 0.1, fill = "slategray2") + 
-    labs(
-      title = "Comparison of Adjusted Rates",
-      x = "-Log10(P-Value)",
-      y = ""
-    ) +
-    geom_dl(
-      aes(label = group),
-      method = list("last.points", hjust = 0, vjust = -2)
-    )
-
   filename = paste0(OUTPUT_DIR, 'Parallel', '_', getTimestamp(), '.svg')
   ggsave(file = filename, width = 10, height = 10)
-#  grid.export(name = filename, strict = F)
   
   filename
 }
+
 
 
 
@@ -773,13 +704,65 @@ geom_tooltip = function(...) {
   point
 }
 
-
-savePlot <- function(filename, plot, plotWidth = 15, plotHeight = 10){
-  eval(call('gridsvg', name=filename, width=plotWidth, height=plotHeight))
-  print(plot)
-  dev.off(which = dev.cur())
+#-------------------------------------------------------
+# Use geom_lollipop from ggalt
+#-------------------------------------------------------
+geom_lollipop <- function(mapping = NULL, data = NULL, ...,
+                          horizontal = FALSE,
+                          point.colour = NULL, point.size = NULL,
+                          na.rm = FALSE, show.legend = NA, inherit.aes = TRUE) {
+  
+  layer(
+    data = data,
+    mapping = mapping,
+    stat = "identity",
+    geom = GeomLollipop,
+    position = "identity",
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      na.rm = na.rm,
+      horizontal = horizontal,
+      point.colour = point.colour,
+      point.size = point.size,
+      ...
+    )
+  )
 }
 
+GeomLollipop <- ggproto("GeomLollipop", Geom,
+  required_aes = c("x", "y"),
+  non_missing_aes = c("size", "shape", "point.colour", "point.size", "horizontal"),
+  default_aes = aes(
+    shape = 19, colour = "black", size = 0.5, fill = NA,
+    alpha = NA, stroke = 0.5
+  ),
+  
+  setup_data = function(data, params) {
+    if (params$horizontal) {
+      transform(data, yend = y, xend = 0)
+    } else {
+      transform(data, xend = x, yend = 0)
+    }
+  },
+  
+  draw_group = function(data, panel_scales, coord,
+                        point.colour = NULL, point.size = NULL,
+                        horizontal = FALSE) {
+    
+    points <- data
+    points$colour <- point.colour
+    points$size <- point.size
+    
+    gList(
+      ggplot2::GeomSegment$draw_panel(data, panel_scales, coord),
+      ggplot2::GeomPoint$draw_panel(points, panel_scales, coord)
+    )
+    
+  },
+  
+  draw_key = draw_key_point
+)
 
 #-------------------------------------------------------
 # getTimestamp
