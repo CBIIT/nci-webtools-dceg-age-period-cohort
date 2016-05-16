@@ -252,7 +252,7 @@ var crosstalk = (function ($, ReadFile) {
             crosstalk.getData();
         }
     }
-    
+
     self.failure = function(xhr, error, statusText) {
         var message = "";
         switch (xhr.status) {
@@ -272,7 +272,7 @@ var crosstalk = (function ($, ReadFile) {
 
         $(".tab-pane#input").children("#error").remove().prepend($("<div id='error' class='alert alert-danger'>").html(message));
     }
-    
+
     self.getData = function() {
         $.ajax({
             method: "POST"
@@ -402,9 +402,18 @@ var crosstalk = (function ($, ReadFile) {
     function createDatasetLink(containerId, sectionName, displayTitle, table, ratio) {
         var ratio = ratio || 1;
         var data = "";
+
+        var headerKeys = table[0];
+
         for (var i in table) {
-            for (var j in table[i]) {
-                data += table[i][j] + ",";
+            for(var j = 0; j < Object.keys(table[i]).length; j++){
+                if(i > 0) {
+                    // keep data in specific column order
+                    var headerKey = headerKeys[j];
+                    data += table[i][headerKey] + ",";
+                }
+                else
+                    data += table[i][j] + ",";
             }
             data += "\n";
         }
