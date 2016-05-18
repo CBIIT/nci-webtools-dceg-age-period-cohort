@@ -390,9 +390,13 @@ getRateRatios <- function(A, B) {
 #-------------------------------------------------------
 getRateRatiosGraph <- function(output, label = F) {
   
+  print(output)
   
   min = floor(min(unlist(output)))
   max = ceiling(max(unlist(output)))
+  
+  if (min == max) 
+    min = min - 1
 
   filename = paste0(OUTPUT_DIR, 'RatesRatioGraph_', getTimestamp(), '.svg')
   svg(width = 2*ncol(output), height = nrow(output), pointsize = 8 + ncol(output), file = filename)
@@ -489,7 +493,7 @@ generateRatesGraph <- function(results, key) {
     )
 
   print(plot)
-  grid.export(name = filename, strict = F)
+  grid.export(name = filename, strict = F, xmldecl = NULL)
   filename
 }
 
@@ -509,6 +513,8 @@ generateRatiosGraph <- function(results, key) {
     yAxis = 'Adjusted Rate'
     xMap = 'Coh'
     yMap = 'FCP'
+    
+    color = '#0375B4'
   }
   
   else if (key == 'FittedTemporalTrends') {
@@ -520,6 +526,8 @@ generateRatiosGraph <- function(results, key) {
     yAxis = 'Adjusted Rate'
     xMap = 'Per'
     yMap = 'FTT'
+    
+    color = '#4ECDC4'
   }
   
   else if (key == 'CrossAge') {
@@ -531,15 +539,14 @@ generateRatiosGraph <- function(results, key) {
     yAxis = 'Adjusted Rate'
     xMap = 'Age'
     yMap = 'CAC'
+    
+    color = '#C7F464'
   }
   
   title = paste(results$input$A$name, 'vs', results$input$B$name)
   mapping = aes_string(x = xMap, y = yMap, ymin = 'CILo', ymax = 'CIHi', color = 'key', fill = 'key', group = 'key')
 
   plot = ggplot(set, mapping) +
-    scale_color_discrete(guide = F) +
-    scale_fill_discrete(guide = F) +
-    guides(color = F) +
     geom_ribbon(alpha = 0.35) +
     geom_line(alpha = 0.35) +
     geom_rect(aes(xmin = start, xmax = end, ymin = min, ymax = max), alpha = 0.01) + 
@@ -551,10 +558,13 @@ generateRatiosGraph <- function(results, key) {
       x = xAxis,
       y = yAxis
     ) +
-    theme_light()
+    theme_light() +
+    theme(
+      legend.position = "none"
+    )
   
   print(plot)
-  grid.export(name = filename, strict = F)
+  grid.export(name = filename, strict = F, xmldecl = NULL)
   filename
 }
 
@@ -573,7 +583,7 @@ generateParallelGraph <- function(data, title) {
 
   ggplot(data, aes(category, log)) + 
     geom_lollipop(point.colour = "steelblue", point.size = 3) + 
-    scale_y_continuous(expand = c(0, 0), limits=c(0, ceiling(1.2*max(data$log)))) + 
+    scale_y_continuous(expand = c(0, 0), limits=c(0, ceiling(1.2 * max(data$log)))) + 
 
     labs(
       title = title,
@@ -585,7 +595,7 @@ generateParallelGraph <- function(data, title) {
     theme(
       panel.grid.major.y = element_blank(), 
       panel.grid.minor = element_blank(), 
-      axis.line.y = element_line(color = "steelblue", size = 0.15),
+      axis.line.y = element_line(color = "steelblue", size = 0.25),
       axis.text.y=element_text(margin=margin(r=-5, l=0)),
       plot.margin=unit(rep(30, 4), "pt")
     ) +  
