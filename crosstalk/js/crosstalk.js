@@ -379,6 +379,21 @@ var crosstalk = (function ($, ReadFile) {
         $(containerId).append('<div class="col-sm-' + width + '"><div class="graphContainers"><a class="expandImg" data-toggle="modal" data-target="#imgPreview" tabindex="0"><img class="img-responsive" src="' + link + '" alt="generated graph image"/></a></div></div>');
     }
 
+    function createInteractiveGraphImage(containerId, link, ratio) {
+    	var ratio = ratio || 1;
+    	var width = parseInt(12 * ratio);
+
+        $.ajax({
+            method: 'GET',
+            url: link,
+            dataType: 'text'
+        }).done(function(data) {
+            console.log(data);
+            $(containerId).append('<div class="col-sm-' + width + '"><div class="graphContainers">' + data + '</div></div>');
+            $('[data-toggle="tooltip"]').tooltip({container: 'body', html: true});
+        });
+    }
+
     function createOutputTable(containerId, title, table, headers, extraHeaders) {
         var extraHeaders = extraHeaders || "";
         var target = $(containerId);
@@ -496,7 +511,7 @@ var crosstalk = (function ($, ReadFile) {
                 var csacTarget = $("#collapseFour .panel-body");
                 var csac = ar.CrossSectionalAgeCurve;
                 if (csac.graphs) {
-                    createGraphImage(csacTarget, csac.graphs[0][0]);
+                    createInteractiveGraphImage(csacTarget, csac.graphs[0][0]);
                 }
                 if (csac.tables) {
                     for (var i in csac.tables) csac.tables[i].unshift(csac.headers);
@@ -508,7 +523,7 @@ var crosstalk = (function ($, ReadFile) {
                 var fcpTarget = $("#collapseTwo .panel-body");
                 var fcp = ar.FittedCohortPattern;
                 if (fcp.graphs) {
-                    createGraphImage(fcpTarget, fcp.graphs[0][0]);
+                    createInteractiveGraphImage(fcpTarget, fcp.graphs[0][0]);
                 }
                 if (fcp.tables) {
                     for (var i in fcp.tables) fcp.tables[i].unshift(fcp.headers);
@@ -520,7 +535,7 @@ var crosstalk = (function ($, ReadFile) {
                 var fttTarget = $("#collapseThree .panel-body");
                 var ftt = ar.FittedTemporalTrends;
                 if (ftt.graphs) {
-                    createGraphImage(fttTarget, ftt.graphs[0][0]);
+                    createInteractiveGraphImage(fttTarget, ftt.graphs[0][0]);
                 }
                 if (ftt.tables) {
                     for (var i in ftt.tables) ftt.tables[i].unshift(ftt.headers);
@@ -532,7 +547,7 @@ var crosstalk = (function ($, ReadFile) {
         if (result.LocalDrifts) {
             var ld = result.LocalDrifts;
             if (ld.graphs) {
-                createGraphImage("#local-content", ld.graphs[0][0], .5);
+                createInteractiveGraphImage("#local-content", ld.graphs[0][0], .5);
                 createGraphImage("#local-content", ld.graphs[1][0], .5);
             }
             if (ld.tables) {
@@ -552,15 +567,15 @@ var crosstalk = (function ($, ReadFile) {
         $("#csac, #fcp, #ftt").children(".panel-body").empty()
         if (result.CrossSectionalAgeCurve) {
             var csac = result.CrossSectionalAgeCurve;
-            createGraphImage("#csac .panel-body", csac.graphs[0][0]);
+            createInteractiveGraphImage("#csac .panel-body", csac.graphs[0][0]);
         }
         if (result.FittedCohortPattern) {
             var fcp = result.FittedCohortPattern;
-            createGraphImage("#fcp .panel-body", fcp.graphs[0][0]);
+            createInteractiveGraphImage("#fcp .panel-body", fcp.graphs[0][0]);
         }
         if (result.FittedTemporalTrends) {
             var ftt = result.FittedTemporalTrends;
-            createGraphImage("#ftt .panel-body", ftt.graphs[0][0]);
+            createInteractiveGraphImage("#ftt .panel-body", ftt.graphs[0][0]);
         }
         if (result.IO) {
             var io = result.IO;
