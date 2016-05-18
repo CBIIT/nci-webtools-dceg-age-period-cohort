@@ -390,8 +390,6 @@ getRateRatios <- function(A, B) {
 #-------------------------------------------------------
 getRateRatiosGraph <- function(output, label = F) {
   
-  print(output)
-  
   min = floor(min(unlist(output)))
   max = ceiling(max(unlist(output)))
   
@@ -480,7 +478,7 @@ generateRatesGraph <- function(results, key) {
   plot = plot +
     geom_ribbon(alpha = 0.35) +
     geom_line(alpha = 0.35) +
-    geom_tooltip(alpha = 0.7) +
+    geom_tooltip(size = 4) +
     scale_y_continuous(expand = c(0.2, 0)) +
     labs(
       title = title,
@@ -550,7 +548,7 @@ generateRatiosGraph <- function(results, key) {
     geom_ribbon(alpha = 0.35) +
     geom_line(alpha = 0.35) +
     geom_rect(aes(xmin = start, xmax = end, ymin = min, ymax = max), alpha = 0.01) + 
-    geom_tooltip(alpha = 0.7) +
+    geom_tooltip(size = 4) +
     
     scale_y_continuous(expand = c(0.2, 0.1)) +
     labs(
