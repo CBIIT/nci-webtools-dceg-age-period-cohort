@@ -30,8 +30,8 @@ parseJSON <- function(data) {
   data$startAge   = as.numeric(data$startAge)
   data$startYear  = as.numeric(data$startYear)
   
-  tableA     = as.data.frame(data$inputfile1$table)
-  tableB     = as.data.frame(data$inputfile2$table)
+  tableA     = as.data.frame(apply(data$inputfile1$table, c(1, 2), function(x) if (x == 0) 0.5 else x))
+  tableB     = as.data.frame(apply(data$inputfile2$table, c(1, 2), function(x) if (x == 0) 0.5 else x))
   sequenceA  = seq_along(tableA) %% 2
   sequenceB  = seq_along(tableB) %% 2
   endAge     = data$startAge  + data$interval * nrow(tableA)
