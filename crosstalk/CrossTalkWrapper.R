@@ -338,7 +338,7 @@ getRatesGraph <- function(data) {
   
   ggplot(graph, aes(x = period, y = ratio, color = as.factor(age))) +
     geom_line() + 
-    geom_tooltip(size = 4) +
+    geom_tooltip(size = 3) +
     theme_bw() +
     scale_color_discrete(
       guide = F
@@ -478,7 +478,7 @@ generateRatesGraph <- function(results, key) {
   plot = plot +
     geom_ribbon(alpha = 0.35) +
     geom_line(alpha = 0.35) +
-    geom_tooltip(size = 4) +
+    geom_tooltip(size = 3) +
     scale_y_continuous(expand = c(0.2, 0)) +
     labs(
       title = title,
@@ -548,7 +548,7 @@ generateRatiosGraph <- function(results, key) {
     geom_ribbon(alpha = 0.35) +
     geom_line(alpha = 0.35) +
     geom_rect(aes(xmin = start, xmax = end, ymin = min, ymax = max), alpha = 0.01) + 
-    geom_tooltip(size = 4) +
+    geom_tooltip(size = 3) +
     
     scale_y_continuous(expand = c(0.2, 0.1)) +
     labs(
