@@ -340,6 +340,7 @@ getRatesGraph <- function(data) {
     geom_line() + 
     geom_tooltip(size = 3) +
     theme_bw() +
+    scale_x_continuous(expand = c(0.1, 0)) +
     scale_color_discrete(
       guide = F
     ) +
@@ -349,8 +350,8 @@ getRatesGraph <- function(data) {
       y = 'Rate per 100000 units'
     ) + 
     geom_dl(
-      aes(label = as.factor(age)), 
-      method =  list("last.points", hjust = -0.5)
+      aes(label = {paste0(as.character(age), '-', as.character(age + interval))} ), 
+      method =  list("last.points", hjust = -0.15)
     )
   
   filename = paste0(OUTPUT_DIR, 'RatesGraph_', getTimestamp(), '.svg')
