@@ -416,31 +416,14 @@ var crosstalk = (function ($, ReadFile) {
 
     function createDatasetLink(containerId, sectionName, displayTitle, table, ratio) {
         var ratio = ratio || 1;
-        var data = "";
-
-        var headerKeys = table[0];
-
-        for (var i in table) {
-            for(var j = 0; j < Object.keys(table[i]).length; j++){
-                if(i > 0) {
-                    // keep data in specific column order
-                    var headerKey = headerKeys[j];
-                    data += table[i][headerKey] + ",";
-                }
-                else
-                    data += table[i][j] + ",";
-            }
-            data += "\n";
-        }
-        var blob = new Blob([data], {
-            type: "text/csv;charset=UTF-8"
-        });
         var width = parseInt(12 * ratio);
-        var link = $(containerId).append('<div class="tabledownload col-sm-' + width + '"><a href="javascript:void(0);" id="findme">View Dataset ' + displayTitle + '</a></div>').find("#findme");
-        link = link.removeAttr("id")[0];
-        link.href = window.URL.createObjectURL(blob);
-        link.download = sectionName + " for " + displayTitle + ".csv";
-
+        var link = $(containerId).append('<div class="tabledownload col-sm-' + width + '"><a id="findme">View Dataset ' + displayTitle + '</a></div>').find("#findme");
+        link.removeAttr("id");
+        link.on('click', function(e) {
+            e.preventDefault();
+            var newWindow = window.open("tabledisplay.html");
+            newWindow.tabledata = $.extend(true,[],table);
+        });
     }
 
     function incRatesTab(result) {
