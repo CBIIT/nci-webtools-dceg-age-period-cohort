@@ -1,5 +1,5 @@
 $(function() {
-    var tabledata = window.tabledata;
+    var tabledata = window.opener.requestTabledata();
     var headers = tabledata.shift();
     var target = $("table");
     if ($.fn.DataTable.isDataTable("table")) {
