@@ -350,13 +350,18 @@ process <- function(data) {
     )
   )
   
-  output$Download = list(
-    txtInput = '',
-    txtOutput = '',
-    rDataInput = '',
-    rDataOutput = '',
+  output$downloads = list(
+    txtInput = paste0(OUTPUT_DIR, 'Input_', getTimestamp(), '.txt'),
+    txtOutput = paste0(OUTPUT_DIR, 'Output_', getTimestamp(), '.txt'),
+    rDataInput = paste0(OUTPUT_DIR, 'Input_', getTimestamp(), '.rdata'),
+    rDataOutput = paste0(OUTPUT_DIR, 'Output_', getTimestamp(), '.rdata'),
     excelOutput = toExcel(output)
   )
+  
+  save(input,   file = output$downloads$rDataInput)
+  save(results, file = output$downloads$rDataOutput)
+  capture.output(print(input), file = output$downloads$txtInput)
+  capture.output(print(results), file = output$downloads$txtOutput)
 
   toJSON(output)
 }
@@ -863,6 +868,12 @@ geom_lollipop <- function(mapping = NULL, data = NULL, ...,
        draw_key = draw_key_point
     )
   )
+}
+
+
+
+toExcel <- function(results) {
+  ''
 }
 
 
