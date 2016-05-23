@@ -382,16 +382,16 @@ var crosstalk = (function ($, ReadFile) {
     function createInteractiveGraphImage(containerId, link, ratio) {
     	var ratio = ratio || 1;
     	var width = parseInt(12 * ratio);
-
-        $.ajax({
-            method: 'GET',
-            url: link,
-            dataType: 'text'
-        }).done(function(data) {
-            console.log(data);
-            $(containerId).append('<div class="col-sm-' + width + '"><div class="graphContainers">' + data + '</div></div>');
-            $('[data-toggle="tooltip"]').tooltip({container: 'body', html: true});
-        });
+      var callbackLocation = $('<div class="col-sm-' + width + '">').appendTo($(containerId));
+      $.ajax({
+          method: 'GET',
+          url: link,
+          dataType: 'text'
+      }).done(function(data) {
+          console.log(data);
+          callbackLocation.append('<div class="graphContainers">' + data + '</div>');
+          $('[data-toggle="tooltip"]').tooltip({container: 'body', html: true});
+      });
     }
 
     function createOutputTable(containerId, title, table, headers, extraHeaders) {
@@ -414,33 +414,19 @@ var crosstalk = (function ($, ReadFile) {
         target.dataTable().fnDraw();
     }
 
-    function createDatasetLink(containerId, sectionName, displayTitle, table, ratio) {
+    function createDatasetLink(containerId, displayTitle, table, ratio) {
         var ratio = ratio || 1;
-        var data = "";
-
-        var headerKeys = table[0];
-
-        for (var i in table) {
-            for(var j = 0; j < Object.keys(table[i]).length; j++){
-                if(i > 0) {
-                    // keep data in specific column order
-                    var headerKey = headerKeys[j];
-                    data += table[i][headerKey] + ",";
-                }
-                else
-                    data += table[i][j] + ",";
-            }
-            data += "\n";
-        }
-        var blob = new Blob([data], {
-            type: "text/csv;charset=UTF-8"
-        });
         var width = parseInt(12 * ratio);
-        var link = $(containerId).append('<div class="tabledownload col-sm-' + width + '"><a href="javascript:void(0);" id="findme">View Dataset ' + displayTitle + '</a></div>').find("#findme");
-        link = link.removeAttr("id")[0];
-        link.href = window.URL.createObjectURL(blob);
-        link.download = sectionName + " for " + displayTitle + ".csv";
-
+        var link = $(containerId).append('<div class="tabledownload col-sm-' + width + '"><a id="findme">View Dataset ' + displayTitle + '</a></div>').find("#findme");
+        link.removeAttr("id");
+        link.on('click', function(e) {
+            e.preventDefault();
+            var newWindow = window.open("tabledisplay.html");
+            window.requestTabledata = function() {
+                window.requestTabledata = null;
+                return $.extend(true,[],table);
+            };
+        });
     }
 
     function incRatesTab(result) {
@@ -515,8 +501,8 @@ var crosstalk = (function ($, ReadFile) {
                 }
                 if (csac.tables) {
                     for (var i in csac.tables) csac.tables[i].unshift(csac.headers);
-                    createDatasetLink(csacTarget, "Cross Sectional Age Curve", self.model.titleA, csac.tables[0], .5)
-                    createDatasetLink(csacTarget, "Cross Sectional Age Curve", self.model.titleB, csac.tables[1], .5)
+                    createDatasetLink(csacTarget, self.model.titleA, csac.tables[0], .5)
+                    createDatasetLink(csacTarget, self.model.titleB, csac.tables[1], .5)
                 }
             }
             if (ar.FittedCohortPattern) {
@@ -527,8 +513,8 @@ var crosstalk = (function ($, ReadFile) {
                 }
                 if (fcp.tables) {
                     for (var i in fcp.tables) fcp.tables[i].unshift(fcp.headers);
-                    createDatasetLink(fcpTarget, "Fitted Cohort Pattern", self.model.titleA, fcp.tables[0], .5)
-                    createDatasetLink(fcpTarget, "Fitted Cohort Pattern", self.model.titleB, fcp.tables[1], .5)
+                    createDatasetLink(fcpTarget, self.model.titleA, fcp.tables[0], .5)
+                    createDatasetLink(fcpTarget, self.model.titleB, fcp.tables[1], .5)
                 }
             }
             if (ar.FittedTemporalTrends) {
@@ -539,21 +525,23 @@ var crosstalk = (function ($, ReadFile) {
                 }
                 if (ftt.tables) {
                     for (var i in ftt.tables) ftt.tables[i].unshift(ftt.headers);
-                    createDatasetLink(fttTarget, "Fitted Temporal Trends", self.model.titleA, ftt.tables[0], .5)
-                    createDatasetLink(fttTarget, "Fitted Temporal Trends", self.model.titleB, ftt.tables[1], .5)
+                    createDatasetLink(fttTarget, self.model.titleA, ftt.tables[0], .5)
+                    createDatasetLink(fttTarget, self.model.titleB, ftt.tables[1], .5)
                 }
             }
         }
         if (result.LocalDrifts) {
             var ld = result.LocalDrifts;
             if (ld.graphs) {
-                createInteractiveGraphImage("#local-content", ld.graphs[0][0], .5);
-                createGraphImage("#local-content", ld.graphs[1][0], .5);
+                var graphdiv = $("<div class=\"row\"></div>").appendTo("#local-content");
+                createInteractiveGraphImage(graphdiv, ld.graphs[0][0], .5);
+                createGraphImage(graphdiv, ld.graphs[1][0], .5);
             }
             if (ld.tables) {
+                var linkdiv = $("<div class=\"row\"></div>").appendTo("#local-content");
                 for (var i in ld.tables) ld.tables[i].unshift(ld.headers);
-                createDatasetLink("#local-content", "Local Drifts", self.model.titleA, ld.tables[0], .5)
-                createDatasetLink("#local-content", "Local Drifts", self.model.titleB, ld.tables[1], .5)
+                createDatasetLink(linkdiv, self.model.titleA, ld.tables[0], .5)
+                createDatasetLink(linkdiv, self.model.titleB, ld.tables[1], .5)
 
             }
         }
@@ -568,14 +556,26 @@ var crosstalk = (function ($, ReadFile) {
         if (result.CrossSectionalAgeCurve) {
             var csac = result.CrossSectionalAgeCurve;
             createInteractiveGraphImage("#csac .panel-body", csac.graphs[0][0]);
+            if (csac.tables) {
+                for (var i in csac.tables) csac.tables[i].unshift(csac.headers);
+                createDatasetLink("#csac .panel-body", (self.model.titleA+" vs."+self.model.titleB), csac.tables[0]);
+            }
         }
         if (result.FittedCohortPattern) {
             var fcp = result.FittedCohortPattern;
             createInteractiveGraphImage("#fcp .panel-body", fcp.graphs[0][0]);
+            if (fcp.tables) {
+                for (var i in fcp.tables) fcp.tables[i].unshift(fcp.headers);
+                createDatasetLink("#fcp .panel-body", (self.model.titleA+" vs."+self.model.titleB), fcp.tables[0]);
+            }
         }
         if (result.FittedTemporalTrends) {
             var ftt = result.FittedTemporalTrends;
             createInteractiveGraphImage("#ftt .panel-body", ftt.graphs[0][0]);
+            if (ftt.tables) {
+                for (var i in ftt.tables) ftt.tables[i].unshift(ftt.headers);
+                createDatasetLink("#ftt .panel-body", (self.model.titleA+" vs."+self.model.titleB), ftt.tables[0]);
+            }
         }
         if (result.IO) {
             var io = result.IO;
