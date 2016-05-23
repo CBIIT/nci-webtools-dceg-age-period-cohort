@@ -5,6 +5,7 @@ library(gridSVG)
 library(corrplot)
 library(svglite)
 library(directlabels)
+library(xlsx)
 
 source('apcversion2.R')
 source('crosstalk.R')
@@ -75,13 +76,18 @@ process <- function(data) {
   results$wald = apcwaldtests2(results$A, results$B)
   results$input = input
   
-  toJSON(list(
+  output = list(
     
     # Generate Incidence Rates Graphs/Tables 
     IncidenceRates = list(
       graphs = list(
         getRatesGraph(results$input$A),
         getRatesGraph(results$input$B)
+      ),
+      
+      excelGraphs = list(
+        getRatesGraph(results$input$A, filetype = '.png'),
+        getRatesGraph(results$input$B, filetype = '.png')
       ),
       
       tables = list(
@@ -95,10 +101,14 @@ process <- function(data) {
     # Generate Incidence Rate Ratios Section
     IncidenceRateRatios = list(
       graphs = list(
-        getRateRatiosGraph(getRateRatios(results$input$A, results$input$B), T),
+        getRateRatiosGraph(getRateRatios(results$input$A, results$input$B), label = T),
         getRateRatiosGraph(getRateRatios(results$input$A, results$input$B))
       ),
       
+      excelGraphs = list(
+        getRateRatiosGraph(getRateRatios(results$input$A, results$input$B), label = T, filetype = '.png')
+      ),
+
       tables = list(
         as.data.frame(getRateRatios(results$input$A, results$input$B))
       ),
@@ -111,6 +121,11 @@ process <- function(data) {
       graphs = list(
         plot.apc.resids(results$A),
         plot.apc.resids(results$B)
+      ),
+      
+      excelGraphs = list(
+        plot.apc.resids(results$A, filetype = '.png'),
+        plot.apc.resids(results$B, filetype = '.png')
       ),
       
       tables = c(list(), list()),
@@ -130,7 +145,17 @@ process <- function(data) {
             title = 'Comparison of Drifts'
           )
         ),
-        
+
+        excelGraphs = list(
+          generateRatesGraph(results, 'LocalDrifts', filetype = '.png'),
+          generateParallelGraph(
+            rbind(data.frame(category = 'Equal Local Drifts', log = results$wald$W[7, 3]),
+                  data.frame(category = 'Equal Net Drifts', log = results$wald$W[1, 3])),
+            title = 'Comparison of Drifts',
+            filetype = '.png'
+          )
+        ),
+
         tables = list(
           as.data.frame(results$A$LocalDrifts),
           as.data.frame(results$B$LocalDrifts)
@@ -165,6 +190,17 @@ process <- function(data) {
             )
           ),
           
+          excelGraphs = list(
+            generateParallelGraph(
+              rbind(data.frame(category = 'Parallel By Cohort', log = 0),
+                    data.frame(category = 'Parallel By Period', log = 0),
+                    data.frame(category = 'Parallel By Age', log = 0)),
+              
+              title = 'Comparison of Adjusted Rates',
+              filetype = '.png'
+            )
+          ),
+          
           tables = list(
             as.data.frame(results$wald$W[14:17,])
           ),
@@ -176,6 +212,10 @@ process <- function(data) {
         FittedCohortPattern = list(
           graphs = list(
             generateRatesGraph(results, 'FittedCohortPattern')
+          ),
+          
+          excelGraphs = list(
+            generateRatesGraph(results, 'FittedCohortPattern', filetype = '.png')
           ),
           
           tables = list(
@@ -192,6 +232,10 @@ process <- function(data) {
             generateRatesGraph(results, 'FittedTemporalTrends')
           ),
           
+          excelGraphs = list(
+            generateRatesGraph(results, 'FittedTemporalTrends', filetype = '.png')
+          ),
+
           tables = list(
             as.data.frame(results$A$FittedTemporalTrends),
             as.data.frame(results$B$FittedTemporalTrends)
@@ -206,6 +250,10 @@ process <- function(data) {
             generateRatesGraph(results, 'CrossAge')
           ),
           
+          excelGraphs = list(
+            generateRatesGraph(results, 'CrossAge', filetype = '.png')
+          ),
+         
           tables = list(
             as.data.frame(results$A$CrossAge),
             as.data.frame(results$B$CrossAge)
@@ -225,6 +273,10 @@ process <- function(data) {
           generateRatiosGraph(results, 'FittedCohortPattern')
         ),
         
+        excelGraphs = list(
+          generateRatiosGraph(results, 'FittedCohortPattern', filetype = '.png')
+        ),
+        
         tables = list(
           as.data.frame(results$comparison$FVCA$FCP)
         ),
@@ -238,6 +290,10 @@ process <- function(data) {
           generateRatiosGraph(results, 'FittedTemporalTrends')
         ),
         
+        excelGraphs = list(
+          generateRatiosGraph(results, 'FittedTemporalTrends', filetype = '.png')
+        ),
+        
         tables = list(
           as.data.frame(results$comparison$FVPA$FTT)
         ),
@@ -249,6 +305,10 @@ process <- function(data) {
       CrossSectionalAgeCurve = list(
         graphs = list(
           generateRatiosGraph(results, 'CrossAge')
+        ),
+        
+        excelGraphs = list(
+          generateRatiosGraph(results, 'CrossAge', filetype = '.png')
         ),
         
         tables = list(
@@ -270,6 +330,17 @@ process <- function(data) {
           )
         ),
         
+        excelGraphs = list(
+          generateParallelGraph(
+            rbind(data.frame(category = 'Parallel Cross-Sectional Age Curves', log = results$wald$W[11,3]),
+                  data.frame(category = 'Parallel Fitted Temporal Trends ', log = results$wald$W[12,3]),
+                  data.frame(category = 'Parallel Fitted Cohort Pattern ', log = results$wald$W[13,3])),
+            
+            title = 'Comparison of Adjusted Rates',
+            filetype = '.png'
+          )
+        ),
+
         tables = list(
           as.data.frame(results$comparison$IO)
         ),
@@ -277,7 +348,17 @@ process <- function(data) {
         headers = colnames(results$comparison$IO)
       )
     )
-  ))
+  )
+  
+  output$Download = list(
+    txtInput = '',
+    txtOutput = '',
+    rDataInput = '',
+    rDataOutput = '',
+    excelOutput = toExcel(output)
+  )
+
+  toJSON(output)
 }
 
 
@@ -311,7 +392,7 @@ getRates <- function(data) {
 # getRatesGraph
 # Outputs:  (1) The filename of the generated rates graph
 #-------------------------------------------------------
-getRatesGraph <- function(data) {
+getRatesGraph <- function(data, filetype = '.svg') {
 
   interval = diff(data$periods)[1] - 1
   offset_tick = data$offset_tick
@@ -354,7 +435,7 @@ getRatesGraph <- function(data) {
       method =  list("last.points", hjust = -0.15)
     )
   
-  filename = paste0(OUTPUT_DIR, 'RatesGraph_', getTimestamp(), '.svg')
+  filename = paste0(OUTPUT_DIR, 'RatesGraph_', getTimestamp(), filetype)
   ggsave(file = filename, width = 10, height = 10)
 
   filename
@@ -389,7 +470,7 @@ getRateRatios <- function(A, B) {
 # Input: A data frame containing 
 # Outputs:  (1) The path to the output file
 #-------------------------------------------------------
-getRateRatiosGraph <- function(output, label = F) {
+getRateRatiosGraph <- function(output, label = F, filetype = '.svg') {
   
   min = floor(min(unlist(output)))
   max = ceiling(max(unlist(output)))
@@ -397,9 +478,16 @@ getRateRatiosGraph <- function(output, label = F) {
   if (min == max) 
     min = min - 1
 
-  filename = paste0(OUTPUT_DIR, 'RatesRatioGraph_', getTimestamp(), '.svg')
-  svg(width = 2*ncol(output), height = nrow(output), pointsize = 8 + ncol(output), file = filename)
+  filename = paste0(OUTPUT_DIR, 'RatesRatioGraph_', getTimestamp(), filetype)
+  
+  
+  if (filetype == '.svg')
+    svg(width = 2*ncol(output), height = nrow(output), pointsize = 8 + ncol(output), file = filename)
 
+  if (filetype == '.png')
+    png(width = 300*ncol(output), height = 300*nrow(output), pointsize = 8 + ncol(output), file = filename)
+  
+  
   corrplot(as.matrix(output),
          addCoef.col = if (label) "black" else NULL,
          tl.col="black", tl.srt=45,
@@ -416,7 +504,7 @@ getRateRatiosGraph <- function(output, label = F) {
 # Generates a multiline graph from the rates
 # Outputs:  (1) The path to the output file
 #-------------------------------------------------------
-generateRatesGraph <- function(results, key) {
+generateRatesGraph <- function(results, key, filetype = '.svg') {
 
   resultsA = results$A
   resultsB = results$B
@@ -427,7 +515,7 @@ generateRatesGraph <- function(results, key) {
   setA$key = results$A$Inputs$D$name
   setB$key = results$B$Inputs$D$name
   
-  filename = paste0(OUTPUT_DIR, key, '_', getTimestamp(), '.svg')
+  filename = paste0(OUTPUT_DIR, key, '_', getTimestamp(), filetype)
 
   if (key == 'LocalDrifts') {
     names(setA) = c('Age', 'PercentPerYear', 'CILo', 'CIHi', 'key')
@@ -492,14 +580,20 @@ generateRatesGraph <- function(results, key) {
     )
 
   print(plot)
-  grid.export(name = filename, strict = F, xmldecl = NULL)
+  
+  if (filetype == '.svg')
+    grid.export(name = filename, strict = F, xmldecl = NULL)
+  
+  if (filetype == '.png')
+    ggsave(file = filename, width = 10, height = 10)
+  
   filename
 }
 
 
-generateRatiosGraph <- function(results, key) {
+generateRatiosGraph <- function(results, key, filetype = '.svg') {
   
-  filename = paste0(OUTPUT_DIR, key, '_', getTimestamp(), '.svg')
+  filename = paste0(OUTPUT_DIR, key, '_', getTimestamp(), filetype)
   min = min(results$comparison$IO[,4])
   max = max(results$comparison$IO[,5])
   
@@ -563,7 +657,13 @@ generateRatiosGraph <- function(results, key) {
     )
   
   print(plot)
-  grid.export(name = filename, strict = F, xmldecl = NULL)
+
+  if (filetype == '.svg')
+    grid.export(name = filename, strict = F, xmldecl = NULL)
+  
+  if (filetype == '.png')
+    ggsave(file = filename, width = 10, height = 10)
+
   filename
 }
 
@@ -576,7 +676,7 @@ generateRatiosGraph <- function(results, key) {
 #           (2) The title of the plot
 # Outputs:  (1) The path to the generated plot
 #-------------------------------------------------------
-generateParallelGraph <- function(data, title) {
+generateParallelGraph <- function(data, title, filetype = '.svg') {
   
   data$log = pmin(-log10(data$log), 100)
 
@@ -600,7 +700,7 @@ generateParallelGraph <- function(data, title) {
     ) +  
     coord_flip() 
   
-  filename = paste0(OUTPUT_DIR, 'Parallel', '_', getTimestamp(), '.svg')
+  filename = paste0(OUTPUT_DIR, 'Parallel', '_', getTimestamp(), filetype)
   ggsave(file = filename, width = 10, height = 10)
   
   filename
@@ -612,7 +712,7 @@ generateParallelGraph <- function(data, title) {
 # Creates the graphs for the goodness of fit section
 # Outputs:  Returns the filepaths of the generated graphs
 #-------------------------------------------------------
-plot.apc.resids <- function(M) {
+plot.apc.resids <- function(M, filetype = '.svg') {
   
   par(mfrow = c(1, 2), pty = "m")
   
@@ -632,11 +732,16 @@ plot.apc.resids <- function(M) {
   # Heat map of residuals
   ###
   
-  filenameA = paste0(OUTPUT_DIR, 'HeatMap_', getTimestamp(), '.svg')
-  filenameB = paste0(OUTPUT_DIR, 'QQPlot_', getTimestamp(), '.svg')
+  filenameA = paste0(OUTPUT_DIR, 'HeatMap_', getTimestamp(), filetype)
+  filenameB = paste0(OUTPUT_DIR, 'QQPlot_', getTimestamp(), filetype)
   
-  svg(height = 10, width = 10, pointsize = 10, file = filenameA)
-
+  
+  if (filetype == '.svg')
+    svg(height = 10, width = 10, pointsize = 10, file = filenameA)
+  
+  if (filetype == '.png')
+    png(height = 400, width = 400, pointsize = 10, file = filenameA)
+  
   image(p, a, t(z), 
         ylim = YL,
         xlim = XL, 
@@ -655,7 +760,11 @@ plot.apc.resids <- function(M) {
   ###
   # normal probability plot
   ###
-  svg(height = 10, width = 10, pointsize = 10, file = filenameB)
+  if (filetype == '.svg')
+    svg(height = 10, width = 10, pointsize = 10, file = filenameB)
+  
+  if (filetype == '.png')
+    png(height = 400, width = 400, pointsize = 10, file = filenameB)
   
   par(pty = "s")
   qqnorm(z, xlim = c(-3.5,3.5), ylim = c(-3.5,3.5))
