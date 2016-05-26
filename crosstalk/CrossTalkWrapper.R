@@ -10,7 +10,7 @@ library(xlsx)
 source('apcversion2.R')
 source('crosstalk.R')
 
-OUTPUT_DIR <- '../tmp/'
+OUTPUT_DIR <- './tmp/'
 dir.create(OUTPUT_DIR)
 
 
@@ -34,6 +34,10 @@ parseJSON <- function(data) {
   data$startAge   = as.numeric(data$startAge)
   data$startYear  = as.numeric(data$startYear)
 
+#  tableA     = as.data.frame(data$inputfile1$table)
+#  tableB     = as.data.frame(data$inputfile2$table)
+  
+  
   tableA     = as.data.frame(pmax(data$inputfile1$table, 0.1))
   tableB     = as.data.frame(pmax(data$inputfile2$table, 0.1))
 
@@ -357,17 +361,17 @@ process <- function(data) {
   testOutput <<- output
   
   output$downloads = list(
-    txtInput = paste0(OUTPUT_DIR, 'Input_', getTimestamp(), '.txt'),
-    txtOutput = paste0(OUTPUT_DIR, 'Output_', getTimestamp(), '.txt'),
-    rDataInput = paste0(OUTPUT_DIR, 'Input_', getTimestamp(), '.rdata'),
-    rDataOutput = paste0(OUTPUT_DIR, 'Output_', getTimestamp(), '.rdata'),
-    excelOutput = toExcel(output)
+    TextInput = paste0(OUTPUT_DIR, 'Input_', getTimestamp(), '.txt'),
+    TextOutput = paste0(OUTPUT_DIR, 'Output_', getTimestamp(), '.txt'),
+    RDataInput = paste0(OUTPUT_DIR, 'Input_', getTimestamp(), '.rdata'),
+    RDataOutput = paste0(OUTPUT_DIR, 'Output_', getTimestamp(), '.rdata'),
+    Excel = toExcel(output)
   )
   
-  save(input,   file = output$downloads$rDataInput)
-  save(results, file = output$downloads$rDataOutput)
-  capture.output(print(input), file = output$downloads$txtInput)
-  capture.output(print(results), file = output$downloads$txtOutput)
+  save(input,   file = output$downloads$RDataInput)
+  save(results, file = output$downloads$RDataOutput)
+  capture.output(print(input), file = output$downloads$TextInput)
+  capture.output(print(results), file = output$downloads$TextOutput)
 
   toJSON(output)
 }

@@ -8,12 +8,15 @@ $(document).ready(function () {
         titleA: $('#title1'),
         titleB: $('#title2'),
         inputFileA: $('#inputfile1'),
-        inputFileB: $('#inputfile2')
+        inputFileB: $('#inputfile2'),
+        download: $('#download')
     });
 
     // Add event listeners
     for (element in cfg)
         cfg[element].change(crosstalk.update);
+
+    cfg['download'].click(crosstalk.downloadResults);
 
     window.reset = function (e) {
         e.wrap('<form>').closest('form').get(0).reset();
@@ -191,7 +194,8 @@ var crosstalk = (function ($, ReadFile) {
         titleA: null,
         titleB: null,
         inputFileA: null,
-        inputFileB: null
+        inputFileB: null,
+        download: null
     };
 
     /* ---------- Updates the UI and Model ---------- */
@@ -211,6 +215,15 @@ var crosstalk = (function ($, ReadFile) {
         self.cfg = cfg;
         return self.cfg;
     };
+
+
+    /* ---------- Downloads the selected file ---------- */
+    self.downloadResults = function() {
+        var selected_file = $('#download_selector').val();
+        window.open(selected_file, 'download');
+        return false;
+    };
+
 
     self.validate = function() {
         var input1 = self.model.inputfile1;
@@ -283,6 +296,8 @@ var crosstalk = (function ($, ReadFile) {
                 $(".tab-content").children("#error").remove();
             }
         }).done(function (data) {
+            console.log(data);
+
             $(".graphContainers, .title").empty();
             var result = data;
             for (var key in result.data) {
@@ -306,6 +321,16 @@ var crosstalk = (function ($, ReadFile) {
 
             // bind events to newly generated images
             $(".expandImg").on("click keypress", previewImage);
+
+
+            $('#download_choice').show();
+
+
+            // sets download links for output files
+            ['RDataInput', 'RDataOutput', 'TextInput', 'TextOutput', 'Excel'].forEach(function(key) {
+                $('#' + key).attr('value', result.data.downloads[key]);
+            });
+
         }).fail(crosstalk.failure).always(function () {
             $(".loading").css("display", "none");
         });
@@ -330,6 +355,7 @@ var crosstalk = (function ($, ReadFile) {
 
         $(".graphContainers").empty();
         $('.output').removeClass('show');
+        $('#download_choice').hide();
 
         $("ul.nav.nav-pills li").not(":first").not(":last").addClass("disabled");
 
@@ -388,7 +414,6 @@ var crosstalk = (function ($, ReadFile) {
           url: link,
           dataType: 'text'
       }).done(function(data) {
-          console.log(data);
           callbackLocation.append('<div class="graphContainers">' + data + '</div>');
           $('[data-toggle="tooltip"]').tooltip({container: 'body', html: true});
       });
