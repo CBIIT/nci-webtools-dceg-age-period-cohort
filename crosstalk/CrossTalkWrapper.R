@@ -14,6 +14,9 @@ OUTPUT_DIR <- '../tmp/'
 dir.create(OUTPUT_DIR)
 
 
+testOutput = list()
+
+
 #-------------------------------------------------------
 # parseJSON
 # 
@@ -30,9 +33,10 @@ parseJSON <- function(data) {
   data$interval   = as.numeric(data$interval)
   data$startAge   = as.numeric(data$startAge)
   data$startYear  = as.numeric(data$startYear)
-  
-  tableA     = as.data.frame(apply(data$inputfile1$table, c(1, 2), function(x) if (x == 0) 0.5 else x))
-  tableB     = as.data.frame(apply(data$inputfile2$table, c(1, 2), function(x) if (x == 0) 0.5 else x))
+
+  tableA     = as.data.frame(pmax(data$inputfile1$table, 0.1))
+  tableB     = as.data.frame(pmax(data$inputfile2$table, 0.1))
+
   sequenceA  = seq_along(tableA) %% 2
   sequenceB  = seq_along(tableB) %% 2
   endAge     = data$startAge  + data$interval * nrow(tableA)
@@ -78,7 +82,7 @@ process <- function(data) {
   
   output = list(
     
-    # Generate Incidence Rates Graphs/Tables 
+    # Generate Incidence Rates Graphs/Tables
     IncidenceRates = list(
       graphs = list(
         getRatesGraph(results$input$A),
@@ -350,6 +354,8 @@ process <- function(data) {
     )
   )
   
+  testOutput <<- output
+  
   output$downloads = list(
     txtInput = paste0(OUTPUT_DIR, 'Input_', getTimestamp(), '.txt'),
     txtOutput = paste0(OUTPUT_DIR, 'Output_', getTimestamp(), '.txt'),
@@ -490,7 +496,7 @@ getRateRatiosGraph <- function(output, label = F, filetype = '.svg') {
     svg(width = 2*ncol(output), height = nrow(output), pointsize = 8 + ncol(output), file = filename)
 
   if (filetype == '.png')
-    png(width = 300*ncol(output), height = 300*nrow(output), pointsize = 8 + ncol(output), file = filename)
+    png(width = 100*ncol(output), height = 100*nrow(output), pointsize = 8 + ncol(output), file = filename)
   
   
   corrplot(as.matrix(output),
@@ -700,8 +706,8 @@ generateParallelGraph <- function(data, title, filetype = '.svg') {
       panel.grid.major.y = element_blank(), 
       panel.grid.minor = element_blank(), 
       axis.line.y = element_line(color = "steelblue", size = 0.25),
-      axis.text.y=element_text(margin=margin(r=-5, l=0)),
-      plot.margin=unit(rep(30, 4), "pt")
+      axis.text.y = element_text(margin=margin(r=-5, l=0)),
+      plot.margin = unit(rep(30, 4), "pt")
     ) +  
     coord_flip() 
   
@@ -745,7 +751,7 @@ plot.apc.resids <- function(M, filetype = '.svg') {
     svg(height = 10, width = 10, pointsize = 10, file = filenameA)
   
   if (filetype == '.png')
-    png(height = 400, width = 400, pointsize = 10, file = filenameA)
+    png(height = 600, width = 600, pointsize = 10, file = filenameA)
   
   image(p, a, t(z), 
         ylim = YL,
@@ -769,7 +775,7 @@ plot.apc.resids <- function(M, filetype = '.svg') {
     svg(height = 10, width = 10, pointsize = 10, file = filenameB)
   
   if (filetype == '.png')
-    png(height = 400, width = 400, pointsize = 10, file = filenameB)
+    png(height = 600, width = 600, pointsize = 10, file = filenameB)
   
   par(pty = "s")
   qqnorm(z, xlim = c(-3.5,3.5), ylim = c(-3.5,3.5))
@@ -872,10 +878,71 @@ geom_lollipop <- function(mapping = NULL, data = NULL, ...,
 
 
 
-toExcel <- function(results) {
-  ''
+toExcel <- function(output) {
+  
+  workbook = createWorkbook()
+  populateWorkbook(workbook, output, 0)
+  
+  filePath = paste0(OUTPUT_DIR, 'excel_export_', getTimestamp(), '.xlsx')
+  saveWorkbook(workbook, filePath)
+  
+  filePath
 }
 
+
+
+populateWorkbook <- function(workbook, results, count) {
+
+  for (key in names(results)) {
+
+    section = results[[key]]
+    
+    if (!is.null(section$tables)) {
+      #title = paste(c(names, key), collapse = ' -')
+      #title = gsub('([[:upper:]])', ' \\1', title)
+      count = as.numeric(count) + 1
+      title = paste(count, key)
+      
+      currentSheet = createSheet(workbook, sheetName = title)
+      currentRow = 1
+      currentColumn = 1
+      width = 10
+      
+      if (length(section$tables) > 0)
+        width = max(width, (2 + ncol(section$tables[[1]])))
+
+      # Add graphs first
+      if (!is.null(section$excelGraphs) && length(section$excelGraphs) > 0) {
+        graphs = section$excelGraphs
+
+        for (index in 1:length(graphs)) {
+          
+          if (key == "GoodnessOfFit") {
+            for (subindex in 1:length(graphs[[index]]))
+                addPicture(graphs[[index]][subindex], currentSheet, scale = 0.55, startRow = 1+(index-1)*20, startColumn = 1 + width * (subindex - 1))
+
+          } else {
+            addPicture(graphs[[index]], currentSheet, scale = 0.55, startRow = 1, startColumn = 1 + width * (index - 1))
+          }
+        }
+
+        currentRow = 30
+      }
+      
+      # Add tables below graphs
+      
+      tables = section$tables
+      
+      if (length(tables) > 0)
+        for (index in 1:length(tables)) {
+          addDataFrame(tables[[index]], sheet = currentSheet, startRow = currentRow, startColumn = 1 + width * (index - 1))
+        }
+    }
+    
+    else
+      populateWorkbook(workbook, section, count)
+  }
+}
 
 
 #-------------------------------------------------------
