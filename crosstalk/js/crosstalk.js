@@ -446,7 +446,7 @@ var crosstalk = (function ($, ReadFile) {
         link.removeAttr("id");
         link.on('click', function(e) {
             e.preventDefault();
-            var newWindow = window.open("tabledisplay.html");
+            var newWindow = window.open("tabledisplay.html", "_blank", "width=750, height=550");
             window.requestTabledata = function() {
                 window.requestTabledata = null;
                 return $.extend(true,[],table);
@@ -461,37 +461,24 @@ var crosstalk = (function ($, ReadFile) {
     }    
 
     function incRatesTab(result) {
-        // result has tables, headers and graphs properties
-        var headers = createOutputHeaders([{
-            data: "_row"
-            , title: "Age Group"
-        }], result.headers);
-
         $("#rateTables .title").html("");
-        var extraHeaders = "<tr role='row'><th class='header'>Rate</th><th class='header' colspan='" + (headers.length - 1) + "'>Calendar Period</th></tr>";
-
         if (result.tables[0]) {
-            createOutputTable("#rateTable1", self.model.titleA, result.tables[0], headers, extraHeaders);
+            result.tables[0].unshift(result.headers);
+            createDatasetLink("#rateTable1", self.model.titleA, result.tables[0], .5);
             createGraphImage("#rateGraphs", result.graphs[0], .5);
         }
 
         if (result.tables[1]) {
-            createOutputTable("#rateTable2", self.model.titleB, result.tables[1], headers, extraHeaders);
+            result.tables[1].unshift(result.headers);
+            createDatasetLink("#rateTable2", self.model.titleA, result.tables[1], .5);
             createGraphImage("#rateGraphs", result.graphs[1], .5);
         }
     }
 
     function incRateRatioTab(result) {
-        // result has tables, headers and graphs properties
-        var headers = createOutputHeaders([{
-            data: "_row"
-            , title: "Age Group"
-        }], result.headers);
-
-        var extraHeaders = "<tr role='row'><th class='header'>Rate</th><th class='header' colspan='" + (headers.length - 1) + "'>Calendar Period</th></tr>";
-
         if (result.tables[0]) {
-            createOutputTable("#irrTable", (self.model.titleA + " vs " + self.model.titleB), result.tables[0], headers, extraHeaders);
+            result.tables[0].unshift(result.headers);
+            createDatasetLink("#irrTable", (self.model.titleA + " vs " + self.model.titleB), result.tables[0]);
 
             createGraphImage("#irrGraphs", result.graphs[0][0]);
             createGraphImage("#irrGraphs", result.graphs[1][0]);
@@ -511,15 +498,15 @@ var crosstalk = (function ($, ReadFile) {
             if (ar.ComparisonOfAdjustedRates) {
                 var coarTarget = $("#collapseOne .panel-body");
                 var coar = ar.ComparisonOfAdjustedRates;
-                var headers = createOutputHeaders([{
-                    data: "_row"
-                    , title: "Null Hypothesis"
-                }], coar.headers);
                 if (coar.graphs) {
                     createGraphImage(coarTarget, coar.graphs[0][0], .5);
 
                 }
                 if (coar.tables) {
+                    var headers = createOutputHeaders([{
+                        data: "_row"
+                        , title: "Null Hypothesis"
+                    }], coar.headers);
                     $(coarTarget).append('<div class="col-sm-6"><table id="coarTable" class="data-table stripe compact" width="100%"></table></div>');
                     createOutputTable("#coarTable", (self.model.titleA + " vs " + self.model.titleB), coar.tables[0], headers);
                 }
