@@ -38,7 +38,7 @@ parseJSON <- function(data) {
 #  tableB     = as.data.frame(data$inputfile2$table)
   
   
-  tableA     = as.data.frame(pmax(data$inputfile1$table, 0.1))
+  tableA     = as.data.frame(data$inputfile1$table)
   tableB     = as.data.frame(pmax(data$inputfile2$table, 0.1))
 
   sequenceA  = seq_along(tableA) %% 2
@@ -51,7 +51,7 @@ parseJSON <- function(data) {
       name         = data$inputfile1$title,
       description  = data$description,
       events       = as.matrix(tableA[sequenceA == 1]),
-      offset       = as.matrix(tableA[sequenceA == 0]),
+      offset       = as.matrix(pmax(tableA[sequenceA == 0], 0.1)),
       offset_tick  = 100000,
       ages         = seq(data$startAge,  endAge,  by = data$interval),
       periods      = seq(data$startYear, endYear, by = data$interval)
