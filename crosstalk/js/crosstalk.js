@@ -454,12 +454,6 @@ var crosstalk = (function ($, ReadFile) {
         });
     }
 
-    function createDownloadLink(containerId, displayTitle, link, ratio) {
-        var ratio = ratio || 1;
-        var width = parseInt(12 * ratio);
-        var link = $(containerId).append('<div class="col-sm-' + width + '"><a href="' + link +'">Download Dataset ' + displayTitle + '</a></div>');
-    }    
-
     function incRatesTab(result) {
         $("#rateTables .title").html("");
         if (result.tables[0]) {
@@ -554,8 +548,9 @@ var crosstalk = (function ($, ReadFile) {
 
             if (ld.files) {
                 var linkdiv = $("<div class=\"row\"></div>").appendTo("#local-content");
-                createDownloadLink(linkdiv, self.model.titleA, ld.files[0], .5)
-                createDownloadLink(linkdiv, self.model.titleB, ld.files[1], .5)
+                for (var index in ld.tables) ld.tables[index].unshift(ld.headers);
+                createDatasetLink(linkdiv, self.model.titleA, ld.tables[0], .5)
+                createDatasetLink(linkdiv, self.model.titleB, ld.tables[1], .5)
             }
         }
     }
