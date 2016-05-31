@@ -504,7 +504,7 @@ var crosstalk = (function ($, ReadFile) {
                 }
                 if (coar.tables) {
                     coar.tables[0].unshift(coar.headers);
-                    createOutputTable(coarTarget, (self.model.titleA + " vs " + self.model.titleB), coar.tables[0]);
+                    createDatasetLink(coarTarget, (self.model.titleA + " vs " + self.model.titleB), coar.tables[0]);
                 }
             }
             if (ar.CrossSectionalAgeCurve) {
