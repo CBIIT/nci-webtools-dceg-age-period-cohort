@@ -382,6 +382,108 @@ process <- function(data) {
 }
 
 
+calculationOnly <- function(data) {
+  
+  input = parseJSON(data)
+  
+  results = list()
+  results$A = apc2(input$A)
+  results$B = apc2(input$B)
+  results$comparison = rrcomp1(results$A, results$B)
+  results$wald = apcwaldtests2(results$A, results$B)
+  results$input = input
+  
+  toJSON(list(
+    
+    # Generate Incidence Rates Graphs/Tables
+    IncidenceRates = list(
+        as.data.frame(getRates(results$input$A)),
+        as.data.frame(getRates(results$input$B))
+    ),
+    
+    # Generate Incidence Rate Ratios Section
+    IncidenceRateRatios = list(
+      as.data.frame(getRateRatios(results$input$A, results$input$B))
+    ),
+    
+    # Goodness of Fit Section
+    GoodnessOfFit = list(
+      c(list(), list())
+    ),
+    
+    # APC of Incidence Rates Section
+    ApcOfIncidenceRates = list(
+      
+      # Local Drifts
+      LocalDrifts = list(
+        as.data.frame(results$A$LocalDrifts)
+      ),
+      
+      # Net Drifts
+      NetDrifts = list(
+        as.data.frame(rbind(
+          cbind(Cohort = results$A$Inputs$D$name, results$A$NetDrift), 
+          cbind(Cohort = results$B$Inputs$D$name, results$B$NetDrift))
+        )
+      ),
+      
+      # Adjusted Rates
+      AdjustedRates = list(
+        ComparisonOfAdjustedRates = list(
+          as.data.frame(results$wald$W[14:17,])
+        ),
+        
+        # Fitted Cohort Pattern
+        FittedCohortPattern = list(
+          as.data.frame(results$A$FittedCohortPattern),
+          as.data.frame(results$B$FittedCohortPattern)
+        ),
+        
+        # Fitted Temporal Trends
+        FittedTemporalTrends = list(
+          as.data.frame(results$A$FittedTemporalTrends),
+          as.data.frame(results$B$FittedTemporalTrends)
+        ),
+        
+        # Cross-Sectional Age Curve
+        CrossSectionalAgeCurve = list(
+          as.data.frame(results$A$CrossAge),
+          as.data.frame(results$B$CrossAge)
+        )
+      )
+    ),
+    
+    # APC of Rate Ratios Section
+    ApcOfRateRatios = list(
+      
+      # Fitted Cohort Pattern
+      FittedCohortPattern = list(
+        as.data.frame(results$comparison$FVCA$FCP)
+      ),
+      
+      # Fitted Temporal Trends
+      FittedTemporalTrends = list(
+        as.data.frame(results$comparison$FVPA$FTT)
+      ),
+      
+      # Cross-sectional Age Curve
+      CrossSectionalAgeCurve = list(
+        as.data.frame(results$comparison$FVAP$CAC)
+      ),
+      
+      # IO
+      IO = list(
+        as.data.frame(results$comparison$IO)
+      )
+    ),
+    
+    Raw = results
+  ), auto_unbox = T)
+}
+
+
+
+
 
 #-------------------------------------------------------
 # getRates
