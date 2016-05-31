@@ -457,7 +457,7 @@ var crosstalk = (function ($, ReadFile) {
     function createDownloadLink(containerId, displayTitle, link, ratio) {
         var ratio = ratio || 1;
         var width = parseInt(12 * ratio);
-        var link = $(containerId).append('<a href="' + link +'">Download Dataset ' + displayTitle + '</a></div>');
+        var link = $(containerId).append('<div class="col-sm-' + width + '"><a href="' + link +'">Download Dataset ' + displayTitle + '</a></div>');
     }    
 
     function incRatesTab(result) {
