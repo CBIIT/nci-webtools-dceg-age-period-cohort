@@ -464,13 +464,13 @@ var crosstalk = (function ($, ReadFile) {
         $("#rateTables .title").html("");
         if (result.tables[0]) {
             result.tables[0].unshift(result.headers);
-            createDatasetLink("#rateTable1", self.model.titleA, result.tables[0], .5);
+            createDatasetLink("#rateTables", self.model.titleA, result.tables[0], .5);
             createGraphImage("#rateGraphs", result.graphs[0], .5);
         }
 
         if (result.tables[1]) {
             result.tables[1].unshift(result.headers);
-            createDatasetLink("#rateTable2", self.model.titleA, result.tables[1], .5);
+            createDatasetLink("#rateTables", self.model.titleB, result.tables[1], .5);
             createGraphImage("#rateGraphs", result.graphs[1], .5);
         }
     }
@@ -499,16 +499,12 @@ var crosstalk = (function ($, ReadFile) {
                 var coarTarget = $("#collapseOne .panel-body");
                 var coar = ar.ComparisonOfAdjustedRates;
                 if (coar.graphs) {
-                    createGraphImage(coarTarget, coar.graphs[0][0], .5);
+                    createGraphImage(coarTarget, coar.graphs[0][0]);
 
                 }
                 if (coar.tables) {
-                    var headers = createOutputHeaders([{
-                        data: "_row"
-                        , title: "Null Hypothesis"
-                    }], coar.headers);
-                    $(coarTarget).append('<div class="col-sm-6"><table id="coarTable" class="data-table stripe compact" width="100%"></table></div>');
-                    createOutputTable("#coarTable", (self.model.titleA + " vs " + self.model.titleB), coar.tables[0], headers);
+                    coar.tables[0].unshift(coar.headers);
+                    createOutputTable(coarTarget, (self.model.titleA + " vs " + self.model.titleB), coar.tables[0]);
                 }
             }
             if (ar.CrossSectionalAgeCurve) {
@@ -556,23 +552,11 @@ var crosstalk = (function ($, ReadFile) {
                 createGraphImage(graphdiv, ld.graphs[1][0], .5);
             }
 
-            /*
-            if (ld.tables) {
-                var linkdiv = $("<div class=\"row\"></div>").appendTo("#local-content");
-                for (var i in ld.tables) ld.tables[i].unshift(ld.headers);
-                createDatasetLink(linkdiv, self.model.titleA, ld.tables[0], .5)
-                createDatasetLink(linkdiv, self.model.titleB, ld.tables[1], .5)
-            }*/
-
             if (ld.files) {
                 var linkdiv = $("<div class=\"row\"></div>").appendTo("#local-content");
                 createDownloadLink(linkdiv, self.model.titleA, ld.files[0], .5)
                 createDownloadLink(linkdiv, self.model.titleB, ld.files[1], .5)
             }
-        }
-        if (result.NetDrifts) {
-            var nd = result.NetDrifts;
-            createOutputTable("#netTable", undefined, nd.tables[0], createOutputHeaders({}, nd.headers));
         }
     }
 
@@ -604,7 +588,8 @@ var crosstalk = (function ($, ReadFile) {
         }
         if (result.IO) {
             var io = result.IO;
-            createOutputTable("#interceptTable", (self.model.titleA + " vs " + self.model.titleB), io.tables[0], createOutputHeaders({}, io.headers));
+            io.tables[0].unshift(io.headers);
+            createDatasetLink("#interceptTable", (self.model.titleA + " vs " + self.model.titleB), io.tables[0]);
             createGraphImage("#intercept .graphsContainers", io.graphs[0][0]);
         }
     }
