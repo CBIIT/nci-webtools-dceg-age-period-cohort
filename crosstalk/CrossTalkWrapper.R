@@ -27,8 +27,8 @@ testOutput = list()
 parseJSON <- function(data) {
   
   #todo: remove this block when finished
-  #data = fromJSON(txt = 'input_new.json') 
-  data = fromJSON(data)
+  data = fromJSON(txt = 'input_new.json') 
+#  data = fromJSON(data)
     
   data$interval   = as.numeric(data$interval)
   data$startAge   = as.numeric(data$startAge)
@@ -167,6 +167,11 @@ process <- function(data) {
         tables = list(
           as.data.frame(results$A$LocalDrifts),
           as.data.frame(results$B$LocalDrifts)
+        ),
+        
+        files = list(
+          generateCSV(results$A$LocalDrifts, results$A$NetDrift, 'Local_Drifts_'),
+          generateCSV(results$A$LocalDrifts, results$A$NetDrift, 'Local_Drifts_')
         ),
         
         headers = colnames(results$A$LocalDrifts)
@@ -792,6 +797,21 @@ plot.apc.resids <- function(M, filetype = '.svg') {
   
   c(filenameA, filenameB)
 }
+
+
+generateCSV <- function(tableA, tableB, title) {
+  
+  filepath = paste0(OUTPUT_DIR, title, getTimestamp(), '.csv')
+  
+  write.table(tableB, file = filepath, sep = ',', row.names = F)
+  write("\n",file = filepath, append = T)
+  write.table(tableA, file = filepath, sep = ',', row.names = F, append = T)
+  
+  filepath
+}
+
+
+
 
 #-------------------------------------------------------
 # Modifies geom_point to add a tooltip data attribute to each point
