@@ -454,6 +454,12 @@ var crosstalk = (function ($, ReadFile) {
         });
     }
 
+    function createDownloadLink(containerId, displayTitle, link, ratio) {
+        var ratio = ratio || 1;
+        var width = parseInt(12 * ratio);
+        var link = $(containerId).append('<a href="' + link +'">Download Dataset ' + displayTitle + '</a></div>');
+    }    
+
     function incRatesTab(result) {
         // result has tables, headers and graphs properties
         var headers = createOutputHeaders([{
@@ -562,12 +568,19 @@ var crosstalk = (function ($, ReadFile) {
                 createInteractiveGraphImage(graphdiv, ld.graphs[0][0], .5);
                 createGraphImage(graphdiv, ld.graphs[1][0], .5);
             }
+
+            /*
             if (ld.tables) {
                 var linkdiv = $("<div class=\"row\"></div>").appendTo("#local-content");
                 for (var i in ld.tables) ld.tables[i].unshift(ld.headers);
                 createDatasetLink(linkdiv, self.model.titleA, ld.tables[0], .5)
                 createDatasetLink(linkdiv, self.model.titleB, ld.tables[1], .5)
+            }*/
 
+            if (ld.files) {
+                var linkdiv = $("<div class=\"row\"></div>").appendTo("#local-content");
+                createDownloadLink(linkdiv, self.model.titleA, ld.files[0], .5)
+                createDownloadLink(linkdiv, self.model.titleB, ld.files[1], .5)
             }
         }
         if (result.NetDrifts) {
