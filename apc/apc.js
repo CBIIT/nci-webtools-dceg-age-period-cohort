@@ -261,7 +261,7 @@ var apcModule = (function($) {
 
         $('.loading').css('display', 'block');
 
-        $.post('/apcRest/', JSON.stringify(apcModel))
+        $.post('apcRest/', JSON.stringify(apcModel))
         .done(function(data) {
             apcTool.displayResults(data);
         })
