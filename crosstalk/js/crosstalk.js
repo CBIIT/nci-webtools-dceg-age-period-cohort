@@ -77,7 +77,7 @@ $(document).ready(function () {
 
     $("#helpBtn").on("click", function (e) {
         e.preventDefault();
-        window.open("help.html", "Crosstalk Help", "width=750, height=550");
+        window.open("help.html", "Crosstalk Help", "width=750, height=550, scrollbars=1");
     });
 
     $("#showSwitch").on("change", function () {
@@ -446,7 +446,7 @@ var crosstalk = (function ($, ReadFile) {
         link.removeAttr("id");
         link.on('click', function(e) {
             e.preventDefault();
-            var newWindow = window.open("tabledisplay.html", "_blank", "width=750, height=550");
+            var newWindow = window.open("tabledisplay.html", "_blank", "width=750, height=550, scrollbars=1");
             window.requestTabledata = function() {
                 window.requestTabledata = null;
                 return $.extend(true,[],table);
