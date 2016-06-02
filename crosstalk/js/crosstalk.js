@@ -456,13 +456,24 @@ var crosstalk = (function ($, ReadFile) {
 
     function incRatesTab(result) {
         $("#rateTables .title").html("");
+        result.headers.unshift("Age");
         if (result.tables[0]) {
+            result.tables[0] = result.tables[0].map(function(entry) {
+                entry.Age = entry['_row'];
+                delete entry['_row'];
+                return entry;
+            });
             result.tables[0].unshift(result.headers);
             createDatasetLink("#rateTables", self.model.titleA, [result.tables[0]], .5);
             createGraphImage("#rateGraphs", result.graphs[0], .5);
         }
 
         if (result.tables[1]) {
+            result.tables[1] = result.tables[1].map(function(entry) {
+                entry.Age = entry['_row'];
+                delete entry['_row'];
+                return entry;
+            });
             result.tables[1].unshift(result.headers);
             createDatasetLink("#rateTables", self.model.titleB, [result.tables[1]], .5);
             createGraphImage("#rateGraphs", result.graphs[1], .5);
@@ -471,6 +482,12 @@ var crosstalk = (function ($, ReadFile) {
 
     function incRateRatioTab(result) {
         if (result.tables[0]) {
+            result.headers.unshift("Age");
+            result.tables[0] = result.tables[0].map(function(entry) {
+                entry.Age = entry['_row'];
+                delete entry['_row'];
+                return entry;
+            });
             result.tables[0].unshift(result.headers);
             createDatasetLink("#irrTable", (self.model.titleA + " vs " + self.model.titleB), [result.tables[0]]);
 
@@ -497,6 +514,12 @@ var crosstalk = (function ($, ReadFile) {
 
                 }
                 if (coar.tables) {
+                    coar.headers.unshift("PH--");
+                    coar.tables[0] = coar.tables[0].map(function(entry) {
+                        entry['PH--'] = entry['_row'];
+                        delete entry['_row'];
+                        return entry;
+                    });
                     coar.tables[0].unshift(coar.headers);
                     createDatasetLink(coarTarget, (self.model.titleA + " vs " + self.model.titleB), [coar.tables[0]]);
                 }
@@ -591,6 +614,12 @@ var crosstalk = (function ($, ReadFile) {
         }
         if (result.IO) {
             var io = result.IO;
+            io.headers.unshift("");
+            io.tables[0] = io.tables[0].map(function(entry) {
+                entry[""] = entry['_row'];
+                delete entry['_row'];
+                return entry;
+            });
             io.tables[0].unshift(io.headers);
             createDatasetLink("#interceptTable", (self.model.titleA + " vs " + self.model.titleB), [io.tables[0]]);
             createGraphImage("#intercept .graphsContainers", io.graphs[0][0]);
