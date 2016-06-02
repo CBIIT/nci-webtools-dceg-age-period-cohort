@@ -171,7 +171,7 @@ process <- function(data) {
         
         files = list(
           generateCSV(results$A$LocalDrifts, results$A$NetDrift, 'Local_Drifts_'),
-          generateCSV(results$A$LocalDrifts, results$A$NetDrift, 'Local_Drifts_')
+          generateCSV(results$B$LocalDrifts, results$B$NetDrift, 'Local_Drifts_')
         ),
         
         headers = colnames(results$A$LocalDrifts)
