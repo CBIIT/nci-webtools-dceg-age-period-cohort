@@ -552,7 +552,7 @@ var crosstalk = (function ($, ReadFile) {
                     ld.tables[index].unshift(ld.headers);
                     if (result.NetDrifts) {
                         var nd = result.NetDrifts;
-                        if (nd.headers && nd.tables && nd.tables.length > index) {
+                        if (nd.headers && nd.tables && nd.tables[0].length > index) {
                             tablearray[index] = [[nd.headers,nd.tables[0][index]],ld.tables[index]];
                         }
                     }
