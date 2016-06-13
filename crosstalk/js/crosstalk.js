@@ -733,10 +733,19 @@ var crosstalk = (function ($, ReadFile) {
             self.cfg.startYear.val(contents.startYear);
             self.cfg.interval.val(contents.interval);
         }
-        if (self.model.inputfile1)
+        var inputsExist = true;
+        if (self.model.inputfile1) {
             self.cfg.titleA.val(self.model.inputfile1.title);
-        if (self.model.inputfile2)
+        } else {
+            inputsExist = false;
+        }
+        if (self.model.inputfile2) {
             self.cfg.titleB.val(self.model.inputfile2.title);
+        } else {
+            inputsExist = false;
+        }
+        console.log(inputsExist);
+        $('#dataFlip').toggleClass('show',inputsExist);
         syncModel();
     }
 

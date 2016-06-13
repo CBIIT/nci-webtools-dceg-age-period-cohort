@@ -109,6 +109,10 @@ a.help {
     z-index: 999;
 }
 
+#dataFlip:not(.show) {
+    display: none;
+}
+
 
 /* Overriding Bootstrap Styles */
 
