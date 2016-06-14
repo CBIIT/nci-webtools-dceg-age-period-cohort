@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from rpy2.robjects import r as wrapper
 import json
 import os
 import rpy2
@@ -6,7 +7,6 @@ import sys
 
 app = Flask(__name__)
 
-wrapper = rpy2.robjects.r
 wrapper['source']('CrossTalkWrapper.R')
 def buildFailure(data):
   response = jsonify(data=data, complete=False)
@@ -20,29 +20,18 @@ def buildSuccess(data):
   response.status_code = 200
   return response
 
-@app.route('/crosstalkRest', methods = ['POST'])
-@app.route('/crosstalkRest/', methods = ['POST'])
-def calculation():
-    try:
-      print(request.get_data())
-      response = buildSuccess(json.loads(wrapper['process'](request.get_data())[0]))
-    except Exception as e:
-      exc_type, exc_obj, exc_tb = sys.exc_info()
-      fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-      print("EXCEPTION------------------------------", exc_type, fname, exc_tb.tb_lineno)
-      response = buildFailure(str(e))
-    return response
-
-
 # Specify either calculate, fitModel, or generateExcel
 @app.route('/crosstalkRest/<action>', methods = ['POST'])
 def process():
     try:
       print(request.get_data())
-
-      if action in ['calculate', 'fitModel', 'generateExcel']:
+      
+      if len(action) == 0:
+        action = 'process'
+      
+      if action in ['calculate', 'fitModel', 'generateExcel', 'process']:
         return buildSuccess(json.loads(wrapper[action](request.get_data())[0]))
-    
+
     except Exception as e:
       exc_type, exc_obj, exc_tb = sys.exc_info()
       fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
