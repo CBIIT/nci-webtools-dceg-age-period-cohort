@@ -33,6 +33,23 @@ def calculation():
       response = buildFailure(str(e))
     return response
 
+
+# Specify either calculate, fitModel, or generateExcel
+@app.route('/crosstalkRest/<action>', methods = ['POST'])
+def process():
+    try:
+      print(request.get_data())
+
+      if (action in ['calculate', 'fitModel', 'generateExcel'])
+        return buildSuccess(json.loads(wrapper[action](request.get_data())[0]))
+    
+    except Exception as e:
+      exc_type, exc_obj, exc_tb = sys.exc_info()
+      fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+      print("EXCEPTION------------------------------", exc_type, fname, exc_tb.tb_lineno)
+      return buildFailure(str(e))
+
+
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')
