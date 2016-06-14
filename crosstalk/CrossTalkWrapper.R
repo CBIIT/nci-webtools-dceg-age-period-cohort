@@ -13,22 +13,16 @@ source('crosstalk.R')
 OUTPUT_DIR <- './tmp/'
 dir.create(OUTPUT_DIR)
 
-
-testOutput = list()
-
-
-
 #-------------------------------------------------------
-# calculate
+# fitModel
 # 
 # Input:    The JSON string from the client
 # Output:   A JSON string containing tables and paths to 
 #           output files for the following sections:
-#             - Rates
-#             - Rate Ratios
-#             - Goodness of Fit
+#             - APC of Rates
+#             - APC of Rate Ratios
 #-------------------------------------------------------
-calculate <- function(data) {
+fitModel <- function(data) {
 
   input = parseJSON(data)
   
@@ -100,15 +94,16 @@ calculate <- function(data) {
 
 
 #-------------------------------------------------------
-# fitModel
+# calculate
 # 
 # Input:    The JSON string from the client
 # Output:   A JSON string containing tables and paths to 
 #           output files for the following sections:
-#             - APC of Rates
-#             - APC of Rate Ratios
+#             - Rates
+#             - Rate Ratios
+#             - Goodness of Fit
 #-------------------------------------------------------
-fitModel <- function(data) {
+calculate <- function(data) {
   input = parseJSON(data)
   
   results = list()
@@ -867,8 +862,6 @@ process <- function(data) {
       )
     )
   )
-  
-  testOutput <<- output
   
   output$downloads = list(
     TextInput = paste0(OUTPUT_DIR, 'Input_', getTimestamp(), '.txt'),
