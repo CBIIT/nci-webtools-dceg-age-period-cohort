@@ -1,12 +1,12 @@
 from flask import Flask, request, jsonify
 import json
 import os
-import rpy2.robjects as robjects
+import rpy2
 import sys
 
 app = Flask(__name__)
 
-wrapper = robjects.r
+wrapper = rpy2.robjects.r
 wrapper['source']('CrossTalkWrapper.R')
 def buildFailure(data):
   response = jsonify(data=data, complete=False)
@@ -40,7 +40,7 @@ def process():
     try:
       print(request.get_data())
 
-      if (action in ['calculate', 'fitModel', 'generateExcel'])
+      if action in ['calculate', 'fitModel', 'generateExcel']:
         return buildSuccess(json.loads(wrapper[action](request.get_data())[0]))
     
     except Exception as e:
