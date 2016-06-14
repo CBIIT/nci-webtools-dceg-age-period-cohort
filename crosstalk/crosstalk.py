@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 from rpy2.robjects import r as wrapper
 import json
 import os
-import rpy2
 import sys
 
 app = Flask(__name__)
@@ -22,7 +21,7 @@ def buildSuccess(data):
 
 # Specify either calculate, fitModel, or generateExcel
 @app.route('/crosstalkRest/<action>', methods = ['POST'])
-def process():
+def process(action):
     try:
       print(request.get_data())
       
