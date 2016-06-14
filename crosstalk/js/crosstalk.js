@@ -440,7 +440,7 @@ var crosstalk = (function ($, ReadFile) {
     function createDatasetLink(containerId, displayTitle, table, ratio) {
         var ratio = ratio || 1;
         var width = parseInt(12 * ratio);
-        var link = $(containerId).append('<div class="tabledownload col-sm-' + width + '"><a id="findme">View Dataset ' + displayTitle + '</a></div>').find("#findme");
+        var link = $(containerId).append('<div class="tabledownload col-sm-' + width + '"><a id="findme">View Dataset'+(table.length > 1?'s':'')+' ' + displayTitle + '</a></div>').find("#findme");
         link.removeAttr("id");
         link.on('click', function(e) {
             e.preventDefault();
@@ -462,7 +462,6 @@ var crosstalk = (function ($, ReadFile) {
                 return entry;
             });
             result.tables[0].unshift(result.headers);
-            createDatasetLink("#rateTables", self.model.titleA, [result.tables[0]], .5);
             createGraphImage("#rateGraphs", result.graphs[0], .5);
         }
 
@@ -473,8 +472,10 @@ var crosstalk = (function ($, ReadFile) {
                 return entry;
             });
             result.tables[1].unshift(result.headers);
-            createDatasetLink("#rateTables", self.model.titleB, [result.tables[1]], .5);
             createGraphImage("#rateGraphs", result.graphs[1], .5);
+        }
+        if (result.tables.length > 1) {
+            createDatasetLink("#rateTables", self.model.titleA+" and "+self.model.titleB, [result.tables[0],result.tables[1]]);
         }
     }
 
