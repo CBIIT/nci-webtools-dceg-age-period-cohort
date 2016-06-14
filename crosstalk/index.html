@@ -29,6 +29,15 @@
 </head>
 
 <body>
+    <div id="loadingModal" class="modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="large loading">
+                    <div>Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <div class="row">
             <!-- Banner div -->
@@ -128,7 +137,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-xs-12">
                                     <legend>Data File 2</legend>
@@ -155,21 +163,19 @@
                                 <button type="button" id="modelBt" class="btn btn-primary btn-sm pull-right">Calculate</button>
                                 <button type="reset" id="resetBt" class="btn btn-default btn-sm pull-right">Clear</button>
                             </div>
-
-							<div id="download_choice" class="form-group" style="display:block;">
-								<label for="download_selector">Select download format</label>
-								<div class="form-horizontal">
-									<select id="download_selector" class="input-tiny input-sm">
-										<option id="RDataInput">R-Studio Input</option>
-										<option id="RDataOutput">R-Studio Output</option>
-										<option id="TextInput">Text Input</option>
-										<option id="TextOutput">Text Output</option>
-										<option id="Excel">Excel Output</option>
-									</select>
-									<button type="button" id="download" class="btn btn-primary btn-sm">Download</button>
-								</div>
-							</div>
-
+                            <div id="download_choice" class="form-group" style="display:block;">
+                                <label for="download_selector">Select download format</label>
+                                <div class="form-horizontal">
+                                    <select id="download_selector" class="input-tiny input-sm">
+                                        <option id="RDataInput">R-Studio Input</option>
+                                        <option id="RDataOutput">R-Studio Output</option>
+                                        <option id="TextInput">Text Input</option>
+                                        <option id="TextOutput">Text Output</option>
+                                        <option id="Excel">Excel Output</option>
+                                    </select>
+                                    <button type="button" id="download" class="btn btn-primary btn-sm">Download</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -195,9 +201,6 @@
                     </div>
                     <!-- /.navbar-collapse -->
                 </nav>
-                <div class="large loading">
-                    <div>Loading...</div>
-                </div>
                 <div class="tab-content grey-border">
                     <div class="tab-pane active" id="input">
                         <br/>

@@ -943,12 +943,15 @@ table.dataTable thead .sorting_desc {
     }
 }
 
+#loadingModal .modal-content {
+    border:0px;
+}
+
 .loading {
     position: absolute;
-    display: none;
     width: 5em;
     height: 5em;
-    margin: 0 auto;
+    margin: 5em auto 0;
     font-size: 12px;
     text-indent: 999em;
     overflow: hidden;

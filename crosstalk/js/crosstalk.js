@@ -292,12 +292,10 @@ var crosstalk = (function ($, ReadFile) {
             , url: crosstalk_form.action
             , data: JSON.stringify(crosstalk.model)
             , beforeSend: function () {
-                $(".loading").css("display", "block");
+                $("#loadingModal").modal("show");
                 $(".tab-content").children("#error").remove();
             }
         }).done(function (data) {
-            console.log(data);
-
             $(".graphContainers, .title").empty();
             var result = data;
             for (var key in result.data) {
@@ -330,9 +328,9 @@ var crosstalk = (function ($, ReadFile) {
             ['RDataInput', 'RDataOutput', 'TextInput', 'TextOutput', 'Excel'].forEach(function(key) {
                 $('#' + key).attr('value', result.data.downloads[key]);
             });
-
+            $('a[href="#rates"]').trigger('click');
         }).fail(crosstalk.failure).always(function () {
-            $(".loading").css("display", "none");
+            $("#loadingModal").modal("hide");
         });
     }
 
@@ -744,7 +742,6 @@ var crosstalk = (function ($, ReadFile) {
         } else {
             inputsExist = false;
         }
-        console.log(inputsExist);
         $('#dataFlip').toggleClass('show',inputsExist);
         syncModel();
     }
