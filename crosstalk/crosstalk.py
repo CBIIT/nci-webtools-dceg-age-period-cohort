@@ -25,9 +25,6 @@ def process(action):
     try:
       print(request.get_data())
       
-      if len(action) == 0:
-        action = 'process'
-      
       if action in ['calculate', 'fitModel', 'generateExcel', 'process']:
         return buildSuccess(json.loads(wrapper[action](request.get_data())[0]))
 
