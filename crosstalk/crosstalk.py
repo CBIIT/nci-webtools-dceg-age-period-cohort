@@ -1,12 +1,11 @@
 from flask import Flask, request, jsonify
+from rpy2.robjects import r as wrapper
 import json
 import os
-import rpy2.robjects as robjects
 import sys
 
 app = Flask(__name__)
 
-wrapper = robjects.r
 wrapper['source']('CrossTalkWrapper.R')
 def buildFailure(data):
   response = jsonify(data=data, complete=False)
@@ -20,18 +19,21 @@ def buildSuccess(data):
   response.status_code = 200
   return response
 
-@app.route('/crosstalkRest', methods = ['POST'])
-@app.route('/crosstalkRest/', methods = ['POST'])
-def calculation():
+# Specify either calculate, fitModel, or generateExcel
+@app.route('/crosstalkRest/<action>', methods = ['POST'])
+def process(action):
     try:
       print(request.get_data())
-      response = buildSuccess(json.loads(wrapper['process'](request.get_data())[0]))
+      
+      if action in ['calculate', 'fitModel', 'generateExcel', 'process']:
+        return buildSuccess(json.loads(wrapper[action](request.get_data())[0]))
+
     except Exception as e:
       exc_type, exc_obj, exc_tb = sys.exc_info()
       fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
       print("EXCEPTION------------------------------", exc_type, fname, exc_tb.tb_lineno)
-      response = buildFailure(str(e))
-    return response
+      return buildFailure(str(e))
+
 
 @app.after_request
 def after_request(response):
@@ -44,7 +46,7 @@ import argparse
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # Default port is production value; prod, stage, dev = 8140, sandbox = 9140
-    parser.add_argument('-p', dest = 'port_num', default='9140', help='Sets the Port')
-    parser.add_argument('--debug', action = 'store_true')
+    parser.add_argument('-p', '--port', dest = 'port_num', type = int, default = '9140', help = 'Sets the Port')
+    parser.add_argument('-d', '--debug', action = 'store_true')
     args = parser.parse_args()
-    app.run(host = '0.0.0.0', port = int(args.port_num), debug = args.debug, use_evalex = False)
+    app.run(host = '0.0.0.0', port = args.port_num, debug = args.debug, use_evalex = False)

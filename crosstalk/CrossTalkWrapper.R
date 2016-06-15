@@ -13,8 +13,510 @@ source('crosstalk.R')
 OUTPUT_DIR <- './tmp/'
 dir.create(OUTPUT_DIR)
 
+#-------------------------------------------------------
+# fitModel
+# 
+# Input:    The JSON string from the client
+# Output:   A JSON string containing tables and paths to 
+#           output files for the following sections:
+#             - APC of Rates
+#             - APC of Rate Ratios
+#-------------------------------------------------------
+fitModel <- function(data) {
 
-testOutput = list()
+  input = parseJSON(data)
+  
+  results = list()
+  results$A = apc2(input$A)
+  results$B = apc2(input$B)
+  results$comparison = rrcomp1(results$A, results$B)
+  results$wald = apcwaldtests2(results$A, results$B)
+  results$input = input
+  
+  output = list(
+    
+    # Generate Incidence Rates Graphs/Tables
+    IncidenceRates = list(
+      graphs = list(
+        getRatesGraph(results$input$A),
+        getRatesGraph(results$input$B)
+      ),
+
+      tables = list(
+        as.data.frame(getRates(results$input$A)),
+        as.data.frame(getRates(results$input$B))
+      ),
+      
+      headers = colnames(getRates(results$input$A))
+    ),
+    
+    # Generate Incidence Rate Ratios Section
+    IncidenceRateRatios = list(
+      graphs = list(
+        getRateRatiosGraph(getRateRatios(results$input$A, results$input$B), label = T),
+        getRateRatiosGraph(getRateRatios(results$input$A, results$input$B))
+      ),
+      
+      tables = list(
+        as.data.frame(getRateRatios(results$input$A, results$input$B))
+      ),
+      
+      headers = colnames(getRateRatios(results$input$A, results$input$B))
+    ),
+    
+    # Goodness of Fit Section
+    GoodnessOfFit = list(
+      graphs = list(
+        plot.apc.resids(results$A),
+        plot.apc.resids(results$B)
+      ),
+
+      tables = c(list(), list()),
+      headers = c()
+    ),
+    
+    downloads = list(
+      TextInput = paste0(OUTPUT_DIR, 'Input_', getTimestamp(), '.txt'),
+      TextOutput = paste0(OUTPUT_DIR, 'Output_', getTimestamp(), '.txt'),
+      RDataInput = paste0(OUTPUT_DIR, 'Input_', getTimestamp(), '.rdata'),
+      RDataOutput = paste0(OUTPUT_DIR, 'Output_', getTimestamp(), '.rdata')
+    )
+  )
+
+  save(input,   file = output$downloads$RDataInput)
+  save(results, file = output$downloads$RDataOutput)
+  capture.output(print(input), file = output$downloads$TextInput)
+  capture.output(print(results), file = output$downloads$TextOutput)
+  
+  toJSON(output)  
+}
+
+
+
+#-------------------------------------------------------
+# calculate
+# 
+# Input:    The JSON string from the client
+# Output:   A JSON string containing tables and paths to 
+#           output files for the following sections:
+#             - Rates
+#             - Rate Ratios
+#             - Goodness of Fit
+#-------------------------------------------------------
+calculate <- function(data) {
+  input = parseJSON(data)
+  
+  results = list()
+  results$A = apc2(input$A)
+  results$B = apc2(input$B)
+  results$comparison = rrcomp1(results$A, results$B)
+  results$wald = apcwaldtests2(results$A, results$B)
+  results$input = input
+  
+  output = list(
+
+  # APC of Incidence Rates Section
+  ApcOfIncidenceRates = list(
+    
+    # Local Drifts
+    LocalDrifts = list(
+      graphs = list(
+        generateRatesGraph(results, 'LocalDrifts'),
+        generateParallelGraph(
+          rbind(data.frame(category = 'Equal Local Drifts', log = results$wald$W[7, 3]),
+                data.frame(category = 'Equal Net Drifts', log = results$wald$W[1, 3])),
+          title = 'Comparison of Drifts'
+        )
+      ),
+      
+      tables = list(
+        as.data.frame(results$A$LocalDrifts),
+        as.data.frame(results$B$LocalDrifts),
+        
+        as.data.frame(cbind(Cohort = results$A$Inputs$D$name, results$A$NetDrift)),
+        as.data.frame(cbind(Cohort = results$B$Inputs$D$name, results$B$NetDrift))
+      ),
+      
+      headers = colnames(results$A$LocalDrifts)
+    ),
+    
+    # Net Drifts
+    NetDrifts = list(
+      tables = list(
+        as.data.frame(rbind(
+          cbind(Cohort = results$A$Inputs$D$name, results$A$NetDrift), 
+          cbind(Cohort = results$B$Inputs$D$name, results$B$NetDrift))
+        )
+      ),
+      
+      headers = c('Cohort', colnames(results$A$NetDrift))
+    ),
+    
+    # Adjusted Rates
+    AdjustedRates = list(
+      ComparisonOfAdjustedRates = list(
+        
+        graphs = list(
+          generateParallelGraph(
+            rbind(data.frame(category = 'Parallel By Cohort', log = 0),
+                  data.frame(category = 'Parallel By Period', log = 0),
+                  data.frame(category = 'Parallel By Age', log = 0)),
+            
+            title = 'Comparison of Adjusted Rates'
+          )
+        ),
+        
+        tables = list(
+          as.data.frame(results$wald$W[14:17,])
+        ),
+        
+        headers = colnames(results$wald$W)
+      ),
+      
+      # Fitted Cohort Pattern
+        FittedCohortPattern = list(
+          graphs = list(
+            generateRatesGraph(results, 'FittedCohortPattern')
+          ),
+          
+          tables = list(
+            as.data.frame(results$A$FittedCohortPattern),
+            as.data.frame(results$B$FittedCohortPattern)
+          ),
+          
+          headers = colnames(results$A$FittedCohortPattern)
+        ),
+        
+        # Fitted Temporal Trends
+        FittedTemporalTrends = list(
+          graphs = list(
+            generateRatesGraph(results, 'FittedTemporalTrends')
+          ),
+          
+          tables = list(
+            as.data.frame(results$A$FittedTemporalTrends),
+            as.data.frame(results$B$FittedTemporalTrends)
+          ),
+          
+          headers = colnames(results$A$FittedTemporalTrends)
+        ),
+        
+        # Cross-Sectional Age Curve
+        CrossSectionalAgeCurve = list(
+          graphs = list(
+            generateRatesGraph(results, 'CrossAge')
+          ),
+          
+          tables = list(
+            as.data.frame(results$A$CrossAge),
+            as.data.frame(results$B$CrossAge)
+          ),
+          
+          headers = colnames(results$A$CrossAge)
+        )
+      )
+    ),
+    
+    # APC of Rate Ratios Section
+    ApcOfRateRatios = list(
+    
+      # Fitted Cohort Pattern
+      FittedCohortPattern = list(
+        graphs = list(
+          generateRatiosGraph(results, 'FittedCohortPattern')
+        ),
+        
+        tables = list(
+          as.data.frame(results$comparison$FVCA$FCP)
+        ),
+        
+        headers = colnames(results$comparison$FVCA$FCP)
+      ),
+      
+      # Fitted Temporal Trends
+      FittedTemporalTrends = list(
+        graphs = list(
+          generateRatiosGraph(results, 'FittedTemporalTrends')
+        ),
+        
+        tables = list(
+          as.data.frame(results$comparison$FVPA$FTT)
+        ),
+        
+        headers = colnames(results$comparison$FVPA$FTT)
+      ),
+      
+      # Cross-sectional Age Curve
+      CrossSectionalAgeCurve = list(
+        graphs = list(
+          generateRatiosGraph(results, 'CrossAge')
+        ),
+        
+        tables = list(
+          as.data.frame(results$comparison$FVAP$CAC)
+        ),
+        
+        headers = colnames(results$comparison$FVAP$CAC)
+      ),
+      
+      # IO
+      IO = list(
+        graphs = list(
+          generateParallelGraph(
+            rbind(data.frame(category = 'Parallel Cross-Sectional Age Curves', log = results$wald$W[11,3]),
+                  data.frame(category = 'Parallel Fitted Temporal Trends ', log = results$wald$W[12,3]),
+                  data.frame(category = 'Parallel Fitted Cohort Pattern ', log = results$wald$W[13,3])),
+            
+            title = 'Comparison of Adjusted Rates'
+          )
+        ),
+        
+        tables = list(
+          as.data.frame(results$comparison$IO)
+        ),
+        
+        headers = colnames(results$comparison$IO)
+      )
+    )
+  )
+}
+
+#-------------------------------------------------------
+# generateExcel
+# 
+# Input:    The JSON string from the client
+# Output:   The filepath 
+#-------------------------------------------------------
+generateExcel <- function(data) {
+  
+  input = parseJSON(data)
+  
+  results = list()
+  results$A = apc2(input$A)
+  results$B = apc2(input$B)
+  results$comparison = rrcomp1(results$A, results$B)
+  results$wald = apcwaldtests2(results$A, results$B)
+  results$input = input
+  
+  output = list(
+    
+    # Generate Incidence Rates Graphs/Tables
+    IncidenceRates = list(
+      excelGraphs = list(
+        getRatesGraph(results$input$A, filetype = '.png'),
+        getRatesGraph(results$input$B, filetype = '.png')
+      ),
+      
+      tables = list(
+        as.data.frame(getRates(results$input$A)),
+        as.data.frame(getRates(results$input$B))
+      ),
+      
+      headers = colnames(getRates(results$input$A))
+    ),
+    
+    # Generate Incidence Rate Ratios Section
+    IncidenceRateRatios = list(
+      excelGraphs = list(
+        getRateRatiosGraph(getRateRatios(results$input$A, results$input$B), label = T, filetype = '.png')
+      ),
+      
+      tables = list(
+        as.data.frame(getRateRatios(results$input$A, results$input$B))
+      ),
+      
+      headers = colnames(getRateRatios(results$input$A, results$input$B))
+    ),
+    
+    # Goodness of Fit Section
+    GoodnessOfFit = list(
+      excelGraphs = list(
+        plot.apc.resids(results$A, filetype = '.png'),
+        plot.apc.resids(results$B, filetype = '.png')
+      ),
+      
+      tables = c(list(), list()),
+      headers = c()
+    ),
+    
+    # APC of Incidence Rates Section
+    ApcOfIncidenceRates = list(
+      
+      # Local Drifts
+      LocalDrifts = list(
+        
+        excelGraphs = list(
+          generateRatesGraph(results, 'LocalDrifts', filetype = '.png'),
+          generateParallelGraph(
+            rbind(data.frame(category = 'Equal Local Drifts', log = results$wald$W[7, 3]),
+                  data.frame(category = 'Equal Net Drifts', log = results$wald$W[1, 3])),
+            title = 'Comparison of Drifts',
+            filetype = '.png'
+          )
+        ),
+        
+        tables = list(
+          as.data.frame(results$A$LocalDrifts),
+          as.data.frame(results$B$LocalDrifts),
+          
+          as.data.frame(cbind(Cohort = results$A$Inputs$D$name, results$A$NetDrift)),
+          as.data.frame(cbind(Cohort = results$B$Inputs$D$name, results$B$NetDrift))
+        ),
+        
+        headers = colnames(results$A$LocalDrifts)
+      ),
+      
+      # Net Drifts
+      NetDrifts = list(
+        tables = list(
+          as.data.frame(rbind(
+            cbind(Cohort = results$A$Inputs$D$name, results$A$NetDrift), 
+            cbind(Cohort = results$B$Inputs$D$name, results$B$NetDrift))
+          )
+        ),
+        
+        headers = c('Cohort', colnames(results$A$NetDrift))
+      ),
+      
+      # Adjusted Rates
+      AdjustedRates = list(
+        ComparisonOfAdjustedRates = list(
+          
+          excelGraphs = list(
+            generateParallelGraph(
+              rbind(data.frame(category = 'Parallel By Cohort', log = 0),
+                    data.frame(category = 'Parallel By Period', log = 0),
+                    data.frame(category = 'Parallel By Age', log = 0)),
+              
+              title = 'Comparison of Adjusted Rates',
+              filetype = '.png'
+            )
+          ),
+          
+          tables = list(
+            as.data.frame(results$wald$W[14:17,])
+          ),
+          
+          headers = colnames(results$wald$W)
+        ),
+        
+        # Fitted Cohort Pattern
+        FittedCohortPattern = list(
+          
+          excelGraphs = list(
+            generateRatesGraph(results, 'FittedCohortPattern', filetype = '.png')
+          ),
+          
+          tables = list(
+            as.data.frame(results$A$FittedCohortPattern),
+            as.data.frame(results$B$FittedCohortPattern)
+          ),
+          
+          headers = colnames(results$A$FittedCohortPattern)
+        ),
+        
+        # Fitted Temporal Trends
+        FittedTemporalTrends = list(
+
+          excelGraphs = list(
+            generateRatesGraph(results, 'FittedTemporalTrends', filetype = '.png')
+          ),
+          
+          tables = list(
+            as.data.frame(results$A$FittedTemporalTrends),
+            as.data.frame(results$B$FittedTemporalTrends)
+          ),
+          
+          headers = colnames(results$A$FittedTemporalTrends)
+        ),
+        
+        # Cross-Sectional Age Curve
+        CrossSectionalAgeCurve = list(
+          
+          excelGraphs = list(
+            generateRatesGraph(results, 'CrossAge', filetype = '.png')
+          ),
+          
+          tables = list(
+            as.data.frame(results$A$CrossAge),
+            as.data.frame(results$B$CrossAge)
+          ),
+          
+          headers = colnames(results$A$CrossAge)
+        )
+      )
+    ),
+    
+    # APC of Rate Ratios Section
+    ApcOfRateRatios = list(
+      
+      # Fitted Cohort Pattern
+      FittedCohortPattern = list(
+        
+        excelGraphs = list(
+          generateRatiosGraph(results, 'FittedCohortPattern', filetype = '.png')
+        ),
+        
+        tables = list(
+          as.data.frame(results$comparison$FVCA$FCP)
+        ),
+        
+        headers = colnames(results$comparison$FVCA$FCP)
+      ),
+      
+      # Fitted Temporal Trends
+      FittedTemporalTrends = list(
+        
+        excelGraphs = list(
+          generateRatiosGraph(results, 'FittedTemporalTrends', filetype = '.png')
+        ),
+        
+        tables = list(
+          as.data.frame(results$comparison$FVPA$FTT)
+        ),
+        
+        headers = colnames(results$comparison$FVPA$FTT)
+      ),
+      
+      # Cross-sectional Age Curve
+      CrossSectionalAgeCurve = list(
+
+        excelGraphs = list(
+          generateRatiosGraph(results, 'CrossAge', filetype = '.png')
+        ),
+        
+        tables = list(
+          as.data.frame(results$comparison$FVAP$CAC)
+        ),
+        
+        headers = colnames(results$comparison$FVAP$CAC)
+      ),
+      
+      # IO
+      IO = list(
+        
+        excelGraphs = list(
+          generateParallelGraph(
+            rbind(data.frame(category = 'Parallel Cross-Sectional Age Curves', log = results$wald$W[11,3]),
+                  data.frame(category = 'Parallel Fitted Temporal Trends ', log = results$wald$W[12,3]),
+                  data.frame(category = 'Parallel Fitted Cohort Pattern ', log = results$wald$W[13,3])),
+            
+            title = 'Comparison of Adjusted Rates',
+            filetype = '.png'
+          )
+        ),
+        
+        tables = list(
+          as.data.frame(results$comparison$IO)
+        ),
+        
+        headers = colnames(results$comparison$IO)
+      )
+    )
+  )
+  
+  toJSON(toExcel(output), auto_unbox = T)
+}
 
 
 #-------------------------------------------------------
@@ -360,8 +862,6 @@ process <- function(data) {
       )
     )
   )
-  
-  testOutput <<- output
   
   output$downloads = list(
     TextInput = paste0(OUTPUT_DIR, 'Input_', getTimestamp(), '.txt'),
