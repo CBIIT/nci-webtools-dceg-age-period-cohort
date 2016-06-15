@@ -229,7 +229,26 @@ var crosstalk = (function ($, ReadFile) {
     /* ---------- Downloads the selected file ---------- */
     self.downloadResults = function() {
         var selected_file = $('#download_selector').val();
-        window.open(selected_file, 'download');
+        if (selected_file === "Excel Output") {
+            $.ajax({
+                method: "POST"
+                , url: crosstalk_form.action+"generateExcel"
+                , data: JSON.stringify(crosstalk.model)
+                , beforeSend: function () {
+                    $("#loadingModal").modal("show");
+                    $(".tab-content").children("#error").remove();
+                }
+            }).done(function (data) {
+                if (data.data && typeof data.data === "string") {
+                    $('#Excel').attr('value',data.data);
+                    window.open(data.data, 'download');
+                }
+            }).fail(crosstalk.failure).always(function () {
+                $("#loadingModal").modal("hide");
+            });
+        } else {
+            window.open(selected_file, 'download');
+        }
         return false;
     };
 
@@ -346,11 +365,15 @@ var crosstalk = (function ($, ReadFile) {
 
 
             // sets download links for output files
-            ['RDataInput', 'RDataOutput', 'TextInput', 'TextOutput', 'Excel'].forEach(function(key) {
-                if (result.data.downloads && key in result.data.downloads) {
-                    $('#' + key).attr('value', result.data.downloads[key]);
-                }
-            });
+            if (result.data.downloads) {
+                ['RDataInput', 'RDataOutput', 'TextInput', 'TextOutput', 'Excel'].forEach(function(key) {
+                    if (key in result.data.downloads) {
+                        $('#' + key).attr('value', result.data.downloads[key]);
+                    } else {
+                        $('#' + key).removeAttr('value','');
+                    }
+                });
+            }
             navTo.trigger('click');
         }).fail(crosstalk.failure).always(function () {
             $("#loadingModal").modal("hide");
