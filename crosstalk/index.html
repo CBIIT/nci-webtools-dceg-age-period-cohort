@@ -29,6 +29,15 @@
 </head>
 
 <body>
+    <div id="loadingModal" class="modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="large loading">
+                    <div>Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <div class="row">
             <!-- Banner div -->
@@ -53,7 +62,7 @@
             <div class="col-lg-4 col-md-5 col-sm-12">
                 <div class="well">
                     <div class="well well-nested">
-                        <form class="form" name="crosstalk_form" action="/crosstalkRest/process" autocomplete="off">
+                        <form class="form" name="crosstalk_form" action="/crosstalkRest/" autocomplete="off">
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="form-group">
@@ -128,7 +137,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-xs-12">
                                     <legend>Data File 2</legend>
@@ -148,26 +156,26 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="btn-toolbar offset" align="center">
+                                <button type="submit" id="dataFlip" class="btn btn-primary pull-right"> Flip Two Data in Ratio Calculation</button>
+                            </div>
                             <div class="btn-toolbar offset">
-                                <button type="button" id="modelBt" class="btn btn-primary btn-sm pull-right">Calculate</button>
+                                <button type="button" id="modelBt" class="btn btn-primary btn-sm pull-right">Fit Model</button>
                                 <button type="reset" id="resetBt" class="btn btn-default btn-sm pull-right">Clear</button>
                             </div>
-
-							<div id="download_choice" class="form-group" style="display:block;">
-								<label for="download_selector">Select download format</label>
-								<div class="form-horizontal">
-									<select id="download_selector" class="input-tiny input-sm">
-										<option id="RDataInput">R-Studio Input</option>
-										<option id="RDataOutput">R-Studio Output</option>
-										<option id="TextInput">Text Input</option>
-										<option id="TextOutput">Text Output</option>
-										<option id="Excel">Excel Output</option>
-									</select>
-									<button type="button" id="download" class="btn btn-primary btn-sm">Download</button>
-								</div>
-							</div>
-
+                            <div id="download_choice" class="form-group" style="display:block;">
+                                <label for="download_selector">Select download format</label>
+                                <div class="form-horizontal">
+                                    <select id="download_selector" class="input-tiny input-sm">
+                                        <option id="RDataInput">R-Studio Input</option>
+                                        <option id="RDataOutput">R-Studio Output</option>
+                                        <option id="TextInput">Text Input</option>
+                                        <option id="TextOutput">Text Output</option>
+                                        <option id="Excel">Excel Output</option>
+                                    </select>
+                                    <button type="button" id="download" class="btn btn-primary btn-sm">Download</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -193,9 +201,6 @@
                     </div>
                     <!-- /.navbar-collapse -->
                 </nav>
-                <div class="large loading">
-                    <div>Loading...</div>
-                </div>
                 <div class="tab-content grey-border">
                     <div class="tab-pane active" id="input">
                         <br/>
@@ -210,10 +215,6 @@
                                 <legend><font size="2"><strong>Data 2 (Denominator)</strong></font></legend>
                                 <div id="dataset2" data-target="inputfile2" adamant-pastable="crosstalk-input"></div>
                             </fieldset>
-                        </div>
-                        <br/>
-                        <div id="datasetButton" align="center">
-                            <button type="submit" id="dataFlip" class="btn btn-primary active"> Flip Two Data in Ratio Calculation</button>
                         </div>
                     </div>
                     <div class="tab-pane" id="rates">
@@ -273,7 +274,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-12" align="right">
-                                <button type="submit" id="modelBt" class="btn btn-primary active"> Export Cropped Datasets</button>
+                                <button type="button" id="calculateBt" class="btn btn-primary">Calculate</button>
                             </div>
                         </div>
                     </div>
@@ -306,12 +307,6 @@
                                                 </div>
                                                 <div id="collapseOne" class="panel-collapse collapse in">
                                                     <div class="panel-body">
-                                                        <div class="col-sm-6">
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                            <table id="coarTable" class="data-table stripe compact" width="100%">
-                                                            </table>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -323,12 +318,6 @@
                                                 </div>
                                                 <div id="collapseTwo" class="panel-collapse collapse">
                                                     <div class="panel-body">
-                                                        <div class="col-sm-12">
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -340,12 +329,6 @@
                                                 </div>
                                                 <div id="collapseThree" class="panel-collapse collapse">
                                                     <div class="panel-body">
-                                                        <div class="col-sm-12">
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -357,12 +340,6 @@
                                                 </div>
                                                 <div id="collapseFour" class="panel-collapse collapse">
                                                     <div class="panel-body">
-                                                        <div class="col-sm-12">
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                        </div>
-                                                        <div class="col-sm-6">
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -385,10 +362,6 @@
                                     </div>
                                     <div id="fcp" class="panel-collapse collapse in">
                                         <div class="panel-body">
-                                            <div class="col-sm-12">
-                                                <div class="graphsContainers">
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -400,10 +373,6 @@
                                     </div>
                                     <div id="ftt" class="panel-collapse collapse">
                                         <div class="panel-body">
-                                            <div class="col-sm-12">
-                                                <div class="graphsContainers">
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -415,11 +384,6 @@
                                     </div>
                                     <div id="csac" class="panel-collapse collapse">
                                         <div class="panel-body">
-                                            <div class="col-sm-12">
-                                                <div class="graphsContainers">
-                                                </div>
-
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -431,12 +395,6 @@
                                     </div>
                                     <div id="intercept" class="panel-collapse collapse">
                                         <div class="panel-body">
-                                            <div class="col-sm-12">
-                                                <div class="graphsContainers">
-                                                </div>
-                                                <table id="interceptTable" class="table display compact">
-                                                </table>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>

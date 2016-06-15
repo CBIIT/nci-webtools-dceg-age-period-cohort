@@ -101,7 +101,14 @@ $(document).ready(function () {
         target.add($('#' + id.substr(0, id.length - 2))).parent().children().toggleClass('active');
     });
 
-    $('#modelBt').click(crosstalk.validate);
+    $('#modelBt').click(function() {
+        $('a[href="#input"]').trigger('click');
+        $('ul.nav.nav-pills li:not(:first)').addClass('disabled');
+        crosstalk.validate("fitModel");
+    });
+    $('#calculateBt').click(function() {
+        crosstalk.validate("calculate")
+    });
 
     $('[type="reset"]').click(crosstalk.reset);
     crosstalk.reset();
@@ -202,6 +209,8 @@ var crosstalk = (function ($, ReadFile) {
     self.update = function() {
         var self = this;
 
+        $('a[href="#input"]').trigger('click');
+        $('ul.nav.nav-pills li:not(:first)').addClass('disabled');
         // Updates the model based on the contents of the file
         if (self.type == 'file') {
             ReadFile.createModel(self, updateModel);
@@ -220,12 +229,31 @@ var crosstalk = (function ($, ReadFile) {
     /* ---------- Downloads the selected file ---------- */
     self.downloadResults = function() {
         var selected_file = $('#download_selector').val();
-        window.open(selected_file, 'download');
+        if (selected_file === "Excel Output") {
+            $.ajax({
+                method: "POST"
+                , url: crosstalk_form.action+"generateExcel"
+                , data: JSON.stringify(crosstalk.model)
+                , beforeSend: function () {
+                    $("#loadingModal").modal("show");
+                    $(".tab-content").children("#error").remove();
+                }
+            }).done(function (data) {
+                if (data.data && typeof data.data === "string") {
+                    $('#Excel').attr('value',data.data);
+                    window.open(data.data, 'download');
+                }
+            }).fail(crosstalk.failure).always(function () {
+                $("#loadingModal").modal("hide");
+            });
+        } else {
+            window.open(selected_file, 'download');
+        }
         return false;
     };
 
 
-    self.validate = function() {
+    self.validate = function(action) {
         var input1 = self.model.inputfile1;
         var input2 = self.model.inputfile2;
 
@@ -262,7 +290,7 @@ var crosstalk = (function ($, ReadFile) {
 
             $("form").addClass("submitted");
         } else {
-            crosstalk.getData();
+            crosstalk.getData(action);
         }
     }
 
@@ -286,38 +314,48 @@ var crosstalk = (function ($, ReadFile) {
         $(".tab-pane#input").children("#error").remove().prepend($("<div id='error' class='alert alert-danger'>").html(message));
     }
 
-    self.getData = function() {
+    self.getData = function(action) {
         $.ajax({
             method: "POST"
-            , url: crosstalk_form.action
+            , url: crosstalk_form.action+action
             , data: JSON.stringify(crosstalk.model)
             , beforeSend: function () {
-                $(".loading").css("display", "block");
+                $("#loadingModal").modal("show");
                 $(".tab-content").children("#error").remove();
             }
         }).done(function (data) {
-            console.log(data);
-
-            $(".graphContainers, .title").empty();
             var result = data;
+            var navTo = $('a[href="#input"]');
             for (var key in result.data) {
                 var resultSet = result.data[key];
 
-                if (key == "IncidenceRates")
+                if (key == "IncidenceRates") {
+                    $("#rates").find(".graphContainers, .title").empty();
                     incRatesTab(resultSet);
-                else if (key == "IncidenceRateRatios")
+                    navTo = $('a[href="#rates"]');
+                    navTo.parent().removeClass("disabled");
+                } else if (key == "IncidenceRateRatios") {
+                    $("#rateRatios").find(".graphContainers, .title").empty();
                     incRateRatioTab(resultSet);
-                else if (key == "ApcOfIncidenceRates")
+                    $('a[href="#rateRatios"]').parent().removeClass("disabled");
+                } else if (key == "ApcOfIncidenceRates") {
+                    $("#apcRate").find(".graphContainers, .title").empty();
                     apcRatesTab(resultSet);
-                else if (key == "ApcOfRateRatios")
+                    navTo = $('a[href="#apcRate"]');
+                    navTo.parent().removeClass("disabled");
+                } else if (key == "ApcOfRateRatios") {
+                    $("#apcRatios").find(".graphContainers, .title").empty();
                     apcRateRatioTab(resultSet);
-                else if (key == "GoodnessOfFit")
+                    $('a[href="#apcRatios"]').parent().removeClass("disabled");
+                } else if (key == "GoodnessOfFit") {
+                    $("#goodness").find(".graphContainers, .title").empty();
                     goodFitTab(resultSet);
+                    $('a[href="#goodness"]').parent().removeClass("disabled");
+                }
 
                 $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').addClass('show');
             }
             $(".output").addClass("show");
-            $("ul.nav.nav-pills li").removeClass("disabled");
 
             // bind events to newly generated images
             $(".expandImg").on("click keypress", previewImage);
@@ -327,16 +365,23 @@ var crosstalk = (function ($, ReadFile) {
 
 
             // sets download links for output files
-            ['RDataInput', 'RDataOutput', 'TextInput', 'TextOutput', 'Excel'].forEach(function(key) {
-                $('#' + key).attr('value', result.data.downloads[key]);
-            });
-
+            if (result.data.downloads) {
+                ['RDataInput', 'RDataOutput', 'TextInput', 'TextOutput', 'Excel'].forEach(function(key) {
+                    if (key in result.data.downloads) {
+                        $('#' + key).attr('value', result.data.downloads[key]);
+                    } else {
+                        $('#' + key).removeAttr('value','');
+                    }
+                });
+            }
+            navTo.trigger('click');
         }).fail(crosstalk.failure).always(function () {
-            $(".loading").css("display", "none");
+            $("#loadingModal").modal("hide");
         });
     }
 
     self.reset = function(e) {
+        if (e !== undefined) e.preventDefault();
         // Holds values from the DOM in a model
         self.model = {
             description: null,
@@ -348,7 +393,8 @@ var crosstalk = (function ($, ReadFile) {
             inputfile1: null,
             inputfile2: null
         };
-        if (e !== undefined) e.preventDefault();
+        $('[name="crosstalk_form"]')[0].reset();
+        $('#dataFlip').removeClass('show');
 
         $(".tab-pane#input").children("#errors").remove();
         $(".submitted").removeClass("submitted");
@@ -356,8 +402,8 @@ var crosstalk = (function ($, ReadFile) {
         $(".graphContainers").empty();
         $('.output').removeClass('show');
         $('#download_choice').hide();
-
-        $("ul.nav.nav-pills li").not(":first").not(":last").addClass("disabled");
+        $('a[href="#input"]').trigger('click');
+        $("ul.nav.nav-pills li:not(:first)").addClass("disabled");
 
         $('#description,#startAge,#startYear,#interval,#title1,#title2').val("");
         crosstalk.update();
@@ -442,7 +488,7 @@ var crosstalk = (function ($, ReadFile) {
     function createDatasetLink(containerId, displayTitle, table, ratio) {
         var ratio = ratio || 1;
         var width = parseInt(12 * ratio);
-        var link = $(containerId).append('<div class="tabledownload col-sm-' + width + '"><a id="findme">View Dataset ' + displayTitle + '</a></div>').find("#findme");
+        var link = $(containerId).append('<div class="tabledownload col-sm-' + width + '"><a id="findme">View Dataset'+(table.length > 1?'s':'')+' ' + displayTitle + '</a></div>').find("#findme");
         link.removeAttr("id");
         link.on('click', function(e) {
             e.preventDefault();
@@ -464,7 +510,6 @@ var crosstalk = (function ($, ReadFile) {
                 return entry;
             });
             result.tables[0].unshift(result.headers);
-            createDatasetLink("#rateTables", self.model.titleA, [result.tables[0]], .5);
             createGraphImage("#rateGraphs", result.graphs[0], .5);
         }
 
@@ -475,8 +520,11 @@ var crosstalk = (function ($, ReadFile) {
                 return entry;
             });
             result.tables[1].unshift(result.headers);
-            createDatasetLink("#rateTables", self.model.titleB, [result.tables[1]], .5);
             createGraphImage("#rateGraphs", result.graphs[1], .5);
+        }
+        if (result.tables.length > 1) {
+            $("#rateTables").empty();
+            createDatasetLink("#rateTables", self.model.titleA+" and "+self.model.titleB, [result.tables[0],result.tables[1]]);
         }
     }
 
@@ -489,6 +537,7 @@ var crosstalk = (function ($, ReadFile) {
                 return entry;
             });
             result.tables[0].unshift(result.headers);
+            $("#irrTable").empty();
             createDatasetLink("#irrTable", (self.model.titleA + " vs " + self.model.titleB), [result.tables[0]]);
 
             createGraphImage("#irrGraphs", result.graphs[0][0]);
@@ -587,7 +636,7 @@ var crosstalk = (function ($, ReadFile) {
     }
 
     function apcRateRatioTab(result) {
-        $("#csac, #fcp, #ftt").children(".panel-body").empty()
+        $("#csac, #fcp, #ftt, #intercept").children(".panel-body").empty()
         if (result.CrossSectionalAgeCurve) {
             var csac = result.CrossSectionalAgeCurve;
             createInteractiveGraphImage("#csac .panel-body", csac.graphs[0][0]);
@@ -621,8 +670,8 @@ var crosstalk = (function ($, ReadFile) {
                 return entry;
             });
             io.tables[0].unshift(io.headers);
-            createDatasetLink("#interceptTable", (self.model.titleA + " vs " + self.model.titleB), [io.tables[0]]);
-            createGraphImage("#intercept .graphsContainers", io.graphs[0][0]);
+            createGraphImage("#intercept .panel-body", io.graphs[0][0]);
+            createDatasetLink("#intercept .panel-body", (self.model.titleA + " vs " + self.model.titleB), [io.tables[0]]);
         }
     }
 
@@ -733,10 +782,18 @@ var crosstalk = (function ($, ReadFile) {
             self.cfg.startYear.val(contents.startYear);
             self.cfg.interval.val(contents.interval);
         }
-        if (self.model.inputfile1)
+        var inputsExist = true;
+        if (self.model.inputfile1) {
             self.cfg.titleA.val(self.model.inputfile1.title);
-        if (self.model.inputfile2)
+        } else {
+            inputsExist = false;
+        }
+        if (self.model.inputfile2) {
             self.cfg.titleB.val(self.model.inputfile2.title);
+        } else {
+            inputsExist = false;
+        }
+        $('#dataFlip').toggleClass('show',inputsExist);
         syncModel();
     }
 
