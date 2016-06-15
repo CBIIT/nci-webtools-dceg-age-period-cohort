@@ -101,8 +101,14 @@ $(document).ready(function () {
         target.add($('#' + id.substr(0, id.length - 2))).parent().children().toggleClass('active');
     });
 
-    $('#modelBt').click(crosstalk.validate("fitModel"));
-    $('#calculateBt').click(crosstalk.validate("calculate"));
+    $('#modelBt').click(function() {
+        $('a[href="#input"]').trigger('click');
+        $('ul.nav.nav-pills li:not(:first)').addClass('disabled');
+        crosstalk.validate("fitModel");
+    });
+    $('#calculateBt').click(function() {
+        crosstalk.validate("calculate")
+    });
 
     $('[type="reset"]').click(crosstalk.reset);
     crosstalk.reset();
@@ -203,6 +209,8 @@ var crosstalk = (function ($, ReadFile) {
     self.update = function() {
         var self = this;
 
+        $('a[href="#input"]').trigger('click');
+        $('ul.nav.nav-pills li:not(:first)').addClass('disabled');
         // Updates the model based on the contents of the file
         if (self.type == 'file') {
             ReadFile.createModel(self, updateModel);
@@ -227,46 +235,44 @@ var crosstalk = (function ($, ReadFile) {
 
 
     self.validate = function(action) {
-        return function() {
-            var input1 = self.model.inputfile1;
-            var input2 = self.model.inputfile2;
+        var input1 = self.model.inputfile1;
+        var input2 = self.model.inputfile2;
 
-            var valid = crosstalk_form.checkValidity();
+        var valid = crosstalk_form.checkValidity();
 
-            if (input1 && input2) {
-                if (input1.table.length != input2.table.length || input1.table[0].length != input2.table[0].length) {
-                    $('#inputfile1')[0].setCustomValidity("The contents of Data Files must have the same dimensions");
-                } else {
-                    $('#inputfile1')[0].setCustomValidity("");
-                    $('#inputfile2')[0].setCustomValidity("");
-                }
+        if (input1 && input2) {
+            if (input1.table.length != input2.table.length || input1.table[0].length != input2.table[0].length) {
+                $('#inputfile1')[0].setCustomValidity("The contents of Data Files must have the same dimensions");
             } else {
-                if (!input1 || !input1.table)
-                    $('#inputfile1')[0].setCustomValidity("Data File 1 is required");
-                else
-                    $('#inputfile1')[0].setCustomValidity("");
-
-                if (!input2 || !input2.table)
-                    $('#inputfile2')[0].setCustomValidity("Data File 2 is required");
-                else
-                    $('#inputfile2')[0].setCustomValidity("");
+                $('#inputfile1')[0].setCustomValidity("");
+                $('#inputfile2')[0].setCustomValidity("");
             }
+        } else {
+            if (!input1 || !input1.table)
+                $('#inputfile1')[0].setCustomValidity("Data File 1 is required");
+            else
+                $('#inputfile1')[0].setCustomValidity("");
 
-            $("#input.tab-pane").children("#errors").remove();
-            $(".errors").removeClass("errors");
+            if (!input2 || !input2.table)
+                $('#inputfile2')[0].setCustomValidity("Data File 2 is required");
+            else
+                $('#inputfile2')[0].setCustomValidity("");
+        }
 
-            var invalids = $("input:invalid, select:invalid");
-            if (invalids.length > 0) {
+        $("#input.tab-pane").children("#errors").remove();
+        $(".errors").removeClass("errors");
 
-                $.each($("input:invalid, select:invalid"), function (i, el) {
-                    displayErrors(el);
-                });
+        var invalids = $("input:invalid, select:invalid");
+        if (invalids.length > 0) {
 
-                $("form").addClass("submitted");
-            } else {
-                crosstalk.getData(action);
-            }
-        };
+            $.each($("input:invalid, select:invalid"), function (i, el) {
+                displayErrors(el);
+            });
+
+            $("form").addClass("submitted");
+        } else {
+            crosstalk.getData(action);
+        }
     }
 
     self.failure = function(xhr, error, statusText) {
@@ -352,6 +358,7 @@ var crosstalk = (function ($, ReadFile) {
     }
 
     self.reset = function(e) {
+        if (e !== undefined) e.preventDefault();
         // Holds values from the DOM in a model
         self.model = {
             description: null,
@@ -363,7 +370,8 @@ var crosstalk = (function ($, ReadFile) {
             inputfile1: null,
             inputfile2: null
         };
-        if (e !== undefined) e.preventDefault();
+        $('[name="crosstalk_form"]')[0].reset();
+        $('#dataFlip').removeClass('show');
 
         $(".tab-pane#input").children("#errors").remove();
         $(".submitted").removeClass("submitted");
@@ -371,7 +379,7 @@ var crosstalk = (function ($, ReadFile) {
         $(".graphContainers").empty();
         $('.output').removeClass('show');
         $('#download_choice').hide();
-
+        $('a[href="#input"]').trigger('click');
         $("ul.nav.nav-pills li:not(:first)").addClass("disabled");
 
         $('#description,#startAge,#startYear,#interval,#title1,#title2').val("");
