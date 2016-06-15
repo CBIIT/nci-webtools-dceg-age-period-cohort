@@ -101,7 +101,8 @@ $(document).ready(function () {
         target.add($('#' + id.substr(0, id.length - 2))).parent().children().toggleClass('active');
     });
 
-    $('#modelBt').click(crosstalk.validate);
+    $('#modelBt').click(crosstalk.validate("fitModel"));
+    $('#calculateBt').click(crosstalk.validate("calculate"));
 
     $('[type="reset"]').click(crosstalk.reset);
     crosstalk.reset();
@@ -225,45 +226,47 @@ var crosstalk = (function ($, ReadFile) {
     };
 
 
-    self.validate = function() {
-        var input1 = self.model.inputfile1;
-        var input2 = self.model.inputfile2;
+    self.validate = function(action) {
+        return function() {
+            var input1 = self.model.inputfile1;
+            var input2 = self.model.inputfile2;
 
-        var valid = crosstalk_form.checkValidity();
+            var valid = crosstalk_form.checkValidity();
 
-        if (input1 && input2) {
-            if (input1.table.length != input2.table.length || input1.table[0].length != input2.table[0].length) {
-                $('#inputfile1')[0].setCustomValidity("The contents of Data Files must have the same dimensions");
+            if (input1 && input2) {
+                if (input1.table.length != input2.table.length || input1.table[0].length != input2.table[0].length) {
+                    $('#inputfile1')[0].setCustomValidity("The contents of Data Files must have the same dimensions");
+                } else {
+                    $('#inputfile1')[0].setCustomValidity("");
+                    $('#inputfile2')[0].setCustomValidity("");
+                }
             } else {
-                $('#inputfile1')[0].setCustomValidity("");
-                $('#inputfile2')[0].setCustomValidity("");
+                if (!input1 || !input1.table)
+                    $('#inputfile1')[0].setCustomValidity("Data File 1 is required");
+                else
+                    $('#inputfile1')[0].setCustomValidity("");
+
+                if (!input2 || !input2.table)
+                    $('#inputfile2')[0].setCustomValidity("Data File 2 is required");
+                else
+                    $('#inputfile2')[0].setCustomValidity("");
             }
-        } else {
-            if (!input1 || !input1.table)
-                $('#inputfile1')[0].setCustomValidity("Data File 1 is required");
-            else
-                $('#inputfile1')[0].setCustomValidity("");
 
-            if (!input2 || !input2.table)
-                $('#inputfile2')[0].setCustomValidity("Data File 2 is required");
-            else
-                $('#inputfile2')[0].setCustomValidity("");
-        }
+            $("#input.tab-pane").children("#errors").remove();
+            $(".errors").removeClass("errors");
 
-        $("#input.tab-pane").children("#errors").remove();
-        $(".errors").removeClass("errors");
+            var invalids = $("input:invalid, select:invalid");
+            if (invalids.length > 0) {
 
-        var invalids = $("input:invalid, select:invalid");
-        if (invalids.length > 0) {
+                $.each($("input:invalid, select:invalid"), function (i, el) {
+                    displayErrors(el);
+                });
 
-            $.each($("input:invalid, select:invalid"), function (i, el) {
-                displayErrors(el);
-            });
-
-            $("form").addClass("submitted");
-        } else {
-            crosstalk.getData();
-        }
+                $("form").addClass("submitted");
+            } else {
+                crosstalk.getData(action);
+            }
+        };
     }
 
     self.failure = function(xhr, error, statusText) {
@@ -286,36 +289,48 @@ var crosstalk = (function ($, ReadFile) {
         $(".tab-pane#input").children("#error").remove().prepend($("<div id='error' class='alert alert-danger'>").html(message));
     }
 
-    self.getData = function() {
+    self.getData = function(action) {
         $.ajax({
             method: "POST"
-            , url: crosstalk_form.action
+            , url: crosstalk_form.action+action
             , data: JSON.stringify(crosstalk.model)
             , beforeSend: function () {
                 $("#loadingModal").modal("show");
                 $(".tab-content").children("#error").remove();
             }
         }).done(function (data) {
-            $(".graphContainers, .title").empty();
             var result = data;
+            var navTo = $('a[href="#input"]');
             for (var key in result.data) {
                 var resultSet = result.data[key];
 
-                if (key == "IncidenceRates")
+                if (key == "IncidenceRates") {
+                    $("#rates").find(".graphContainers, .title").empty();
                     incRatesTab(resultSet);
-                else if (key == "IncidenceRateRatios")
+                    navTo = $('a[href="#rates"]');
+                    navTo.parent().removeClass("disabled");
+                } else if (key == "IncidenceRateRatios") {
+                    $("#rateRatios").find(".graphContainers, .title").empty();
                     incRateRatioTab(resultSet);
-                else if (key == "ApcOfIncidenceRates")
+                    $('a[href="#rateRatios"]').parent().removeClass("disabled");
+                } else if (key == "ApcOfIncidenceRates") {
+                    $("#apcRate").find(".graphContainers, .title").empty();
                     apcRatesTab(resultSet);
-                else if (key == "ApcOfRateRatios")
+                    navTo = $('a[href="#apcRate"]');
+                    navTo.parent().removeClass("disabled");
+                } else if (key == "ApcOfRateRatios") {
+                    $("#apcRatios").find(".graphContainers, .title").empty();
                     apcRateRatioTab(resultSet);
-                else if (key == "GoodnessOfFit")
+                    $('a[href="#apcRatios"]').parent().removeClass("disabled");
+                } else if (key == "GoodnessOfFit") {
+                    $("#goodness").find(".graphContainers, .title").empty();
                     goodFitTab(resultSet);
+                    $('a[href="#goodness"]').parent().removeClass("disabled");
+                }
 
                 $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').addClass('show');
             }
             $(".output").addClass("show");
-            $("ul.nav.nav-pills li").removeClass("disabled");
 
             // bind events to newly generated images
             $(".expandImg").on("click keypress", previewImage);
@@ -326,9 +341,11 @@ var crosstalk = (function ($, ReadFile) {
 
             // sets download links for output files
             ['RDataInput', 'RDataOutput', 'TextInput', 'TextOutput', 'Excel'].forEach(function(key) {
-                $('#' + key).attr('value', result.data.downloads[key]);
+                if (result.data.downloads && key in result.data.downloads) {
+                    $('#' + key).attr('value', result.data.downloads[key]);
+                }
             });
-            $('a[href="#rates"]').trigger('click');
+            navTo.trigger('click');
         }).fail(crosstalk.failure).always(function () {
             $("#loadingModal").modal("hide");
         });
@@ -355,7 +372,7 @@ var crosstalk = (function ($, ReadFile) {
         $('.output').removeClass('show');
         $('#download_choice').hide();
 
-        $("ul.nav.nav-pills li").not(":first").not(":last").addClass("disabled");
+        $("ul.nav.nav-pills li:not(:first)").addClass("disabled");
 
         $('#description,#startAge,#startYear,#interval,#title1,#title2').val("");
         crosstalk.update();
@@ -475,6 +492,7 @@ var crosstalk = (function ($, ReadFile) {
             createGraphImage("#rateGraphs", result.graphs[1], .5);
         }
         if (result.tables.length > 1) {
+            $("#rateTables").empty();
             createDatasetLink("#rateTables", self.model.titleA+" and "+self.model.titleB, [result.tables[0],result.tables[1]]);
         }
     }
@@ -488,6 +506,7 @@ var crosstalk = (function ($, ReadFile) {
                 return entry;
             });
             result.tables[0].unshift(result.headers);
+            $("#irrTable").empty();
             createDatasetLink("#irrTable", (self.model.titleA + " vs " + self.model.titleB), [result.tables[0]]);
 
             createGraphImage("#irrGraphs", result.graphs[0][0]);
@@ -586,7 +605,7 @@ var crosstalk = (function ($, ReadFile) {
     }
 
     function apcRateRatioTab(result) {
-        $("#csac, #fcp, #ftt").children(".panel-body").empty()
+        $("#csac, #fcp, #ftt, #intercept").children(".panel-body").empty()
         if (result.CrossSectionalAgeCurve) {
             var csac = result.CrossSectionalAgeCurve;
             createInteractiveGraphImage("#csac .panel-body", csac.graphs[0][0]);
@@ -620,8 +639,8 @@ var crosstalk = (function ($, ReadFile) {
                 return entry;
             });
             io.tables[0].unshift(io.headers);
-            createDatasetLink("#interceptTable", (self.model.titleA + " vs " + self.model.titleB), [io.tables[0]]);
-            createGraphImage("#intercept .graphsContainers", io.graphs[0][0]);
+            createGraphImage("#intercept .panel-body", io.graphs[0][0]);
+            createDatasetLink("#intercept .panel-body", (self.model.titleA + " vs " + self.model.titleB), [io.tables[0]]);
         }
     }
 
