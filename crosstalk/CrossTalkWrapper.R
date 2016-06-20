@@ -38,8 +38,8 @@ fitModel <- function(data) {
     # Generate Incidence Rates Graphs/Tables
     IncidenceRates = list(
       graphs = list(
-        getRatesGraph(results$input$A),
-        getRatesGraph(results$input$B)
+        getRatesGraph(results$input$A, ymax = floor(1.2*max(getRates(results$input$A), getRates(results$input$B)))),
+        getRatesGraph(results$input$B, ymax = floor(1.2*max(getRates(results$input$A), getRates(results$input$B))))
       ),
 
       tables = list(
@@ -303,8 +303,8 @@ generateExcel <- function(data) {
     # Generate Incidence Rates Graphs/Tables
     IncidenceRates = list(
       excelGraphs = list(
-        getRatesGraph(results$input$A, filetype = '.png'),
-        getRatesGraph(results$input$B, filetype = '.png')
+        getRatesGraph(results$input$A, filetype = '.png', ymax = floor(1.2*max(getRates(results$input$A), getRates(results$input$B)))),
+        getRatesGraph(results$input$B, filetype = '.png', ymax = floor(1.2*max(getRates(results$input$A), getRates(results$input$B))))
       ),
       
       tables = list(
@@ -1012,7 +1012,7 @@ getRates <- function(data) {
 # getRatesGraph
 # Outputs:  (1) The filename of the generated rates graph
 #-------------------------------------------------------
-getRatesGraph <- function(data, filetype = '.svg') {
+getRatesGraph <- function(data, filetype = '.svg', ymax = 1000) {
 
   interval = diff(data$periods)[1] - 1
   offset_tick = data$offset_tick
@@ -1042,6 +1042,7 @@ getRatesGraph <- function(data, filetype = '.svg') {
     geom_tooltip(size = 3) +
     theme_bw() +
     scale_x_continuous(expand = c(0.1, 0)) +
+    scale_y_continuous(limits = c(0, ymax)) +
     scale_color_discrete(
       guide = F
     ) +
