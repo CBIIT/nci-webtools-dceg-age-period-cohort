@@ -87,8 +87,8 @@ fitModel <- function(data) {
   save(results, file = output$downloads$RDataOutput)
   capture.output(print(input), file = output$downloads$TextInput)
   capture.output(print(results), file = output$downloads$TextOutput)
-  
-  toJSON(output)  
+
+  toJSON(output)
 }
 
 
@@ -1570,11 +1570,15 @@ populateWorkbook <- function(workbook, results, count) {
         for (index in 1:length(tables)) {
           
           if (key == "IncidenceRateRatios") {
-            addDataFrame(round(tables[[index]], 3), sheet = currentSheet, startRow = 1, startColumn = 1)
+            addDataFrame(as.data.frame(round(tables[[index]], 3)), sheet = currentSheet, startRow = 1, startColumn = 1)
           } else if (key == "LocalDrifts") {
-            addDataFrame(round(tables[[index]], 4), sheet = currentSheet, startRow = currentRow + 6 - 3*ceiling(index/2), startColumn = (1 + width * (index - 1)) %% (width * 2), row.names = F)
+            x = tables[[index]]
+            numeric_columns <- sapply(x, class) == 'numeric'
+            x[numeric_columns] <-  round(x[numeric_columns], 3)
+            
+            addDataFrame(x, sheet = currentSheet, startRow = currentRow + 6 - 3*ceiling(index/2), startColumn = (1 + width * (index - 1)) %% (width * 2), row.names = F)
           } else if (key != "NetDrifts") {
-            addDataFrame(round(tables[[index]], 3), sheet = currentSheet, startRow = currentRow, startColumn = 1 + width * (index - 1))
+            addDataFrame(as.data.frame(round(tables[[index]], 3)), sheet = currentSheet, startRow = currentRow, startColumn = 1 + width * (index - 1))
           }
         }
     }
