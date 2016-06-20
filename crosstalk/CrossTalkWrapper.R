@@ -1545,6 +1545,10 @@ populateWorkbook <- function(workbook, results, count) {
 
         for (index in 1:length(graphs)) {
           
+          if (key == "IncidenceRateRatios") {
+            addPicture(graphs[[index]], currentSheet, scale = 0.55, startRow = 1, startColumn = width * 2)
+          }
+
           if (key == "GoodnessOfFit") {
             for (subindex in 1:length(graphs[[index]]))
                 addPicture(graphs[[index]][subindex], currentSheet, scale = 0.55, startRow = 1+(index-1)*20, startColumn = 1 + width * (subindex - 1))
@@ -1563,6 +1567,11 @@ populateWorkbook <- function(workbook, results, count) {
       
       if (length(tables) > 0)
         for (index in 1:length(tables)) {
+          
+          if (key == "IncidenceRateRatios") {
+            addDataFrame(tables[[index]], sheet = currentSheet, startRow = 1, startColumn = 1)
+          }
+          
           if (key == "LocalDrifts") {
             addDataFrame(tables[[index]], sheet = currentSheet, startRow = currentRow + 6 - 3*ceiling(index/2), startColumn = (1 + width * (index - 1)) %% (width * 2), row.names = F)
           } else if (key != "NetDrifts") {
