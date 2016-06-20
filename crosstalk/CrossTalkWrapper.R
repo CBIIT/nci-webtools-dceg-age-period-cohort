@@ -1429,7 +1429,8 @@ geom_tooltip = function(...) {
 
      for (i in 1:nrow(data)) {
 
-       row = data[i,]
+       # round tooltips to three digits
+       row = round(data[i,], digits = 3)
        title = paste('X:', row$x, '<br />Y:', row$y, '<br />CILo:', row$ymin, '<br />CIHi:', row$ymax)
        grob = ggproto_parent(GeomPoint, self)$draw_panel(data = row, ...)
        grobs[[i]] = garnishGrob(grob, `data-toggle` = "tooltip", `title` = title)
@@ -1546,13 +1547,10 @@ populateWorkbook <- function(workbook, results, count) {
         for (index in 1:length(graphs)) {
           
           if (key == "IncidenceRateRatios") {
-            addPicture(graphs[[index]], currentSheet, scale = 0.55, startRow = 1, startColumn = width * 2)
-          }
-
-          if (key == "GoodnessOfFit") {
+            addPicture(graphs[[index]], currentSheet, scale = 0.55, startRow = 1, startColumn = 3 + width)
+          } else if (key == "GoodnessOfFit") {
             for (subindex in 1:length(graphs[[index]]))
                 addPicture(graphs[[index]][subindex], currentSheet, scale = 0.55, startRow = 1+(index-1)*20, startColumn = 1 + width * (subindex - 1))
-
           } else {
             addPicture(graphs[[index]], currentSheet, scale = 0.55, startRow = 1, startColumn = 1 + width * (index - 1))
           }
@@ -1570,9 +1568,7 @@ populateWorkbook <- function(workbook, results, count) {
           
           if (key == "IncidenceRateRatios") {
             addDataFrame(tables[[index]], sheet = currentSheet, startRow = 1, startColumn = 1)
-          }
-          
-          if (key == "LocalDrifts") {
+          } else if (key == "LocalDrifts") {
             addDataFrame(tables[[index]], sheet = currentSheet, startRow = currentRow + 6 - 3*ceiling(index/2), startColumn = (1 + width * (index - 1)) %% (width * 2), row.names = F)
           } else if (key != "NetDrifts") {
             addDataFrame(tables[[index]], sheet = currentSheet, startRow = currentRow, startColumn = 1 + width * (index - 1))
