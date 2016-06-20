@@ -43,8 +43,8 @@ fitModel <- function(data) {
       ),
 
       tables = list(
-        as.data.frame(getRates(results$input$A)),
-        as.data.frame(getRates(results$input$B))
+        round(as.data.frame(getRates(results$input$A)), 3),
+        round(as.data.frame(getRates(results$input$B)), 3)
       ),
       
       headers = colnames(getRates(results$input$A))
@@ -58,7 +58,7 @@ fitModel <- function(data) {
       ),
       
       tables = list(
-        as.data.frame(getRateRatios(results$input$A, results$input$B))
+        round(as.data.frame(getRateRatios(results$input$A, results$input$B)), 3)
       ),
       
       headers = colnames(getRateRatios(results$input$A, results$input$B))
@@ -130,8 +130,8 @@ calculate <- function(data) {
       ),
       
       tables = list(
-        as.data.frame(results$A$LocalDrifts),
-        as.data.frame(results$B$LocalDrifts),
+        round(as.data.frame(results$A$LocalDrifts), 3),
+        round(as.data.frame(results$B$LocalDrifts), 3),
         
         as.data.frame(cbind(Cohort = results$A$Inputs$D$name, results$A$NetDrift)),
         as.data.frame(cbind(Cohort = results$B$Inputs$D$name, results$B$NetDrift))
@@ -144,8 +144,8 @@ calculate <- function(data) {
     NetDrifts = list(
       tables = list(
         as.data.frame(rbind(
-          cbind(Cohort = results$A$Inputs$D$name, results$A$NetDrift), 
-          cbind(Cohort = results$B$Inputs$D$name, results$B$NetDrift))
+          cbind(Cohort = results$A$Inputs$D$name, round(results$A$NetDrift, 3)), 
+          cbind(Cohort = results$B$Inputs$D$name, round(results$B$NetDrift, 3)))
         )
       ),
       
@@ -167,7 +167,7 @@ calculate <- function(data) {
         ),
         
         tables = list(
-          as.data.frame(results$wald$W[14:17,])
+          round(as.data.frame(results$wald$W[14:17,]), 3)
         ),
         
         headers = colnames(results$wald$W)
@@ -180,8 +180,8 @@ calculate <- function(data) {
           ),
           
           tables = list(
-            as.data.frame(results$A$FittedCohortPattern),
-            as.data.frame(results$B$FittedCohortPattern)
+            round(as.data.frame(results$A$FittedCohortPattern), 3),
+            round(as.data.frame(results$B$FittedCohortPattern), 3)
           ),
           
           headers = colnames(results$A$FittedCohortPattern)
@@ -194,8 +194,8 @@ calculate <- function(data) {
           ),
           
           tables = list(
-            as.data.frame(results$A$FittedTemporalTrends),
-            as.data.frame(results$B$FittedTemporalTrends)
+            round(as.data.frame(results$A$FittedTemporalTrends), 3),
+            round(as.data.frame(results$B$FittedTemporalTrends), 3)
           ),
           
           headers = colnames(results$A$FittedTemporalTrends)
@@ -208,8 +208,8 @@ calculate <- function(data) {
           ),
           
           tables = list(
-            as.data.frame(results$A$CrossAge),
-            as.data.frame(results$B$CrossAge)
+            round(as.data.frame(results$A$CrossAge), 3),
+            round(as.data.frame(results$B$CrossAge), 3)
           ),
           
           headers = colnames(results$A$CrossAge)
@@ -227,7 +227,7 @@ calculate <- function(data) {
         ),
         
         tables = list(
-          as.data.frame(results$comparison$FVCA$FCP)
+          round(as.data.frame(results$comparison$FVCA$FCP), 3)
         ),
         
         headers = colnames(results$comparison$FVCA$FCP)
@@ -240,7 +240,7 @@ calculate <- function(data) {
         ),
         
         tables = list(
-          as.data.frame(results$comparison$FVPA$FTT)
+          round(as.data.frame(results$comparison$FVPA$FTT), 3)
         ),
         
         headers = colnames(results$comparison$FVPA$FTT)
@@ -253,7 +253,7 @@ calculate <- function(data) {
         ),
         
         tables = list(
-          as.data.frame(results$comparison$FVAP$CAC)
+          round(as.data.frame(results$comparison$FVAP$CAC), 3)
         ),
         
         headers = colnames(results$comparison$FVAP$CAC)
@@ -272,7 +272,7 @@ calculate <- function(data) {
         ),
         
         tables = list(
-          as.data.frame(results$comparison$IO)
+          round(as.data.frame(results$comparison$IO), 3)
         ),
         
         headers = colnames(results$comparison$IO)
