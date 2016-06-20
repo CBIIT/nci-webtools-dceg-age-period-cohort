@@ -1429,9 +1429,8 @@ geom_tooltip = function(...) {
 
      for (i in 1:nrow(data)) {
 
-       # round tooltips to three digits
-       row = round(data[i,], digits = 3)
-       title = paste('X:', row$x, '<br />Y:', row$y, '<br />CILo:', row$ymin, '<br />CIHi:', row$ymax)
+       row = data[i,]
+       title = paste('X:', row$x, '<br />Y:', row$y, '<br />CILo:', round(row$ymin, digits = 3), '<br />CIHi:', round(row$ymax, digits = 3))
        grob = ggproto_parent(GeomPoint, self)$draw_panel(data = row, ...)
        grobs[[i]] = garnishGrob(grob, `data-toggle` = "tooltip", `title` = title)
      }
