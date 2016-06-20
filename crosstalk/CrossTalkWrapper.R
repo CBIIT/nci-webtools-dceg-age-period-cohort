@@ -1570,11 +1570,11 @@ populateWorkbook <- function(workbook, results, count) {
         for (index in 1:length(tables)) {
           
           if (key == "IncidenceRateRatios") {
-            addDataFrame(tables[[index]], sheet = currentSheet, startRow = 1, startColumn = 1)
+            addDataFrame(round(tables[[index]], 3), sheet = currentSheet, startRow = 1, startColumn = 1)
           } else if (key == "LocalDrifts") {
-            addDataFrame(tables[[index]], sheet = currentSheet, startRow = currentRow + 6 - 3*ceiling(index/2), startColumn = (1 + width * (index - 1)) %% (width * 2), row.names = F)
+            addDataFrame(round(tables[[index]], 4), sheet = currentSheet, startRow = currentRow + 6 - 3*ceiling(index/2), startColumn = (1 + width * (index - 1)) %% (width * 2), row.names = F)
           } else if (key != "NetDrifts") {
-            addDataFrame(tables[[index]], sheet = currentSheet, startRow = currentRow, startColumn = 1 + width * (index - 1))
+            addDataFrame(round(tables[[index]], 3), sheet = currentSheet, startRow = currentRow, startColumn = 1 + width * (index - 1))
           }
         }
     }
