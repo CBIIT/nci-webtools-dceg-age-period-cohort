@@ -1,386 +1,386 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Age Period Cohort Analysis Tool</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Age Period Cohort Analysis Tool</title>
 
-	<!-- CSS STYLES -->
-	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- CSS STYLES -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 
-	<link rel="stylesheet" href="/common/css/style.css" />
-	<link href="apc.css" rel="stylesheet">
+    <link rel="stylesheet" href="/common/css/style.css" />
+    <link href="apc.css" rel="stylesheet">
 
-	<!-- JAVASCRIPT -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/0.7.3/purify.min.js"></script>
-	<script src="https://cdn.rawgit.com/flatlogic/bootstrap-tabcollapse/master/bootstrap-tabcollapse.js"></script>
+    <!-- JAVASCRIPT -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/0.7.3/purify.min.js"></script>
+    <script src="https://cdn.rawgit.com/flatlogic/bootstrap-tabcollapse/master/bootstrap-tabcollapse.js"></script>
 
-	<script src="apc.js"></script>
-	<link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
+    <script src="apc.js"></script>
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
 </head>
 
 <body>
-	<!--
-	<div>
-		<i id="plus_minus" class="fa fa-caret-left fa-2x"></i>
-	</div>
-	 -->
+    <div class="container">
+        <div class="row">
+            <!-- Banner div -->
+            <div class="col-xs-12">
+                <a href="http://dceg.cancer.gov" target="_blank" class="header-logo" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics"></a>
+            </div>
+        </div>
+        <!-- end of banner div -->
+        <div class="row offset">
+            <!-- sub-Banner div -->
+            <div class="col-xs-12 col-md-10">
+                <img src="/common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" title="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <img src="images/apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" title="Age-Period-Cohort Web Tool" height="33" />
+            </div>
+        </div>
+        <!--  end of header -->
+        <!--  start of body content -->
 
-	 <div class="container">
-		<div class="row">
-			<!-- Banner div -->
-			<div class="col-xs-12">
-				<a href="http://dceg.cancer.gov" target="_blank" class="header-logo" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics"></a>
-			</div>
-		</div>
-		<!-- end of banner div -->
-		<div class="row offset">
-			<!-- sub-Banner div -->
-			<div class="col-xs-12 col-md-10">
-				<img src="../common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" title="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25" />
-			</div>
-			<div class="col-xs-12 col-md-2">
-				<img src="images/apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" title="Age-Period-Cohort Web Tool" height="33" />
-			</div>
-		</div>
-		<!--  end of header -->
-		<!--  start of body content -->
+        <div class="row">
+            <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
+                <div class="well">
+                    <div class="well well-nested">
+                        <form name="apc_form">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label for="title">Title</label>
+                                        <a id="help" class="pull-right" href="#"><span class="glyphicon glyphicon-info-sign glyphicon-blue"></span> Help</a>
+                                        <input id="title" type="text" class="form-control" placeholder="Enter Title">
+                                    </div>
+                                </div>
+                            </div>
 
-		<div class="row">
-			<div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
-				<div class="well">
-					<div class="well well-nested">
-						<form name="apc_form">
-							<div class="row">
-								<div class="col-xs-12">
-									<div class="form-group">
-										<label for="title">Title</label>
-										<a id="help" class="pull-right" href="#"><span class="glyphicon glyphicon-info-sign glyphicon-blue"></span> Help</a>
-										<input id="title" type="text" class="form-control" placeholder="Enter Title">
-									</div>
-								</div>
-							</div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <textarea id="description" class="form-control" rows="3" placeholder="Enter Description"></textarea>
+                                    </div>
+                                </div>
+                            </div>
 
-							<div class="row">
-								<div class="col-xs-12">
-									<div class="form-group">
-										<label for="description">Description</label>
-										<textarea id="description" class="form-control" rows="3" placeholder="Enter Description"></textarea>
-									</div>
-								</div>
-							</div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="startYear">Start Year</label>
+                                        <div>
+                                            <input type="text" class="input-small input-sm" id="startYear" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="startAge">Start Age</label>
+                                        <div>
+                                            <input type="text" class="input-small input-sm" id="startAge" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="interval">Interval (Years)</label>
+                                        <div>
+                                            <select class="input-small input-sm" id="interval">
+                                                <option value=""></option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-							<div class="row">
-								<div class="col-sm-4">
-									<div class="form-group">
-										<label for="startYear">Start Year</label>
-										<div>
-											<input type="text" class="input-small input-sm" id="startYear" />
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-4">
-									<div class="form-group">
-										<label for="startAge">Start Age</label>
-										<div>
-											<input type="text" class="input-small input-sm" id="startAge" />
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-4">
-									<div class="form-group">
-										<label for="interval">Interval (Years)</label>
-										<div>
-											<select class="input-small input-sm" id="interval">
-												<option value=""></option>
-												<option value="1">1</option>
-												<option value="2">2</option>
-												<option value="3">3</option>
-												<option value="4">4</option>
-												<option value="5">5</option>
-												<option value="6">6</option>
-												<option value="7">7</option>
-												<option value="8">8</option>
-												<option value="9">9</option>
-												<option value="10">10</option>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-3">
+                                    <div class="form-group">
+                                        <label>Reference: </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-5">
+                                    <div class="form-group">
+                                        <label class="radio-inline label-bold">
+                                            <input type="radio" id="refAuto" name="reference" value="auto" checked>
+                                            <span class="wrappable">Default</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <div class="form-group">
+                                        <label class="radio-inline label-bold">
+                                            <input type="radio" id="refManual" name="reference" value="manual">
+                                            <span class="wrappable">Manual</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
 
-							<div class="row">
-								<div class="col-xs-12 col-sm-3">
-									<div class="form-group">
-										<label>Reference: </label>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-5">
-									<div class="form-group">
-										<label class="radio-inline label-bold">
-											<input type="radio" id="refAuto" name="reference" value="auto" checked>
-											<span class="wrappable">Default</span>
-										</label>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-4">
-									<div class="form-group">
-										<label class="radio-inline label-bold">
-											<input type="radio" id="refManual" name="reference" value="manual">
-											<span class="wrappable">Manual</span>
-										</label>
-									</div>
-								</div>
-							</div>
+                            <div class="row offset" id="referenceDiv" style="display:none;">
+                                <div class="col-md-4">
+                                    <select class="input-sm" id="refYear"></select>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="input-sm" id="refAge"></select>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control input-sm " id="cohort" disabled/>
+                                </div>
+                            </div>
 
-							<div class="row offset" id="referenceDiv" style="display:none;">
-								<div class="col-md-4">
-									<select class="input-sm" id="refYear"></select>
-								</div>
-								<div class="col-md-4">
-									<select class="input-sm" id="refAge"></select>
-								</div>
-								<div class="col-md-4">
-									<input type="text" class="form-control input-sm " id="cohort" disabled/>
-								</div>
-							</div>
+                            <div class="form-group">
+                                <label for="fileUpload">Copy and paste into table on right or upload a csv with population and count information.</label>
+                            </div>
 
-							<div class="form-group">
-								<label for="fileUpload">Copy and paste into table on right or upload a csv with population and count information.</label>
-							</div>
+                            <div class="form-group">
+                                <input id="fileUpload" type="file" accept=".csv" />
+                            </div>
 
-							<div class="form-group">
-								<input id="fileUpload" type="file" accept=".csv" />
-							</div>
+                            <div class="btn-toolbar offset">
+                                <button type="button" id="calculate" class="btn btn-primary btn-sm pull-right">Calculate</button>
+                                <button type="button" id="cancel" class="btn btn-default btn-sm pull-right">Clear</button>
+                            </div>
 
-							<div class="btn-toolbar offset">
-								<button type="button" id="calculate" class="btn btn-primary btn-sm pull-right">Calculate</button>
-								<button type="button" id="cancel" class="btn btn-default btn-sm pull-right">Clear</button>
-							</div>
+                            <div id="download_choice" class="form-group" style="display:none;">
+                                <label for="download_selector">Select download format</label>
+                                <div class="form-horizontal">
+                                    <select id="download_selector" class="input-tiny input-sm">
+                                        <option id="RDataInput">R-Studio Input</option>
+                                        <option id="RDataOutput">R-Studio Output</option>
+                                        <option id="TextInput">Text Input</option>
+                                        <option id="TextOutput">Text Output</option>
+                                        <option id="Excel">Excel Output</option>
+                                    </select>
+                                    <button type="button" id="download" class="btn btn-primary btn-sm">Download</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <hr class="style-two">
+                <div id="ND" style="display:none">
+                    <table id="NetDrift" class="data-table"></table>
+                    <br>
+                </div>
+                <div id="WT" style="display:none">
+                    <div>
+                        <div id="tab-4458-18">
+                            <table id="Waldtests" class="data-table"></table>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <div id="CE" style="display:none">
+                    <div>
+                        <div id="tab-4458-7">
+                            <table id="Coefficients" class="data-table"></table>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <!--  end of left box -->
+            <div class="col-lg-8 col-md-7 col-sm-12 col-xs-12 ">
+                <div class="large loading">
+                    <div>Loading…</div>
+                </div>
 
-							<div id="download_choice" class="form-group" style="display:none;">
-								<label for="download_selector">Select download format</label>
-								<div class="form-horizontal">
-									<select id="download_selector" class="input-tiny input-sm">
-										<option id="RDataInput">R-Studio Input</option>
-										<option id="RDataOutput">R-Studio Output</option>
-										<option id="TextInput">Text Input</option>
-										<option id="TextOutput">Text Output</option>
-										<option id="Excel">Excel Output</option>
-									</select>
-									<button type="button" id="download" class="btn btn-primary btn-sm">Download</button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-				<hr class="style-two">
-				<div id="ND" style="display:none">
-					<table id="NetDrift" class="data-table"></table>
-				<br>
-				</div>
-				<div id="WT" style="display:none">
-					<div>
-						<div id="tab-4458-18">
-							<table id="Waldtests" class="data-table"></table>
-						</div>
-					</div>
-				<br>
-				</div>
-				<div id="CE" style="display:none">
-					<div>
-						<div id="tab-4458-7">
-							<table id="Coefficients" class="data-table"></table>
-						</div>
-					</div>
-				<br>
-				</div>
-			</div>
-			<!--  end of left box -->
-			<div class="col-lg-8 col-md-7 col-sm-12 col-xs-12 ">
-				<div class="large loading">
-					<div>Loading…</div>
-				</div>
+                <nav class="navbar navbar-default">
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="apc-tab-nav">
+                        <ul class="nav nav-pills">
+                            <li class="active"><a href="#tab-4458-1" data-toggle="tab">Input</a></li>
+                            <li><a href="#tab-4458-8" data-toggle="tab">Age Deviations</a></li>
+                            <li><a href="#tab-4458-9" data-toggle="tab">Per Deviations</a></li>
+                            <li><a href="#tab-4458-10" data-toggle="tab">Coh Deviations</a></li>
+                            <li><a href="#tab-4458-11" data-toggle="tab">Long Age</a></li>
+                            <li><a href="#tab-4458-12" data-toggle="tab">Cross Age</a></li>
+                            <li><a href="#tab-4458-13" data-toggle="tab">Long 2 CrossRR</a></li>
+                            <li><a href="#tab-4458-14" data-toggle="tab">Fitted Temporal Trend</a></li>
+                            <li><a href="#tab-4458-15" data-toggle="tab">PeriodRR</a></li>
+                            <li><a href="#tab-4458-16" data-toggle="tab">CohortRR</a></li>
+                            <li><a href="#tab-4458-17" data-toggle="tab">Local Drifts</a></li>
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+                </nav>
 
-				<nav class="navbar navbar-default">
-					<!-- Collect the nav links, forms, and other content for toggling -->
-					<div class="collapse navbar-collapse" id="apc-tab-nav">
-						<ul class="nav nav-pills">
-							<li class="active"><a href="#tab-4458-1" data-toggle="tab">Input</a></li>
-							<li><a href="#tab-4458-8" data-toggle="tab">Age Deviations</a></li>
-							<li><a href="#tab-4458-9" data-toggle="tab">Per Deviations</a></li>
-							<li><a href="#tab-4458-10" data-toggle="tab">Coh Deviations</a></li>
-							<li><a href="#tab-4458-11" data-toggle="tab">Long Age</a></li>
-							<li><a href="#tab-4458-12" data-toggle="tab">Cross Age</a></li>
-							<li><a href="#tab-4458-13" data-toggle="tab">Long 2 CrossRR</a></li>
-							<li><a href="#tab-4458-14" data-toggle="tab">Fitted Temporal Trend</a></li>
-							<li><a href="#tab-4458-15" data-toggle="tab">PeriodRR</a></li>
-							<li><a href="#tab-4458-16" data-toggle="tab">CohortRR</a></li>
-							<li><a href="#tab-4458-17" data-toggle="tab">Local Drifts</a></li>
-						</ul>
-					</div>
-					<!-- /.navbar-collapse -->
-				</nav>
+                <div class="tab-content grey-border">
+                    <div class="tab-pane active" id="tab-4458-1">
+                        <div id="inputData">
 
-				<div class="tab-content grey-border">
-					<div class="tab-pane active" id="tab-4458-1">
-						<div id="inputData">
+                            <img id="paste_here_image" alt="paste here image" src="/common/images/paste-here.gif" />
+                            <label for="paste"></label>
+                            <textarea id="paste" rows="4"></textarea>
+                            <div id="tableContainer">
 
-							<img id="paste_here_image" alt="paste here image" src="/common/images/paste-here.gif" />
-							<label for="paste"></label>
-							<textarea id="paste" rows="4"></textarea>
-							<div id="tableContainer">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab-4458-8">
+                        <div id="AgeDeviationsGraph" style="overflow: auto;"></div>
+                        <br />
+                        <br />
+                        <br />
+                        <div class="table-responsive">
+                            <table id="AgeDeviations" class="data-table"></table>
+                        </div>
+                        <div id="AgeDeviationsDownloadResultLink"></div>
+                    </div>
+                    <div class="tab-pane" id="tab-4458-9">
+                        <div id="PerDeviationsGraph" style="overflow: auto;"></div>
+                        <br />
+                        <br />
+                        <br />
+                        <div class="table-responsive">
+                            <table id="PerDeviations" class="data-table"></table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab-4458-10">
+                        <div id="CohDeviationsGraph" style="overflow: auto;"></div>
+                        <br />
+                        <br />
+                        <br />
+                        <div class="table-responsive">
+                            <table id="CohDeviations" class="data-table"></table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab-4458-11">
+                        <div id="LongAgeGraph" style="overflow: auto;"></div>
+                        <div class="rates" style="display:none;">Rates Per
+                            <span id="OffsetLongAge"></span> Person-Years</div>
+                        <br />
+                        <br />
+                        <div class="table-responsive">
+                            <table id="LongAge" class="data-table"></table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab-4458-12">
+                        <div id="CrossAgeGraph" style="overflow: auto;"></div>
+                        <div class="rates" style="display:none;">Rates Per
+                            <span id="OffsetCrossAge"></span> Person-Years</div>
+                        <br />
+                        <br />
+                        <div class="table-responsive">
+                            <table id="CrossAge" class="data-table"></table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab-4458-13">
+                        <div id="Long2CrossRRGraph" style="overflow: auto;"></div>
+                        <br />
+                        <br />
+                        <br />
+                        <div class="table-responsive">
+                            <table id="Long2CrossRR" class="data-table"></table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab-4458-14">
+                        <div id="FittedTemporalTrendsGraph" style="overflow: auto;"></div>
+                        <div class="rates" style="display:none;">Rates Per
+                            <span id="OffsetFittedTemporalTrends"></span> Person-Years</div>
+                        <br />
+                        <br />
+                        <div class="table-responsive">
+                            <table id="FittedTemporalTrends" class="data-table"></table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab-4458-15">
+                        <div id="PeriodRRGraph" style="overflow: auto;"></div>
+                        <br />
+                        <br />
+                        <br />
+                        <div class="table-responsive">
+                            <table id="PeriodRR" class="data-table"></table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab-4458-16">
+                        <div id="CohortRRGraph" style="overflow: auto;"></div>
+                        <br />
+                        <br />
+                        <br />
+                        <div class="table-responsive">
+                            <table id="CohortRR" class="data-table"></table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab-4458-17">
+                        <div id="LocalDriftsGraph" style="overflow: auto;"></div>
+                        <br />
+                        <br />
+                        <br />
+                        <div class="table-responsive">
+                            <table id="LocalDrifts" class="data-table"></table>
+                        </div>
+                    </div>
+                </div>
+                <!--  end of tab content -->
+            </div>
 
-							</div>
-						</div>
-					</div>
-					<div class="tab-pane" id="tab-4458-8">
-						<div id="AgeDeviationsGraph" style="overflow: auto;"></div>
-						<br />
-						<br />
-						<br />
-						<div class="table-responsive">
-							<table id="AgeDeviations" class="data-table"></table>
-						</div>
-						<div id="AgeDeviationsDownloadResultLink"></div>
-					</div>
-					<div class="tab-pane" id="tab-4458-9">
-						<div id="PerDeviationsGraph" style="overflow: auto;"></div>
-						<br />
-						<br />
-						<br />
-						<div class="table-responsive">
-							<table id="PerDeviations" class="data-table"></table>
-						</div>
-					</div>
-					<div class="tab-pane" id="tab-4458-10">
-						<div id="CohDeviationsGraph" style="overflow: auto;"></div>
-						<br />
-						<br />
-						<br />
-						<div class="table-responsive">
-							<table id="CohDeviations" class="data-table"></table>
-						</div>
-					</div>
-					<div class="tab-pane" id="tab-4458-11">
-						<div id="LongAgeGraph" style="overflow: auto;"></div>
-						<div class="rates" style="display:none;">Rates Per
-							<span id="OffsetLongAge"></span> Person-Years</div>
-						<br />
-						<br />
-						<div class="table-responsive">
-							<table id="LongAge" class="data-table"></table>
-						</div>
-					</div>
-					<div class="tab-pane" id="tab-4458-12">
-						<div id="CrossAgeGraph" style="overflow: auto;"></div>
-						<div class="rates" style="display:none;">Rates Per
-							<span id="OffsetCrossAge"></span> Person-Years</div>
-						<br />
-						<br />
-						<div class="table-responsive">
-							<table id="CrossAge" class="data-table"></table>
-						</div>
-					</div>
-					<div class="tab-pane" id="tab-4458-13">
-						<div id="Long2CrossRRGraph" style="overflow: auto;"></div>
-						<br />
-						<br />
-						<br />
-						<div class="table-responsive">
- 							<table id="Long2CrossRR" class="data-table"></table>
-						</div>
-					</div>
-					<div class="tab-pane" id="tab-4458-14">
-						<div id="FittedTemporalTrendsGraph" style="overflow: auto;"></div>
-						<div class="rates" style="display:none;">Rates Per
-							<span id="OffsetFittedTemporalTrends"></span> Person-Years</div>
-						<br />
-						<br />
-						<div class="table-responsive">
-							<table id="FittedTemporalTrends" class="data-table"></table>
-						</div>
-					</div>
-					<div class="tab-pane" id="tab-4458-15">
-						<div id="PeriodRRGraph" style="overflow: auto;"></div>
-						<br />
-						<br />
-						<br />
-						<div class="table-responsive">
-							<table id="PeriodRR" class="data-table"></table>
-						</div>
-					</div>
-					<div class="tab-pane" id="tab-4458-16">
-						<div id="CohortRRGraph" style="overflow: auto;"></div>
-						<br />
-						<br />
-						<br />
-						<div class="table-responsive">
-							<table id="CohortRR" class="data-table"></table>
-						</div>
-					</div>
-					<div class="tab-pane" id="tab-4458-17">
-						<div id="LocalDriftsGraph" style="overflow: auto;"></div>
-						<br />
-						<br />
-						<br />
-						<div class="table-responsive">
-							<table id="LocalDrifts" class="data-table"></table>
-						</div>
-					</div>
-				</div>
-				<!--  end of tab content -->
-			</div>
-			<!--  end of body content -->
-		</div>
-	</div>
-	<div class="container footer">
-		<div class="center-block">
-			<div class="row">
-				<div class="col-xs-1"></div>
-				<div class="col-xs-10 offset" id="citation">Rosenberg PS, Check DP, Anderson WF. A Web Tool for Age-Period-Cohort Analysis of Cancer Incidence and Mortality Rates. Cancer Epidemiology, Biomarkers Prevent 2014:23:2296, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25146089">PMID: 25146089</a></div>
-				<div class="col-xs-1"></div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12 well">
-					<ul class="list-inline">
-						<li><a href="http://www.cancer.gov/" title="Home" target="_blank">Home</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="mailto:NCIAPCWebToolAdmin@mail.nih.gov?subject=APCTool" target="_top" title="Support">Support</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://www.cancer.gov/global/web/policies" title="Policies" target="_blank">Policies</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://www.cancer.gov/global/web/policies/accessibility" title="Accessibility" target="_blank">Accessibility</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://cancer.gov/global/viewing-files" title="Viewing Files" target="_blank">Viewing Files</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://www.cancer.gov/global/web/policies/foia" title="FOIA" target="_blank">FOIA</a></li>
-					</ul>
-					<ul class="list-inline">
-						<li><a href="http://www.hhs.gov/" target="_blank">U.S. Department of Health and Human Services</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://www.nih.gov" target="_blank">National Institutes of Health</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://www.cancer.gov/" target="_blank">National Cancer Institute</a></li>
-						<li class="footer-spacer">|</li>
-						<li><a href="http://usa.gov" target="_blank">USA.gov</a></li>
-					</ul>
-					<div class="text-center">
-						NIH ... Turning Discovery Into Health<sup>®</sup>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+            <!--  end of body content -->
+        </div>
+    </div>
+    <div class="container footer">
+        <div class="center-block">
+            <div class="row">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-10 offset" id="citation">Rosenberg PS, Check DP, Anderson WF. A Web Tool for Age-Period-Cohort Analysis of Cancer Incidence and Mortality Rates. Cancer Epidemiology, Biomarkers Prevent 2014:23:2296, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25146089">PMID: 25146089</a></div>
+                <div class="col-xs-1"></div>
+            </div>
+            <div class="row">
+                <div class="alert alert-info">Site is currently under section 508 review. This site is undergoing remediation for compliance with Section 508. In the interim, should you require any accessibility assistance with any content, please contact us at <a href="mailto:NCIAPCWebToolAdmin@mail.nih.gov?subject=APC Tool 508">NCIAPCWebToolAdmin@mail.nih.gov</a>. Thank you! </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 well">
+                    <ul class="list-inline">
+                        <li><a href="http://www.cancer.gov/" title="Home" target="_blank">Home</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="mailto:NCIAPCWebToolAdmin@mail.nih.gov?subject=APCTool" target="_top" title="Support">Support</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://www.cancer.gov/global/web/policies" title="Policies" target="_blank">Policies</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://www.cancer.gov/global/web/policies/accessibility" title="Accessibility" target="_blank">Accessibility</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://cancer.gov/global/viewing-files" title="Viewing Files" target="_blank">Viewing Files</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://www.cancer.gov/global/web/policies/foia" title="FOIA" target="_blank">FOIA</a></li>
+                    </ul>
+                    <ul class="list-inline">
+                        <li><a href="http://www.hhs.gov/" target="_blank">U.S. Department of Health and Human Services</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://www.nih.gov" target="_blank">National Institutes of Health</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://www.cancer.gov/" target="_blank">National Cancer Institute</a></li>
+                        <li class="footer-spacer">|</li>
+                        <li><a href="http://usa.gov" target="_blank">USA.gov</a></li>
+                    </ul>
+                    <div class="text-center">
+                        NIH ... Turning Discovery Into Health<sup>®</sup>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
