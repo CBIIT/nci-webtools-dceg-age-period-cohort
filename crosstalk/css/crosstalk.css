@@ -1,0 +1,353 @@
+/* Default overrides */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #666;
+}
+
+a {
+    cursor: pointer;
+    color: #666;
+}
+
+label {
+  font-size: 12px;
+}
+
+legend {
+    color: #666;
+    font-size: 100%;
+    font-weight: bold;
+}
+
+[class*="col"] .less-padding {
+  padding-right: 5px !important;
+  padding-left: 5px !important;
+}
+
+[class*="col"] .less-padding:first-child {
+  padding-left: 15px !important;
+  padding-right: 5px !important;
+}
+
+[class*="col"] .less-padding:last-child {
+  padding-left: 5px !important;
+  padding-right: 15px !important;
+}
+
+/* Bootstrap overrides */
+
+.navbar-padding {
+  padding: 7px 10px;
+}
+
+.nav-pills > li > a {
+  padding: 7px 10px;
+  margin: 2px;
+}
+
+.display-panel {
+  padding-right: 0px;
+}
+
+.blue {
+  color: #126390;
+}
+
+.grey {
+  padding-left: 2px !important;
+  padding-right: 2px !important;
+  text-align: center;
+  min-width: 90px;
+  background-color: #EEE;
+}
+
+
+.input-table {
+  border-top: none;
+  border-left: none;
+}
+
+.table-header {
+  background-color: #DDD;
+}
+
+.input-table > thead > tr > th {
+  text-align: center;
+  border-left: none;
+  border-right: none;
+
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.input-table > tbody > tr > td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.output-table > thead > tr > th {
+  text-align: center;
+  min-width: 90px;
+
+  border-top: 1px solid #CCC;
+
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 0;
+  padding-right: 0;
+  background-color: #E9E9E9;
+}
+
+.output-table > thead > tr > th::first-child {
+  border-left: 1px solid #CCC;
+}
+
+.output-table > thead > tr > th::last-child {
+  border-right: 1px solid #CCC;
+}
+
+.output-table > tbody > tr > td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.modal-body > img {
+  width: 100%;
+}
+
+.panel img {
+  width: 100%;
+  
+}
+
+
+/* Header/Footer */
+header .dceg-logo {
+  display: block;
+  height: 100px;
+  background: url('/common/images/DCEG-logo.svg') no-repeat top left;
+}
+
+header .logo:last-child {
+  float: right;
+}
+
+footer {
+  bottom: 0;
+  color: #444;
+  padding: 25px 0;
+}
+
+footer ul li a {
+  color: #444;
+}
+
+.form-group {
+  margin-top: 10px;
+}
+
+
+/* Default styles */
+.sidebar {
+  padding: 16px 10px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, #feffff 0%, #feffff 50%, #e7f3fa 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+  box-shadow: 0 2px 4px 0 rgba(1, 90, 129, 0.4);
+}
+
+legend.vertical-spacer {
+  margin-top: 20px;
+}
+
+.vertical-spacer {
+  margin-top: 10px;
+}
+
+#description {
+    resize: vertical;
+}
+
+/* Bootstrap sm override */
+@media screen and (max-width: 991px) {
+  .display-panel {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+/* Tablets */
+@media screen and (max-width: 768px) {
+  header .row {
+    margin: 0;
+  }
+
+  header .logo:nth-child(2) {
+    height: 20px;
+  }  
+
+  header .dceg-logo {
+    height: 80px;
+  }
+
+  [class*="col"] .less-padding,
+  [class*="col"] .less-padding:first-child,
+  [class*="col"] .less-padding:last-child {
+    padding-right: 15px !important;
+    padding-left: 15px !important;
+  }
+
+
+}
+
+
+/* Phones/Small devices */
+@media screen and (max-width: 480px) {
+  header .dceg-logo {
+    height: 60px;
+  }
+
+  header .logo:nth-child(2) {
+    height: 15px;
+  }
+
+  header .logo,
+  header .logo:last-child {
+    float: left;
+    display: block;
+  }
+
+  footer {
+    bottom: 0;
+    background: #DEDEDE;
+  }
+
+  footer .list-inline li {
+    text-align: left;
+    display: block;
+  }
+
+  footer .list-inline .footer-spacer {
+    display: none;
+  }
+
+}
+
+
+img[data-action="zoom"],
+div[data-action="zoom"] {
+  cursor: pointer;
+  cursor: -webkit-zoom-in;
+  cursor: -moz-zoom-in;
+}
+
+
+.svg-container {
+  width: 100%;
+  height: 0;
+  padding-top: 100%;
+  position: relative;
+}
+
+svg .point {
+  cursor: pointer;
+}
+
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+
+.area {
+  stroke-width: 2px;
+}
+
+.tooltip {
+  color: white;
+  background-color: #3498DB;
+  padding: 5px;
+
+  border-radius: 4px;
+  opacity: 0.5;
+
+  z-index: 9999;
+  position: absolute;
+  width: 160px;
+  min-height: 28px;
+  pointer-events: none;
+}
+
+.tooltip table tr td:first-child {
+  padding-right: 2px;
+  text-align: right;
+}
+
+.tooltip table tr td {
+  padding-left: 2px;
+}
+
+
+
+/**
+ * (C)Leanest CSS spinner ever
+ */
+
+@keyframes spin {
+	to { transform: rotate(1turn); }
+}
+
+.loading {
+	position: absolute;
+	display: none;
+	width: 5em;
+	height: 5em;
+  top: 50%;
+  left: 50%;
+	font-size: 12px;
+	text-indent: 999em;
+	overflow: hidden;
+	animation: spin 1s infinite steps(8);
+  z-index:100;
+}
+
+.loading:before,
+.loading:after,
+.loading > div:before,
+.loading > div:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 2.25em; /* (container width - part width)/2  */
+	width: .5em;
+	height: 1.5em;
+	border-radius: .2em;
+	background: #eee;
+	box-shadow: 0 3.5em #eee; /* container height - part height */
+	transform-origin: 50% 2.5em; /* container height / 2 */
+}
+
+.loading:before {
+	background: #555;
+}
+
+.loading:after {
+	transform: rotate(-45deg);
+	background: #777;
+}
+
+.loading > div:before {
+	transform: rotate(-90deg);
+	background: #999;
+}
+
+.loading > div:after {
+	transform: rotate(-135deg);
+	background: #bbb;
+}
