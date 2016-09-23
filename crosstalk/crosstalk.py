@@ -5,7 +5,7 @@ import traceback
 app = Flask(__name__)
 r.source('crosstalkWrapper.R')
 
-@app.route('/calculate/', methods = ['POST'])
+@app.route('/crosstalkRest/calculate/', methods = ['POST'])
 def calculate():
     try:
         return r.calculate(request.stream.read())[0]
