@@ -22,6 +22,11 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
     return response
 
+import argparse
 if __name__ == '__main__':
-    app.run('0.0.0.0', port = 10000, debug = True)
-
+    parser = argparse.ArgumentParser()
+    # Default port is 8140
+    parser.add_argument('-p', '--port', dest = 'port_num', type = int, default = '8140', help = 'Sets the Port')
+    parser.add_argument('-d', '--debug', action = 'store_true')
+    args = parser.parse_args()
+    app.run(host = '0.0.0.0', port = args.port_num, debug = args.debug, use_evalex = False)
