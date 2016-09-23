@@ -1,844 +1,1782 @@
+/**
+ * @file Contains front-end code for the CrossTalk Analysis Tool
+ */
+
 $(document).ready(function () {
-    // Save DOM references to minimize queries
-    var cfg = crosstalk.config({
-        description: $('#description'),
-        startYear: $('#startYear'),
-        startAge: $('#startAge'),
-        interval: $('#interval'),
-        titleA: $('#title1'),
-        titleB: $('#title2'),
-        inputFileA: $('#inputfile1'),
-        inputFileB: $('#inputfile2'),
-        download: $('#download')
-    });
+  // attach event handlers
+  CrossTalk.init({
+    description: $('#description'),
+    startYear: $('#startYear'),
+    startAge: $('#startAge'),
+    interval: $('#interval'),
+    title1: $('#title1'),
+    title2: $('#title2'),
+    file1: $('#file1'),
+    file2: $('#file2'),
+    download: $('#download'),
+    calculate: $('#calculate')
+  })
 
-    // Add event listeners
-    for (element in cfg)
-        cfg[element].change(crosstalk.update);
-
-    cfg['download'].click(crosstalk.downloadResults);
-
-    window.reset = function (e) {
-        e.wrap('<form>').closest('form').get(0).reset();
-        e.unwrap();
-    }
-
-    $.adamant.pastable.functions["crosstalk-input"] = function (target, data) {
-        var data = data.split(/[\r\n]+/);
-        while (data[data.length - 1].trim() == "") {
-            data.pop();
-        }
-        data = data.map(function (line) {
-            var line = line.split(/[,\t]+/);
-            line.map(function (entry) {
-                return parseFloat(entry);
-            });
-            return line;
-        });
-        var datatarget = $(target).attr('data-target');
-        window.reset($('#'+datatarget));
-        crosstalk.model[datatarget] = $.extend(crosstalk.model[datatarget] || {}, {
-            'table': data,
-            'title': $('#' + $('#' + datatarget).attr('data-target')).val()
-        });
-        $(target).children("textarea").val("");
-        crosstalk.update();
-    };
+  $('#flip').click(CrossTalk.flip)
+  $('#clear').click(CrossTalk.clear)
+  $('#calculate').click(CrossTalk.calculate)
+  $('#crosstalk-tabs').tabCollapse()
+  $('#help').click(window.open.bind(
+    null, 'help.html', 'Crosstalk Help', 'width=750, height=550, scrollbars=1'))
 
     $(document).on("show.bs.tab", function (e) {
         if ($(e.target.parentElement).hasClass("disabled"))
             e.preventDefault();
     });
 
-    $(document).on("shown.bs.tab", function (e) {
-        // fix dataTable column widths on tab change
-        var tables = $.fn.dataTable.fnTables(true);
-        if (tables.length > 0) {
-            $.each(tables, function () {
-                $(this).dataTable().fnAdjustColumnSizing();
-            });
-        }
-    });
-
-    $(document).on("hidden.bs.modal", function (e) {
+ $(document).on("hidden.bs.modal", function (e) {
         $(e.target).find(".modal-body").empty();
     });
+})
 
-    $("#dataFlip").click(function (e) {
-        e.preventDefault();
-        var swap = crosstalk.model.inputfile2;
-        crosstalk.model.inputfile2 = crosstalk.model.inputfile1;
-        crosstalk.model.inputfile1 = swap;
-        swap = cfg.titleB.val();
-        cfg.titleB.val(cfg.titleA.val());
-        cfg.titleA.val(swap);
-        crosstalk.update();
-    });
 
-    $("#helpBtn").on("click", function (e) {
-        e.preventDefault();
-        window.open("help.html", "Crosstalk Help", "width=750, height=550, scrollbars=1");
-    });
+/**
+ * @namespace FileInput
+ * @description Handles parsing of input files as data models
+ * Exports the following functions to handle file input:
+ * FileInput.parse(file : File) : Promise <object, string>
+ */
+var FileInput = (function () {
+  return {
+    parse: parseFile
+  }
 
-    $("#showSwitch").on("change", function () {
-        if (this.checked) {
-            $("#irrGraphs img:first").addClass("show");
-            $("#irrGraphs img:nth(1)").removeClass("show");
-        } else {
-            $("#irrGraphs img:first").removeClass("show");
-            $("#irrGraphs img:nth(1)").addClass("show");
+  /**
+   * @function parseFile
+   * @summary Generates an input object from a file
+   * @param {File} file - An input file
+   * @returns {PromiseLike<Object>} Returns a promise that resolves to an input object
+   * @description An input object has the following properties: 
+   * {
+   *  title: {string} Description of data 
+   *  description: {string} Optional details
+   *  startYear: {number} The first year of the first calendar period of the data
+   *  startAge: {number} The first age of the first age group of the data
+   *  interval: {number} The width of the age and period intervals
+   *  table: {number[][]} Table containing count/population data
+   * }
+   * 
+   * @example
+   * FileInput
+   *   .parse(document.getElementById('file1').files[0])
+   *   .then(console.log)
+   */
+  function parseFile (file) {
+    return new Promise(
+      function (resolve, reject) {
+        if (window.FileReader && file && file instanceof File) {
+
+          /** @type {FileReader} */
+          var reader = new FileReader()
+
+          reader.readAsText(file)
+          reader.onerror = reject.bind(this, 'Failed to parse input file')
+
+          reader.onload = function (event) {
+            // select non-empty lines
+            /** @type {string[]} */
+            var contents = event.currentTarget.result.match(/[^\r\n]+/g)
+            
+            resolve({
+              title: parseHeader(contents.shift()),
+              description: parseHeader(contents.shift()),
+              startYear: parseInt(parseHeader(contents.shift())),
+              startAge: parseInt(parseHeader(contents.shift())),
+              interval: parseInt(parseHeader(contents.shift())),
+              table: contents.map(parseLine)
+            })
+          }
         }
-    });
+      }
+    )
+  }
+  
 
-    $("#showNumber *").on("click keypress", function (e) {
-        if (e.keyCode == 13 || e.type == "click") $("#showSwitch").trigger("click");
-    });
+  /**
+   * @function parseLine
+   * @summary Parses a line of a csv file as an array of floats 
+   * @param {string} line - A line containing comma-separated values
+   * @returns {number[]} An array containing parsed numeric values
+   */
+  function parseLine (line) {
+    return line.split(',').map(parseFloat)
+  }
 
 
-    $('#apcRatePane > nav li, #gafPane > nav li').on('click keypress', function (e) {
-        var target = $(e.delegateTarget);
-        var id = target.attr("id");
-        target.add($('#' + id.substr(0, id.length - 2))).parent().children().toggleClass('active');
-    });
+  /**
+   * @function parseHeader
+   * @summary Extracts a header from a line (title, description, etc)
+   * @param {string} line - A line containing header data
+   * @returns {string} The portion of the line after the first colon
+   */
+  function parseHeader (line) {
+    /** @type {string[]}  */
+    var description = line.match(/"(.*?)"/)
+    
+    /** @type {string} */
+    var header = description ? description[1] : line.split(',')[0]
+    
+    return header.substring(header.indexOf(':') + 1).trim()
+  }
+})()
 
-    $('#modelBt').click(function() {
-        $('a[href="#input"]').trigger('click');
-        $('ul.nav.nav-pills li:not(:first)').addClass('disabled');
-        crosstalk.validate("fitModel");
-    });
-    $('#calculateBt').click(function() {
-        crosstalk.validate("calculate")
-    });
 
-    $('[type="reset"]').click(crosstalk.reset);
-    crosstalk.reset();
-});
+/**
+ * @namespace DataTable
+ * @description Creates table nodes generated by DataTables
+ * Exports the following functions:
+ * DataTable.createEmpty(numRows: number, numCols: number) : HTMLTableElement
+ * DataTable.createInput(input: object) : HTMLTableElement
+ * DataTable.createOutput(output: object) : HTMLTableElement
+ */
+var DataTable = (function ($) {
+  return {
+    createEmpty: createEmptyTable,
+    createInput: createInputTable,
+    createOutput: createOutputTable
+  }
 
-/* ---------- ReadFile Module - Parses an input file as a crosstalk model ---------- */
-var readfile = (function () {
+
+  /**
+   * @function createEmptyTable
+   * @summary Creates an empty table of the specified size
+   * @param {number} numRows - The number of rows
+   * @param {number} numCols - The number of columns
+   * @returns {HTMLTableElement} An empty table
+   */
+  function createEmptyTable (numRows, numCols) {
+    return createTable(
+      createColumns(0, numCols),
+      createMatrix(numRows, numCols + 1, '&zwj;'),
+      'input-table display cell-border')
+  }
+
+
+  /**
+   * @function createInputTable
+   * @summary Creates a table for displaying input data
+   * @description An input object has the following properties:
+   * { 
+   *  title: string, 
+   *  description: string, 
+   *  startYear: number, 
+   *  startYear: number,
+   *  interval: number,
+   *  table: number[][]
+   * }
+   * 
+   * @param {Object} input - The input object to display
+   * @returns {HTMLTableElement} A table containing input data
+   */
+  function createInputTable (input) {
+    if (!input || !input.table)
+      return null
+    
+    // create a table with count/population columns
+    var table = createTable(
+      createColumns(input.table.length, input.table[0].length),
+      getData(input),
+      'input-table display cell-border')
+
+    // insert additional table headers
+    createHeaders(input).forEach(function(header) {
+      table.tHead.insertAdjacentHTML('afterbegin', header.outerHTML)
+    })
+
+    return table
+  }
+
+
+  /**
+   * @function createOutputTable
+   * @summary Creates a table for displaying output data
+   * @description An output data array contains objects in the following format
+   * [
+   *  {columnA: number, columnB: number},
+   *  {columnA: number, columnB: number},
+   *  ...
+   * ]
+   * 
+   * @param {Object[]} output - The data to display
+   * @returns {HTMLTableElement} An HTMLTableElement containing output data
+   */
+  function createOutputTable (output) {
+    return createTable(
+      getColumns(output), 
+      output,
+      'output-table display cell-border')
+  }
+
+
+  /**
+   * @function createTable
+   * @summary Creates a DataTable
+   * @description
+   * Column data is an array of objects containing properties for each column:
+   * [
+   *  { 
+   *    data: {string=} Corresponding object key, needed only when using objects 
+   *    title: {string} The display title for this column 
+   *    className: {string} The css class to apply
+   *  },
+   *  ...
+   * ]
+   * 
+   * 
+   * Display data can be either an array of arrays, or an array objects
+   * 
+   * Array of arrays:
+   * [
+   *  [valueA, valueB, valueC],
+   *  [valueA, valueB, valueC],
+   *  ...
+   * ]
+   * 
+   * Array of objects:
+   * [
+   *  {columnA: number, columnB: number},
+   *  {columnA: number, columnB: number},
+   *  ...
+   * ]
+   *  
+   * @param {{data: string, title: string, className: string}[]} columns - The column names of the data
+   * @param {Object[]|number[][]} data - The data to display
+   * @param {string} classname - The css classes to apply to this table
+   */
+  function createTable (columns, data, classname) {
+
+    /** @type {HTMLTableElement} */
+    var table = document.createElement('table')
+    table.className = classname
+    table.width = '100%'
+
+    $(table).DataTable({
+      destroy: true,
+      columns: columns,
+      data: data,
+      bSort: false,
+      bFilter: false,
+      paging: false,
+      responsive: true,
+      dom: 't'
+    })
+
+    return table
+  }
+
+
+  /**
+   * @function createHeaders
+   * @summary Creates table headers for input data
+   * @description
+   * An input model has the following properties:
+   * {
+   *  title: {string} Description of data 
+   *  description: {string} Optional details
+   *  startYear: {number} The first year of the first calendar period of the data
+   *  startAge: {number} The first age of the first age group of the data
+   *  interval: {number} The width of the age and period intervals
+   *  table: {number[][]} Table containing count/population data
+   * }
+   * 
+   * @param {Object} model - The input object to create table headers for
+   * @returns {HTMLTableRowElement[]} Table rows containing header information
+   */
+  function createHeaders (model) {
+
+    // limit length of title and description
+    var title = (model.title.length > 100) ? (model.title.substr(0, 100) + "...") : model.title
+    var desc = (model.description.length > 100) ? (model.description.substr(0, 100) + "...") : model.description
+
+    // create table row for title header
+    /** @type HTMLTableRowElement */
+    var titleRow = document.createElement('tr')
+
+    // create spacer for both headers
+    /** @type HTMLTableHeaderElement */
+    var spacer = document.createElement('th')
+    spacer.style.visibility = 'hidden'
+    spacer.rowSpan = 2
+    titleRow.appendChild(spacer)
+
+    // create header for title/description
+    /** @type HTMLTableHeaderElement */
+    var titleHeader = document.createElement('th')
+    titleHeader.className = 'table-header'
+    titleHeader.colSpan = model.table[0].length
+    titleHeader.innerHTML = title + 
+                            '<div class="blue">' + desc + '</div>'
+    titleRow.appendChild(titleHeader)
+
+    // create row for year ranges
+    /** @type HTMLTableRowElement */
+    var yearRow = document.createElement('tr')
+
+    /** @type number */
+    var endYear = model.startYear + model.interval * model.table[0].length / 2
+
+    // add each header to the row
+    for (var year = model.startYear; year < endYear; year += model.interval) {
+      /** @type HTMLTableHeaderElement */
+      var yearHeader = document.createElement('th')
+      yearHeader.className = 'grey'
+      yearHeader.colSpan = 2
+
+      // if year interval is one, display single years instead of a year range
+      /** @type string */
+      var yearRange = model.interval > 1
+        ? [year, year + model.interval - 1].join('-')
+        : year
+      
+      yearHeader.innerText = yearRange
+      yearRow.appendChild(yearHeader)
+    }
+
+    return [yearRow, titleRow]
+  }
+
+
+  /**
+   * @function createColumns
+   * @summary Creates alternating count/population columns for the input table
+   * @description
+   * Creates column names in the following format:
+   * [
+   *  { 
+   *    title: {string} 'Age' | 'N Age Groups'
+   *    className: {string} 'grey'
+   *  },
+   *  { 
+   *    title: {string} 'Count' 
+   *    className: {string} 'dt-body-right'
+   *  },
+   *  { 
+   *    title: {string} 'Population' 
+   *    className: {string} 'dt-body-right'
+   *  },
+   *  ...
+   * ]
+   * 
+   * @param {number} numRows The number of rows in this table
+   * @param {number} numCols The number of columns in this table
+   * @returns {Object[]} Column names used by DataTables
+   */
+  function createColumns (numRows, numCols) {
+    /** @type Object[] */
+    var columns = [{
+      title: numRows 
+        ? '<small>' + numRows + ' age groups</small>'
+        : 'Age',
+      className: numRows ? 'grey' : 'grey'
+    }]
+
+    while (numCols--)
+      columns.push({
+        title: numCols % 2 ? 'Count' : 'Population',
+        className: 'dt-body-right'
+      })
+
+    return columns
+  }
+
+
+  /**
+   * @function createMatrix
+   * @summary Creates a matrix with a specified initial size and fill value
+   * @param {number} numRows - The number of rows in this matrix
+   * @param {number} numCols - The number of columns in this matrix
+   * @param {string | number} initialValue - The fill value for this matrix
+   * @returns {(string|number)[][]} A matrix of the specified size
+   */
+  function createMatrix (numRows, numCols, initialValue) {
+    return Array(numRows)
+      .fill(Array(numCols)
+        .fill(initialValue || null))
+  }
+
+
+  /**
+   * @function getData
+   * @summary Prepends age ranges to each row in the input table
+   * @description 
+   * An input model contains the following properties:
+   * {
+   *  title: {string} Description of data 
+   *  description: {string} Optional details
+   *  startYear: {number} The first year of the first calendar period of the data
+   *  startAge: {number} The first age of the first age group of the data
+   *  interval: {number} The width of the age and period intervals
+   *  table: {number[][]} Table containing count/population data
+   * }
+   * 
+   * @param {Object} model
+   * @returns {(string|number)[][]} A matrix containing age, count, and population data
+   */
+  function getData (model) {
+    return model.table.map(function (row, index) {
+      // calculates the age from the starting age, index and interval
+      var age = model.startAge + index * model.interval
+
+      if (model.interval > 1)
+        age += '-' + (age + model.interval - 1)
+
+      return [age].concat(row)
+    })
+  }
+
+  /**
+   * @function getColumns
+   * @summary Creates column headers from the output table
+   * @description
+   * An output object is an array of Objects:
+   * [
+   *  {columnA: number, columnB: number},
+   *  {columnA: number, columnB: number},
+   *  ...
+   * ]
+   * 
+   * Column data is an array of objects containing properties for each column:
+   * [
+   *  { 
+   *    data: {string=} Corresponding object key, needed only when using objects 
+   *    title: {string} The display title for this column 
+   *    className: {string} The css class to apply
+   *  },
+   *  ...
+   * ]
+   * 
+   * @param {Object[]} output
+   * @returns
+   */
+  function getColumns (output) {
+    /** @type string[] */
+    var keys = Object.keys(output[0])
+
+    /** @type string */
+    var label = ''
+
+    // re-order keys if row names are present
+    if (keys[keys.length - 1] === '_row') {
+      keys.unshift(keys.pop())
+      if (output[0]._row.match(/[0-9]/))
+        label = 'Age'
+    }
+
+    return keys.map(function (key) {
+      return {
+        data: key,
+
+        // do not display a title for columns containing row names
+        title: key === '_row' 
+          ? label 
+          : key,
+        
+        // center-align columns containing row names
+        className: ['_row', 'Cohort', 'Age', 'Period', 'Per', 'Coh'].includes(key) 
+          ? 'dt-body-center' 
+          : 'dt-body-right'
+      }
+    })
+  }
+})(window.jQuery)
+
+/**
+ * @namespace Plot
+ * @description Creates plots using SVG and Canvas
+ * Exports the following functions to handle plot generation:
+ * Plot.createSVG(data, titles) : Element
+ * Plot.createCanvas(data, titles) : HTMLCanvasElement
+ */
+var Plot = (function () {
+
+  return {
+    createSVG: createSVG,
+    createCanvas: createCanvas
+  }
+
+  /**
+   * @function createSVG
+   * @summary Creates an svg area plot
+   * @description
+   * The input data is an object with the following properties:
+   * {
+   *  title {string} The plot title
+   *  legends {string[]} Legend labels
+   *  xlabel {string} The x-axis label
+   *  ylabel {string} The y-axis label
+   *  xaxis {string} The x-axis data key
+   *  yaxis {string} The y-axis data key
+   *  curves {{xaxis, yaxis, 'CILo', 'CiHi'}[]} Curve data
+   *  bands {number[min, max][]} Band data
+   * }
+   * @param {Object} data
+   * @returns {HTMLDivElement} A responsive div wrapping the SVG plot
+   */
+  function createSVG (data) {
+
+    /** @type string[] */
+    var colors = ['#1D628B', '#E74C3C', '#2C3E50']
+
+    /** @type HTMLDivElement */
+    var svgContainer = document.createElement('div')
+    svgContainer.className = 'svg-container'
+
+    /**
+     * @type {
+     *  outerWidth {number} - The outer width of the plot
+     *  outerHeight {number} - The outer height of the plot
+     *  width {number} - The inner width of the plot
+     *  height {number} - The inner height of the plot
+     *  margin {top: number, right: number, bottom: number, left: number}
+     *  xscale {d3.scaleLinear} - A function for scaling values across the x-axis
+     *  yscale {d3.scaleLinear} - A function for scaling values across the y-axis
+     *  line {d3.line} - A function for drawing lines in a specific context
+     *  area {d3.area} - A function for drawing an area in a specific context
+     * }
+     */
+    var plot = createPlot(data)
+
+    /** @type d3.scaleLinear */
+    var x = plot.xscale
+
+    /** @type d3.scaleLinear */
+    var y = plot.yscale
+
+    /** @type {top: number, right: number, bottom: number, left: number} */
+    var margin = plot.margin
+
+    /** @type number */
+    var outerWidth = plot.outerWidth
+
+    /** @type number */
+    var outerHeight = plot.outerHeight
+
+    /** @type number */
+    var width = plot.width
+
+    /** @type number */
+    var height = plot.height
+
+    /** @type d3.scaleLinear */
+    var x = plot.xscale
+    
+    /** @type d3.scaleLinear */
+    var y = plot.yscale
+
+    /** @type d3.line */
+    var line = plot.line
+
+    /** @type d3.area */
+    var area = plot.area
+    
+    /** @type d3.svg */
+    var svg = d3.select(svgContainer).append('svg')
+      .attr('viewBox', '0 0 ' + outerWidth + ' ' + outerHeight)
+      .append('g')
+      .attr('transform',
+        sprintf('translate(%d, %d)', margin.left, margin.top))
+
+    /** @type d3.div */
+    var tooltip = d3.select('body').append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0)
+
+    // draw legend
+    data.legends.forEach(function(title, index) {
+      /** @type number */
+      var size = 20
+
+      /** @type number */
+      var spacing = 10
+
+      /** @type number */
+      var yloc = (size + spacing) * index
+
+      // draw legend color square
+      svg.append('rect')
+        .attr('x', width - size)
+        .attr('y', yloc)
+        .attr('width', size)
+        .attr('height', size)
+        .attr('fill', colors[index])
+
+      // draw legend text
+      svg.append('text')
+        .attr('x', width - size - spacing / 2)
+        .attr('y', yloc + size * 0.7)
+        .attr('font-size', 10)
+        .style('text-anchor', 'end')
+        .text(title)
+    })
+
+
+    data.curves.forEach(function (curve, index) {
+      // draw area ribbon
+      svg.append('path')
+        .data([curve])
+        .attr('class', 'area')
+        .attr('d', area)
+        .attr('fill', colors[index])
+        .attr('fill-opacity', '0.3')
+
+      // draw curve
+      svg.append('path')
+        .data([curve])
+        .attr('class', 'line')
+        .attr('d', line)
+        .attr('fill', 'none')
+        .attr('stroke', colors[index])
+        .attr('stroke-opacity', '0.5')
+    })
+
+    data.bands.forEach(function (band, index) {
+      // draw each band
+      svg.append('rect')
+        .attr('class', 'area')
+        .attr('x', 0)
+        .attr('y', y(band[1]))
+        .attr('width', width)
+        .attr('height', y(band[0]) - y(band[1]))
+        .attr('fill', colors[index])
+        .attr('fill-opacity', '0.2')
+    })
+
+    // draw points over other elements
+    data.curves.forEach(function (curve, index) {
+      curve.forEach(function (point) {
+
+        /** @type {HTMLTableElement} */
+        var tooltipContents = (function (headers, values) {
+          var table = document.createElement('table')
+
+          headers.forEach(function(header, index) {
+            var row = document.createElement('tr')
+            var contents = [header + ':', values[index]]
+            
+            contents.forEach(function(data) {
+              var cell = document.createElement('td')
+              cell.innerHTML = data
+              row.appendChild(cell)
+            })
+
+            table.appendChild(row)
+          })
+
+          return table
+        })( [data.xaxis, data.yaxis, 'CILo', 'CIHi'],
+            [point[data.xaxis], point[data.yaxis], point.CILo, point.CIHi])
+
+        svg.append('circle')
+          .attr('class', 'point')
+          .attr('r', 4)
+          .attr('cx', x(point[data.xaxis]))
+          .attr('cy', y(point[data.yaxis]))
+          .attr('fill', colors[index])
+          .attr('fill-opacity', '1.0')
+          .attr('data-toggle', 'tooltip')
+          .on('mouseover', function (d) {
+            var xoffset = (d3.event.pageX / window.outerWidth > 0.7) ? -165 : 5
+            tooltip.transition()
+              .duration(200)
+              .style('opacity', .9)
+              .style('background-color', colors[index % colors.length])
+            tooltip.html(tooltipContents.outerHTML)
+              .style('left', (d3.event.pageX + xoffset) + 'px')
+              .style('top', (d3.event.pageY - 80) + 'px')
+          })
+          .on('mouseout', function (d) {
+            tooltip.transition()
+              .duration(300)
+              .style('opacity', 0)
+          })
+      })
+    })
+
+    // add x-axis
+    svg.append('g')
+      .attr('transform', sprintf('translate(0, %d)', height))
+      .call(d3.axisBottom(x).tickFormat(d3.format('d')))
+
+    // add x-axis label
+    svg.append('text')
+      .attr('transform',
+        sprintf('translate(%d, %d)', width / 2, height + margin.top + 20))
+      .style('text-anchor', 'middle')
+      .text(data.xlabel)
+
+    // add y-axis
+    svg.append('g').call(d3.axisLeft(y))
+
+    // add y-axis label
+    svg.append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 0 - margin.left)
+      .attr('x', 0 - (height / 2))
+      .attr('dy', '1em')
+      .style('text-anchor', 'middle')
+      .text(data.ylabel)
+    
+    return svgContainer
+  }
+
+  /**
+   * @function createCanvas
+   * @summary Creates an area plot on a Canvas element (for exporting as base64)
+   * @description
+   * This function replaces a svg -> canvas rendering library used to maintain
+   * compatibility with IE (due to a cross-origin security issue raised when
+   * exporting canvas objects with svg content).
+   * 
+   * The input data is an object with the following properties:
+   * {
+   *  title {string} The plot title
+   *  legends {string[]} Legend labels
+   *  xlabel {string} The x-axis label
+   *  ylabel {string} The y-axis label
+   *  xaxis {string} The x-axis data key
+   *  yaxis {string} The y-axis data key
+   *  curves {{xaxis, yaxis, 'CILo', 'CiHi'}[]} Curve data
+   *  bands {number[min, max][]} Band data
+   * }
+   * @param {Object} data
+   * @returns {HTMLCanvasElement} A canvas object containing the plot
+   */
+  function createCanvas (data) {
+
+    /** @type string[] */
+    var colors = ['#1D628B', '#E74C3C', '#2C3E50']
+
+    /** @type {HTMLCanvasElement} */
+    var canvas = document.createElement('canvas')
+    
+    /** @type {CanvasRenderingContext2D} */
+    var context = canvas.getContext('2d')
+
+    /**
+     * @type {
+     *  outerWidth {number} - The outer width of the plot
+     *  outerHeight {number} - The outer height of the plot
+     *  width {number} - The inner width of the plot
+     *  height {number} - The inner height of the plot
+     *  margin {top: number, right: number, bottom: number, left: number}
+     *  xscale {d3.scaleLinear} - A function for scaling values across the x-axis
+     *  yscale {d3.scaleLinear} - A function for scaling values across the y-axis
+     *  line {d3.line} - A function for drawing lines in a specific context
+     *  area {d3.area} - A function for drawing an area in a specific context
+     * }
+     */
+    var plot = createPlot(data)
+    canvas.width = plot.outerWidth
+    canvas.height = plot.outerHeight
+
+
+    /** @type number */
+    var width = plot.width
+
+    /** @type number */
+    var height = plot.height
+
+    /** @type d3.scaleLinear */
+    var x = plot.xscale
+
+    /** @type d3.scaleLinear */
+    var y = plot.yscale
+
+    /** @type {top: number, right: number, bottom: number, left: number} */
+    var margin = plot.margin
+
+    /** @type d3.line */
+    var line = plot.line.context(context)
+
+    /** @type d3.area */
+    var area = plot.area.context(context)
+
+    context.translate(margin.left, margin.top)
+
+    context.fillStyle = 'white'
+    context.fillRect(-margin.left, -margin.top, outerWidth, outerHeight)
+    context.fillStyle = 'black'
+
+    xAxis()
+    yAxis()
+    legend()
+    
+    // draw curves
+    data.curves.forEach(function(curve, index) {
+      context.beginPath()
+      area(curve)
+      context.fillStyle = colors[index]
+      context.globalAlpha = 0.4
+      context.fill()
+
+      context.beginPath()
+      line(curve)
+      context.lineWidth = 1.5
+      context.strokeStyle = colors[index]
+      context.globalAlpha = 0.5
+      context.stroke()
+
+      // draw points
+      curve.forEach(function(point) {
+        var xloc = x(point[data.xaxis])
+        var yloc = y(point[data.yaxis])
+        var radius = 4
+
+        context.beginPath()
+        context.globalAlpha = 1
+        context.arc(xloc, yloc, radius, 0, Math.PI * 2)
+        context.fill()
+      })
+    })
+
+    // draw each band
+    data.bands.forEach(function(band, index) {
+      context.beginPath()
+      context.fillStyle = colors[index]
+      context.globalAlpha = 0.4
+      context.fillRect(0, y(band[1]), width, y(band[1]) - y(band[0]))
+    })
+
+    return canvas
+
+
+    /**
+     * @function xAxis
+     * @Summary creates the x-axis for this plot
+     */
+    function xAxis() {
+      var tickCount = 10
+      var tickSize = 5
+      var ticks = x.ticks(tickCount)
+      var tickFormat = x.tickFormat()
+      context.textAlign = 'center'
+      context.textBaseline = 'top'
+      context.font = '10px sans-serif'
+
+      // draw axis line
+      context.beginPath()
+      context.moveTo(0, height - 0.5)
+      context.lineTo(width, height - 0.5)
+      context.strokeStyle = '#000000'
+      context.stroke()
+
+      // draw axis ticks
+      ticks.forEach(function(d) {
+        // handle straddling of pixels
+        var xval = Math.floor(x(d)) + 0.5
+
+        context.beginPath()
+        context.moveTo(xval, height)
+        context.lineTo(xval, height + tickSize)
+        context.strokeStyle = '#000000'
+        context.stroke()
+
+        context.beginPath()
+        context.moveTo(xval, height - 1)
+        context.lineTo(xval, 0)
+        context.strokeStyle = '#EEEEEE'
+        context.stroke()
+
+        context.fillText(tickFormat(d), xval, height + tickSize)
+      })
+
+      context.textAlign = 'right'
+      context.textBaseline = 'bottom'
+      context.font = 'bold 11px sans-serif'
+      context.fillText(data.xlabel, width, height - tickSize - 5)
+    }
+
+    /**
+     * @function yAxis
+     * @Summary creates the y-axis for this plot
+     */
+    function yAxis() {
+      var tickCount = 10
+      var tickSize = 5
+      var tickPadding = 3
+      var ticks = y.ticks(tickCount)
+      var tickFormat = y.tickFormat(tickCount)
+      context.textAlign = 'right'
+      context.textBaseline = 'middle'
+      context.font = '10px sans-serif'
+
+      // draw axis line
+      context.beginPath()
+      context.moveTo(0.5, 0)
+      context.lineTo(0.5, height)
+      context.strokeStyle = '#000000'
+      context.stroke()
+
+      // draw axis ticks
+      ticks.forEach(function(d) {
+        var yval = Math.floor(y(d)) + 0.5
+
+        context.beginPath()
+        context.moveTo(0, yval)
+        context.lineTo(-tickSize, yval)
+        context.strokeStyle = '#000000'
+        context.stroke()
+
+        context.beginPath()
+        context.moveTo(1, yval)
+        context.lineTo(width, yval)
+        context.strokeStyle = '#EEEEEE'
+        context.stroke()
+
+        context.fillText(tickFormat(d), -tickSize - tickPadding, yval)
+      })
+
+      // draw axis label
+      context.save()
+      context.rotate(-Math.PI / 2)
+      context.textAlign = 'right'
+      context.textBaseline = 'top'
+      context.font = 'bold 11px sans-serif'
+      context.fillText(data.ylabel, 0, 10)
+      context.restore()
+    }
+
+    /**
+     * @function legend
+     * @Summary creates the legend for this plot
+     */
+    function legend() {
+      context.textAlign = 'right'
+      context.textBaseline = 'top'
+      context.font = 'bold 11px sans-serif'
+
+      data.legends.forEach(function(title, index) {
+        var size = 20
+        var spacing = 10
+
+        var yloc = (size + spacing) * index
+
+        context.beginPath()
+        context.fillStyle = colors[index]
+        context.fillRect(width - size, yloc, size, size)
+        context.fillText(title, width - size - spacing / 2, yloc + spacing / 2)
+      })
+    }
+  }
+
+  /**
+   * @function createPlot 
+   * @summary Creates default d3 axes/area curves for the data
+   * The input data is an object with the following properties:
+   * {
+   *  title {string} The plot title
+   *  legends {string[]} Legend labels
+   *  xlabel {string} The x-axis label
+   *  ylabel {string} The y-axis label
+   *  xaxis {string} The x-axis data key
+   *  yaxis {string} The y-axis data key
+   *  curves {{xaxis, yaxis, 'CILo', 'CiHi'}[]} Curve data
+   *  bands {number[min, max][]} Band data
+   * }
+   * 
+   * The output of this function is an object with the following properties:
+   * {
+   *  outerWidth {number} - The outer width of the plot
+   *  outerHeight {number} - The outer height of the plot
+   *  width {number} - The inner width of the plot
+   *  height {number} - The inner height of the plot
+   *  margin {top: number, right: number, bottom: number, left: number}
+   *  xscale {d3.scaleLinear} - A function for scaling values across the x-axis
+   *  yscale {d3.scaleLinear} - A function for scaling values across the y-axis
+   *  line {d3.line} - A function for drawing lines in a specific context
+   *  area {d3.area} - A function for drawing an area in a specific context
+   * }
+   * 
+   * @param {Object} data - The data containing area/curve data 
+   * @returns {Object} - An object containing d3 functions for generating lines
+   */
+  function createPlot(data) {
+
+    /** @type number */
+    var outerWidth = 600
+
+    /** @type number */
+    var outerHeight = 600
+
+    /** @type {top: number, right: number, bottom: number, left: number} */
+    var margin = {
+      top: 20,
+      right: 20,
+      bottom: 50,
+      left: 50
+    }
+
+    /** @type number */
+    var width = outerWidth - margin.left - margin.right
+
+    /** @type number */
+    var height = outerHeight - margin.top - margin.bottom
+
+    /** @type d3.scaleLinear */
+    var x = d3.scaleLinear()
+
+    /** @type d3.scaleLinear */
+    var y = d3.scaleLinear()
+
+    /** @type d3.line */
+    var line = d3.line()
+      .x(function (d) { return x(d[data.xaxis]) })
+      .y(function (d) { return y(d[data.yaxis]) })
+    
+    /** @type d3.area */
+    var area = d3.area()
+      .x(function (d) { return x(d[data.xaxis]) })
+      .y0(function (d) { return y(d.CILo) })
+      .y1(function (d) { return y(d.CIHi) })
+
+    var xvals = []
+    var yvals = []
+
+    data.curves.forEach(function (curve) {
+      curve.forEach(function (el) {
+        xvals.push(el[data.xaxis])
+        yvals.push(el[data.yaxis], el.CILo, el.CIHi)
+      })
+    })
+
+
+    x .range  ([0, width])
+      .domain (d3.extent(xvals))
+
+    /** @type number[] */
+    var ydomain = d3.extent(yvals)
+    ydomain[1] = ydomain[1] * 1.25
+
+    y .range  ([height, 0])
+      .domain (ydomain)
 
     return {
-        createModel: createModel
-    };
+      outerWidth: outerWidth,
+      outerHeight: outerHeight,
+      width: width,
+      height: height,
+      margin: margin,
+      xscale: x,
+      yscale: y,
+      line: line,
+      area: area
+    }
+  }
 
-    /* ---------- Reads a file from an input element and returns the generated model as a parameter to the callback ---------- */
-    function createModel(element, callback) {
-        readFile(element, function (contents) {
-            callback(element.id, {
-                title: parseHeader(contents.shift()),
-                description: parseHeader(contents.shift()),
-                startYear: parseInt(parseHeader(contents.shift())),
-                startAge: parseInt(parseHeader(contents.shift())),
-                interval: parseInt(parseHeader(contents.shift())),
-                table: parseTable(contents)
-            });
-        });
+})()
+
+/**
+ * @namespace Modal
+ * @description Displays modal dialogs
+ * Exports the following functions:
+ * Modal.displayTable(title: string, tables: Object[])
+ * Modal.displayImage(title: string, source : string)
+ * Modal.displayElement(title : string, body : Element)
+ */
+var Modal = (function () {
+  return {
+    displayTable: displayOutputTable,
+    displayImage: displayImage,
+    displayElement: displayElement
+  }
+
+  /**
+   * @function displayOutputTable
+   * @summary Displays an output table in a modal dialog
+   * @description
+   * An output table is represented by an array of objects in this format: 
+   * An output object is an array of Objects:
+   * [
+   *  {columnA: number, columnB: number},
+   *  {columnA: number, columnB: number},
+   *  ...
+   * ]
+   * 
+   * @param {string} title - The title of the modal dialog
+   * @param {Object[]} tables - The output data to display
+   */
+  function displayOutputTable (title, tables) {
+    var container = document.createElement('div')
+
+    tables.forEach(function (table, index) {
+      /** @type HTMLDivElement */
+      var tableDiv = document.createElement('div')
+      tableDiv.className = 'table-responsive '
+
+      if (index > 0)
+        tableDiv.className += 'vertical-spacer'
+
+      tableDiv.appendChild(DataTable.createOutput(table))
+      container.appendChild(tableDiv)
+    })
+
+    displayElement(title, container)
+  }
+
+  /**
+   * @function displayImage
+   * @summary Displays an image in a modal dialog
+   * @param {string} title - The title of the modal dialog
+   * @param {string} source - The source of the image
+   */
+  function displayImage (title, source) {
+    /** @type HTMLImageElement */
+    var image = new Image()
+    
+    image.src = src
+    image.style.width = '100%'
+    image.className = 'img-responsive'
+
+    displayElement(title, image)
+  }
+
+  /**
+   * @function displayElement
+   * @summary Displays an HTML element in a modal dialog
+   * @param {string} title - The title of the modal
+   * @param {Element} body - The element to display
+   */
+  function displayElement (title, body) {
+    var cfg = {
+      container: $('#modalDialog'),
+      title: $('#modalTitle'),
+      body: $('#modalBody')
     }
 
-    /* ---------- Reads a file from an input element and returns an array of lines to the callback ---------- */
-    function readFile(element, callback) {
-        if (window.FileReader) {
-            var file = element.files[0];
-            var reader = new FileReader();
+    cfg.title.html(title)
+    cfg.body.html(body)
+    cfg.container.modal('show')
+  }
+})()
 
-            if (file)
-                reader.readAsText(file);
 
-            reader.onload = function (event) {
-                callback(event.currentTarget.result.split(/[\r\n]+/g));
-            };
-        }
+/**
+ * @namespace Excel
+ * @description Exports results data as an excel document
+ * Exports the following functions:
+ * Excel.exportData(data : Object[])
+ */
+var Excel = (function() {
+  return {
+    exportData: exportData
+  }
+
+  function exportData (data) {
+    
+    var workbook = new ExcelBuilder.Workbook()
+    
+    data.forEach(function(sheetData, index) {
+      workbook.addWorksheet(generateSheet(workbook, sheetData, index))
+    })
+
+    ExcelBuilder.Builder.createFile(workbook).then(
+      download.bind(null, sprintf('CrossTalk_Analysis_%s.xlsx', getTimestamp()), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    )
+  }
+
+  function generateSheet(workbook, sheetData, index) {
+
+    if (sheetData.title.endsWith('Labeled'))
+        sheetData.title = sheetData.title.replace('- Labeled', '')
+
+
+    var titleString = sheetData.title.split(' - ')
+    var title = index + 1
+
+    if (titleString.length < 2)
+      title = [title, titleString[0]].join(' - ')
+    else
+      title = [title, titleString[0], titleString.pop()].join(' - ')
+
+    if (title.length > 31)
+      title = title.substr(0, 30)
+      
+    var worksheet = workbook.createWorksheet({name: title})
+    console.log(sheetData)
+
+    // add tables
+    var table = mergeTables(sheetData.tables)
+
+    // add title for sheet
+    console.log('ABC', table)
+    if (table && table.length) {
+      var titleArr = Array(table[0].length - 1).fill('')
+      titleArr.unshift(sheetData.title)
+      table.unshift(Array(table[0].length).fill(''))
+      table.unshift(titleArr)
+      worksheet.setData(table)
+    } else {
+      worksheet.setData([[sheetData.title]])
     }
 
-    /* ---------- Parse an array of lines (from a csv) as a matrix of floats ---------- */
-    function parseTable(table) {
-        while (table[table.length - 1].trim() == "") {
-            table.pop();
-        }
-        return table.map(function (line) {
-            return line.split(',').map(function (element) {
-                return parseFloat(element);
-            });
-        });
+
+    // add graphs
+    var drawings = new ExcelBuilder.Drawings()
+    var width = 600
+    var height = 600
+
+    if (title.includes('Incidence Rate Ratios')) {
+      width = 55 * table[0].length
+      height = 60 * table.length
     }
 
-    /* ---------- Parse a header line - return the portion after the first colon ---------- */
-    function parseHeader(line) {
-        //        try {
-        var description = line.match(/"(.*?)"/);
+    sheetData.graphs.forEach(function(graph, index) {
+      var graphref = workbook.addMedia(
+        'image', 
+        randomString(10) + '.png', 
+        graph.replace('data:image/png;base64,', ''))
 
-        if (description)
-            line = description[1];
-        else
-            line = line.split(',')[0];
+      var graphpic = new ExcelBuilder.Drawing.Picture()
+      graphpic.createAnchor('oneCellAnchor', {
+        x: index * Math.max((table && table[0] ? table[0].length / 2 : 10), 10),
+        y: table.length + 2,
+        width: ExcelBuilder.Positioning.pixelsToEMUs(width),
+        height: ExcelBuilder.Positioning.pixelsToEMUs(height),
+      })
 
-        if (line.split(/:(.+)?/, 2)[1])
-            return line.split(/:(.+)?/, 2)[1].trim();
+      graphpic.setMedia(graphref)
+      drawings.addDrawing(graphpic)
+
+
+    })
+    worksheet.addDrawings(drawings)
+    workbook.addDrawings(drawings)
+
+
+
+    return worksheet
+  }
+
+  function mergeTables(tables) {
+    var table = []
+    var converted = tables.map(convertTable)
+
+    if (converted.length === 4) {
+      var temp1 = converted[0].concat(Array(4).fill('')).concat(converted[1])
+      var temp2 = converted[2].concat(Array(4).fill('')).concat(converted[3])
+      converted = [temp1, temp2]
     }
 
-})();
+    converted.forEach(function(matrix, index) {
+      matrix.forEach(function(array, index2) {
+        table[index2] = (table[index2] || []).concat(array).concat(Array(3).fill(''))
+      })
+    })
+    
+    
+    return table
+  }
 
+  
 
-/* ---------- CrossTalk Module - Syncs the model and calculation results with the UI ---------- */
-var crosstalk = (function ($, ReadFile) {
-    // set default datatable options
-    $.extend(true, $.fn.dataTable.defaults, {
-        "destroy": true,
-        "bSort": false,
-        "bFilter": false,
-        "paging": false,
-        "responsive": true,
-        "dom": 't'
-    });
-    var self = {};
+  // converts an array of objects to a regular matrix
+  function convertTable(table) {
 
-    // Holds DOM references
-    self.cfg = {
-        description: null,
-        startYear: null,
-        startAge: null,
-        interval: null,
-        titleA: null,
-        titleB: null,
-        inputFileA: null,
-        inputFileB: null,
-        download: null
-    };
+    var headers = Object.keys(table[0])
+    if (headers[headers.length - 1] === '_row')
+      headers.unshift(headers.pop())
 
-    /* ---------- Updates the UI and Model ---------- */
-    self.update = function() {
-        var self = this;
+    var converted = [headers]
 
-        $('a[href="#input"]').trigger('click');
-        $('ul.nav.nav-pills li:not(:first)').addClass('disabled');
-        // Updates the model based on the contents of the file
-        if (self.type == 'file') {
-            ReadFile.createModel(self, updateModel);
-        } else {
-            syncModel();
-        }
-    };
-
-    /* ---------- Saves DOM references in the configuration ---------- */
-    self.config = function(cfg) {
-        self.cfg = cfg;
-        return self.cfg;
-    };
-
-
-    /* ---------- Downloads the selected file ---------- */
-    self.downloadResults = function() {
-        var selected_file = $('#download_selector').val();
-        if (selected_file === "Excel Output") {
-            $.ajax({
-                method: "POST"
-                , url: crosstalk_form.action+"generateExcel"
-                , data: JSON.stringify(crosstalk.model)
-                , beforeSend: function () {
-                    $("#loadingModal").modal("show");
-                    $(".tab-content").children("#error").remove();
-                }
-            }).done(function (data) {
-                if (data.data && typeof data.data === "string") {
-                    $('#Excel').attr('value',data.data);
-                    window.open(data.data, 'download');
-                }
-            }).fail(crosstalk.failure).always(function () {
-                $("#loadingModal").modal("hide");
-            });
-        } else {
-            window.open(selected_file, 'download');
-        }
-        return false;
-    };
-
-
-    self.validate = function(action) {
-        var input1 = self.model.inputfile1;
-        var input2 = self.model.inputfile2;
-
-        var valid = crosstalk_form.checkValidity();
-
-        if (input1 && input2) {
-            if (input1.table.length != input2.table.length || input1.table[0].length != input2.table[0].length) {
-                $('#inputfile1')[0].setCustomValidity("The contents of Data Files must have the same dimensions");
-            } else {
-                $('#inputfile1')[0].setCustomValidity("");
-                $('#inputfile2')[0].setCustomValidity("");
-            }
-        } else {
-            if (!input1 || !input1.table)
-                $('#inputfile1')[0].setCustomValidity("Data File 1 is required");
-            else
-                $('#inputfile1')[0].setCustomValidity("");
-
-            if (!input2 || !input2.table)
-                $('#inputfile2')[0].setCustomValidity("Data File 2 is required");
-            else
-                $('#inputfile2')[0].setCustomValidity("");
-        }
-
-        $("#input.tab-pane").children("#errors").remove();
-        $(".errors").removeClass("errors");
-
-        var invalids = $("input:invalid, select:invalid");
-        if (invalids.length > 0) {
-
-            $.each($("input:invalid, select:invalid"), function (i, el) {
-                displayErrors(el);
-            });
-
-            $("form").addClass("submitted");
-        } else {
-            crosstalk.getData(action);
-        }
+    for (var i = 0; i < table.length; i ++) {
+      var row = []
+      for (var j = 0; j < headers.length; j ++) {
+        var header = headers[j]
+        row.push(table[i][header])
+      }
+      converted.push(row)
     }
 
-    self.failure = function(xhr, error, statusText) {
-        var message = "";
-        switch (xhr.status) {
-        case 503:
-            message = "The service that the request is trying to reach is currently down, Please try again later";
-            break;
-        case 404:
-            message = "The request returned with a response of  '" + statusText + "'. Please try again later.";
-            break;
-        case 400:
-            message = xhr.responseJSON.data;
-            break;
-        default:
-            message = "The request has failed for an unknown reason";
-            break;
-        }
+    if (converted[0][0] === '_row')
+      converted[0][0] = ''
 
-        $(".tab-pane#input").children("#error").remove().prepend($("<div id='error' class='alert alert-danger'>").html(message));
+    return converted
+  }
+
+
+  function download(filename, type, data) {
+
+    var bytechars = atob(data)
+    var bytenums = new Array(bytechars.length)
+
+    for (var i = 0; i < bytechars.length; i ++)
+      bytenums[i] = bytechars.charCodeAt(i)
+
+    var bytearr = new Uint8Array(bytenums)
+    var blob = new Blob([bytearr], {type: type});
+
+    if (window.navigator.msSaveOrOpenBlob)
+      window.navigator.msSaveBlob(blob, filename);
+    else {
+      var element = window.document.createElement('a')
+      element.href = window.URL.createObjectURL(blob)
+      
+      if (typeof element.download != 'undefined')
+        element.download = filename
+      else
+        alert('Please open the downloaded file in Microsoft Excel')
+      
+      document.body.appendChild(element)
+      element.click()
+      document.body.removeChild(element)
+    }
+  }
+
+  function getTimestamp() {
+    var date = new Date()
+
+    return [date.getHours(), date.getMinutes(), date.getSeconds()].join('_')
+  }
+
+  function randomString(length) {
+    return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, length)
+  }
+})()
+
+
+/**
+ * @namespace CrossTalk
+ * @description Creates input models, handles ajax calls,
+ * and populates the DOM with results
+ * 
+ * Exports the following functions:
+ * CrossTalk.init(config: Object) - sets input fields and attaches event handlers
+ * CrossTalk.flip() - flips both input tables
+ * CrossTalk.clear() - resets the DOM
+ * CrossTalk.calculate() - calls the calculation and updates the DOM with results
+ */
+var CrossTalk = (function () {
+
+  // Holds DOM references
+  /** @type Object */
+  var cfg = {
+    description: null,
+    startYear: null,
+    startAge: null,
+    interval: null,
+    title1: null,
+    title2: null,
+    file1: null,
+    file2: null,
+    download: null,
+    calculate: null
+  }
+
+  /** @type Object[] */
+  var excelData = []
+
+  return {
+    init: init,
+    flip: flip,
+    clear: clear,
+    calculate: calculate
+  }
+
+
+  /**
+   * @function init
+   * @summary Saves DOM references in the configuration and attaches event handlers
+   * @description
+   * A configuration object has the following properties:
+   * {
+   *  description {jQuery.HTMLInputElement} - A text input for the description 
+   *  startYear {jQuery.HTMLInputElement} - A numeric input for the starting year 
+   *  startAge {jQuery.HTMLInputElement} - A numeric input for the starting age
+   *  interval {jQuery.HTMLSelectElement} - A selector for the interval length
+   *  title1 {jQuery.HTMLInputElement} - A text input for the first dataset's title
+   *  file1 {jQuery.HTMLInputElement} - A file input element for the first dataset
+   *  title2 {jQuery.HTMLInputElement} - A text input for the second dataset's title
+   *  file2 {jQuery.HTMLInputElement} - A file input element for the second dataset
+   *  download {jQuery.HTMLSelectElement} - A selector for the download types
+   *  calculate {jQuery.HTMLButtonElement} - A button to initiate the calculation
+   * }
+   * 
+   * @param {Object} config
+   */
+  function init (config) {
+    cfg = config
+
+    for (element in cfg)
+      cfg[element].change(update)
+
+    cfg.download.click(function() {
+      var link = $('#download-format').val()
+
+      if (link == 'Excel Output')
+        Excel.exportData(excelData)
+      else if (link.startsWith('tmp'))
+        window.open(link, 'download')
+    })
+
+    $('a[href="#Input"]').tab('show')
+    $('ul.nav.nav-pills li:not(:first)').addClass('disabled')
+    $('#download-results').hide()
+    updateUI()
+  }
+
+  
+  /**
+   * @function update
+   * @summary Updates the UI
+   * @this The input element that fired this event
+   */
+  function update () {
+    var element = $(this)
+
+    // Updates the UI based on the contents of the file
+    if (this.type === 'file')
+      FileInput.parse(this.files[0])
+        .then(function (model) {
+          // set the title of the model to match the appropriate index and store it
+          model[element.data('title').substring(1)] = model.title
+
+          // store the model data in the element
+          element.data({'model': model})
+
+          // update the UI, passing in the updated file model
+          updateUI(model)
+        })
+
+    else {
+      updateUI()
+   }
+  }
+
+  /**
+   * @function updateUI
+   * @summary Updates UI based on file contents and form data
+   * @description
+   * A file model contains the following properties:
+   * {
+   *  title: {string} Description of data 
+   *  description: {string} Optional details
+   *  startYear: {number} The first year of the first calendar period of the data
+   *  startAge: {number} The first age of the first age group of the data
+   *  interval: {number} The width of the age and period intervals
+   *  table: {number[][]} Table containing count/population data
+   * }
+   * 
+   * @param {Object} [model] A file model to update the UI with
+   */
+  function updateUI (model) {
+    
+
+    // if a file model was supplied, update the corresponding form elements as well
+    if (model)
+      for (key in model)
+        if (cfg[key])
+          cfg[key].val(model[key])
+
+    // update goodness-of-fit tab
+    var selectors = ['a[href="#GoodnessOfFit-A"]', 'a[href="#GoodnessOfFit-B"]']
+    selectors.forEach(function(selector, index) {
+      $(selector).text(cfg['title' + (index + 1)].val())
+    })
+
+    // update both data tables based on file/form contents
+    var inputs = [cfg.file1, cfg.file2]
+    inputs.forEach(function (element) {
+      // generate a table if the model contains data, otherwise create an empty table
+
+      if (element[0].files.length) {
+        /** @type HTMLTableElement */
+        var table = DataTable.createInput(getTable(element))
+        $('#flip').show()
+      } else {
+        /** @type HTMLTableElement */
+        var table = DataTable.createEmpty(12, 6)
+        $('#flip').hide()
+      }
+
+      // data.table is a reference to the DOM node containing the table
+      $(element.data('table')).html(table)
+    })
+
+
+  }
+
+  function flip () {
+    var swap = cfg.title2.val()
+    cfg.title2.val(cfg.title1.val())
+    cfg.title1.val(swap)
+
+    swap = cfg.file2.data('model')
+    cfg.file2.data('model', cfg.file1.data('model'))
+    cfg.file1.data('model', swap)
+
+    updateUI()
+
+    // update file references afterwards to reduce performance impact
+    swap = cfg.file2.prop('files')
+    cfg.file2.prop('files', cfg.file1.prop('files'))
+    cfg.file1.prop('files', swap)
+  }
+
+  function clear () {
+    for (element in cfg)
+      cfg[element].val('')
+    
+    cfg.file1.data('model', null)
+    cfg.file2.data('model', null)
+
+    $('#Input').children('#errors').remove()
+    init(cfg)
+  }
+
+  function getModel () {
+    return {
+      description: cfg.description.val(),
+      startYear: parseInt(cfg.startYear.val()),
+      startAge: parseInt(cfg.startAge.val()),
+      interval: parseInt(cfg.interval.val()),
+      title1: cfg.title1.val(),
+      title2: cfg.title2.val(),
+      file1: cfg.file1.data('model'),
+      file2: cfg.file2.data('model')
+    }
+  }
+
+  function getTable (element) {
+    return {
+      description: cfg.description.val(),
+      startYear: parseInt(cfg.startYear.val()),
+      startAge: parseInt(cfg.startAge.val()),
+      interval: parseInt(cfg.interval.val()),
+      title: $(element.data('title')).val(),
+      table: element.data('model') ? element.data('model').table : null
+    }
+  }
+
+  function validate () {
+
+    var input1 = cfg.file1.data('model')
+    var input2 = cfg.file2.data('model')
+
+    var valid = $('#crosstalk-form')[0].checkValidity()
+
+      if (input1 && input2) {
+          if (input1.table.length != input2.table.length || input1.table[0].length != input2.table[0].length) {
+              cfg.file1[0].setCustomValidity("The contents of Data Files must have the same dimensions");
+          } else {
+              cfg.file1[0].setCustomValidity("");
+              cfg.file2[0].setCustomValidity("");
+          }
+      } else {
+          if (!input1 || !input1.table)
+              cfg.file1[0].setCustomValidity("Data File 1 is required");
+          else
+              cfg.file1[0].setCustomValidity("");
+
+          if (!input2 || !input2.table)
+              cfg.file2[0].setCustomValidity("Data File 2 is required");
+          else
+              cfg.file2[0].setCustomValidity("");
+      }
+
+      $("#Input.tab-pane").children("#errors").remove();
+      $(".errors").removeClass("errors");
+
+      var invalids = $("input:invalid, select:invalid");
+      if (invalids.length > 0)
+
+          $.each($("input:invalid, select:invalid"), function (i, el) {
+              displayErrors(el);
+          });
+      else 
+        return true
+
+
+  }
+
+  function calculate () {
+    if (validate()) {
+      $("#Input").children("#error").remove()
+
+      var url = 'http://127.0.0.1:10000/calculate/'
+
+      if (!cfg.description.val())
+        cfg.description.val('Created ' + new Date().toLocaleString())
+
+      var model = getModel()
+      $('#loading').modal('show')
+
+      $.post(url, JSON.stringify(model))
+        .done(displayResults)
+        .fail(displayError)
+        .always(function () {
+          $('#loading').modal('hide')
+        })
+    }
+  }
+
+  function displayError (xhr, error, statusText) {
+      var message = ""
+      switch (xhr.status) {
+      case 503:
+          message = "The service that the request is trying to reach is currently down, Please try again later"
+          break
+      case 404:
+          message = "The request returned with a response of  '" + statusText + "'. Please try again later."
+          break
+      case 400:
+          message = xhr.responseJSON.data
+          break
+      default:
+          message = "The request has failed for an unknown reason"
+          break
+      }
+
+      console.error(message)
+
+      $("#Input").children("#error").remove()
+      $("#Input").prepend($("<div id='error' class='alert alert-danger'>").html(message));
+  }
+
+  function displayResults (results) {
+
+    
+    results = JSON.parse(results)
+
+    var downloads = results.downloads
+    var output = results.output
+
+    for (key in output)
+      populate(key, output[key])
+
+    for (key in downloads)
+      $('#' + key).prop('value', downloads[key])
+    
+    $('#download-results').show()
+        $('ul.nav.nav-pills li:not(:first)').removeClass('disabled')
+        $('a[href="#IncidenceRates"]').tab('show')
+
+  }
+
+  function populate (key, content) {
+    if (content.graphs || content.tables)
+      $('#' + key).html(createPanel(key, content))
+
+    else
+      for (subkey in content)
+        populate([key, subkey].join('-'), content[subkey])
+  }
+
+  function createPanel (key, content) {
+
+    var panelData = {
+      title: null,
+      tables: [],
+      graphs: []
     }
 
-    self.getData = function(action) {
-        $.ajax({
-            method: "POST"
-            , url: crosstalk_form.action+action
-            , data: JSON.stringify(crosstalk.model)
-            , beforeSend: function () {
-                $("#loadingModal").modal("show");
-                $(".tab-content").children("#error").remove();
-            }
-        }).done(function (data) {
-            var result = data;
-            var navTo = $('a[href="#input"]');
-            for (var key in result.data) {
-                var resultSet = result.data[key];
+    var panel = $('<div>')
+    panel.addClass('row')
 
-                if (key == "IncidenceRates") {
-                    $("#rates").find(".graphContainers, .title").empty();
-                    incRatesTab(resultSet);
-                    navTo = $('a[href="#rates"]');
-                    navTo.parent().removeClass("disabled");
-                } else if (key == "IncidenceRateRatios") {
-                    $("#rateRatios").find(".graphContainers, .title").empty();
-                    incRateRatioTab(resultSet);
-                    $('a[href="#rateRatios"]').parent().removeClass("disabled");
-                } else if (key == "ApcOfIncidenceRates") {
-                    $("#apcRate").find(".graphContainers, .title").empty();
-                    apcRatesTab(resultSet);
-                    navTo = $('a[href="#apcRate"]');
-                    navTo.parent().removeClass("disabled");
-                } else if (key == "ApcOfRateRatios") {
-                    $("#apcRatios").find(".graphContainers, .title").empty();
-                    apcRateRatioTab(resultSet);
-                    $('a[href="#apcRatios"]').parent().removeClass("disabled");
-                } else if (key == "GoodnessOfFit") {
-                    $("#goodness").find(".graphContainers, .title").empty();
-                    goodFitTab(resultSet);
-                    $('a[href="#goodness"]').parent().removeClass("disabled");
-                }
+    console.log('PANEL', key, content)
 
-                $('#ratePane,#showPlot, #apcRatePane, #apcRatioPane').addClass('show');
-            }
-            $(".output").addClass("show");
+    content.graphs.forEach(function (graph, i) {
+      var graphDiv = $('<div>')
+      var singleTable = (content.tables.length % 2) === 1
+      var singleGraph = (content.graphs.length % 2) === 1
+      var classname = singleGraph ? 'col-md-12' : 'col-md-6'
+      var titles = singleTable ? [cfg.title1.val() + ' vs ' + cfg.title2.val()] : [cfg.title1.val(), cfg.title2.val()]
 
-            // bind events to newly generated images
-            $(".expandImg").on("click keypress", previewImage);
+      
+      graphDiv.addClass(classname + ' text-center')
+
+      var graph = content.graphs[i]
+      var title = key
+        .split('-').join(' -')
+        .split(/(?=[A-Z])/).join(' ')
+
+      if (key.endsWith('A'))
+        title += ' - ' + cfg.title1.val()
+
+      else if (key.endsWith('B'))
+        title += ' - ' + cfg.title2.val()
 
 
-            $('#download_choice').show();
+      if (typeof graph === 'string') {
+        var img = $('<img>')
+        img.addClass('img-responsive')
+        img.data('title', key)
+        img.attr('src', graph)
+        img.attr('data-action', 'zoom')
 
+        img.click(Modal.displayElement.bind(
+          img, title, img.clone().removeAttr('data-action')
+        ))
 
-            // sets download links for output files
-            if (result.data.downloads) {
-                ['RDataInput', 'RDataOutput', 'TextInput', 'TextOutput', 'Excel'].forEach(function(key) {
-                    if (key in result.data.downloads) {
-                        $('#' + key).attr('value', result.data.downloads[key]);
-                    } else {
-                        $('#' + key).removeAttr('value','');
-                    }
-                });
-            }
-            navTo.trigger('click');
-        }).fail(crosstalk.failure).always(function () {
-            $("#loadingModal").modal("hide");
-        });
+        panelData.graphs.push(graph)
+        graphDiv.append(img)
+
+      } else {
+        // draw svg graph
+        var svgWrapper = $(Plot.createSVG(graph, titles))
+        svgWrapper.attr('data-action', 'zoom')
+        
+        // render canvas plot to base64
+
+        graphDiv.data('title', title)
+        graphDiv.data('graph', graph)
+
+        graphDiv.click(Modal.displayElement.bind(
+          graphDiv, graphDiv.data('title'), Plot.createSVG(graphDiv.data('graph'), titles)
+        ))
+  
+        panelData.graphs.push(Plot.createCanvas(graph, titles).toDataURL('image/png'))
+        graphDiv.append(svgWrapper)
+      }
+
+      panelData.title = title
+      panel.append(graphDiv)
+    })
+
+    for (var j = 0; j < content.tables.length; j++) {
+      var linkDiv = $('<div>')
+      var single = (content.tables.length % 2) === 1
+      var classname = single ? 'col-md-12' : 'col-md-6'
+      var linkname = single ? (cfg.title1.val() + ' vs ' + cfg.title2.val()) : cfg['title' + (j + 1)].val()
+
+      linkDiv.addClass(classname + ' text-center vertical-spacer')
+
+      var tableLink = $('<a>')
+      console.log('getting the tables for ', key, content.tables)
+
+      tableLink.data({title: linkname, tables: content.tables[j]})
+
+      tableLink.click(function () {
+        var data = $(this).data()
+        Modal.displayTable(data.title, data.tables)
+      })
+
+      tableLink.html('View Dataset ' + linkname)
+      linkDiv.append(tableLink)
+
+      if (content.tables[j].length) {
+        panel.append(linkDiv)
+
+        content.tables[j].forEach(function(table) {
+          panelData.tables.push(table)
+        })
+      }
     }
 
-    self.reset = function(e) {
-        if (e !== undefined) e.preventDefault();
-        // Holds values from the DOM in a model
-        self.model = {
-            description: null,
-            startYear: null,
-            startAge: null,
-            interval: null,
-            titleA: null,
-            titleB: null,
-            inputfile1: null,
-            inputfile2: null
-        };
-        $('[name="crosstalk_form"]')[0].reset();
-        $('#dataFlip').removeClass('show');
-
-        $(".tab-pane#input").children("#errors").remove();
-        $(".submitted").removeClass("submitted");
-
-        $(".graphContainers").empty();
-        $('.output').removeClass('show');
-        $('#download_choice').hide();
-        $('a[href="#input"]').trigger('click');
-        $("ul.nav.nav-pills li:not(:first)").addClass("disabled");
-
-        $('#description,#startAge,#startYear,#interval,#title1,#title2').val("");
-        crosstalk.update();
-
-        $(".tablesContainers table").each(function () {
-            if ($.fn.DataTable.isDataTable(this)) {
-                $(this).DataTable().destroy();
-            }
-            $(this).empty();
-            $(".title").empty();
-        });
-        var matrix = [];
-        for (var i = 0; i < 13; i++) {
-            var arr = [];
-            for (var j = 0; j < 7; j++) {
-                arr.push("&zwj;");
-            }
-            matrix.push(arr);
-        }
-        createInputTable("#dataset1", createHeaders(3), matrix);
-        createInputTable("#dataset2", createHeaders(3), matrix);
-        $("#dataset1 .paste-here, #dataset2 .paste-here").remove();
-        $("#dataset1 textarea, #dataset2 textarea").before('<img class="img-responsive paste-here" alt="paste here" src="/common/images/paste-here.gif"/>');
-
-        $(".tab-content").children("#error").remove();
-    }
-
-    return self;
+    if (!panelData.title.includes('Unlabeled'))
+      excelData.push(panelData)
+    
+    return panel
+  }
 
 
-    function createOutputHeaders(initial, headers) {
-        var returnHeaders = $.extend(true, [], initial);
-        for (var i = 0; i < headers.length; i++) {
-            returnHeaders.push({
-                data: headers[i].toString()
-                , title: headers[i].toString()
-            });
-        }
-        return returnHeaders;
-    }
-
-    function createGraphImage(containerId, link, ratio) {
-        var ratio = ratio || 1;
-        var width = parseInt(12 * ratio);
-        $(containerId).append('<div class="col-sm-' + width + '"><div class="graphContainers"><a class="expandImg" data-toggle="modal" data-target="#imgPreview" tabindex="0"><img class="img-responsive" src="' + link + '" alt="generated graph image"/></a></div></div>');
-    }
-
-    function createInteractiveGraphImage(containerId, link, ratio) {
-    	var ratio = ratio || 1;
-    	var width = parseInt(12 * ratio);
-      var callbackLocation = $('<div class="col-sm-' + width + '">').appendTo($(containerId));
-      $.ajax({
-          method: 'GET',
-          url: link,
-          dataType: 'text'
-      }).done(function(data) {
-          callbackLocation.append('<div class="graphContainers">' + data + '</div>');
-          $('[data-toggle="tooltip"]').tooltip({container: 'body', html: true});
-      });
-    }
-
-    function createOutputTable(containerId, title, table, headers, extraHeaders) {
-        var extraHeaders = extraHeaders || "";
-        var target = $(containerId);
-        if ($.fn.DataTable.isDataTable(containerId)) {
-            target.DataTable().destroy();
-        }
-        target.empty().prev('h4').remove();
-        if (title) {
-            var title = (title.length > 100) ? (title.substr(0, 100) + "...") : title;
-            target.before("<h4 class='title'>" + title + "</h4>");
-        }
-        var dTbl = target.DataTable({
-            "data": table
-            , "columns": headers
-        });
-
-        $(dTbl.table().header()).prepend(extraHeaders);
-        target.dataTable().fnDraw();
-    }
-
-    function createDatasetLink(containerId, displayTitle, table, ratio) {
-        var ratio = ratio || 1;
-        var width = parseInt(12 * ratio);
-        var link = $(containerId).append('<div class="tabledownload col-sm-' + width + '"><a id="findme">View Dataset'+(table.length > 1?'s':'')+' ' + displayTitle + '</a></div>').find("#findme");
-        link.removeAttr("id");
-        link.on('click', function(e) {
-            e.preventDefault();
-            var newWindow = window.open("tabledisplay.html", "_blank", "width=750, height=550, scrollbars=1");
-            window.requestTabledata = function() {
-                window.requestTabledata = null;
-                return $.extend(true,[],table);
-            };
-        });
-    }
-
-    function incRatesTab(result) {
-        $("#rateTables .title").html("");
-        result.headers.unshift("Age");
-        if (result.tables[0]) {
-            result.tables[0] = result.tables[0].map(function(entry) {
-                entry.Age = entry['_row'];
-                delete entry['_row'];
-                return entry;
-            });
-            result.tables[0].unshift(result.headers);
-            createGraphImage("#rateGraphs", result.graphs[0], .5);
-        }
-
-        if (result.tables[1]) {
-            result.tables[1] = result.tables[1].map(function(entry) {
-                entry.Age = entry['_row'];
-                delete entry['_row'];
-                return entry;
-            });
-            result.tables[1].unshift(result.headers);
-            createGraphImage("#rateGraphs", result.graphs[1], .5);
-        }
-        if (result.tables.length > 1) {
-            $("#rateTables").empty();
-            createDatasetLink("#rateTables", self.model.titleA+" and "+self.model.titleB, [result.tables[0],result.tables[1]]);
-        }
-    }
-
-    function incRateRatioTab(result) {
-        if (result.tables[0]) {
-            result.headers.unshift("Age");
-            result.tables[0] = result.tables[0].map(function(entry) {
-                entry.Age = entry['_row'];
-                delete entry['_row'];
-                return entry;
-            });
-            result.tables[0].unshift(result.headers);
-            $("#irrTable").empty();
-            createDatasetLink("#irrTable", (self.model.titleA + " vs " + self.model.titleB), [result.tables[0]]);
-
-            createGraphImage("#irrGraphs", result.graphs[0][0]);
-            createGraphImage("#irrGraphs", result.graphs[1][0]);
-
-            if (!$("#showSwitch").is(":checked")) {
-                $("#irrGraphs img:nth-child(2)").addClass("show");
-            } else {
-                $("#irrGraphs img:first").addClass("show");
-            }
-        }
-    }
-
-    function apcRatesTab(result) {
-        $("#collapseOne, #collapseTwo, #collapseThree, #collapseFour").children(".panel-body").add("#local-content").empty();
-        if (result.AdjustedRates) {
-            var ar = result.AdjustedRates;
-            if (ar.ComparisonOfAdjustedRates) {
-                var coarTarget = $("#collapseOne .panel-body");
-                var coar = ar.ComparisonOfAdjustedRates;
-                if (coar.graphs) {
-                    createGraphImage(coarTarget, coar.graphs[0][0]);
-
-                }
-                if (coar.tables) {
-                    coar.headers.unshift("PH--");
-                    coar.tables[0] = coar.tables[0].map(function(entry) {
-                        entry['PH--'] = entry['_row'];
-                        delete entry['_row'];
-                        return entry;
-                    });
-                    coar.tables[0].unshift(coar.headers);
-                    createDatasetLink(coarTarget, (self.model.titleA + " vs " + self.model.titleB), [coar.tables[0]]);
-                }
-            }
-            if (ar.CrossSectionalAgeCurve) {
-                var csacTarget = $("#collapseFour .panel-body");
-                var csac = ar.CrossSectionalAgeCurve;
-                if (csac.graphs) {
-                    createInteractiveGraphImage(csacTarget, csac.graphs[0][0]);
-                }
-                if (csac.tables) {
-                    for (var i in csac.tables) csac.tables[i].unshift(csac.headers);
-                    createDatasetLink(csacTarget, self.model.titleA, [csac.tables[0]], .5)
-                    createDatasetLink(csacTarget, self.model.titleB, [csac.tables[1]], .5)
-                }
-            }
-            if (ar.FittedCohortPattern) {
-                var fcpTarget = $("#collapseTwo .panel-body");
-                var fcp = ar.FittedCohortPattern;
-                if (fcp.graphs) {
-                    createInteractiveGraphImage(fcpTarget, fcp.graphs[0][0]);
-                }
-                if (fcp.tables) {
-                    for (var i in fcp.tables) fcp.tables[i].unshift(fcp.headers);
-                    createDatasetLink(fcpTarget, self.model.titleA, [fcp.tables[0]], .5)
-                    createDatasetLink(fcpTarget, self.model.titleB, [fcp.tables[1]], .5)
-                }
-            }
-            if (ar.FittedTemporalTrends) {
-                var fttTarget = $("#collapseThree .panel-body");
-                var ftt = ar.FittedTemporalTrends;
-                if (ftt.graphs) {
-                    createInteractiveGraphImage(fttTarget, ftt.graphs[0][0]);
-                }
-                if (ftt.tables) {
-                    for (var i in ftt.tables) ftt.tables[i].unshift(ftt.headers);
-                    createDatasetLink(fttTarget, self.model.titleA, [ftt.tables[0]], .5)
-                    createDatasetLink(fttTarget, self.model.titleB, [ftt.tables[1]], .5)
-                }
-            }
-        }
-        if (result.LocalDrifts) {
-            var ld = result.LocalDrifts;
-            if (ld.graphs) {
-                var graphdiv = $("<div class=\"row\"></div>").appendTo("#local-content");
-                createInteractiveGraphImage(graphdiv, ld.graphs[0][0], .5);
-                createGraphImage(graphdiv, ld.graphs[1][0], .5);
-            }
-            if (ld.tables) {
-                var linkdiv = $("<div class=\"row\"></div>").appendTo("#local-content");
-                var tablearray = [];
-                for (var index in ld.tables) {
-                    ld.tables[index].unshift(ld.headers);
-                    if (result.NetDrifts) {
-                        var nd = result.NetDrifts;
-                        if (nd.headers && nd.tables && nd.tables[0].length > index) {
-                            tablearray[index] = [[nd.headers,nd.tables[0][index]],ld.tables[index]];
-                        }
-                    }
-                }
-                createDatasetLink(linkdiv, self.model.titleA, tablearray[0], .5)
-                createDatasetLink(linkdiv, self.model.titleB, tablearray[1], .5)
-            }
-        }
-    }
-
-    function apcRateRatioTab(result) {
-        $("#csac, #fcp, #ftt, #intercept").children(".panel-body").empty()
-        if (result.CrossSectionalAgeCurve) {
-            var csac = result.CrossSectionalAgeCurve;
-            createInteractiveGraphImage("#csac .panel-body", csac.graphs[0][0]);
-            if (csac.tables) {
-                for (var i in csac.tables) csac.tables[i].unshift(csac.headers);
-                createDatasetLink("#csac .panel-body", (self.model.titleA+" vs."+self.model.titleB), [csac.tables[0]]);
-            }
-        }
-        if (result.FittedCohortPattern) {
-            var fcp = result.FittedCohortPattern;
-            createInteractiveGraphImage("#fcp .panel-body", fcp.graphs[0][0]);
-            if (fcp.tables) {
-                for (var i in fcp.tables) fcp.tables[i].unshift(fcp.headers);
-                createDatasetLink("#fcp .panel-body", (self.model.titleA+" vs."+self.model.titleB), [fcp.tables[0]]);
-            }
-        }
-        if (result.FittedTemporalTrends) {
-            var ftt = result.FittedTemporalTrends;
-            createInteractiveGraphImage("#ftt .panel-body", ftt.graphs[0][0]);
-            if (ftt.tables) {
-                for (var i in ftt.tables) ftt.tables[i].unshift(ftt.headers);
-                createDatasetLink("#ftt .panel-body", (self.model.titleA+" vs."+self.model.titleB), [ftt.tables[0]]);
-            }
-        }
-        if (result.IO) {
-            var io = result.IO;
-            io.headers.unshift("");
-            io.tables[0] = io.tables[0].map(function(entry) {
-                entry[""] = entry['_row'];
-                delete entry['_row'];
-                return entry;
-            });
-            io.tables[0].unshift(io.headers);
-            createGraphImage("#intercept .panel-body", io.graphs[0][0]);
-            createDatasetLink("#intercept .panel-body", (self.model.titleA + " vs " + self.model.titleB), [io.tables[0]]);
-        }
-    }
-
-    function goodFitTab(result) {
-        $("#gaf_pop1li a, #gaf_pop2li a").empty();
-
-        $("#gaf_pop1li a, #gaf_pop1 .title").text(self.model.titleA);
-        $("#gaf_pop2li a, #gaf_pop2 .title").text(self.model.titleB);
-
-        var graphs = result.graphs;
-
-        createGraphImage("#gaf_pop1", graphs[0][0], .5);
-        createGraphImage("#gaf_pop1", graphs[0][1], .5);
-        createGraphImage("#gaf_pop2", graphs[1][0], .5);
-        createGraphImage("#gaf_pop2", graphs[1][1], .5);
-    }
-
-    function previewImage(e) {
-        var img = $(e.target)[0];
-
-        if (e.target.tagName != "IMG")
-            img = $(e.target).find("img")[0];
-
-        $("#imgPreview .modal-body").append("<img class='img-responsive' src='" + img.src + "' />");
-        if (e.keyCode == 13) $("#imgPreview").modal("show");
-    }
-
-    /* ---------- Updates the model with contents from the UI ---------- */
-    function syncModel() {
-        self.model.description = self.cfg.description.val();
-        self.model.startYear = parseFloat(self.cfg.startYear.val());
-        self.model.startAge = parseFloat(self.cfg.startAge.val());
-        self.model.interval = parseFloat(self.cfg.interval.val());
-        self.model.titleA = self.cfg.titleA.val();
-        self.model.titleB = self.cfg.titleB.val();
-        if (self.model.inputfile1) {
-            self.model.inputfile1.title = self.model.titleA;
-            table_input($("#dataset1"), self.model.inputfile1);
-        }
-        if (self.model.inputfile2) {
-            self.model.inputfile2.title = self.model.titleB;
-            table_input($("#dataset2"), self.model.inputfile2);
-        }
-    }
-
-    function create_line(line, i) {
-        var lead = "&zwj;";
-        if (self.model.startAge && self.model.interval) {
-            var age = self.model.startAge + (self.model.interval * i);
-            lead = age + "-" + (age + self.model.interval - 1);
-        }
-        line.unshift(lead);
-        return line;
-    }
-
-    function table_input(target, data) {
-        var thisElement = $(target);
-        var tableData = $.extend(true, [], data.table);
-        if (tableData.length < 1) {
-            alert('needs a message 1');
-            return;
-        }
-        var width = tableData[0].length + 1;
-        for (var i in tableData) {
-            tableData[i] = create_line(tableData[i], i);
-            if (tableData[i].length != width) {
-                alert('needs a message 2');
-                return;
-            }
-        }
-        var table = createInputTable("#" + thisElement.prop("id"), createHeaders((width - 1) / 2, tableData), tableData).children('thead');
-        if (self.model.startYear && self.model.interval) {
-            var headerRow = $('<tr><th class="white"></th></tr>');
-            for (var i = 0; i < (width - 1) / 2; i++) {
-                var header = self.model.startYear + self.model.interval * i;
-                headerRow.append($('<th class="header" colspan="2"></th>').html(header + "-" + (header + self.model.interval - 1)));
-            }
-            table.prepend(headerRow);
-        }
-        if (data.title && self.model.description) {
-            var title = (data.title.length > 100) ? (data.title.substr(0, 100) + "...") : data.title;
-            var desc = (self.model.description.length > 100) ? (self.model.description.substr(0, 100) + "...") : self.model.description;
-
-            table.prepend('<tr><th class="white"></th><th class="header" colspan="' + (width - 1) + '">' + title + '<br/><span class="blue">' + desc + '</span></th></tr>');
-        }
-        thisElement.children(".paste-here").remove();
-    }
-
-    /* ---------- Saves the file contents to the model ---------- */
-    function updateModel(id, contents) {
-        var checkAgainst = { "inputfile1": self.model["inputfile2"], "inputfile2": self.model["inputfile1"]}[id];
-        var overwrite = true;
-        if (checkAgainst) {
-            var missing = [];
-            if (contents.description != self.cfg.description.val()) missing[missing.length] = "Description";
-            if (contents.startYear != self.cfg.startYear.val()) missing[missing.length] = "Start Year";
-            if (contents.startAge != self.cfg.startAge.val()) missing[missing.length] = "Start Age";
-            if (contents.interval != self.cfg.interval.val()) missing[missing.length] = "Interval (Years)";
-            if (missing.length > 0) {
-                missing[Math.max(missing.length-2,0)] = missing.splice(-2).join(", and ");
-                overwrite = confirm("The "+missing.join(", ")+" header"+(missing.length>1?"s":"")+" in this file do not match the currently entered values. Click \"Okay\" to overwrite them.");
-            }
-        }
-        self.model[id] = contents;
-        if (overwrite) {
-            self.cfg.description.val(contents.description);
-            self.cfg.startAge.val(contents.startAge);
-            self.cfg.startYear.val(contents.startYear);
-            self.cfg.interval.val(contents.interval);
-        }
-        var inputsExist = true;
-        if (self.model.inputfile1) {
-            self.cfg.titleA.val(self.model.inputfile1.title);
-        } else {
-            inputsExist = false;
-        }
-        if (self.model.inputfile2) {
-            self.cfg.titleB.val(self.model.inputfile2.title);
-        } else {
-            inputsExist = false;
-        }
-        $('#dataFlip').toggleClass('show',inputsExist);
-        syncModel();
-    }
-
-    function createHeaders(length, data) {
-        var ageHeader = "Age";
-        if (data !== undefined) ageHeader = '<span class = "ageGroups">' + data.length + " age groups </span>";
-        var headers = [{
-            title: ageHeader
-            , className: 'dt-center grey'
-        }];
-        for (var i = 0; i < length; i += 1) {
-            headers.push({
-                title: "Count"
-                , className: 'dt-body-right'
-            });
-            headers.push({
-                title: "Population"
-                , className: 'dt-body-right'
-            });
-        }
-        return headers;
-    };
-
-    function createInputTable(containerID, headers, data) {
-        var table = $(document.createElement('table'));
-        table.attr('class', 'table display compact');
-        table.attr('width', '100%');
-        $(containerID).children(".dataTables_wrapper").children(".dataTable").DataTable().destroy();
-        $(containerID).children("table").remove();
-        $(containerID).prepend(table);
-        table.DataTable({
-            "data": data
-            , "columns": headers
-            , "scrollX": false
-        });
-        $(containerID).find('#inputTable_wrapper').addClass('table-responsive');
-        $(containerID).find('.table').addClass('input-table');
-        return table;
-    };
-})($, readfile);
-
-
-function displayErrors(el) {
-    if ($("#input.tab-pane #errors").length === 0)
-        $("#input.tab-pane").prepend("<div id='errors' class='alert alert-danger'></div>");
+  function displayErrors(el) {
+    if ($("#errors").length === 0)
+        $("#Input.tab-pane").prepend("<div id='errors' class='alert alert-danger'></div>");
 
     var label = $("label[for='" + el.id + "']");
     label.addClass("errors");
@@ -856,4 +1794,6 @@ function displayErrors(el) {
     }
 
     $("#errors").append(msg);
-}
+  }
+
+})()
