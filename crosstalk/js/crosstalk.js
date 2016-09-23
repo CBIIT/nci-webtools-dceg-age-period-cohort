@@ -1597,7 +1597,7 @@ var CrossTalk = (function () {
     if (validate()) {
       $("#Input").children("#error").remove()
 
-      var url = 'http://127.0.0.1:10000/calculate/'
+      var url = '/crosstalkRest/calculate/'
 
       if (!cfg.description.val())
         cfg.description.val('Created ' + new Date().toLocaleString())
