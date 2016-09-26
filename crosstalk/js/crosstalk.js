@@ -24,16 +24,38 @@ $(document).ready(function () {
   $('#help').click(window.open.bind(
     null, 'help.html', 'Crosstalk Help', 'width=750, height=550, scrollbars=1'))
 
-    $(document).on("show.bs.tab", function (e) {
-        if ($(e.target.parentElement).hasClass("disabled"))
-            e.preventDefault();
-    });
 
- $(document).on("hidden.bs.modal", function (e) {
-        $(e.target).find(".modal-body").empty();
-    });
+  $(document).on('show.bs.tab', function (e) {
+    if ($(e.target.parentElement).hasClass('disabled'))
+      e.preventDefault()
+  })
+
+  $(document).on('show.bs.tab', function (e) {
+    if ($(e.target.parentElement).hasClass('disabled'))
+      e.preventDefault()
+  })
+
+  $(document).on('hidden.bs.modal', function (e) {
+    $(e.target).find('.modal-body').empty()
+  })
+
+  $('.paste-area').bind('paste', function (e) {
+    var data = e.originalEvent.clipboardData.getData('text')
+    var table = data.match(/[^\r\n]+/g).map(function (line) {
+      var values = line.split(',').map(parseFloat)
+      return (values.includes(NaN) || values.length % 2) ? null : values
+    })
+
+    if (!table.includes(null)) {
+      var target = e.target.dataset.target
+      var model = $(target).data('model') || {}
+      model.table = table
+      $(target).data('model', model)
+
+      CrossTalk.update()
+    }
+  })
 })
-
 
 /**
  * @namespace FileInput
@@ -81,7 +103,7 @@ var FileInput = (function () {
             // select non-empty lines
             /** @type {string[]} */
             var contents = event.currentTarget.result.match(/[^\r\n]+/g)
-            
+
             resolve({
               title: parseHeader(contents.shift()),
               description: parseHeader(contents.shift()),
@@ -95,7 +117,7 @@ var FileInput = (function () {
       }
     )
   }
-  
+
 
   /**
    * @function parseLine
@@ -107,7 +129,6 @@ var FileInput = (function () {
     return line.split(',').map(parseFloat)
   }
 
-
   /**
    * @function parseHeader
    * @summary Extracts a header from a line (title, description, etc)
@@ -117,14 +138,13 @@ var FileInput = (function () {
   function parseHeader (line) {
     /** @type {string[]}  */
     var description = line.match(/"(.*?)"/)
-    
+
     /** @type {string} */
     var header = description ? description[1] : line.split(',')[0]
-    
+
     return header.substring(header.indexOf(':') + 1).trim()
   }
 })()
-
 
 /**
  * @namespace DataTable
@@ -141,7 +161,6 @@ var DataTable = (function ($) {
     createOutput: createOutputTable
   }
 
-
   /**
    * @function createEmptyTable
    * @summary Creates an empty table of the specified size
@@ -155,7 +174,6 @@ var DataTable = (function ($) {
       createMatrix(numRows, numCols + 1, '&zwj;'),
       'input-table display cell-border')
   }
-
 
   /**
    * @function createInputTable
@@ -176,7 +194,7 @@ var DataTable = (function ($) {
   function createInputTable (input) {
     if (!input || !input.table)
       return null
-    
+
     // create a table with count/population columns
     var table = createTable(
       createColumns(input.table.length, input.table[0].length),
@@ -184,13 +202,12 @@ var DataTable = (function ($) {
       'input-table display cell-border')
 
     // insert additional table headers
-    createHeaders(input).forEach(function(header) {
+    createHeaders(input).forEach(function (header) {
       table.tHead.insertAdjacentHTML('afterbegin', header.outerHTML)
     })
 
     return table
   }
-
 
   /**
    * @function createOutputTable
@@ -207,11 +224,10 @@ var DataTable = (function ($) {
    */
   function createOutputTable (output) {
     return createTable(
-      getColumns(output), 
+      getColumns(output),
       output,
       'output-table display cell-border')
   }
-
 
   /**
    * @function createTable
@@ -269,7 +285,6 @@ var DataTable = (function ($) {
     return table
   }
 
-
   /**
    * @function createHeaders
    * @summary Creates table headers for input data
@@ -290,8 +305,8 @@ var DataTable = (function ($) {
   function createHeaders (model) {
 
     // limit length of title and description
-    var title = (model.title.length > 100) ? (model.title.substr(0, 100) + "...") : model.title
-    var desc = (model.description.length > 100) ? (model.description.substr(0, 100) + "...") : model.description
+    var title = (model.title.length > 100) ? (model.title.substr(0, 100) + '...') : model.title
+    var desc = (model.description.length > 100) ? (model.description.substr(0, 100) + '...') : model.description
 
     // create table row for title header
     /** @type HTMLTableRowElement */
@@ -309,8 +324,8 @@ var DataTable = (function ($) {
     var titleHeader = document.createElement('th')
     titleHeader.className = 'table-header'
     titleHeader.colSpan = model.table[0].length
-    titleHeader.innerHTML = title + 
-                            '<div class="blue">' + desc + '</div>'
+    titleHeader.innerHTML = title || ('Created ' + new Date().toLocaleString()) +
+      '<div class="blue">' + desc + '</div>'
     titleRow.appendChild(titleHeader)
 
     // create row for year ranges
@@ -332,14 +347,13 @@ var DataTable = (function ($) {
       var yearRange = model.interval > 1
         ? [year, year + model.interval - 1].join('-')
         : year
-      
+
       yearHeader.innerText = yearRange
       yearRow.appendChild(yearHeader)
     }
 
-    return [yearRow, titleRow]
+    return [yearRow || null, titleRow || null]
   }
-
 
   /**
    * @function createColumns
@@ -369,21 +383,20 @@ var DataTable = (function ($) {
   function createColumns (numRows, numCols) {
     /** @type Object[] */
     var columns = [{
-      title: numRows 
+      title: numRows
         ? '<small>' + numRows + ' age groups</small>'
         : 'Age',
       className: numRows ? 'grey' : 'grey'
     }]
 
     while (numCols--)
-      columns.push({
+    columns.push({
         title: numCols % 2 ? 'Count' : 'Population',
         className: 'dt-body-right'
       })
 
     return columns
   }
-
 
   /**
    * @function createMatrix
@@ -398,7 +411,6 @@ var DataTable = (function ($) {
       .fill(Array(numCols)
         .fill(initialValue || null))
   }
-
 
   /**
    * @function getData
@@ -420,7 +432,7 @@ var DataTable = (function ($) {
   function getData (model) {
     return model.table.map(function (row, index) {
       // calculates the age from the starting age, index and interval
-      var age = model.startAge + index * model.interval
+      var age = model.startAge + index * model.interval || ''
 
       if (model.interval > 1)
         age += '-' + (age + model.interval - 1)
@@ -472,13 +484,13 @@ var DataTable = (function ($) {
         data: key,
 
         // do not display a title for columns containing row names
-        title: key === '_row' 
-          ? label 
+        title: key === '_row'
+          ? label
           : key,
-        
+
         // center-align columns containing row names
-        className: ['_row', 'Cohort', 'Age', 'Period', 'Per', 'Coh'].includes(key) 
-          ? 'dt-body-center' 
+        className: ['_row', 'Cohort', 'Age', 'Period', 'Per', 'Coh'].includes(key)
+          ? 'dt-body-center'
           : 'dt-body-right'
       }
     })
@@ -493,7 +505,6 @@ var DataTable = (function ($) {
  * Plot.createCanvas(data, titles) : HTMLCanvasElement
  */
 var Plot = (function () {
-
   return {
     createSVG: createSVG,
     createCanvas: createCanvas
@@ -564,7 +575,7 @@ var Plot = (function () {
 
     /** @type d3.scaleLinear */
     var x = plot.xscale
-    
+
     /** @type d3.scaleLinear */
     var y = plot.yscale
 
@@ -573,7 +584,7 @@ var Plot = (function () {
 
     /** @type d3.area */
     var area = plot.area
-    
+
     /** @type d3.svg */
     var svg = d3.select(svgContainer).append('svg')
       .attr('viewBox', '0 0 ' + outerWidth + ' ' + outerHeight)
@@ -587,7 +598,7 @@ var Plot = (function () {
       .style('opacity', 0)
 
     // draw legend
-    data.legends.forEach(function(title, index) {
+    data.legends.forEach(function (title, index) {
       /** @type number */
       var size = 20
 
@@ -613,7 +624,6 @@ var Plot = (function () {
         .style('text-anchor', 'end')
         .text(title)
     })
-
 
     data.curves.forEach(function (curve, index) {
       // draw area ribbon
@@ -654,11 +664,11 @@ var Plot = (function () {
         var tooltipContents = (function (headers, values) {
           var table = document.createElement('table')
 
-          headers.forEach(function(header, index) {
+          headers.forEach(function (header, index) {
             var row = document.createElement('tr')
             var contents = [header + ':', values[index]]
-            
-            contents.forEach(function(data) {
+
+            contents.forEach(function (data) {
               var cell = document.createElement('td')
               cell.innerHTML = data
               row.appendChild(cell)
@@ -668,8 +678,8 @@ var Plot = (function () {
           })
 
           return table
-        })( [data.xaxis, data.yaxis, 'CILo', 'CIHi'],
-            [point[data.xaxis], point[data.yaxis], point.CILo, point.CIHi])
+        })([data.xaxis, data.yaxis, 'CILo', 'CIHi'],
+          [point[data.xaxis], point[data.yaxis], point.CILo, point.CIHi])
 
         svg.append('circle')
           .attr('class', 'point')
@@ -720,7 +730,7 @@ var Plot = (function () {
       .attr('dy', '1em')
       .style('text-anchor', 'middle')
       .text(data.ylabel)
-    
+
     return svgContainer
   }
 
@@ -753,7 +763,7 @@ var Plot = (function () {
 
     /** @type {HTMLCanvasElement} */
     var canvas = document.createElement('canvas')
-    
+
     /** @type {CanvasRenderingContext2D} */
     var context = canvas.getContext('2d')
 
@@ -773,7 +783,6 @@ var Plot = (function () {
     var plot = createPlot(data)
     canvas.width = plot.outerWidth
     canvas.height = plot.outerHeight
-
 
     /** @type number */
     var width = plot.width
@@ -805,9 +814,9 @@ var Plot = (function () {
     xAxis()
     yAxis()
     legend()
-    
+
     // draw curves
-    data.curves.forEach(function(curve, index) {
+    data.curves.forEach(function (curve, index) {
       context.beginPath()
       area(curve)
       context.fillStyle = colors[index]
@@ -822,7 +831,7 @@ var Plot = (function () {
       context.stroke()
 
       // draw points
-      curve.forEach(function(point) {
+      curve.forEach(function (point) {
         var xloc = x(point[data.xaxis])
         var yloc = y(point[data.yaxis])
         var radius = 4
@@ -835,7 +844,7 @@ var Plot = (function () {
     })
 
     // draw each band
-    data.bands.forEach(function(band, index) {
+    data.bands.forEach(function (band, index) {
       context.beginPath()
       context.fillStyle = colors[index]
       context.globalAlpha = 0.4
@@ -844,12 +853,11 @@ var Plot = (function () {
 
     return canvas
 
-
     /**
      * @function xAxis
      * @Summary creates the x-axis for this plot
      */
-    function xAxis() {
+    function xAxis () {
       var tickCount = 10
       var tickSize = 5
       var ticks = x.ticks(tickCount)
@@ -866,7 +874,7 @@ var Plot = (function () {
       context.stroke()
 
       // draw axis ticks
-      ticks.forEach(function(d) {
+      ticks.forEach(function (d) {
         // handle straddling of pixels
         var xval = Math.floor(x(d)) + 0.5
 
@@ -895,7 +903,7 @@ var Plot = (function () {
      * @function yAxis
      * @Summary creates the y-axis for this plot
      */
-    function yAxis() {
+    function yAxis () {
       var tickCount = 10
       var tickSize = 5
       var tickPadding = 3
@@ -913,7 +921,7 @@ var Plot = (function () {
       context.stroke()
 
       // draw axis ticks
-      ticks.forEach(function(d) {
+      ticks.forEach(function (d) {
         var yval = Math.floor(y(d)) + 0.5
 
         context.beginPath()
@@ -945,12 +953,12 @@ var Plot = (function () {
      * @function legend
      * @Summary creates the legend for this plot
      */
-    function legend() {
+    function legend () {
       context.textAlign = 'right'
       context.textBaseline = 'top'
       context.font = 'bold 11px sans-serif'
 
-      data.legends.forEach(function(title, index) {
+      data.legends.forEach(function (title, index) {
         var size = 20
         var spacing = 10
 
@@ -995,7 +1003,7 @@ var Plot = (function () {
    * @param {Object} data - The data containing area/curve data 
    * @returns {Object} - An object containing d3 functions for generating lines
    */
-  function createPlot(data) {
+  function createPlot (data) {
 
     /** @type number */
     var outerWidth = 600
@@ -1027,7 +1035,7 @@ var Plot = (function () {
     var line = d3.line()
       .x(function (d) { return x(d[data.xaxis]) })
       .y(function (d) { return y(d[data.yaxis]) })
-    
+
     /** @type d3.area */
     var area = d3.area()
       .x(function (d) { return x(d[data.xaxis]) })
@@ -1044,16 +1052,15 @@ var Plot = (function () {
       })
     })
 
-
-    x .range  ([0, width])
-      .domain (d3.extent(xvals))
+    x.range([0, width])
+      .domain(d3.extent(xvals))
 
     /** @type number[] */
     var ydomain = d3.extent(yvals)
     ydomain[1] = ydomain[1] * 1.25
 
-    y .range  ([height, 0])
-      .domain (ydomain)
+    y.range([height, 0])
+      .domain(ydomain)
 
     return {
       outerWidth: outerWidth,
@@ -1067,7 +1074,6 @@ var Plot = (function () {
       area: area
     }
   }
-
 })()
 
 /**
@@ -1127,7 +1133,7 @@ var Modal = (function () {
   function displayImage (title, source) {
     /** @type HTMLImageElement */
     var image = new Image()
-    
+
     image.src = src
     image.style.width = '100%'
     image.className = 'img-responsive'
@@ -1154,23 +1160,21 @@ var Modal = (function () {
   }
 })()
 
-
 /**
  * @namespace Excel
  * @description Exports results data as an excel document
  * Exports the following functions:
  * Excel.exportData(data : Object[])
  */
-var Excel = (function() {
+var Excel = (function () {
   return {
     exportData: exportData
   }
 
   function exportData (data) {
-    
     var workbook = new ExcelBuilder.Workbook()
-    
-    data.forEach(function(sheetData, index) {
+
+    data.forEach(function (sheetData, index) {
       workbook.addWorksheet(generateSheet(workbook, sheetData, index))
     })
 
@@ -1179,11 +1183,9 @@ var Excel = (function() {
     )
   }
 
-  function generateSheet(workbook, sheetData, index) {
-
+  function generateSheet (workbook, sheetData, index) {
     if (sheetData.title.endsWith('Labeled'))
-        sheetData.title = sheetData.title.replace('- Labeled', '')
-
+      sheetData.title = sheetData.title.replace('- Labeled', '')
 
     var titleString = sheetData.title.split(' - ')
     var title = index + 1
@@ -1195,7 +1197,7 @@ var Excel = (function() {
 
     if (title.length > 31)
       title = title.substr(0, 30)
-      
+
     var worksheet = workbook.createWorksheet({name: title})
     console.log(sheetData)
 
@@ -1214,7 +1216,6 @@ var Excel = (function() {
       worksheet.setData([[sheetData.title]])
     }
 
-
     // add graphs
     var drawings = new ExcelBuilder.Drawings()
     var width = 600
@@ -1225,10 +1226,10 @@ var Excel = (function() {
       height = 60 * table.length
     }
 
-    sheetData.graphs.forEach(function(graph, index) {
+    sheetData.graphs.forEach(function (graph, index) {
       var graphref = workbook.addMedia(
-        'image', 
-        randomString(10) + '.png', 
+        'image',
+        randomString(10) + '.png',
         graph.replace('data:image/png;base64,', ''))
 
       var graphpic = new ExcelBuilder.Drawing.Picture()
@@ -1236,23 +1237,19 @@ var Excel = (function() {
         x: index * Math.max((table && table[0] ? table[0].length / 2 : 10), 10),
         y: table.length + 2,
         width: ExcelBuilder.Positioning.pixelsToEMUs(width),
-        height: ExcelBuilder.Positioning.pixelsToEMUs(height),
+        height: ExcelBuilder.Positioning.pixelsToEMUs(height)
       })
 
       graphpic.setMedia(graphref)
       drawings.addDrawing(graphpic)
-
-
     })
     worksheet.addDrawings(drawings)
     workbook.addDrawings(drawings)
 
-
-
     return worksheet
   }
 
-  function mergeTables(tables) {
+  function mergeTables (tables) {
     var table = []
     var converted = tables.map(convertTable)
 
@@ -1262,30 +1259,29 @@ var Excel = (function() {
       converted = [temp1, temp2]
     }
 
-    converted.forEach(function(matrix, index) {
-      matrix.forEach(function(array, index2) {
+    converted.forEach(function (matrix, index) {
+      matrix.forEach(function (array, index2) {
         table[index2] = (table[index2] || []).concat(array).concat(Array(3).fill(''))
       })
     })
-    
-    
+
+
     return table
   }
 
-  
+
 
   // converts an array of objects to a regular matrix
-  function convertTable(table) {
-
+  function convertTable (table) {
     var headers = Object.keys(table[0])
     if (headers[headers.length - 1] === '_row')
       headers.unshift(headers.pop())
 
     var converted = [headers]
 
-    for (var i = 0; i < table.length; i ++) {
+    for (var i = 0; i < table.length; i++) {
       var row = []
-      for (var j = 0; j < headers.length; j ++) {
+      for (var j = 0; j < headers.length; j++) {
         var header = headers[j]
         row.push(table[i][header])
       }
@@ -1298,46 +1294,43 @@ var Excel = (function() {
     return converted
   }
 
-
-  function download(filename, type, data) {
-
+  function download (filename, type, data) {
     var bytechars = atob(data)
     var bytenums = new Array(bytechars.length)
 
-    for (var i = 0; i < bytechars.length; i ++)
+    for (var i = 0; i < bytechars.length; i++)
       bytenums[i] = bytechars.charCodeAt(i)
 
     var bytearr = new Uint8Array(bytenums)
-    var blob = new Blob([bytearr], {type: type});
+    var blob = new Blob([bytearr], {type: type})
 
     if (window.navigator.msSaveOrOpenBlob)
-      window.navigator.msSaveBlob(blob, filename);
+      window.navigator.msSaveBlob(blob, filename)
     else {
       var element = window.document.createElement('a')
       element.href = window.URL.createObjectURL(blob)
-      
+
       if (typeof element.download != 'undefined')
         element.download = filename
       else
         alert('Please open the downloaded file in Microsoft Excel')
-      
+
       document.body.appendChild(element)
       element.click()
       document.body.removeChild(element)
     }
   }
 
-  function getTimestamp() {
+  function getTimestamp () {
     var date = new Date()
 
     return [date.getHours(), date.getMinutes(), date.getSeconds()].join('_')
   }
 
-  function randomString(length) {
+  function randomString (length) {
     return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, length)
   }
 })()
-
 
 /**
  * @namespace CrossTalk
@@ -1374,9 +1367,9 @@ var CrossTalk = (function () {
     init: init,
     flip: flip,
     clear: clear,
-    calculate: calculate
+    calculate: calculate,
+    update: updateUI
   }
-
 
   /**
    * @function init
@@ -1404,7 +1397,7 @@ var CrossTalk = (function () {
     for (element in cfg)
       cfg[element].change(update)
 
-    cfg.download.click(function() {
+    cfg.download.click(function () {
       var link = $('#download-format').val()
 
       if (link == 'Excel Output')
@@ -1419,7 +1412,7 @@ var CrossTalk = (function () {
     updateUI()
   }
 
-  
+
   /**
    * @function update
    * @summary Updates the UI
@@ -1441,10 +1434,9 @@ var CrossTalk = (function () {
           // update the UI, passing in the updated file model
           updateUI(model)
         })
-
     else {
       updateUI()
-   }
+    }
   }
 
   /**
@@ -1464,7 +1456,7 @@ var CrossTalk = (function () {
    * @param {Object} [model] A file model to update the UI with
    */
   function updateUI (model) {
-    
+
 
     // if a file model was supplied, update the corresponding form elements as well
     if (model)
@@ -1474,7 +1466,7 @@ var CrossTalk = (function () {
 
     // update goodness-of-fit tab
     var selectors = ['a[href="#GoodnessOfFit-A"]', 'a[href="#GoodnessOfFit-B"]']
-    selectors.forEach(function(selector, index) {
+    selectors.forEach(function (selector, index) {
       $(selector).text(cfg['title' + (index + 1)].val())
     })
 
@@ -1483,7 +1475,7 @@ var CrossTalk = (function () {
     inputs.forEach(function (element) {
       // generate a table if the model contains data, otherwise create an empty table
 
-      if (element[0].files.length) {
+      if (element[0].files.length || (element.data('model') && element.data('model').table)) {
         /** @type HTMLTableElement */
         var table = DataTable.createInput(getTable(element))
         $('#flip').show()
@@ -1494,10 +1486,9 @@ var CrossTalk = (function () {
       }
 
       // data.table is a reference to the DOM node containing the table
-      $(element.data('table')).html(table)
+      $(element.data('table')).find('table').DataTable().destroy()
+      $(element.data('table')).append(table)
     })
-
-
   }
 
   function flip () {
@@ -1520,7 +1511,7 @@ var CrossTalk = (function () {
   function clear () {
     for (element in cfg)
       cfg[element].val('')
-    
+
     cfg.file1.data('model', null)
     cfg.file2.data('model', null)
 
@@ -1553,49 +1544,46 @@ var CrossTalk = (function () {
   }
 
   function validate () {
-
     var input1 = cfg.file1.data('model')
     var input2 = cfg.file2.data('model')
 
     var valid = $('#crosstalk-form')[0].checkValidity()
 
-      if (input1 && input2) {
-          if (input1.table.length != input2.table.length || input1.table[0].length != input2.table[0].length) {
-              cfg.file1[0].setCustomValidity("The contents of Data Files must have the same dimensions");
-          } else {
-              cfg.file1[0].setCustomValidity("");
-              cfg.file2[0].setCustomValidity("");
-          }
+    if (input1 && input2) {
+      if (input1.table.length != input2.table.length || input1.table[0].length != input2.table[0].length) {
+        cfg.file1[0].setCustomValidity('The contents of Data Files must have the same dimensions')
       } else {
-          if (!input1 || !input1.table)
-              cfg.file1[0].setCustomValidity("Data File 1 is required");
-          else
-              cfg.file1[0].setCustomValidity("");
-
-          if (!input2 || !input2.table)
-              cfg.file2[0].setCustomValidity("Data File 2 is required");
-          else
-              cfg.file2[0].setCustomValidity("");
+        cfg.file1[0].setCustomValidity('')
+        cfg.file2[0].setCustomValidity('')
       }
+    } else {
+      if (!input1 || !input1.table)
+        cfg.file1[0].setCustomValidity('Data File 1 is required')
+      else
+        cfg.file1[0].setCustomValidity('')
 
-      $("#Input.tab-pane").children("#errors").remove();
-      $(".errors").removeClass("errors");
+      if (!input2 || !input2.table)
+        cfg.file2[0].setCustomValidity('Data File 2 is required')
+      else
+        cfg.file2[0].setCustomValidity('')
+    }
 
-      var invalids = $("input:invalid, select:invalid");
-      if (invalids.length > 0)
+    $('#Input.tab-pane').children('#errors').remove()
+    $('.errors').removeClass('errors')
 
-          $.each($("input:invalid, select:invalid"), function (i, el) {
-              displayErrors(el);
-          });
-      else 
-        return true
+    var invalids = $('input:invalid, select:invalid')
+    if (invalids.length > 0)
 
-
+      $.each($('input:invalid, select:invalid'), function (i, el) {
+        displayErrors(el)
+      })
+    else
+      return true
   }
 
   function calculate () {
     if (validate()) {
-      $("#Input").children("#error").remove()
+      $('#Input').children('#error').remove()
 
       var url = '/crosstalkRest/calculate/'
 
@@ -1615,31 +1603,29 @@ var CrossTalk = (function () {
   }
 
   function displayError (xhr, error, statusText) {
-      var message = ""
-      switch (xhr.status) {
+    var message = ''
+    switch (xhr.status) {
       case 503:
-          message = "The service that the request is trying to reach is currently down, Please try again later"
-          break
+        message = 'The service that the request is trying to reach is currently down, Please try again later'
+        break
       case 404:
-          message = "The request returned with a response of  '" + statusText + "'. Please try again later."
-          break
+        message = "The request returned with a response of  '" + statusText + "'. Please try again later."
+        break
       case 400:
-          message = xhr.responseJSON.data
-          break
+        message = xhr.responseJSON.data
+        break
       default:
-          message = "The request has failed for an unknown reason"
-          break
-      }
+        message = 'The request has failed for an unknown reason'
+        break
+    }
 
-      console.error(message)
+    console.error(message)
 
-      $("#Input").children("#error").remove()
-      $("#Input").prepend($("<div id='error' class='alert alert-danger'>").html(message));
+    $('#Input').children('#error').remove()
+    $('#Input').prepend($("<div id='error' class='alert alert-danger'>").html(message))
   }
 
   function displayResults (results) {
-
-    
     results = JSON.parse(results)
 
     var downloads = results.downloads
@@ -1650,11 +1636,10 @@ var CrossTalk = (function () {
 
     for (key in downloads)
       $('#' + key).prop('value', downloads[key])
-    
-    $('#download-results').show()
-        $('ul.nav.nav-pills li:not(:first)').removeClass('disabled')
-        $('a[href="#IncidenceRates"]').tab('show')
 
+    $('#download-results').show()
+    $('ul.nav.nav-pills li:not(:first)').removeClass('disabled')
+    $('a[href="#IncidenceRates"]').tab('show')
   }
 
   function populate (key, content) {
@@ -1667,7 +1652,6 @@ var CrossTalk = (function () {
   }
 
   function createPanel (key, content) {
-
     var panelData = {
       title: null,
       tables: [],
@@ -1686,7 +1670,7 @@ var CrossTalk = (function () {
       var classname = singleGraph ? 'col-md-12' : 'col-md-6'
       var titles = singleTable ? [cfg.title1.val() + ' vs ' + cfg.title2.val()] : [cfg.title1.val(), cfg.title2.val()]
 
-      
+
       graphDiv.addClass(classname + ' text-center')
 
       var graph = content.graphs[i]
@@ -1696,10 +1680,8 @@ var CrossTalk = (function () {
 
       if (key.endsWith('A'))
         title += ' - ' + cfg.title1.val()
-
       else if (key.endsWith('B'))
         title += ' - ' + cfg.title2.val()
-
 
       if (typeof graph === 'string') {
         var img = $('<img>')
@@ -1714,12 +1696,11 @@ var CrossTalk = (function () {
 
         panelData.graphs.push(graph)
         graphDiv.append(img)
-
       } else {
         // draw svg graph
         var svgWrapper = $(Plot.createSVG(graph, titles))
         svgWrapper.attr('data-action', 'zoom')
-        
+
         // render canvas plot to base64
 
         graphDiv.data('title', title)
@@ -1728,7 +1709,7 @@ var CrossTalk = (function () {
         graphDiv.click(Modal.displayElement.bind(
           graphDiv, graphDiv.data('title'), Plot.createSVG(graphDiv.data('graph'), titles)
         ))
-  
+
         panelData.graphs.push(Plot.createCanvas(graph, titles).toDataURL('image/png'))
         graphDiv.append(svgWrapper)
       }
@@ -1761,7 +1742,7 @@ var CrossTalk = (function () {
       if (content.tables[j].length) {
         panel.append(linkDiv)
 
-        content.tables[j].forEach(function(table) {
+        content.tables[j].forEach(function (table) {
           panelData.tables.push(table)
         })
       }
@@ -1769,31 +1750,29 @@ var CrossTalk = (function () {
 
     if (!panelData.title.includes('Unlabeled'))
       excelData.push(panelData)
-    
+
     return panel
   }
 
+  function displayErrors (el) {
+    if ($('#errors').length === 0)
+      $('#Input.tab-pane').prepend("<div id='errors' class='alert alert-danger'></div>")
 
-  function displayErrors(el) {
-    if ($("#errors").length === 0)
-        $("#Input.tab-pane").prepend("<div id='errors' class='alert alert-danger'></div>");
-
-    var label = $("label[for='" + el.id + "']");
-    label.addClass("errors");
-    var msg = "";
+    var label = $("label[for='" + el.id + "']")
+    label.addClass('errors')
+    var msg = ''
 
     if (el.validity.badInput) {
-        msg += "'" + label[0].innerText + "' contains an invalid value </br>";
+      msg += "'" + label[0].innerText + "' contains an invalid value </br>"
     }
     if (el.validity.valueMissing) {
-        msg += "'" + label[0].innerText + "' is required </br>";
+      msg += "'" + label[0].innerText + "' is required </br>"
     }
 
     if (el.validity.customError) {
-        msg += el.validationMessage + "</br>";
+      msg += el.validationMessage + '</br>'
     }
 
-    $("#errors").append(msg);
+    $('#errors').append(msg)
   }
-
 })()
