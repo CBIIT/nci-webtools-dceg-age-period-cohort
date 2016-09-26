@@ -440,7 +440,7 @@ parse.json <- function(json) {
   
   list(
     A = list(
-      name         = data$file1$title,
+      name         = data$title1,
       description  = data$description,
       events       = as.matrix(tableA[sequenceA == 1]),
       offset       = as.matrix(pmax(tableA[sequenceA == 0], 0.1)),
@@ -449,7 +449,7 @@ parse.json <- function(json) {
       periods      = seq(data$startYear, endYear, by = data$interval)
     ),
     B = list(
-      name         = data$file2$title,
+      name         = data$title2,
       description  = data$description,
       events       = as.matrix(tableB[sequenceB == 1]),
       offset       = as.matrix(tableB[sequenceB == 0]),
