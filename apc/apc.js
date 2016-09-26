@@ -204,6 +204,8 @@ var apcModule = (function($) {
                 });
             }
         }
+
+        $('th').attr('scope', 'row')
     };
 
 
@@ -229,6 +231,7 @@ var apcModule = (function($) {
 
         $('#tableContainer').find('#inputTable_wrapper').addClass('table-responsive');
         $('#tableContainer').find('.table').addClass('input-table');
+        $('#tableContainer').find('th').attr('scope', 'row');
 
         return tableID;
     };
@@ -449,6 +452,9 @@ var apcModule = (function($) {
         });
 
         apcTool.redraw();
+        $('th').attr('scope', 'row')
+
+
     };
 
     // ------ Update APC Model ------ //
@@ -734,4 +740,6 @@ $(document).ready(function() {
     $(window).resize(function() {
         apcModule.resizePasteArea('#paste', '#inputTable');
     });
+
+
 });
