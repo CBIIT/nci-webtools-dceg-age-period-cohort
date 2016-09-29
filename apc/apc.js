@@ -1,745 +1,1087 @@
-var apcModule = (function($) {
-    var apcTool = {};
+/**
+ * @file Contains front-end code for the Age-Period-Cohort Analysis Tool
+ */
 
-    /* Private variables used internally by the module */
-    var paste_instructions =
-        "When pasting data from a spreadsheet or uploading\n" +
-        "from a csv file, it should have alternating columns of\n" +
-        "count-then-population for at least two age periods\n" +
-        "(minimum size array = 2x2)";
+$(document).ready(function () {
+  // attach event handlers
+  APC.setInputs({
+    title: $('#title'),
+    description: $('#description'),
+    startYear: $('#startYear'),
+    startAge: $('#startAge'),
+    interval: $('#interval'),
+    file: $('#file'),
+    defaultReference: $('#defaultReference'),
+    manualReference: $('#manualReference'),
+    referenceAge: $('#referenceAge'),
+    referencePeriod: $('#referencePeriod'),
+    referenceCohort: $('#referenceCohort'),
+  })
 
-    var dataKeys = [
-        "NetDrift",
-        "Waldtests",
-        "Coefficients"
-    ];
-
-    var graphKeys = [
-        "AgeDeviations",
-        "PerDeviations",
-        "CohDeviations",
-        "LongAge",
-        "CrossAge",
-        "Long2CrossRR",
-        "FittedTemporalTrends",
-        "PeriodRR",
-        "CohortRR",
-        "LocalDrifts"
-    ];
-
-    var apcModel = {
-        title: '',
-        description: '',
-        startYear: null,
-        startAge: null,
-        interval: null,
-        table: null,
-        refYear: -1,
-        refAge: -1,
-        refCohort: -1
-    };
-
-    var firstRun = true;
+  $('#clear').click(APC.clear)
+  $('#calculate').click(APC.calculate)
+  $('#apc-tabs').tabCollapse()
+  $('#help').click(window.open.bind(
+    null, 'help.html', 'APC Help', 'width=800, height=550, scrollbars=1'))
 
 
-    // ------------ EVENT HANDLERS ----------- //
+  // set handler for downloading files
+  $('#download').click(function() {
+    var link = $('#download-format').val()
 
-    // ------ Read Dropped Text ------ //
-    apcTool.dragTable = function(event) {
-        // prevent page redirects
-        event.preventDefault();
+    if (link == 'Excel output')
+      Excel.createDownload(APC.getExcelData())
+    else
+      window.open(link, 'download')
+  })
 
-        // prevents event bubbling
-        event.stopPropagation();
+  // allow user to paste table data
+  $('#paste-area').bind('paste', function (e) {
+    var data = e.originalEvent.clipboardData.getData('text')
+    var table = data.match(/[^\r\n]+/g).map(function (line) {
+      var values = line.split(/\s/).map(parseFloat)
+      // return null for any non-numeric inputs and input lengths not divisible by 2
+      return (values.includes(NaN) || values.length % 2) ? null : values
+    })
 
-        // gets text that was dragged into this container and extracts non-empty lines
-        var data = event.originalEvent.dataTransfer.getData("text/plain").match(/[^\r\n]+/g);
+    if (!table.includes(null) && table.length > 1)
+      APC.updateTable(table)
+  })
+})
 
-        // update model and redraw table
-        apcModel.table = apcTool.createTable(data);
-        apcTool.redrawTable();
-        apcTool.resizePasteArea('#paste', '#inputTable');
-    };
+/**
+ * @namespace FileInput
+ * @description Handles parsing of input files as data models
+ * Exports the following functions to handle file input:
+ * FileInput.parse(file : File) : Promise <object, string>
+ */
+var FileInput = (function () {
+  return {
+    parse: parseFile
+  }
 
-    // ------ Read Pasted Text ------ //
-    apcTool.handlePaste = function(element) {
-        element.on('paste', function(e) {
-            setTimeout(function() {
-                var data = element.val().match(/[^\r\n]+/g);
-                element.val('');
+  /**
+   * @function parseFile
+   * @summary Generates an input object from a file
+   * @param {File} file - An input file
+   * @returns {PromiseLike<Object>} Returns a promise that resolves to an input object
+   * @description An input object has the following properties: 
+   * {
+   *  title: {string} Description of data 
+   *  description: {string} Optional details
+   *  startYear: {number} The first year of the first calendar period of the data
+   *  startAge: {number} The first age of the first age group of the data
+   *  interval: {number} The width of the age and period intervals
+   *  table: {number[][]} Table containing count/population data
+   * }
+   * 
+   * @example
+   * FileInput
+   *   .parse(document.getElementById('file1').files[0])
+   *   .then(console.log)
+   */
+  function parseFile (file) {
+    return new Promise(
+      function (resolve, reject) {
+        if (window.FileReader && file && file instanceof File) {
 
-                // update model and redraw table
-                apcModel.table = apcTool.createTable(data);
-                apcTool.redrawTable();
-                apcTool.resizePasteArea('#paste', '#inputTable');
-            }, 10);
-        });
-    };
+          /** @type {FileReader} */
+          var reader = new FileReader()
 
+          reader.readAsText(file)
+          reader.onerror = reject.bind(this, 'Failed to parse input file')
 
-    // ------ Read Uploaded File ------ //
-    // Reads an uploaded file and updates the model with the contents
-    apcTool.fileUpload = function() {
+          reader.onload = function (event) {
+            // select non-empty lines
+            /** @type {string[]} */
+            var contents = event.currentTarget.result.match(/[^\r\n]+/g)
 
-        // If this browser supports the Files API
-        if (window.FileReader) {
-            var file = this.files[0];
-            var reader = new FileReader();
-
-            reader.onload = function(event) {
-                apcModel.refAge = -1;
-                apcModel.refYear = -1;
-                apcModel.cohort = -1;
-
-                // split the file contents into an array of non-empty lines
-                var contents = event.target.result.match(/[^\r\n]+/g);
-
-                apcTool.updateModel(contents);
-                apcTool.redraw();
-                apcTool.resizePasteArea('#paste', '#inputTable');
-            };
-
-            if (file)
-                reader.readAsText(file);
-
-        // Otherwise, attempt to use ActiveX
-        } else {
-            try {
-                var filePath = $("#fileUpload").val();
-                var fso = new ActiveXObject("Scripting.FileSystemObject");
-                var textStream = fso.OpenTextFile(filePath);
-                var fileData = textStream.ReadAll();
-                console.log(fileData);
-            } catch (e) {
-                if (e.number == -2146827859) {
-                alert('Unable to access local files due to browser security settings. ' +
-                'To overcome this, go to Tools->Internet Options->Security->Custom Level. ' +
-                'Find the setting for "Initialize and script ActiveX controls not marked as safe" and change it to "Enable" or "Prompt"');
-                }
-            }
+            resolve({
+              title: parseHeader(contents.shift()),
+              description: parseHeader(contents.shift()),
+              startYear: parseInt(parseHeader(contents.shift())),
+              startAge: parseInt(parseHeader(contents.shift())),
+              interval: parseInt(parseHeader(contents.shift())),
+              table: contents.map(parseLine)
+            })
+          }
         }
-    };
+      }
+    )
+  }
 
-    // ------ Initialize Download Results Selector ------ //
-    apcTool.downloadResults = function() {
-        var selected_file = $("#download_selector").val();
-        window.open(selected_file, 'download');
-        return false;
-    };
 
-    // ------------ UPDATE UI ------------ //
+  /**
+   * @function parseLine
+   * @summary Parses a line of a csv file as an array of floats 
+   * @param {string} line - A line containing comma-separated values
+   * @returns {number[]} An array containing parsed numeric values
+   */
+  function parseLine (line) {
+    return line.split(',').map(parseFloat)
+  }
 
-    // ------ Populate Input Fields ------ //
-    apcTool.redraw = function() {
-        $('#title').val(apcModel.title);
-        $('#description').val(apcModel.description);
-        $('#startYear').val(apcModel.startYear);
-        $('#startAge').val(apcModel.startAge);
-        $('#interval').val(apcModel.interval);
+  /**
+   * @function parseHeader
+   * @summary Extracts a header from a line (title, description, etc)
+   * @param {string} line - A line containing header data
+   * @returns {string} The portion of the line after the first colon
+   */
+  function parseHeader (line) {
+    /** @type {string[]}  */
+    var description = line.match(/"(.*?)"/)
 
-        if (apcModel.table !== null)
-            apcTool.redrawTable();
-    };
+    /** @type {string} */
+    var header = description ? description[1] : line.split(',')[0]
 
-    // ------ Redraw Input Table ------ //
-    apcTool.redrawTable = function() {
-        if (apcModel.table === null) return;
+    return header.substring(header.indexOf(':') + 1).trim()
+  }
+})()
 
-        if (!apcTool.validate(apcModel.table)) {
-            alert(paste_instructions);
-        } else {
-            var displayTable = [];
+/**
+ * @namespace DataTable
+ * @description Creates table nodes generated by DataTables
+ * Exports the following functions:
+ * DataTable.createEmpty(numRows: number, numCols: number) : HTMLTableElement
+ * DataTable.createInput(input: object) : HTMLTableElement
+ * DataTable.createOutput(output: object) : HTMLTableElement
+ */
+var DataTable = (function () {
+  return {
+    createEmpty: createEmptyTable,
+    createInput: createInputTable,
+    createOutput: createOutputTable
+  }
 
-            apcModel.title = $('#title').val();
-            apcModel.description = $('#description').val();
-            apcModel.startYear = parseFloat($('#startYear').val());
-            apcModel.startAge = parseFloat($('#startAge').val());
-            apcModel.interval = parseFloat($('#interval').val());
+  /**
+   * @function createEmptyTable
+   * @summary Creates an empty table of the specified size
+   * @param {number} numRows - The number of rows
+   * @param {number} numCols - The number of columns
+   * @returns {HTMLTableElement} An empty table
+   */
+  function createEmptyTable (numRows, numCols) {
+    return createTable(
+      createColumns(0, numCols),
+      createMatrix(numRows, numCols + 1, '&zwj;'),
+      'input-table empty-table display cell-border')
+  }
 
-            // initialize the table
-            contents = apcModel.table;
+  /**
+   * @function createInputTable
+   * @summary Creates a table for displaying input data
+   * @description An input object has the following properties:
+   * { 
+   *  title: string, 
+   *  description: string, 
+   *  startYear: number, 
+   *  startYear: number,
+   *  interval: number,
+   *  table: number[][]
+   * }
+   * 
+   * @param {Object} input - The input object to display
+   * @returns {HTMLTableElement} A table containing input data
+   */
+  function createInputTable (input) {
+    // create a table with count/population columns
+    var table = createTable(
+      createColumns(input.table.length, input.table[0].length),
+      getData(input),
+      'input-table display cell-border')
 
-            numRows = contents.length;
-            numCols = contents[0].length;
+    // insert additional table headers
+    createHeaders(input).forEach(function (header) {
+      table.tHead.insertAdjacentHTML('afterbegin', header.outerHTML)
+    })
 
-            // create the column headers
-            startAge = parseFloat($('#startAge').val());
-            startYear = parseFloat($('#startYear').val());
-            interval = parseFloat($('#interval').val());
+    return table
+  }
 
-            // if the age, year and interval were specified
-            // generate the age-interval column and the year-interval headers
-            if (startAge && startYear && interval) {
-                ages = apcTool.createIntervals(startAge, interval, numRows);
-                years = apcTool.createIntervals(startYear, interval, numCols / 2);
+  /**
+   * @function createOutputTable
+   * @summary Creates a table for displaying output data
+   * @param {string|number[]} output - The data to display
+   * @param {string[]} headers - The headers for this table
+   * @param {string} [headers] - A title for this table
+   * @returns {HTMLTableElement} An HTMLTableElement containing output data
+   */
+  function createOutputTable (output, headers, title) {
+    var table = createTable(
+      getColumns(headers),
+      round(output, title == 'Wald Tests' ? 4 : 3),
+      'output-table display cell-border')
 
-                // Update reference ages/years
-                apcTool.updateReference(ages, years);
-            } else {
-                ages = [];
-                for (var i = 0; i < numRows; i++) {
-                    ages.push('');
-                }
-            }
+    if (title)
+      table.tHead.insertAdjacentHTML('afterbegin', createTitle(output, title).outerHTML)
 
-            for (var j = 0; j < contents.length; j++) {
-                displayTable.push([ages[j]]);
-                for (var k = 0; k < contents[j].length; k++) {
-                    var num = Number(contents[j][k]).toLocaleString().split('.')[0];
-                    displayTable[j].push(num);
+    return table
+  }
 
-                    console.log('num is: ', num);
-                }
-            }
+  /**
+   * @function createTable
+   * @summary Creates a DataTable
+   * @description
+   * Column data is an array of objects containing properties for each column:
+   * [
+   *  { 
+   *    data: {string=} Corresponding object key, needed only when using objects 
+   *    title: {string} The display title for this column 
+   *    className: {string} The css class to apply
+   *  },
+   *  ...
+   * ]
+   * 
+   * 
+   * Display data can be either an array of arrays, or an array objects
+   * 
+   * Array of arrays:
+   * [
+   *  [valueA, valueB, valueC],
+   *  [valueA, valueB, valueC],
+   *  ...
+   * ]
+   * 
+   * Array of objects:
+   * [
+   *  {columnA: number, columnB: number},
+   *  {columnA: number, columnB: number},
+   *  ...
+   * ]
+   *  
+   * @param {{data: string, title: string, className: string}[]} columns - The column names of the data
+   * @param {Object[]|number[][]} data - The data to display
+   * @param {string} classname - The css classes to apply to this table
+   */
+  function createTable (columns, data, classname) {
 
-            $('#paste_here_image').hide();
-            var tableID = apcTool.createInputTable('#tableContainer', apcTool.createHeaders(numCols), displayTable);
+    /** @type {HTMLTableElement} */
+    var table = document.createElement('table')
+    table.className = classname
+    table.width = '100%'
 
-            $(tableID).addClass("nowrap cell-border ");
-            headerRow = $(tableID).children().first();
+    $(table).DataTable({
+      destroy: true,
+      columns: columns,
+      data: data,
+      bSort: classname.includes('output'),
+      bFilter: false,
+      paging: false,
+      responsive: true,
+      aaSorting: [],
+      dom: 't'
+    })
 
-            if (startYear && interval) {
-                apcTool.createHeader(years).forEach(function(row) {
-                    headerRow.prepend(row);
-                });
-            }
+    return table
+  }
+
+  /**
+   * @function round
+   * @summary Rounds a table to a specified place
+   * @param {number[][]} table - The input matrix
+   * @param {number} digits - The number of places to round to
+   * @returns {number[][]} A numeric matrix containing rounded values
+   */
+  function round(table, digits) {
+    return table.map(function(row) {
+      return row.map(function(value) {
+        return +value ? +parseFloat(value).toFixed(digits) : value
+      })
+    })
+  }
+  
+  /**
+   * @function createTitle
+   * @summary Creates a title row for table
+   * @param {number|string[][]} output - The output matrix
+   * @param {string} title - The title of the matrix
+   * @returns {HTMLTableRowElement} A row containing the title
+   */
+  function createTitle(output, title) {
+    /** @type HTMLTableRowElement */
+    var titleRow = document.createElement('tr')
+    
+    /** @type HTMLTableHeaderElement */
+    var titleHeader = document.createElement('th')
+
+    titleHeader.colSpan = output[0].length
+    titleHeader.innerHTML = title
+    titleRow.appendChild(titleHeader)
+    return titleRow
+  }
+
+  /**
+   * @function createHeaders
+   * @summary Creates table headers for input data
+   * @description
+   * An input model has the following properties:
+   * {
+   *  title: {string} Description of data 
+   *  description: {string} Optional details
+   *  startYear: {number} The first year of the first calendar period of the data
+   *  startAge: {number} The first age of the first age group of the data
+   *  interval: {number} The width of the age and period intervals
+   *  table: {number[][]} Table containing count/population data
+   * }
+   * 
+   * @param {Object} model - The input object to create table headers for
+   * @returns {HTMLTableRowElement[]} Table rows containing header information
+   */
+  function createHeaders (model) {
+
+    /** @type HTMLRowElement[] */
+    var headers = []
+
+    // create table row for title header
+    /** @type HTMLTableRowElement */
+    var titleRow = document.createElement('tr')
+
+    // create spacer for both headers
+    /** @type HTMLTableHeaderElement */
+    var spacer = document.createElement('th')
+    spacer.style.visibility = 'hidden'
+    titleRow.appendChild(spacer)
+
+    // create header for title/description
+    /** @type HTMLTableHeaderElement */
+    var titleHeader = document.createElement('th')
+    titleHeader.className = 'table-header'
+    titleHeader.colSpan = model.table[0].length
+    titleHeader.innerHTML = (model.title || 'Created ' + new Date().toLocaleString()) +
+      '<div class="blue">' + (model.description || 'No description') + '</div>'
+    titleRow.appendChild(titleHeader)
+    headers.push(titleRow)
+
+    // create row for year ranges
+    /** @type HTMLTableRowElement */
+    var yearRow = document.createElement('tr')
+
+    /** @type number */
+    var endYear = model.startYear + model.interval * model.table[0].length / 2
+
+    // add each header to the row
+    for (var year = model.startYear; year < endYear; year += model.interval) {
+      /** @type HTMLTableHeaderElement */
+      var yearHeader = document.createElement('th')
+      yearHeader.className = 'grey'
+      yearHeader.colSpan = 2
+
+      // if year interval is one, display single years instead of a year range
+      /** @type string */
+      var yearRange = model.interval > 1
+        ? [year, year + model.interval - 1].join('-')
+        : year
+
+      yearHeader.innerText = yearRange
+      yearRow.appendChild(yearHeader)
+    }
+
+    if (model.startYear && model.interval && model.table) 
+      headers.unshift(yearRow)
+
+    spacer.rowSpan = headers.length
+    return headers
+  }
+
+  /**
+   * @function createColumns
+   * @summary Creates alternating count/population columns for the input table
+   * @description
+   * Creates column names in the following format:
+   * [
+   *  { 
+   *    title: {string} 'Age' | 'N Age Groups'
+   *    className: {string} 'grey'
+   *  },
+   *  { 
+   *    title: {string} 'Count' 
+   *    className: {string} 'dt-body-right'
+   *  },
+   *  { 
+   *    title: {string} 'Population' 
+   *    className: {string} 'dt-body-right'
+   *  },
+   *  ...
+   * ]
+   * 
+   * @param {number} numRows The number of rows in this table
+   * @param {number} numCols The number of columns in this table
+   * @returns {Object[]} Column names used by DataTables
+   */
+  function createColumns (numRows, numCols) {
+    /** @type Object[] */
+    var columns = [{
+      title: numRows
+        ? '<small>' + numRows + ' age groups</small>'
+        : 'Age',
+      className: numRows ? 'grey' : 'grey'
+    }]
+
+    while (numCols--)
+      columns.push({
+        title: numCols % 2 ? 'Count' : 'Population',
+        className: 'dt-body-right'
+      })
+
+    return columns
+  }
+
+  /**
+   * @function createMatrix
+   * @summary Creates a matrix with a specified initial size and fill value
+   * @param {number} numRows - The number of rows in this matrix
+   * @param {number} numCols - The number of columns in this matrix
+   * @param {string | number} initialValue - The fill value for this matrix
+   * @returns {(string|number)[][]} A matrix of the specified size
+   */
+  function createMatrix (numRows, numCols, initialValue) {
+    return Array(numRows)
+      .fill(Array(numCols)
+        .fill(initialValue || null))
+  }
+
+  /**
+   * @function getData
+   * @summary Prepends age ranges to each row in the input table
+   * @description 
+   * An input model contains the following properties:
+   * {
+   *  title: {string} Description of data 
+   *  description: {string} Optional details
+   *  startYear: {number} The first year of the first calendar period of the data
+   *  startAge: {number} The first age of the first age group of the data
+   *  interval: {number} The width of the age and period intervals
+   *  table: {number[][]} Table containing count/population data
+   * }
+   * 
+   * @param {Object} model
+   * @returns {(string|number)[][]} A matrix containing age, count, and population data
+   */
+  function getData (model) {
+    return model.table.map(function (row, index) {
+      // calculates the age from the starting age, index and interval
+      /** @type number|string */
+      var age = model.startAge + index * model.interval || ''
+
+      if (parseInt(age) && model.interval > 1)
+        age += '-' + (age + model.interval - 1)
+
+      return [age].concat(row)
+    })
+  }
+
+  /**
+   * @function getColumns
+   * @summary Creates column headers for the output table
+   * @description
+   * 
+   * Column data is an array of objects containing properties for each column:
+   * [
+   *  { 
+   *    data: {string=} Corresponding object key, needed only when using objects 
+   *    title: {string} The display title for this column 
+   *    className: {string} The css class to apply
+   *  },
+   *  ...
+   * ]
+   * 
+   * @param {string[]} output
+   * @returns
+   */
+  function getColumns (headers) {
+    return headers.map(function (header) {
+      return {
+        title: header,
+        className: 'dt-body-right'
+      }
+    })
+  }
+})()
+
+
+/**
+ * @namespace Excel
+ * @description Exports results data as an excel document
+ * Exports the following functions:
+ * Excel.exportData(data : Object[])
+ */
+var Excel = (function () {
+  return {
+    createDownload: createDownload
+  }
+
+  /**
+   * @function createDownload
+   * @summary Exports output to an excel file and downloads it
+   * @param {Object[]} output - Data for each sheet
+   */
+  function createDownload (output) {
+    var workbook = new ExcelBuilder.Workbook()
+
+    output.forEach(function (data) {
+      workbook.addWorksheet(generateSheet(workbook, data))
+    })
+
+    ExcelBuilder.Builder.createFile(workbook).then(
+      download.bind(null, 'APC_Analysis_' + getTimestamp() + '.xlsx', 
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    )
+  }
+
+  /**
+   * @function generateSheet
+   * @summary Creates an excel sheet to be added to a workbook
+   * @description 
+   * Sheet data is an object with the following properties:
+   * {
+   *  title {string} The sheet title
+   *  table {string|number[][]} The output table
+   *  image {string} A base64 png graph
+   * }
+   * 
+   * @param {ExcelBuilder.Workbook} workbook - The workbook to operate on
+   * @param {Object} data - Sheet data
+   * @returns {ExcelBuilder.Worksheet} A sheet containing exported data
+   */
+  function generateSheet (workbook, data) {
+    var worksheet = workbook.createWorksheet({name: data.title})
+
+    // add table
+    worksheet.setData(data.table)
+
+    // add graph
+    if (data.image) {
+      var drawings = new ExcelBuilder.Drawings()
+
+      var graphref = workbook.addMedia(
+        'image', 
+        data.title + '.png', 
+        data.image.replace('data:image/png;base64,', ''))
+
+      var graphpic = new ExcelBuilder.Drawing.Picture()
+      graphpic.createAnchor('oneCellAnchor', {
+        x: data.table[0].length + 1,
+        y: 0,
+        width: ExcelBuilder.Positioning.pixelsToEMUs(600),
+        height: ExcelBuilder.Positioning.pixelsToEMUs(500)
+      })
+
+      graphpic.setMedia(graphref)
+      drawings.addDrawing(graphpic)
+      worksheet.addDrawings(drawings)
+      workbook.addDrawings(drawings)
+    }
+
+    return worksheet
+  }
+
+  /**
+   * @function download
+   * @summary Creates a file from a base64 string and downloads it
+   * @param {string} filename - The file name
+   * @param {string} type - The mimetype
+   * @param {string} data - The data (as base64)
+   */
+  function download (filename, type, data) {
+    var bytechars = atob(data)
+    var bytenums = new Array(bytechars.length)
+
+    for (var i = 0; i < bytechars.length; i++)
+      bytenums[i] = bytechars.charCodeAt(i)
+
+    var bytearr = new Uint8Array(bytenums)
+    var blob = new Blob([bytearr], {type: type})
+
+    if (window.navigator.msSaveOrOpenBlob)
+      window.navigator.msSaveBlob(blob, filename)
+    else {
+      var element = window.document.createElement('a')
+
+      if (typeof element.download == 'undefined')
+        alert('Please open the downloaded file in Microsoft Excel')
+
+      element.href = window.URL.createObjectURL(blob)
+      element.download = filename
+      document.body.appendChild(element)
+      element.click()
+      document.body.removeChild(element)
+    }
+  }
+
+  /**
+   * @function getTimestamp()
+   * @summary creates a timestamp
+   * @returns {string} A timestamp containing hours, minutes, and seconds
+   */
+  function getTimestamp () {
+    var date = new Date()
+    return [date.getHours(), date.getMinutes(), date.getSeconds()].join('_')
+  }
+})()
+
+
+/**
+ * @namespace CrossTalk
+ * @description Creates input models, handles ajax calls,
+ * and populates the DOM with results
+ * 
+ * Exports the following functions:
+ * CrossTalk.init(config: Object) - sets input fields and attaches event handlers
+ * CrossTalk.flip() - flips both input tables
+ * CrossTalk.clear() - resets the DOM
+ * CrossTalk.calculate() - calls the calculation and updates the DOM with results
+ */
+var APC = (function () {
+
+  // Holds DOM references
+  /** @type Object */
+  var inputs = {
+    title: null,
+    description: null,
+    startYear: null,
+    startAge: null,
+    interval: null,
+    file: null,
+    defaultReference: null,
+    manualReference: null,
+    referenceAge: null,
+    referencePeriod: null,
+    referenceCohort: null
+  }
+
+  /** @type Object */
+  var data = {
+    title: null,
+    description: null,
+    startYear: null,
+    startAge: null,
+    interval: null,
+    table: null,
+    reference: null
+  }
+
+  /** @type Object */
+  var output = null
+
+  return {
+    calculate: calculate,
+    clear: clear,
+    setInputs: setInputs,
+    updateTable: updateTable,
+    getExcelData: getExcelData
+  }
+
+  /**
+   * @function setInputs
+   * @summary Saves DOM references in the configuration and attaches event handlers
+   * @description
+   * A configuration object has the following properties:
+   * {
+   *  title {jQuery.HTMLInputElement} - A text input for the dataset's title
+   *  description {jQuery.HTMLInputElement} - A text input for the description 
+   *  startYear {jQuery.HTMLInputElement} - A numeric input for the starting year 
+   *  startAge {jQuery.HTMLInputElement} - A numeric input for the starting age
+   *  interval {jQuery.HTMLSelectElement} - A selector for the interval length
+   *  file {jQuery.HTMLInputElement} - A file input element for the dataset
+   *  defaultReference {jQuery.HTMLInputElement} - A radio button for selecting default reference values
+   *  manualReference {jQuery.HTMLInputElement} - A radio button to select manual reference values
+   *  referenceAge {jQuery.HTMLSelectElement} - A select element to select the reference age
+   *  referencePeriod {jQuery.HTMLSelectElement} - A select element to select the reference period
+   *  referenceAge {jQuery.HTMLInputElement} - A read-only text field to display the reference cohort
+   * }
+   * 
+   * @param {Object} config
+   */
+  function setInputs (config) {
+    // set default values
+    inputs = config
+    output = {}
+    data = {
+      title: null,
+      description: null,
+      startYear: null,
+      startAge: null,
+      interval: null,
+      table: null,
+      reference: null
+    }
+
+    // attach event handlers
+    for (element in inputs) {
+      if ([ 'referenceAge', 
+            'referencePeriod', 
+            'referenceCohort'].includes(element))
+        inputs[element].change(updateReferenceCohort)
+
+      else
+        inputs[element].change(update)
+    }
+
+    // initialize ui
+    $('#errors').hide()
+    $('#download-results').hide()
+    $('[data-table]').find('table').DataTable().destroy()
+    $('[data-table]').empty()
+    updateUI()
+  }
+
+
+  /**
+   * @function update
+   * @summary Updates the UI
+   * @this The input element that fired this event
+   */
+  function update () {
+    // Updates the UI based on the contents of the file
+    if (this.type === 'file')
+      FileInput.parse(this.files[0]).then(updateUI)
+    
+    else
+      for (key in inputs) {
+        /** @type string */
+        var value = inputs[key].val()
+        data[key] = parseFloat(value) || value
+      }
+
+    updateUI()
+  }
+
+  /**
+   * @function updateUI
+   * @summary Updates UI based on file contents and form data
+   * @description
+   * A file model contains the following properties:
+   * {
+   *  title: {string} Description of data 
+   *  description: {string} Optional details
+   *  startYear: {number} The first year of the first calendar period of the data
+   *  startAge: {number} The first age of the first age group of the data
+   *  interval: {number} The width of the age and period intervals
+   *  table: {number[][]} Table containing count/population data
+   * }
+   * 
+   * @param {Object} [model] A file model to update the UI with
+   */
+  function updateUI (model) {
+
+    // if a file model was supplied, update the corresponding form elements as well
+    if (model)
+      for (key in model) {
+        data[key] = model[key]
+        if (inputs[key])
+          inputs[key].val(model[key])
+      }
+    
+    if (data.table && data.startAge && data.startYear && data.interval) {
+      var action = (inputs.manualReference.is(':checked')) ? 'show' : 'hide'
+      $(inputs.manualReference.data('target')).collapse(action)
+      updateReference()
+    }
+
+    /** @type HTMLTableElement */
+    var table = data.table ? DataTable.createInput(data) : DataTable.createEmpty(12, 6)
+    
+    // add role information
+    $(table).find('th').attr('role', 'column')
+    
+    // allow user to paste table information
+    $(table).mouseup(focusPasteArea)
+
+    // replace the current table
+    $('#table').find('table').DataTable().destroy()
+    $('#table').append(table)
+    $('a[href="#Input"]').tab('show')
+  }
+
+  /**
+   * @function clear
+   * @summary Resets the application to its original state
+   */
+  function clear () {
+    for (key in inputs)
+      inputs[key].val('')
+    
+    for (key in data)
+      data[key] = null
+
+    setInputs(inputs)
+  }
+
+  /**
+   * @function updateTable
+   * @summary Updates the data table
+   * @param {number[][]} table - The pasted table
+   */
+  function updateTable(table) {
+    data.table = table
+    updateUI()
+  }
+
+  /**
+   * @function focusPasteAarea
+   * @summary Focuses the paste area
+   */
+  function focusPasteArea() {
+    $('#paste-area').val('');
+	  $('#paste-area').focus().select();
+  }
+
+  /**
+   * @function updateReference
+   * @summary Updates reference values for age and period ranges
+   */
+  function updateReference() {
+    /** @type number[][] */
+    var ageRange = createRanges(data.startAge, data.startAge + data.interval * data.table.length, data.interval)
+
+    /** @type number[][] */
+    var periodRange = createRanges(data.startYear, data.startYear + data.interval * data.table[0].length / 2, data.interval)
+
+    inputs.referenceAge.html(createReferenceOptions(ageRange))
+    inputs.referencePeriod.html(createReferenceOptions(periodRange))
+    updateReferenceCohort()
+  }
+
+  /**
+   * @function updateReferenceCohort
+   * @summary Updates reference cohort with the selected reference values
+   */
+  function updateReferenceCohort() {
+    var referenceCohort = +inputs.referencePeriod.val() - +inputs.referenceAge.val()
+    inputs.referenceCohort.val(referenceCohort)
+  }
+
+  /**
+   * @function createRanges
+   * @summary Creates ranges between the starting and ending values
+   * @param {number} start - The start of the range
+   * @param {number} end - The end of the range
+   * @param {number} interval - The interval betwen range values
+   * @returns {number[][]} An array containing ranges
+   */
+  function createRanges(start, end, interval) {
+    var ranges = []
+
+    for (var i = start; i < end; i += interval)
+      ranges.push(interval == 1 ? [i] : [i, i - 1 + interval])
+
+    return ranges
+  }
+
+  /**
+   * @function createReferenceOptions
+   * @summary Creates html options for selecting reference values
+   * @param {number[][]} ranges The array of range values to use
+   * @returns {HTMLOptionElement[]} An array of option elements
+   */
+  function createReferenceOptions(ranges) {
+    return ranges.map(function(range) {
+      var option = document.createElement('option')
+      option.text = range.join('-')
+      option.value = range[1] || range[0]
+      return option
+    })
+  }
+
+
+  /**
+   * @function validate
+   * @summary Validates inputs and displays any errors
+   * @returns {Boolean} true if validated, false otherwise
+   */
+  function validate () {
+
+    var valid = $('#apc-form')[0].checkValidity() && data.table
+
+    if (valid)
+      $('#errors').hide()
+
+    else {
+      var messages = []
+
+      if (!data.table)
+        messages.push('Input table is required')
+
+      for (key in inputs) {
+        var title = inputs[key].data('title')
+        var validState = inputs[key][0].validity
+
+        if (!validState.valid) {
+          if (validState.valueMissing)
+            messages.push(title + ' is a required field')
+          if (validState.badInput || validState.rangeUnderflow || validState.rangeOverflow)
+            messages.push(title + ' contains invalid values')
         }
-
-        $('th').attr('scope', 'row')
-    };
-
-
-    apcTool.createInputTable = function(containerID, headers, data) {
-        var tableID = '#inputTable';
-        var table = document.createElement('table');
-
-        table.setAttribute('id', 'inputTable');
-        table.setAttribute('class', 'table display compact');
-        table.setAttribute('width', '100%');
-
-        $(containerID).html(table);
-        $(tableID).DataTable({
-            "destroy": true,
-            "data": data,
-            "columns": headers,
-            "bSort": false,
-            "bFilter": false,
-            "paging": false,
-            "responsive": true,
-            "dom": 't'
-        });
-
-        $('#tableContainer').find('#inputTable_wrapper').addClass('table-responsive');
-        $('#tableContainer').find('.table').addClass('input-table');
-        $('#tableContainer').find('th').attr('scope', 'row');
-
-        return tableID;
-    };
-
-
-    // ------------ HANDLE AJAX REQUESTS ------------ //
-
-    // ------ Send Data To Server ------ //
-    apcTool.sendRequest = function() {
-
-        /* Populate title/description if empty */
-        var title = $('#title');
-        var description = $('#description');
-
-        if (!title.val()) {
-            var date = new Date();
-            var titleText = 'APC Analysis - ' + date.getFullYear() + '_' +
-                                                date.getMonth() + 1 + '_' +
-                                                date.getDay() + '_' +
-                                                date.getHours() + '_' +
-                                                date.getMinutes();
-
-            title.val(titleText);
-        }
-
-        if (!description.val()) {
-            var descriptionText = 'Start Year: ' + $('#startYear').val() + ' at Age: ' + $('#startAge').val() + ' with Interval: ' + $('#interval').val()  + ' years';
-            description.val(descriptionText);
-        }
-
-        $('.loading').css('display', 'block');
-
-        $.post('apcRest/', JSON.stringify(apcModel))
-        .done(function(data) {
-            apcTool.displayResults(data);
-        })
-        .always(function() {
-            $('.loading').css('display', 'none');
-        });
-    };
-
-    // ------ Display Results Data ------ //
-    apcTool.displayResults = function(data) {
-        var results = JSON.parse(data);
-        console.log(results);
-
-        graphKeys.forEach(function(key) {
-            apcTool.loadImage(key, results[key]['pathToFile'][0]);
-        });
-
-        dataKeys.concat(graphKeys).forEach(function(key) {
-            var table = results[key]['table'];
-
-            for (var i = 0; i < table.length; i ++) {
-                for (var k in table[i]) {
-                    if (key == 'Waldtests') table[i][k] = apcTool.round(table[i][k], 4, 5);
-                    else table[i][k] = apcTool.round(table[i][k], 3, 5);
-                }
-            }
-
-            keys = Object.keys(table[0])
-            if ($.inArray('_row', keys) != -1) keys.unshift(keys.pop());
-
-            headers = [];
-            keys.forEach(function(key) {
-                header = {
-                    "data": key,
-                    "title": key == '_row' ? '' : key
-                };
-                headers.push(header);
-            });
-
-            $('#' + key).DataTable({
-                "destroy": true,
-                "data": table,
-                "columns": headers,
-                "bFilter": false,
-                "paging": false,
-                "responsive": true,
-                "aaSorting": [],
-                "dom": 't'
-            });
-
-            $('#' + key).addClass("nowrap compact cell-border stripe hover");
-        });
-
-        if (firstRun) {
-            $('#NetDrift').children().first().prepend('<tr role="row"><th colspan = "3" class="text-center"> Net Drift </th></tr>');
-            $('#Waldtests').children().first().prepend('<tr role="row"><th colspan = "4" class="text-center"> Wald Tests </th></tr>');
-            $('#Coefficients').children().first().prepend('<tr role="row"><th colspan = "5" class="text-center"> Coefficients </th></tr>');
-            firstRun = false;
-        }
-
-        ['RDataInput', 'RDataOutput', 'TextInput', 'TextOutput', 'Excel'].forEach(function(key) {
-            $('#' + key).attr('value', results[key]['pathToFile'][0]);
-        });
-
-        $("#download_choice").show();
-
-        ['#ND', '#WT', '#CE'].forEach(function(key) {
-            $(key).show();
-        });
-    };
-
-    // ------------ HELPER METHODS ----------- //
-
-    // ------ Create row headers for input table ------ //
-    apcTool.createHeaders = function(length) {
-        var ageHeader = "Age";
-
-        if (apcModel.table)
-            ageHeader = '<span class = "ageGroups">' + apcModel.table.length + " age groups </span>";
-
-        var headers = [{
-            title: ageHeader,
-            className: 'dt-center grey'
-        }];
-
-        for (var i = 0; i < length; i += 2) {
-            headers.push({
-                title: "Count",
-                className: 'dt-body-right'
-            });
-            headers.push({
-                title: "Population",
-                className: 'dt-body-right'
-            });
-        }
-
-        return headers;
-    };
-
-    // ------ Create Intervals ------ //
-    // Creates and returns an array of ranges using the specified interval
-    apcTool.createIntervals = function(initial, interval, length) {
-        var intervals = [];
-
-        for (var i = initial; i < initial + interval * length; i += interval) {
-            var value = i;
-            if (interval > 1) value += ' - ' + (i + interval - 1);
-            intervals.push(value);
-        }
-
-        return intervals;
-    };
-
-
-    // ------ Create Table Matrix ------ //
-    // Creates the input table from an array of lines
-    apcTool.createTable = function(contents) {
-
-        // splits each line by commas, spaces, or tabs
-        return contents.map(function(line) {
-            // converts each element to a floating point number
-            return line.split(/[ \t,]+/).map(function(element) {
-                return parseFloat(element);
-            });
-        });
-    };
-
-    // ------ Load Image ------ //
-    // Populates the graphs
-    apcTool.loadImage = function(keyData, pathToFile) {
-        var graphHTML = "<img style='min-width: 600px;' class='center-text' alt='graph for " + keyData + "' src= '" + pathToFile + "' />";
-        
-        if (keyData == 'LongAge' || keyData == 'CrossAge' || keyData == 'FittedTemporalTrends')
-            graphHTML += '<div>Rates Per 100000 Person-Years</div><br>';
-        
-        $('#' + keyData + 'Graph').html(graphHTML);
-    };
-
-    // ------ Parse Header ------ //
-    // If this line contains a quoted description, extract its contents
-    // otherwise, just split the line by commas and return the first value
-    apcTool.parseHeader = function(line) {
-        var description = line.match(/"(.*?)"/);
-
-        if (description)
-            line = description[1];
-        else
-            line = line.split(',')[0];
-
-        // return the portion of this line after the first colon
-        return line.split(/: (.+)?/, 2)[1].trim();
-    };
-
-    // ------ Reset Model ------ //
-    apcTool.reset = function() {
-        // reset apc model
-        apcModel = {
-            title: '',
-            description: '',
-            startYear: null,
-            startAge: null,
-            table: null,
-            interval: null,
-            refYear: -1,
-            refAge: -1,
-            refCohort: -1
-        };
-
-        // clear file upload
-        $("#fileUpload").replaceWith($("#fileUpload").clone(true));
-        $("#download_choice").hide();
-
-        $('#tableContainer').empty();
-        apcTool.createInputTable('#tableContainer', apcTool.createHeaders(6), apcTool.createMatrix(13, 10));
-        $('#paste_here_image').show();
-
-        // clear all tables and graphs
-        dataKeys.concat(graphKeys).forEach(function(id) {
-            $('#' + id).empty();
-            $('#' + id + 'Graph').empty();
-        });
-
-        ['#ND', '#WT', '#CE'].forEach(function(key) {
-            $(key).hide();
-        });
-
-        apcTool.redraw();
-        $('th').attr('scope', 'row')
-
-
-    };
-
-    // ------ Update APC Model ------ //
-    // Updates the apc model based on the contents of a CSV file
-    // Parameters: contents - an array of lines in the file
-
-    apcTool.updateModel = function(contents) {
-
-        // the first five rows of the csv are the headers
-        apcModel.title = apcTool.parseHeader(contents.shift());
-        apcModel.description = apcTool.parseHeader(contents.shift());
-        apcModel.startYear = parseInt(apcTool.parseHeader(contents.shift()));
-        apcModel.startAge = parseInt(apcTool.parseHeader(contents.shift()));
-        apcModel.interval = parseInt(apcTool.parseHeader(contents.shift()));
-        apcModel.table = apcTool.createTable(contents);
-    };
-
-    apcTool.syncModel = function() {
-        apcModel.title = $('#header').val();
-        apcModel.description = $('#description').val();
-        apcModel.startYear = $('#startYear').val();
-        apcModel.startAge = $('#startAge').val();
-        apcModel.interval = $('#interval').val();
-    };
-
-    apcTool.createHeader = function(years) {
-        var title;
-
-        if (apcModel.title !== '') {
-            title = document.createElement('tr');
-
-            var emptyCell = document.createElement('th');
-            emptyCell.setAttribute('class', 'white-border');
-            title.appendChild(emptyCell);
-
-            var titleCell = document.createElement('th');
-            titleCell.setAttribute('class', 'header');
-            titleCell.setAttribute('colspan', apcModel.table[0].length);
-
-            var description = document.createElement('span');
-            description.setAttribute('class', 'blue');
-            description.innerHTML = apcModel.description;
-
-            titleCell.innerHTML = apcModel.title;
-            titleCell.appendChild(document.createElement('br'));
-            titleCell.appendChild(description);
-
-            title.appendChild(titleCell);
-        }
-
-        var row = document.createElement('tr');
-        row.setAttribute('role', 'row');
-
-        var emptyCell = document.createElement('th');
-        emptyCell.setAttribute('class', 'white-border');
-        row.appendChild(emptyCell);
-
-        years.forEach(function(year) {
-            var header = document.createElement('th');
-            header.setAttribute('class', 'row-header');
-            header.setAttribute('colspan', '2');
-            header.innerHTML = year;
-            row.appendChild(header);
-        });
-
-        return [row || '', title || ''];
-    };
-
-    apcTool.validate = function(contents) {
-        if (contents === null || !contents.length || contents.length < 2)
-            return false;
-
-        var length = contents[0].length;
-
-        if (length % 2 !== 0 || length < 2)
-            return false;
-
-        contents.forEach(function(line) {
-            if (line.length !== length) return false;
-            line.forEach(function(element) {
-                if (!parseFloat(element)) return false;
-            });
-        });
-
-        return true;
-    };
-
-    // ------ Create Matrix  ------ //
-    // Creates and returns a matrix with the specified number of rows and columns
-    apcTool.createMatrix = function(rows, columns) {
-        var matrix = [];
-
-        for (var i = 0; i < rows; i++) {
-            matrix[i] = apcTool.createArray(columns);
-        }
-
-        return matrix;
-    };
-
-    // ------ Create Array  ------ //
-    // Creates and returns an array of the specified length containing zero width characters
-    apcTool.createArray = function(length) {
-        var array = [];
-
-        for (var i = 0; i < length; i++) {
-            array.push('&zwj;');
-        }
-
-        return array;
-    };
-
-    // ------ Round Floating Point Number (Specify length)------ //
-    apcTool.round = function(x, digits, trim) {
-        if (!parseFloat(x)) return x;
-        return parseFloat(parseFloat(x.toFixed(digits)).toPrecision(trim));
-    };
-
-
-    /* ------ APC Functions ------ */
-    // ------ Update contents of reference age/year selector ------ //
-    apcTool.updateReference = function(ages, years) {
-
-        $('#refAge').html("<option value='-1' selected>Age</option>");
-        $('#refYear').html("<option value='-1' selected>Year</option>");
-
-        ages.forEach(function(age) {
-            var option = document.createElement('option');
-
-            var values = age.toString().split('-');
-
-            var refAge = values[0];
-            if (values[1]) refAge = (parseFloat(values[0]) + parseFloat(values[1]) + 1.0) / 2;
-
-            option.setAttribute('value', refAge.toString());
-            option.innerHTML = age;
-            $('#refAge').append(option);
-        });
-
-        years.forEach(function(year) {
-            var option = document.createElement('option');
-
-            var values = year.toString().split('-');
-            var refYear = values[0];
-
-            if (values[1]) refYear = (parseFloat(values[0]) + parseFloat(values[1]) + 1.0) / 2;
-
-            option.setAttribute('value', refYear.toString());
-            option.innerHTML = year;
-            $('#refYear').append(option);
-        });
-    };
-
-    apcTool.updateCohortModel = function() {
-
-        year = parseFloat($('#refYear').val());
-        age = parseFloat($('#refAge').val());
-
-        if (year != -1 && age != -1) {
-            cohort = year - age;
-
-            apcModel.refAge = age;
-            apcModel.refYear = year;
-            apcModel.refCohort = cohort;
-
-            $('#cohort').val(apcModel.refCohort.toString());
-        } else {
-            apcModel.refAge = -1;
-            apcModel.refYear = -1;
-            apcModel.refCohort = -1;
-
-            $('#cohort').val('');
-        }
-    };
-
-    apcTool.openHelpWindow = function(pageURL) {
-        var helpWin = window.open(pageURL, "Help", "alwaysRaised,dependent,status,scrollbars,resizable,width=1000,height=800");
-        helpWin.focus();
-    };
-
-    apcTool.toggleReference = function(id) {
-        if (id == 'auto') {
-            $('#referenceDiv').css("display", "none");
-        }
-        if (id == 'manual') {
-            if ($.trim($('#startYear').val()) === '' || $.trim($('#startAge').val()) === '' || $.trim($('#interval').val()) === '') {
-                alert("The value of start year, start age and interval must be selected.");
-                $('#auto').prop("checked", true);
-            } else {
-                $('#referenceDiv').css("display", "block");
-            }
-        }
-    };
-
-    apcTool.resizePasteArea = function(textAreaID, tableID) {
-        var textArea = $(textAreaID);
-
-        textArea.width($('#tableContainer').innerWidth());
-        textArea.height($(tableID).innerHeight());
-    };
-
-    return apcTool;
-})($);
-
-$(document).ready(function() {
-    apcModule.createInputTable('#tableContainer', apcModule.createHeaders(6), apcModule.createMatrix(13, 10));
-
-    $('#fileUpload').change(apcModule.fileUpload);
-    $('#cancel').click(apcModule.reset);
-    $('#calculate').click(apcModule.sendRequest);
-    $("#download").click(apcModule.downloadResults);
-
-    $('#title').change(apcModule.redrawTable);
-    $('#description').change(apcModule.redrawTable);
-
-    $('#interval').change(apcModule.redrawTable);
-
-    $('#startYear').spinner({
-        min: 1800,
-        max: 2200,
-        step: 1,
-        spin: function(event, ui) {
-            apcModule.redrawTable();
-        },
-        stop: function(event, ui) {
-            apcModule.redrawTable();
-        }
-    });
-
-    $('#refAuto, #refManual').on('change', function(e) {
-        var refValue = $(e.target).val();
-        e.stopPropagation();
-        apcModule.toggleReference(refValue);
-    });
-
-    $('#help').on('click', function(e) {
-        e.stopPropagation();
-        apcModule.openHelpWindow('help.html');
-    });
-
-    $('#startAge').spinner({
-        min: 0,
-        max: 120,
-        step: 1,
-        spin: function(event, ui) {
-            apcModule.redrawTable();
-        },
-        stop: function(event, ui) {
-            apcModule.redrawTable();
-        }
-    });
-
-    $("#please_wait").dialog({
-        dialogClass: 'no-close',
-        resizable: false,
-        width: 'auto',
-
-        autoOpen: false,
-        hide: {
-            effect: "fade",
-            duration: 200
-        }
-    });
-
-    $('#refAge').change(apcModule.updateCohortModel);
-    $('#refYear').change(apcModule.updateCohortModel);
-    $('#apc-tab-nav').tabCollapse();
-
-    var paste = $('#paste');
-    paste.bind('drop', apcModule.dragTable);
-    apcModule.handlePaste(paste);
-    paste.click(function(e){
-        e.preventDefault();
-    });
-
-    apcModule.resizePasteArea('#paste', '#inputTable');
-
-    // allows elements to be dragged into this document
-    document.addEventListener('dragover', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-    });
-
-    $(window).resize(function() {
-        apcModule.resizePasteArea('#paste', '#inputTable');
-    });
-
-
-});
+      }
+
+      displayErrors(messages)
+    }
+
+    return valid
+  }
+
+  /**
+   * @function calculate
+   * @summary Calls the calculation and displays results
+   */
+  function calculate () {
+    if(validate()) {
+      var url = 'calculate/'
+      var model = data
+      output = {}
+
+      if (!inputs.description.val())
+        inputs.description.val('Created ' + new Date().toLocaleString())
+
+      if (inputs.manualReference.is(':checked'))
+        model.reference = [
+          +inputs.referenceAge.val(), 
+          +inputs.referencePeriod.val(), 
+          +inputs.referenceCohort.val()
+        ]
+      else
+        delete model.reference
+      
+      $.post({
+        url: url, 
+        data: JSON.stringify(model),
+        beforeSend: $.fn.modal.bind($('#loading'), 'show'),
+        contentType: 'application/json',
+        dataType: 'json',
+        jsonp: false
+      }).done(displayResults)
+        .fail(displayError)
+        .always($.fn.modal.bind($('#loading'), 'hide', null))
+    }
+  }
+
+  /**
+   * @function displayError
+   * @summary Displays any errors that occured during calculation
+   * @param {Object} xhr
+   * @param {Object} error
+   * @param {string} statusText
+   */
+  function displayError (xhr, error, statusText) {
+    var statuses = {
+      503: 'The service that the request is trying to reach is currently down. Please try again later.',
+      404: 'The request returned with a response of  "' + statusText + '". Please try again later.',
+      400: xhr.response
+    }
+
+    displayErrors([statuses[xhr.status] || 'The request has failed for an unknown reason'])
+  }
+
+  /**
+   * @function displayResults
+   * @summary Displays calculation results
+   * @param {Object} results The results object
+   */
+  function displayResults (results) {
+
+    /** @type Object */
+    output = results.output
+
+    /** @type Object */
+    var downloads = results.downloads
+
+    for (key in output)
+      $('#' + key).html(createPanel(key, output[key]))
+
+    for (key in downloads)
+      $('#' + key).prop('value', downloads[key])
+
+    $('#download-results').show()
+  }
+  
+  
+  /**
+   * @function createPanel
+   * @summary Creates an html element for displaying results
+   * @description
+   * The content object contains the following properties:
+   * {
+   *  table {number|string[][]} The data table
+   *  headers {string[]} Headers for the data table
+   *  graph {string} The url to the generated graph
+   * }
+   * 
+   * @param {string} key The data key
+   * @param {Object} content The contents of this panel
+   * @returns {jQuery.div} A div containing panel information
+   */
+  function createPanel (key, content) {
+    var panel = $('<div>')
+    panel.addClass('text-center')
+
+    if (content.graph) {
+      var img = $('<img>')
+      img.addClass('img-responsive')
+      img.attr('alt', key)
+      img.attr('src', content.graph)
+      panel.append(img)
+
+      // convert image to base64
+      img[0].onload = function() {
+        var canvas = document.createElement('canvas')
+        var context = canvas.getContext('2d')
+        canvas.height = this.height
+        canvas.width = this.width
+        context.drawImage(this, 0, 0)
+        dataURL = canvas.toDataURL()
+        output[this.alt].graph = dataURL
+      }
+    }
+
+    var titles = {
+      'NetDrift'     : 'Net Drift',
+      'Waldtests'    : 'Wald Tests',
+      'Coefficients' : 'Coefficients' 
+    }
+
+    var table = DataTable.createOutput(content.table, content.headers, titles[key] || null)
+    $(table).find('th').attr('role', 'column')
+    panel.append(table)
+    return panel
+  }
+
+  function getExcelData() {
+    var keys = [
+      'AgeDeviations',
+      'PerDeviations',
+      'CohDeviations',
+      'LongAge',
+      'CrossAge',
+      'Long2CrossRR',
+      'FittedTemporalTrends',
+      'PeriodRR',
+      'CohortRR',
+      'LocalDrifts',
+      'NetDrift',
+      'Waldtests',
+      'Coefficients'
+    ]
+
+    return keys.map(function(key) {
+      return {
+        title: key,
+        table: [output[key].headers]
+               .concat(output[key].table),
+        image: output[key].graph || null
+      }
+    })
+  }
+
+
+  function displayErrors (errors) {
+    $('#errors').empty()
+    $('#errors').show()
+    $('#errors').append(
+      errors.map(function(error) {
+        var msg = $('<div>')
+        msg.text(error)
+        return msg
+      })
+    )
+  }
+})()

@@ -6,9 +6,8 @@ source('apc.R')
 ## output = calculate(input)
 
 # Create directory for output files
-tmp.dir = './tmp/'
+tmp.dir = 'tmp/'
 dir.create(tmp.dir)
-
 
 #-------------------------------------------------------
 # calculate
@@ -36,20 +35,20 @@ calculate = function(json) {
 
   # Generate input and output data
   input   = parseInput(json)
-  output  = runAPC(json)
+  output  = apc2(input, RVals = input$reference)
 
   # Parse output data
   results = list()
 
   ## Retrieve tables
-  for (key in c(keys, graphs)) {
+  for (key in c(graphs, tables)) {
     results[[key]]$table = as.data.frame(output[[key]])
     results[[key]]$headers = colnames(output[[key]])
     
     ## Add row names
     if (key %in% c('Waldtests', 'Coefficients')) {
       results[[key]]$table = cbind(rownames(output[[key]]), output[[key]])
-      results[[key]]$headers = c('', colnames(output[[key]]))
+      results[[key]]$headers = colnames(results[[key]]$table)
     }
   }
 
@@ -58,57 +57,18 @@ calculate = function(json) {
     results[[key]]$graph = getGraph(output, key)
 
   ## Generate raw input/output files
-  results[['r-input']]  = paste0(tmp.dir, 'APC_analysis_', getTimestamp() , '_input.rds')
-  results[['r-output']] = paste0(tmp.dir, 'APC_analysis_', getTimestamp() , '_output.rds')
-  results[['text-input']]   = paste0(tmp.dir, 'APC_analysis_', getTimestamp() , '_input.txt')
-  results[['text-output']]  = paste0(tmp.dir, 'APC_analysis_', getTimestamp() , '_output.txt')
+  downloads = list()
+  downloads[['r-input']]  = paste0(tmp.dir, 'APC_analysis_', getTimestamp() , '_input.rds')
+  downloads[['r-output']] = paste0(tmp.dir, 'APC_analysis_', getTimestamp() , '_output.rds')
+  downloads[['text-input']]   = paste0(tmp.dir, 'APC_analysis_', getTimestamp() , '_input.txt')
+  downloads[['text-output']]  = paste0(tmp.dir, 'APC_analysis_', getTimestamp() , '_output.txt')
 
-  saveRDS(input,  file = results[['r-input']])
-  saveRDS(output, file = results[['r-output']])
-  capture.output(print(input),  file = results[['text-input']])
-  capture.output(print(output), file = results[['text-output']])
+  saveRDS(input,  file = downloads[['r-input']])
+  saveRDS(output, file = downloads[['r-output']])
+  capture.output(print(input),  file = downloads[['text-input']])
+  capture.output(print(output), file = downloads[['text-output']])
 
-  toJSON(results, dataframe = 'values', auto_unbox = T)
-}
-
-
-#-------------------------------------------------------
-# parseInput
-# 
-# Function: Creates parameters from a JSON string
-# Inputs:   (1) The JSON string from the client
-# Outputs:  (1) A list containing calculation parameters
-#-------------------------------------------------------
-parseInput <- function(json) {
-  input = fromJSON(json)
-  
-  endAge        = input$startAge  + input$interval * nrow(input$table)
-  endYear       = input$startYear + input$interval * ncol(input$table) / 2
-
-  # APC calculation parameters 
-  list(
-    name        = input$title,
-    description = input$description,
-    events      = input$table[, c(T, F)], # odd numbered columns
-    offset      = input$table[, c(F, T)], # even numbered columns
-    offset_tick = 100000,
-    ages        = seq(input$startAge,  endAge,  by = input$interval),
-    periods     = seq(input$startYear, endYear, by = input$interval),
-    reference   = input$reference
-  )
-}
-
-
-#-------------------------------------------------------
-# runAPC
-# 
-# Function: Runs the APC calculation
-# Inputs:   (1) The JSON string from the client
-# Outputs:  (1) A list containing the results of the apc calculation
-#-------------------------------------------------------
-runAPC <- function(json) {
-  input = parseJSON(json)
-  apc2(input, RVals = input$reference)
+  toJSON(list(output = results, downloads = downloads), dataframe = 'values', auto_unbox = T)
 }
 
 
@@ -140,3 +100,31 @@ getGraph <- function (output, key) {
 getTimestamp <- function () {
   format(Sys.time(), '%Y%m%d_%H%M%OS6')
 }
+
+
+#-------------------------------------------------------
+# parseInput
+# 
+# Function: Creates parameters from a JSON string
+# Inputs:   (1) The JSON string from the client
+# Outputs:  (1) A list containing calculation parameters
+#-------------------------------------------------------
+parseInput <- function(json) {
+  input = fromJSON(json)
+  
+  endAge        = input$startAge  + input$interval * nrow(input$table)
+  endYear       = input$startYear + input$interval * ncol(input$table) / 2
+
+  # APC calculation parameters 
+  list(
+    name        = input$title,
+    description = input$description,
+    events      = input$table[, c(T, F)], # odd numbered columns
+    offset      = input$table[, c(F, T)], # even numbered columns
+    offset_tick = 100000,
+    ages        = seq(input$startAge,  endAge,  by = input$interval),
+    periods     = seq(input$startYear, endYear, by = input$interval),
+    reference   = input$reference
+  )
+}
+
