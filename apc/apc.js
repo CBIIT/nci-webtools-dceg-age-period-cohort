@@ -640,8 +640,9 @@ var apcModule = (function($) {
         }
         if (id == 'manual') {
             if ($.trim($('#startYear').val()) === '' || $.trim($('#startAge').val()) === '' || $.trim($('#interval').val()) === '') {
-                alert("The value of start year, start age and interval must be selected.");
-                $('#auto').prop("checked", true);
+              $('#refModal').modal('show');
+                $('#refAuto').prop("checked", true);
+
             } else {
                 $('#referenceDiv').css("display", "block");
             }
