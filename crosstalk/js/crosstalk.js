@@ -41,8 +41,9 @@ $(document).ready(function () {
 
   $('.paste-area').bind('paste', function (e) {
     var data = e.originalEvent.clipboardData.getData('text')
+
     var table = data.match(/[^\r\n]+/g).map(function (line) {
-      var values = line.split(',').map(parseFloat)
+      var values = line.split(/[,\s]/).map(parseFloat)
       return (values.includes(NaN) || values.length % 2) ? null : values
     })
 
@@ -308,6 +309,8 @@ var DataTable = (function ($) {
     var title = (model.title.length > 100) ? (model.title.substr(0, 100) + '...') : model.title
     var desc = (model.description.length > 100) ? (model.description.substr(0, 100) + '...') : model.description
 
+    console.log('description', desc)
+
     // create table row for title header
     /** @type HTMLTableRowElement */
     var titleRow = document.createElement('tr')
@@ -324,8 +327,8 @@ var DataTable = (function ($) {
     var titleHeader = document.createElement('th')
     titleHeader.className = 'table-header'
     titleHeader.colSpan = model.table[0].length
-    titleHeader.innerHTML = title || ('Created ' + new Date().toLocaleString()) +
-      '<div class="blue">' + desc + '</div>'
+    titleHeader.innerHTML = (title || ('Created ' + new Date().toLocaleString())) +
+      ('<div class="blue">' + desc + '</div>')
     titleRow.appendChild(titleHeader)
 
     // create row for year ranges
