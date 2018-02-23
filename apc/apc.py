@@ -5,7 +5,7 @@ import traceback
 app = Flask(__name__)
 r.source('apcWrapper.R')
 
-@app.route('/calculate/', methods = ['POST'])
+@app.route('/calculate/', methods = ['POST'], strict_slashes=False)
 def calculate():
     try:
         return r.calculate(request.data)[0]
@@ -14,7 +14,16 @@ def calculate():
         traceback.print_exc(1)
         return str(e), 400
 
-    
+@app.route('/apcRest/ping/', strict_slashes=False)
+@app.route('/ping/', strict_slashes=False)
+def ping():
+    try:
+        return r('"true"')[0]
+    except Exception as e:
+        print('------------EXCEPTION------------')
+        traceback.print_exc(1)
+        return str(e), 400
+
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')
