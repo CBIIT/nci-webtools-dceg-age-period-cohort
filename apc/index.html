@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="apc.css">
 
   <!-- JS -->
+  <script src="https://assets.adobedtm.com/f1bfa9f7170c81b1a9a9ecdcc6c5215ee0b03c84/satelliteLib-4b219b82c4737db0e1797b6c511cf10c802c95cb.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
@@ -36,14 +37,14 @@
 
   <div class="modal fade" id="loading" tabindex="-1" role="dialog" aria-labelledby="loading">
     <div class="loading" style="display: block" role="document"></div>
-  </div>  
+  </div>
 
   <div class="container margin-top">
     <div class="col-lg-4 col-md-5">
 
     <div class="well">
         <form class="form sidebar" id="apc-form" action="calculate/" autocomplete="off">
-          
+
           <label for="title">Title</label>
           <a class="pull-right" id="help"><span class="glyphicon glyphicon-info-sign blue"></span> Help</a>
           <input class="form-control" id="title" type="text" data-title="Title" placeholder="Enter Title" required>
@@ -154,27 +155,27 @@
         <div class="tab-pane" id="AgeDeviationsTab" role="tabpanel">
           <div id="AgeDeviations" data-table></div>
         </div>
-        
+
         <div class="tab-pane" id="PerDeviationsTab" role="tabpanel">
           <div id="PerDeviations" data-table></div>
         </div>
-        
+
         <div class="tab-pane" id="CohDeviationsTab" role="tabpanel">
           <div id="CohDeviations" data-table></div>
         </div>
-        
+
         <div class="tab-pane" id="LongAgeTab" role="tabpanel">
           <div id="LongAge" data-table></div>
         </div>
-        
+
         <div class="tab-pane" id="CrossAgeTab" role="tabpanel">
           <div id="CrossAge" data-table></div>
         </div>
-        
+
         <div class="tab-pane" id="Long2CrossRRTab" role="tabpanel">
           <div id="Long2CrossRR" data-table></div>
         </div>
-        
+
         <div class="tab-pane" id="FittedTemporalTrendsTab" role="tabpanel">
           <div id="FittedTemporalTrends" data-table></div>
         </div>
@@ -226,5 +227,6 @@
       NIH ... Turning Discovery Into Health<sup>®</sup>
     </div>
   </footer>
+  <script>_satellite.pageBottom()</script>
 </body>
 </html>
