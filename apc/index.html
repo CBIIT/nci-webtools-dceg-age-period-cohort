@@ -27,7 +27,9 @@
 
 <body>
   <header class="container">
-    <a href="http://dceg.cancer.gov" target="_blank" class="row dceg-logo" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics"></a>
+    <a href="http://dceg.cancer.gov" target="_blank" class="row dceg-logo" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics">
+      <span class="sr-only">Link to https://dceg.cancer.gov</span>
+    </a>
     <!-- sub-banner div -->
     <img class="logo" src="/common/images/DCEGBB.png" alt="Banner for NCI Division of Cancer Epidemiology and Genetics Biostatistics Branch" height="25">
     <img class="logo" src="images/apc_webtool_banner_no_bar.png" alt="Age-Period-Cohort Web Tool" height="33">
@@ -149,6 +151,7 @@
 
       <div class="panel panel-body tab-content">
         <div class="tab-pane active" id="Input" role="tabpanel">
+          <label for="paste-area" class="sr-only">Paste data here</label>
           <div class="alert alert-danger" id="errors" style="display: none"></div>
           <div id="table"><textarea id="paste-area"></textarea></div>
         </div>
@@ -195,10 +198,30 @@
     </div>
   </div>
 
+  <div class="modal fade" tabindex="-1" role="dialog" id="reference-validation">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Validation Error</h4>
+        </div>
+        <div class="modal-body">
+          <div>In order to specify reference values the following fields need to be filled in:</div>
+          <ul>
+            <li>Input table</li>
+            <li>Start Year</li>
+            <li>Start Age</li>
+            <li>Interval (years)</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <footer class="container">
-  <div class="alert alert-info">Site is currently under section 508 review. This site is undergoing remediation for compliance with Section 508.
-    In the interim, should you require any accessibility assistance with any content, please contact us at <a href="mailto:NCIAPCWebToolAdmin@mail.nih.gov?subject=APC Tool 508">NCIAPCWebToolAdmin@mail.nih.gov</a>.
-    Thank you! </div>
     <div class="margin-bottom">Rosenberg PS, Check DP, Anderson WF. A Web Tool for Age-Period-Cohort Analysis of Cancer Incidence and Mortality
       Rates. Cancer Epidemiology, Biomarkers Prevent 2014:23:2296, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25146089">PMID: 25146089</a></div>
     <ul class="list-inline text-center margin-top">
