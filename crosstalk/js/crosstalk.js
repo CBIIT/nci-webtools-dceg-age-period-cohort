@@ -41,8 +41,9 @@ $(document).ready(function () {
 
   $('.paste-area').bind('paste', function (e) {
     var data = e.originalEvent.clipboardData.getData('text')
+
     var table = data.match(/[^\r\n]+/g).map(function (line) {
-      var values = line.split(',').map(parseFloat)
+      var values = line.split(/[,\s]/).map(parseFloat)
       return (values.includes(NaN) || values.length % 2) ? null : values
     })
 
@@ -73,16 +74,16 @@ var FileInput = (function () {
    * @summary Generates an input object from a file
    * @param {File} file - An input file
    * @returns {PromiseLike<Object>} Returns a promise that resolves to an input object
-   * @description An input object has the following properties: 
+   * @description An input object has the following properties:
    * {
-   *  title: {string} Description of data 
+   *  title: {string} Description of data
    *  description: {string} Optional details
    *  startYear: {number} The first year of the first calendar period of the data
    *  startAge: {number} The first age of the first age group of the data
    *  interval: {number} The width of the age and period intervals
    *  table: {number[][]} Table containing count/population data
    * }
-   * 
+   *
    * @example
    * FileInput
    *   .parse(document.getElementById('file1').files[0])
@@ -121,7 +122,7 @@ var FileInput = (function () {
 
   /**
    * @function parseLine
-   * @summary Parses a line of a csv file as an array of floats 
+   * @summary Parses a line of a csv file as an array of floats
    * @param {string} line - A line containing comma-separated values
    * @returns {number[]} An array containing parsed numeric values
    */
@@ -179,15 +180,15 @@ var DataTable = (function ($) {
    * @function createInputTable
    * @summary Creates a table for displaying input data
    * @description An input object has the following properties:
-   * { 
-   *  title: string, 
-   *  description: string, 
-   *  startYear: number, 
+   * {
+   *  title: string,
+   *  description: string,
+   *  startYear: number,
    *  startYear: number,
    *  interval: number,
    *  table: number[][]
    * }
-   * 
+   *
    * @param {Object} input - The input object to display
    * @returns {HTMLTableElement} A table containing input data
    */
@@ -218,7 +219,7 @@ var DataTable = (function ($) {
    *  {columnA: number, columnB: number},
    *  ...
    * ]
-   * 
+   *
    * @param {Object[]} output - The data to display
    * @returns {HTMLTableElement} An HTMLTableElement containing output data
    */
@@ -235,31 +236,31 @@ var DataTable = (function ($) {
    * @description
    * Column data is an array of objects containing properties for each column:
    * [
-   *  { 
-   *    data: {string=} Corresponding object key, needed only when using objects 
-   *    title: {string} The display title for this column 
+   *  {
+   *    data: {string=} Corresponding object key, needed only when using objects
+   *    title: {string} The display title for this column
    *    className: {string} The css class to apply
    *  },
    *  ...
    * ]
-   * 
-   * 
+   *
+   *
    * Display data can be either an array of arrays, or an array objects
-   * 
+   *
    * Array of arrays:
    * [
    *  [valueA, valueB, valueC],
    *  [valueA, valueB, valueC],
    *  ...
    * ]
-   * 
+   *
    * Array of objects:
    * [
    *  {columnA: number, columnB: number},
    *  {columnA: number, columnB: number},
    *  ...
    * ]
-   *  
+   *
    * @param {{data: string, title: string, className: string}[]} columns - The column names of the data
    * @param {Object[]|number[][]} data - The data to display
    * @param {string} classname - The css classes to apply to this table
@@ -291,14 +292,14 @@ var DataTable = (function ($) {
    * @description
    * An input model has the following properties:
    * {
-   *  title: {string} Description of data 
+   *  title: {string} Description of data
    *  description: {string} Optional details
    *  startYear: {number} The first year of the first calendar period of the data
    *  startAge: {number} The first age of the first age group of the data
    *  interval: {number} The width of the age and period intervals
    *  table: {number[][]} Table containing count/population data
    * }
-   * 
+   *
    * @param {Object} model - The input object to create table headers for
    * @returns {HTMLTableRowElement[]} Table rows containing header information
    */
@@ -307,6 +308,8 @@ var DataTable = (function ($) {
     // limit length of title and description
     var title = (model.title.length > 100) ? (model.title.substr(0, 100) + '...') : model.title
     var desc = (model.description.length > 100) ? (model.description.substr(0, 100) + '...') : model.description
+
+    console.log('description', desc)
 
     // create table row for title header
     /** @type HTMLTableRowElement */
@@ -324,8 +327,8 @@ var DataTable = (function ($) {
     var titleHeader = document.createElement('th')
     titleHeader.className = 'table-header'
     titleHeader.colSpan = model.table[0].length
-    titleHeader.innerHTML = title || ('Created ' + new Date().toLocaleString()) +
-      '<div class="blue">' + desc + '</div>'
+    titleHeader.innerHTML = (title || ('Created ' + new Date().toLocaleString())) +
+      ('<div class="blue">' + desc + '</div>')
     titleRow.appendChild(titleHeader)
 
     // create row for year ranges
@@ -361,21 +364,21 @@ var DataTable = (function ($) {
    * @description
    * Creates column names in the following format:
    * [
-   *  { 
+   *  {
    *    title: {string} 'Age' | 'N Age Groups'
    *    className: {string} 'grey'
    *  },
-   *  { 
-   *    title: {string} 'Count' 
+   *  {
+   *    title: {string} 'Count'
    *    className: {string} 'dt-body-right'
    *  },
-   *  { 
-   *    title: {string} 'Population' 
+   *  {
+   *    title: {string} 'Population'
    *    className: {string} 'dt-body-right'
    *  },
    *  ...
    * ]
-   * 
+   *
    * @param {number} numRows The number of rows in this table
    * @param {number} numCols The number of columns in this table
    * @returns {Object[]} Column names used by DataTables
@@ -415,17 +418,17 @@ var DataTable = (function ($) {
   /**
    * @function getData
    * @summary Prepends age ranges to each row in the input table
-   * @description 
+   * @description
    * An input model contains the following properties:
    * {
-   *  title: {string} Description of data 
+   *  title: {string} Description of data
    *  description: {string} Optional details
    *  startYear: {number} The first year of the first calendar period of the data
    *  startAge: {number} The first age of the first age group of the data
    *  interval: {number} The width of the age and period intervals
    *  table: {number[][]} Table containing count/population data
    * }
-   * 
+   *
    * @param {Object} model
    * @returns {(string|number)[][]} A matrix containing age, count, and population data
    */
@@ -451,17 +454,17 @@ var DataTable = (function ($) {
    *  {columnA: number, columnB: number},
    *  ...
    * ]
-   * 
+   *
    * Column data is an array of objects containing properties for each column:
    * [
-   *  { 
-   *    data: {string=} Corresponding object key, needed only when using objects 
-   *    title: {string} The display title for this column 
+   *  {
+   *    data: {string=} Corresponding object key, needed only when using objects
+   *    title: {string} The display title for this column
    *    className: {string} The css class to apply
    *  },
    *  ...
    * ]
-   * 
+   *
    * @param {Object[]} output
    * @returns
    */
@@ -741,7 +744,7 @@ var Plot = (function () {
    * This function replaces a svg -> canvas rendering library used to maintain
    * compatibility with IE (due to a cross-origin security issue raised when
    * exporting canvas objects with svg content).
-   * 
+   *
    * The input data is an object with the following properties:
    * {
    *  title {string} The plot title
@@ -973,7 +976,7 @@ var Plot = (function () {
   }
 
   /**
-   * @function createPlot 
+   * @function createPlot
    * @summary Creates default d3 axes/area curves for the data
    * The input data is an object with the following properties:
    * {
@@ -986,7 +989,7 @@ var Plot = (function () {
    *  curves {{xaxis, yaxis, 'CILo', 'CiHi'}[]} Curve data
    *  bands {number[min, max][]} Band data
    * }
-   * 
+   *
    * The output of this function is an object with the following properties:
    * {
    *  outerWidth {number} - The outer width of the plot
@@ -999,8 +1002,8 @@ var Plot = (function () {
    *  line {d3.line} - A function for drawing lines in a specific context
    *  area {d3.area} - A function for drawing an area in a specific context
    * }
-   * 
-   * @param {Object} data - The data containing area/curve data 
+   *
+   * @param {Object} data - The data containing area/curve data
    * @returns {Object} - An object containing d3 functions for generating lines
    */
   function createPlot (data) {
@@ -1095,14 +1098,14 @@ var Modal = (function () {
    * @function displayOutputTable
    * @summary Displays an output table in a modal dialog
    * @description
-   * An output table is represented by an array of objects in this format: 
+   * An output table is represented by an array of objects in this format:
    * An output object is an array of Objects:
    * [
    *  {columnA: number, columnB: number},
    *  {columnA: number, columnB: number},
    *  ...
    * ]
-   * 
+   *
    * @param {string} title - The title of the modal dialog
    * @param {Object[]} tables - The output data to display
    */
@@ -1336,7 +1339,7 @@ var Excel = (function () {
  * @namespace CrossTalk
  * @description Creates input models, handles ajax calls,
  * and populates the DOM with results
- * 
+ *
  * Exports the following functions:
  * CrossTalk.init(config: Object) - sets input fields and attaches event handlers
  * CrossTalk.flip() - flips both input tables
@@ -1377,8 +1380,8 @@ var CrossTalk = (function () {
    * @description
    * A configuration object has the following properties:
    * {
-   *  description {jQuery.HTMLInputElement} - A text input for the description 
-   *  startYear {jQuery.HTMLInputElement} - A numeric input for the starting year 
+   *  description {jQuery.HTMLInputElement} - A text input for the description
+   *  startYear {jQuery.HTMLInputElement} - A numeric input for the starting year
    *  startAge {jQuery.HTMLInputElement} - A numeric input for the starting age
    *  interval {jQuery.HTMLSelectElement} - A selector for the interval length
    *  title1 {jQuery.HTMLInputElement} - A text input for the first dataset's title
@@ -1388,7 +1391,7 @@ var CrossTalk = (function () {
    *  download {jQuery.HTMLSelectElement} - A selector for the download types
    *  calculate {jQuery.HTMLButtonElement} - A button to initiate the calculation
    * }
-   * 
+   *
    * @param {Object} config
    */
   function init (config) {
@@ -1445,14 +1448,14 @@ var CrossTalk = (function () {
    * @description
    * A file model contains the following properties:
    * {
-   *  title: {string} Description of data 
+   *  title: {string} Description of data
    *  description: {string} Optional details
    *  startYear: {number} The first year of the first calendar period of the data
    *  startAge: {number} The first age of the first age group of the data
    *  interval: {number} The width of the age and period intervals
    *  table: {number[][]} Table containing count/population data
    * }
-   * 
+   *
    * @param {Object} [model] A file model to update the UI with
    */
   function updateUI (model) {
@@ -1585,7 +1588,7 @@ var CrossTalk = (function () {
     if (validate()) {
       $('#Input').children('#error').remove()
 
-      var url = '/crosstalkRest/calculate/'
+      var url = 'calculate/'
 
       if (!cfg.description.val())
         cfg.description.val('Created ' + new Date().toLocaleString())
