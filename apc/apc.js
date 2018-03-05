@@ -738,8 +738,10 @@ var APC = (function () {
 
     else
       for (key in inputs) {
-        /** @type string */
-        var value = inputs[key].val()
+        var input = inputs[key];
+        var value = input.attr('type') == 'radio'
+          ? input.prop('checked')
+          : input.val()
         data[key] = parseFloat(value) || value
       }
 
@@ -772,15 +774,16 @@ var APC = (function () {
           inputs[key].val(model[key])
       }
 
+
     if (data.table && data.startAge && data.startYear && data.interval) {
       var action = (inputs.manualReference.is(':checked')) ? 'show' : 'hide'
       $(inputs.manualReference.data('target')).collapse(action)
       updateReference()
     }
 
-    else if (data.manualReference == 'on') {
-      $('#reference-validation').modal('show');
-      inputs.defaultReference.prop('checked', true);
+    else if (data.manualReference) {
+      $('#reference-validation').modal('show')
+      inputs.defaultReference.prop('checked', true)
     }
 
     /** @type HTMLTableElement */
