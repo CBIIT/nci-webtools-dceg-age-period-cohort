@@ -774,6 +774,7 @@ var APC = (function () {
           inputs[key].val(model[key])
       }
 
+    console.log(data);
 
     if (data.table && data.startAge && data.startYear && data.interval) {
       var action = (inputs.manualReference.is(':checked')) ? 'show' : 'hide'
@@ -783,7 +784,8 @@ var APC = (function () {
 
     else if (data.manualReference) {
       $('#reference-validation').modal('show')
-      inputs.defaultReference.prop('checked', true)
+      inputs.defaultReference.prop('checked', true);
+      inputs.defaultReference.trigger('change');
     }
 
     /** @type HTMLTableElement */
