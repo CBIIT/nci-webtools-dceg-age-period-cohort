@@ -830,8 +830,10 @@ var APC = (function () {
    * @summary Focuses the paste area
    */
   function focusPasteArea() {
+    var scroll = $('#table').scrollLeft()
     $('#paste-area').val('');
 	  $('#paste-area').focus().select();
+    $('#table').scrollLeft(scroll);
   }
 
   /**
