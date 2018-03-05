@@ -2,10 +2,10 @@ from flask import Flask, request
 from rpy2.robjects import r
 import traceback
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='', static_url_path='')
 r.source('apcWrapper.R')
 
-@app.route('/calculate/', methods = ['POST'], strict_slashes=False)
+@app.route('/calculate/', methods=['POST'], strict_slashes=False)
 def calculate():
     try:
         return r.calculate(request.data)[0]
@@ -31,7 +31,5 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
     return response
 
-
 if __name__ == '__main__':
-    print('starting')
     app.run('0.0.0.0', port = 10000, debug = True, use_reloader = True)
