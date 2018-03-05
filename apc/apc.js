@@ -774,7 +774,7 @@ var APC = (function () {
           inputs[key].val(model[key])
       }
 
-    console.log(data);
+    // console.log(data);
 
     if (data.table && data.startAge && data.startYear && data.interval) {
       var action = (inputs.manualReference.is(':checked')) ? 'show' : 'hide'
