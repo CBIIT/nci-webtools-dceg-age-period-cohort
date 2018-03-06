@@ -2,12 +2,11 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  color: #666;
+  color: #444;
 }
 
 a {
     cursor: pointer;
-    color: #666;
 }
 
 label {
@@ -110,6 +109,15 @@ footer ul li a {
 .table-header {
   background-color: #E6E6E6;
 }
+
+.table-responsive {
+  margin-bottom: 15px;
+}
+
+.table-responsive .table {
+  margin-bottom: 0;
+}
+
 
 .input-table > thead > tr > th {
   text-align: center;
@@ -222,8 +230,20 @@ table.dataTable thead .sorting_desc {
   margin-bottom: 10px;
 }
 
+.margin-bottom-20 {
+  margin-bottom: 20px;
+}
+
 .margin-right {
   margin-right: 10px;
+}
+
+.min-width-200 {
+  min-width: 200px;
+}
+
+.padding-left-0 {
+  padding-left: 0;
 }
 
 
@@ -236,7 +256,7 @@ table.dataTable thead .sorting_desc {
 
   header .logo:nth-child(2) {
     height: 20px;
-  }  
+  }
 
   header .dceg-logo {
     height: 80px;

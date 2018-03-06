@@ -2,6 +2,26 @@
  * @file Contains front-end code for the Age-Period-Cohort Analysis Tool
  */
 
+/**
+ * JQuery plugins implementing data-check-show="#target" and data-check-hide="#target"
+ */
+
+$(function() {
+  $('[data-check-show]').change(function() {
+    var target = $(this).attr('data-check-show');
+    this.checked
+      ? $(target).show()
+      : $(target).hide()
+  })
+
+  $('[data-check-hide]').change(function() {
+    var target = $(this).attr('data-check-hide');
+    this.checked
+      ? $(target).hide()
+      : $(target).show()
+  })
+})
+
 $(document).ready(function () {
   // attach event handlers
   APC.setInputs({
@@ -22,7 +42,7 @@ $(document).ready(function () {
   $('#calculate').click(APC.calculate)
   $('#apc-tabs').tabCollapse()
   $('#help').click(window.open.bind(
-    null, 'help.html', 'APC Help', 'width=800, height=550, scrollbars=1'))
+    null, 'help.html', 'APC Help', 'width=850, height=550, scrollbars=1'))
 
 
   // set handler for downloading files
@@ -774,18 +794,13 @@ var APC = (function () {
           inputs[key].val(model[key])
       }
 
-    // console.log(data);
 
     if (data.table && data.startAge && data.startYear && data.interval) {
-      var action = (inputs.manualReference.is(':checked')) ? 'show' : 'hide'
-      $(inputs.manualReference.data('target')).collapse(action)
       updateReference()
     }
 
-    else if (data.manualReference) {
-      $('#reference-validation').modal('show')
-      inputs.defaultReference.prop('checked', true);
-      inputs.defaultReference.trigger('change');
+    else {
+      clearReference()
     }
 
     /** @type HTMLTableElement */
@@ -813,6 +828,12 @@ var APC = (function () {
 
     for (key in data)
       data[key] = null
+
+    inputs.referenceAge.html($('<option value="" hidden>Age</option>'))
+    inputs.referencePeriod.html($('<option value="" hidden>Year</option>'))
+    inputs.referenceAge.val('');
+    inputs.referencePeriod.val('');
+    inputs.defaultReference.prop('checked', true).change();
 
     setInputs(inputs)
   }
@@ -850,7 +871,24 @@ var APC = (function () {
     var periodRange = createRanges(data.startYear, data.startYear + data.interval * data.table[0].length / 2, data.interval)
 
     inputs.referenceAge.html(createReferenceOptions(ageRange))
+    inputs.referenceAge.prepend($('<option value="" hidden>Age</option>'))
     inputs.referencePeriod.html(createReferenceOptions(periodRange))
+    inputs.referencePeriod.prepend($('<option value="" hidden>Year</option>'))
+
+    inputs.referenceAge.val('');
+    inputs.referencePeriod.val('');
+    updateReferenceCohort()
+  }
+
+  /**
+   * @function clearReference
+   * @summary Clears reference values for age and period ranges
+   */
+  function clearReference() {
+    inputs.referenceAge.html($('<option value="" hidden>Age</option>'))
+    inputs.referencePeriod.html($('<option value="" hidden>Year</option>'))
+    inputs.referenceAge.val('');
+    inputs.referencePeriod.val('');
     updateReferenceCohort()
   }
 
@@ -859,8 +897,13 @@ var APC = (function () {
    * @summary Updates reference cohort with the selected reference values
    */
   function updateReferenceCohort() {
-    var referenceCohort = +inputs.referencePeriod.val() - +inputs.referenceAge.val()
-    inputs.referenceCohort.val(referenceCohort)
+    var referencePeriod = +inputs.referencePeriod.val()
+    var referenceAge = +inputs.referenceAge.val()
+
+    if (referenceAge && referencePeriod)
+      inputs.referenceCohort.val(referencePeriod - referenceAge)
+    else
+      inputs.referenceCohort.val('')
   }
 
   /**
@@ -904,13 +947,17 @@ var APC = (function () {
   function validate () {
 
     var valid = $('#apc-form')[0].checkValidity() && data.table
+    var messages = []
+
+    if (inputs.manualReference.prop('checked') && (!inputs.referencePeriod.val() || !inputs.referencePeriod.val())) {
+      messages.push('When specifying references manually, both reference age and reference year should be provided')
+      valid = false;
+    }
 
     if (valid)
       $('#errors').hide()
 
     else {
-      var messages = []
-
       if (!data.table)
         messages.push('Input table is required')
 
@@ -1082,6 +1129,21 @@ var APC = (function () {
         image: output[key].graph || null
       }
     })
+  }
+
+  function displayModal(selector, title, summary, messages) {
+    $(selector).find('.modal-title').html(title)
+    $(selector).find('.modal-body')
+      .html($('div')
+        .append($('div').html(summary))
+        .append($('ul')
+          .append($.each(messages, function(index, message) {
+            return $('li').html(message)
+          }))
+        )
+      )
+
+    $(selector).modal('show')
   }
 
 

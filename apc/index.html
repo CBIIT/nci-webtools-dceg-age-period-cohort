@@ -42,6 +42,7 @@
   </div>
 
   <div class="container margin-top">
+    <div class="row">
     <div class="col-lg-4 col-md-5">
 
     <div class="well">
@@ -84,17 +85,21 @@
           </div>
 
           <label class="margin-right">Reference</label>
-          <label class="radio-inline" for="defaultReference"><input type="radio" id="defaultReference" name="reference" checked><b>Default</b></label>
-          <label class="radio-inline" for="manualReference"><input type="radio" id="manualReference" name="reference" data-target="#manualSelection"><b>Manual</b></label>
+          <label class="radio-inline" for="defaultReference"><input type="radio" id="defaultReference" name="reference" data-check-hide="#manualSelection" checked><b>Default</b></label>
+          <label class="radio-inline" for="manualReference"><input type="radio" id="manualReference" name="reference" data-check-show="#manualSelection"><b>Manual</b></label>
           <div class="row collapse" id="manualSelection">
             <div class="col-sm-4 form-group less-padding">
-              <label class="control-label" for="referenceAge">Age</label>
-              <select class="form-control input-sm" id="referenceAge"></select>
+              <label class="control-label" for="referencePeriod">Reference Year</label>
+              <select class="form-control input-sm padding-left-0" id="referencePeriod">
+                <option hidden value="">Year</option>
+              </select>
             </div>
 
             <div class="col-sm-4 form-group less-padding">
-              <label class="control-label" for="referencePeriod">Period</label>
-              <select class="form-control input-sm" id="referencePeriod"></select>
+              <label class="control-label" for="referenceAge">Reference Age</label>
+              <select class="form-control input-sm padding-left-0" id="referenceAge">
+                  <option hidden value="">Age</option>
+              </select>
             </div>
 
             <div class="col-sm-4 form-group less-padding">
@@ -136,16 +141,16 @@
       <nav class="navbar navbar-default navbar-padding" id="apc-tabs">
         <ul class="nav nav-pills" role="tablist">
           <li class="active" role="presentation"><a href="#Input" aria-controls="Input" role="tab" data-toggle="pill">Input</a></li>
-          <li role="presentation"><a href="#AgeDeviationsTab" aria-controls="AgeDeviationsTab" role="tab" data-toggle="pill">Age Deviations</a></li>
-          <li role="presentation"><a href="#PerDeviationsTab" aria-controls="PerDeviationsTab" role="tab" data-toggle="pill">Period Deviations</a></li>
-          <li role="presentation"><a href="#CohDeviationsTab" aria-controls="AgeDeviationsTab" role="tab" data-toggle="pill">Cohort Deviations</a></li>
-          <li role="presentation"><a href="#LongAgeTab" aria-controls="LongAgeTab" role="tab" data-toggle="pill">Longitudinal Age Curve</a></li>
-          <li role="presentation"><a href="#CrossAgeTab" aria-controls="CrossAgeTab" role="tab" data-toggle="pill">Cross-Sectional Age Curve</a></li>
-          <li role="presentation"><a href="#Long2CrossRRTab" aria-controls="Long2CrossRRTab" role="tab" data-toggle="pill">Long vs. Cross RR</a></li>
-          <li role="presentation"><a href="#FittedTemporalTrendsTab" aria-controls="FittedTemporalTrendsTab" role="tab" data-toggle="pill">Fitted Temporal Trends</a></li>
-          <li role="presentation"><a href="#PeriodRRTab" aria-controls="PeriodRRTab" role="tab" data-toggle="pill">Period RR</a></li>
-          <li role="presentation"><a href="#CohortRRTab" aria-controls="CohortRRTab" role="tab" data-toggle="pill">Cohort RR</a></li>
-          <li role="presentation"><a href="#LocalDriftsTab" aria-controls="LocalDriftsTab" role="tab" data-toggle="pill">Local Drifts</a></li>
+          <li role="presentation"><a href="#AgeDeviationsTab" aria-controls="AgeDeviationsTab" role="tab" data-toggle="pill" title="Age Deviations">Age Deviations</a></li>
+          <li role="presentation"><a href="#PerDeviationsTab" aria-controls="PerDeviationsTab" role="tab" data-toggle="pill" title="Period Deviations">Per Deviations</a></li>
+          <li role="presentation"><a href="#CohDeviationsTab" aria-controls="AgeDeviationsTab" role="tab" data-toggle="pill" title="Cohort Deviations">Coh Deviations</a></li>
+          <li role="presentation"><a href="#LongAgeTab" aria-controls="LongAgeTab" role="tab" data-toggle="pill" title="Longitudinal Age Curve">Long Age</a></li>
+          <li role="presentation"><a href="#CrossAgeTab" aria-controls="CrossAgeTab" role="tab" data-toggle="pill" title="Cross-Sectional Age Curve">Cross Age</a></li>
+          <li role="presentation"><a href="#Long2CrossRRTab" aria-controls="Long2CrossRRTab" role="tab" data-toggle="pill" title="Long vs. Cross RR">Long 2 Cross RR</a></li>
+          <li role="presentation"><a href="#FittedTemporalTrendsTab" aria-controls="FittedTemporalTrendsTab" role="tab" data-toggle="pill" title="Fitted Temporal Trend">Fitted Temporal Trend</a></li>
+          <li role="presentation"><a href="#PeriodRRTab" aria-controls="PeriodRRTab" role="tab" data-toggle="pill" title="Period Rate Ratios">PeriodRR</a></li>
+          <li role="presentation"><a href="#CohortRRTab" aria-controls="CohortRRTab" role="tab" data-toggle="pill" title="Cohort Rate Ratios">CohortRR</a></li>
+          <li role="presentation"><a href="#LocalDriftsTab" aria-controls="LocalDriftsTab" role="tab" data-toggle="pill" title="Local Drifts">Local Drifts</a></li>
         </ul>
       </nav>
 
@@ -196,23 +201,19 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
 
-  <div class="modal fade" tabindex="-1" role="dialog" id="reference-validation">
+  <div class="modal fade" tabindex="-1" role="dialog" id="validation-modal">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Validation Error</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title"></h4>
         </div>
         <div class="modal-body">
-          <div>In order to specify reference values the following fields need to be filled in:</div>
-          <ul>
-            <li>Input table</li>
-            <li>Start Year</li>
-            <li>Start Age</li>
-            <li>Interval (years)</li>
-          </ul>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
