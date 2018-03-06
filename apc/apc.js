@@ -762,7 +762,7 @@ var APC = (function () {
         var value = input.attr('type') == 'radio'
           ? input.prop('checked')
           : input.val()
-        data[key] = parseFloat(value) || value
+        data[key] = isNaN(+value) ? value : +value
       }
 
     updateUI()
@@ -794,8 +794,7 @@ var APC = (function () {
           inputs[key].val(model[key])
       }
 
-
-    if (data.table && data.startAge && data.startYear && data.interval) {
+    if (data.table && +data.startAge && +data.startYear && +data.interval) {
       updateReference()
     }
 
@@ -829,10 +828,7 @@ var APC = (function () {
     for (key in data)
       data[key] = null
 
-    inputs.referenceAge.html($('<option value="" hidden>Age</option>'))
-    inputs.referencePeriod.html($('<option value="" hidden>Year</option>'))
-    inputs.referenceAge.val('');
-    inputs.referencePeriod.val('');
+    clearReference();
     inputs.defaultReference.prop('checked', true).change();
 
     setInputs(inputs)
