@@ -927,10 +927,11 @@ var APC = (function () {
    */
   function createReferenceOptions(ranges) {
     return ranges.map(function(range) {
+      range = range.map(Number);
       return $('<option>')
         .text(range.join('-'))
-        .val((+range[0] + +range[1]) / 2)
-    })
+        .val((1 + range[0] + range[1]) / 2)
+    });
   }
 
 
@@ -1020,7 +1021,7 @@ var APC = (function () {
     var statuses = {
       503: 'The service that the request is trying to reach is currently down. Please try again later.',
       404: 'The request returned with a response of  "' + statusText + '". Please try again later.',
-      400: xhr.response
+      400: xhr.responseText
     }
 
     displayErrors([statuses[xhr.status] || 'The request has failed for an unknown reason'])
