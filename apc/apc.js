@@ -927,10 +927,9 @@ var APC = (function () {
    */
   function createReferenceOptions(ranges) {
     return ranges.map(function(range) {
-      var option = document.createElement('option')
-      option.text = range.join('-')
-      option.value = range[1] || range[0]
-      return option
+      return $('<option>')
+        .text(range.join('-'))
+        .val((+range[0] + +range[1]) / 2)
     })
   }
 
