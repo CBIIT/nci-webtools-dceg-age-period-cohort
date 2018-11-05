@@ -7,4 +7,4 @@
     window.addEventListener('load', function() {
         _satellite.pageBottom()
     });
-});
+})();
