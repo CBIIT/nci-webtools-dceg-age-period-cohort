@@ -926,12 +926,21 @@ var APC = (function () {
    * @returns {HTMLOptionElement[]} An array of option elements
    */
   function createReferenceOptions(ranges) {
-    return ranges.map(function(range) {
-      range = range.map(Number);
-      return $('<option>')
-        .text(range.join('-'))
-        .val((1 + range[0] + range[1]) / 2)
-    });
+    if (ranges[0].length == 1) {
+      return ranges.map(function(range) {
+        range = range.map(Number);
+        return $('<option>')
+          .text(range[0])
+          .val(range[0])
+      });
+    } else {
+      return ranges.map(function(range) {
+        range = range.map(Number);
+        return $('<option>')
+          .text(range.join('-'))
+          .val((1 + range[0] + range[1]) / 2)
+      });
+    }
   }
 
 
