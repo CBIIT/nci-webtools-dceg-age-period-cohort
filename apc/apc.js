@@ -991,7 +991,7 @@ var APC = (function () {
       $('#errors').hide()
 
     else {
-      if ($('#file').is(':disabled')) {
+      if ($('#paste').is(':checked')) {
         if (!data.table)
         messages.push('Input table is required')
 
