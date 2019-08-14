@@ -238,6 +238,22 @@ table.dataTable thead .sorting_desc {
   margin-right: 10px;
 }
 
+.margin-left {
+  margin-left: 10px !important;
+}
+
+.margin-none {
+  margin: 0;
+}
+
+.m-2 {
+  margin: .5rem;
+}
+
+.m-3 {
+  margin: .75rem;
+}
+
 .min-width-200 {
   min-width: 200px;
 }
