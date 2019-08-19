@@ -169,7 +169,12 @@
       </nav>
 
       <div class="panel panel-body tab-content">
-        <div class="tab-pane active" id="Input" role="tabpanel">
+        <div class="tab-pane active" id="Input" role="tabpanel" style="display: grid;">
+          <div style="margin-left: auto; display: flex;">
+            <button class="btn btn-link" onclick="loadSample('./example_data/sample1.txt')">Load Sample 1</button>
+            <button class="btn btn-link" onclick="loadSample('./example_data/sample2.txt')">Load Sample 2</button>
+            <button class="btn btn-link" onclick="loadSample('./example_data/sample3.txt')">Load Sample 3</button>
+          </div>
           <label for="paste-area" class="sr-only">Paste data here</label>
           <div class="alert alert-danger" id="errors" style="display: none"></div>
           <div id="table"><textarea id="paste-area"></textarea></div>

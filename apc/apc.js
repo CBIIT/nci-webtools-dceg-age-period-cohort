@@ -89,6 +89,21 @@ $(document).ready(function () {
   })
 })
 
+// load sample data (same sample data as found in help.html)
+function loadSample(path) {
+  fetch(path)
+  .then(function(response) { 
+    return response.text() 
+  })
+  .then(function(text) { 
+      var table = text.match(/[^\r\n]+/g).map(function (line) {
+      var values = line.split(/\s/).map(parseFloat)
+      return (values.includes(NaN) || values.length % 2) ? null : values
+    })
+    APC.updateTable(table)
+  });
+}
+
 /**
  * @namespace FileInput
  * @description Handles parsing of input files as data models
