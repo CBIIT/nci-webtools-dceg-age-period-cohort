@@ -22,6 +22,26 @@ $(function() {
   })
 })
 
+/**
+ * JQuery plugins implementing data-check-enabled="#target" and data-check-disabled="#target"
+ */
+
+$(function() {
+  $('[data-check-enabled]').change(function() {
+    var target = $(this).attr('data-check-enabled');
+    this.checked
+      ? $(target).prop('disabled', false)
+      : $(target).prop('disabled', true)
+  })
+
+  $('[data-check-disabled]').change(function() {
+    var target = $(this).attr('data-check-disabled');
+    this.checked
+      ? $(target).prop('disabled', true)
+      : $(target).prop('disabled', false) 
+  })
+})
+
 $(document).ready(function () {
   // attach event handlers
   APC.setInputs({
@@ -68,6 +88,21 @@ $(document).ready(function () {
       APC.updateTable(table)
   })
 })
+
+// load sample data (same sample data as found in help.html)
+function loadSample(path) {
+  fetch(path)
+  .then(function(response) { 
+    return response.text() 
+  })
+  .then(function(text) { 
+      var table = text.match(/[^\r\n]+/g).map(function (line) {
+      var values = line.split(/\s/).map(parseFloat)
+      return (values.includes(NaN) || values.length % 2) ? null : values
+    })
+    APC.updateTable(table)
+  });
+}
 
 /**
  * @namespace FileInput
@@ -832,6 +867,14 @@ var APC = (function () {
     inputs.defaultReference.prop('checked', true).change();
 
     setInputs(inputs)
+
+    // Enables input selection after clearing fields
+    $('#paste').prop('disabled', false) 
+    $('#upload').prop('disabled', false)
+    $('#file').prop('disabled', false)
+
+    // Remove tooltip
+    $('#input-panel').removeAttr('title')
   }
 
   /**
@@ -963,19 +1006,23 @@ var APC = (function () {
       $('#errors').hide()
 
     else {
-      if (!data.table)
+      if ($('#paste').is(':checked')) {
+        if (!data.table)
         messages.push('Input table is required')
 
-      for (key in inputs) {
-        var title = inputs[key].data('title')
-        var validState = inputs[key][0].validity
+        for (key in inputs) {
+          var title = inputs[key].data('title')
+          var validState = inputs[key][0].validity
 
-        if (!validState.valid) {
-          if (validState.valueMissing)
-            messages.push(title + ' is a required field')
-          if (validState.badInput || validState.rangeUnderflow || validState.rangeOverflow)
-            messages.push(title + ' contains invalid values')
+          if (!validState.valid) {
+            if (validState.valueMissing)
+              messages.push(title + ' is a required field')
+            if (validState.badInput || validState.rangeUnderflow || validState.rangeOverflow)
+              messages.push(title + ' contains invalid values')
+          }
         }
+      } else {
+        messages.push('Upload a file')
       }
 
       displayErrors(messages)
@@ -1005,6 +1052,14 @@ var APC = (function () {
         ]
       else
         delete model.reference
+
+      // Disables input selection after calculation is made    
+      $('#paste').prop('disabled', true) 
+      $('#upload').prop('disabled', true)
+      $('#file').prop('disabled', true)
+
+      // Add tooltip notifying user to clear input before calculating new data
+      $('#input-panel').attr('title', 'Clear form before calcualting new data')
 
       $.post({
         url: url,

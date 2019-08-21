@@ -50,9 +50,22 @@
 
     <div class="well">
         <form class="form sidebar" id="apc-form" action="calculate/" autocomplete="off">
+          <label for="input-data">Input Data</label>
+          <a class="pull-right" id="help"><span class="glyphicon glyphicon-info-sign blue"></span> Help</a>  
+          <div class="panel panel-default margin-none"> 
+            <label class="m-2">Copy and paste data into table on right or upload a csv with population and count information.</label>      
+              <div class="form-check m-2 margin-left">
+                <input class="form-check-input" type="radio" id="paste" name="inputData" data-check-disabled="#file" checked>
+                <label class="form-check-label" for="paste"><b>Copy and Paste Data</b></label>
+              </div>
+              <div class="form-check m-2 margin-left d-inline">
+                <input class="form-check-input" type="radio" id="upload" name="inputData" data-check-enabled="#file">
+                <label class="form-check-label" for="upload"><b>.CSV File</b></label>
+              </div>
+            <input class="small m-3" id="file" type="file" accept=".csv" disabled>
+          </div>
 
-          <label for="title">Title</label>
-          <a class="pull-right" id="help"><span class="glyphicon glyphicon-info-sign blue"></span> Help</a>
+          <label class="margin-top" for="title">Title</label>
           <input class="form-control" id="title" type="text" data-title="Title" placeholder="Enter Title" required>
 
           <label class="margin-top" for="description">Description</label>
@@ -111,8 +124,6 @@
             </div>
           </div>
 
-          <label class="margin-top" for="file">Copy and paste into table on right or upload a csv with population and count information.</label>
-          <input class="small margin-top" id="file" type="file" accept=".csv">
 
           <div class="margin-top text-right">
             <button class="btn btn-default btn-sm" id="clear" type="button">Clear</button>
@@ -158,7 +169,12 @@
       </nav>
 
       <div class="panel panel-body tab-content">
-        <div class="tab-pane active" id="Input" role="tabpanel">
+        <div class="tab-pane active" id="Input" role="tabpanel" style="display: grid;">
+          <div style="margin-left: auto; display: flex;">
+            <button class="btn btn-link" onclick="loadSample('./example_data/sample1.txt')">Load Sample 1</button>
+            <button class="btn btn-link" onclick="loadSample('./example_data/sample2.txt')">Load Sample 2</button>
+            <button class="btn btn-link" onclick="loadSample('./example_data/sample3.txt')">Load Sample 3</button>
+          </div>
           <label for="paste-area" class="sr-only">Paste data here</label>
           <div class="alert alert-danger" id="errors" style="display: none"></div>
           <div id="table"><textarea id="paste-area"></textarea></div>
