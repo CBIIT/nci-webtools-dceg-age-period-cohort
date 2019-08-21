@@ -214,7 +214,6 @@ table.dataTable thead .sorting_desc {
   top: 0px;
   width: 100%;
   z-index: 999;
-  pointer-events: none;
 }
 
 #table {

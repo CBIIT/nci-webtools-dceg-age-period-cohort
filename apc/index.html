@@ -53,7 +53,7 @@
           <label for="input-data">Input Data</label>
           <a class="pull-right" id="help"><span class="glyphicon glyphicon-info-sign blue"></span> Help</a>  
           <div class="panel panel-default margin-none"> 
-            <label class="m-2">Copy and paste (ctrl + v) data into table on right or upload a csv with population and count information.</label>      
+            <label class="m-2">Copy and paste (Ctrl+V) data into table on right or upload a csv with population and count information.</label>      
               <div class="form-check m-2 margin-left">
                 <input class="form-check-input" type="radio" id="paste" name="inputData" data-check-disabled="#file" checked>
                 <label class="form-check-label" for="paste"><b>Copy and Paste Data</b></label>
@@ -173,9 +173,9 @@
       <div class="panel panel-body tab-content">
         <div class="tab-pane active" id="Input" role="tabpanel" style="display: grid;">
           <div style="margin-left: auto; display: flex;">
-            <button class="btn btn-link" onclick="loadSample('./example_data/sample1.txt')">Load Sample 1</button>
-            <button class="btn btn-link" onclick="loadSample('./example_data/sample2.txt')">Load Sample 2</button>
-            <button class="btn btn-link" onclick="loadSample('./example_data/sample3.txt')">Load Sample 3</button>
+            <button class="btn btn-link" onclick="APC.loadSample('./example_data/sample1.txt')">Load Sample 1</button>
+            <button class="btn btn-link" onclick="APC.loadSample('./example_data/sample2.txt')">Load Sample 2</button>
+            <button class="btn btn-link" onclick="APC.loadSample('./example_data/sample3.txt')">Load Sample 3</button>
           </div>
           <label for="paste-area" class="sr-only">Paste data here</label>
           <div class="alert alert-danger" id="errors" style="display: none"></div>
