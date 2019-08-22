@@ -64,6 +64,13 @@ $(document).ready(function () {
   $('#help').click(window.open.bind(
     null, 'help.html', 'APC Help', 'width=850, height=550, scrollbars=1'))
 
+  // handler for downloading all example csv files
+  $('#downloadExamples').click(function() {
+    APC.downloadSamples(
+    './example_data/Holford1983Biometrics.csv',
+    './example_data/ClaytonSchifflers1987StatMed.csv',
+    './example_data/brcamort.csv');
+  });
 
   // set handler for downloading files
   $('#download').click(function() {
@@ -716,6 +723,7 @@ var APC = (function () {
     updateTable: updateTable,
     getExcelData: getExcelData,
     loadSample: loadSample,
+    downloadSamples: downloadSamples,
   }
 
     
@@ -729,6 +737,23 @@ var APC = (function () {
       updateUI(FileInput.parseFileContents(text));
     });
   }
+
+  // download all sample csv files
+  function downloadSamples() {
+    for (var i = 0; i < arguments.length; i++) {
+      var iframe = $('<iframe style="visibility: collapse;"></iframe>');
+      $('body').append(iframe);
+      var content = iframe[0].contentDocument;
+      var form = '<form action="' + arguments[i] + '" method="GET"></form>';
+      content.write(form);
+      $('form', content).submit();
+      setTimeout((function(iframe) {
+        return function() { 
+          iframe.remove(); 
+        }
+      })(iframe), 2000);
+    }
+  }   
 
   /**
    * @function setInputs
