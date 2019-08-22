@@ -726,16 +726,7 @@ var APC = (function () {
       return response.text() 
     })
     .then(function(text) { 
-      var contents = FileInput.parseFileContents(text);
-      updateUI(contents);
-
-      /*
-        var table = text.match(/[^\r\n]+/g).map(function (line) {
-        var values = line.split(/\s/).map(parseFloat)
-        return (values.includes(NaN) || values.length % 2) ? null : values
-      })
-      APC.updateTable(table)
-      */
+      updateUI(FileInput.parseFileContents(text));
     });
   }
 
