@@ -15,6 +15,7 @@
 
   <!-- JS -->
   <script async src="https://assets.adobedtm.com/f1bfa9f7170c81b1a9a9ecdcc6c5215ee0b03c84/satelliteLib-4b219b82c4737db0e1797b6c511cf10c802c95cb.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/combine/npm/promise-polyfill@8.1.3/dist/polyfill.min.js,npm/whatwg-fetch@3.0.0"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-62346354-2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
@@ -173,9 +174,9 @@
       <div class="panel panel-body tab-content">
         <div class="tab-pane active" id="Input" role="tabpanel" style="display: grid;">
           <div style="margin-left: auto; display: flex;">
-            <button class="btn btn-link" onclick="APC.loadSample('./example_data/sample1.txt')">Load Sample 1</button>
-            <button class="btn btn-link" onclick="APC.loadSample('./example_data/sample2.txt')">Load Sample 2</button>
-            <button class="btn btn-link" onclick="APC.loadSample('./example_data/sample3.txt')">Load Sample 3</button>
+            <button class="btn btn-link" onclick="APC.loadSample('./example_data/Holford1983Biometrics.csv')">Load Sample 1</button>
+            <button class="btn btn-link" onclick="APC.loadSample('./example_data/ClaytonSchifflers1987StatMed.csv')">Load Sample 2</button>
+            <button class="btn btn-link" onclick="APC.loadSample('./example_data/brcamort.csv')">Load Sample 3</button>
           </div>
           <label for="paste-area" class="sr-only">Paste data here</label>
           <div class="alert alert-danger" id="errors" style="display: none"></div>

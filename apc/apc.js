@@ -98,7 +98,8 @@ $(document).ready(function () {
  */
 var FileInput = (function () {
   return {
-    parse: parseFile
+    parse: parseFile,
+    parseFileContents: parseFileContents,
   }
 
   /**
@@ -135,21 +136,25 @@ var FileInput = (function () {
           reader.onload = function (event) {
             // select non-empty lines
             /** @type {string[]} */
-            var contents = event.currentTarget.result.match(/[^\r\n]+/g)
-
-            resolve({
-              title: parseHeader(contents.shift()),
-              description: parseHeader(contents.shift()),
-              startYear: parseInt(parseHeader(contents.shift())),
-              startAge: parseInt(parseHeader(contents.shift())),
-              interval: parseInt(parseHeader(contents.shift())),
-              table: contents.map(parseLine)
-            })
+            var text = event.currentTarget.result;
+            resolve(parseFileContents(text))
           }
         }
       }
     )
   }
+
+  function parseFileContents(contents) {
+    contents = contents.match(/[^\r\n]+/g)
+    return ({
+      title: parseHeader(contents.shift()),
+      description: parseHeader(contents.shift()),
+      startYear: parseInt(parseHeader(contents.shift())),
+      startAge: parseInt(parseHeader(contents.shift())),
+      interval: parseInt(parseHeader(contents.shift())),
+      table: contents.map(parseLine)
+    })
+}
 
 
   /**
@@ -721,11 +726,16 @@ var APC = (function () {
       return response.text() 
     })
     .then(function(text) { 
+      var contents = FileInput.parseFileContents(text);
+      updateUI(contents);
+
+      /*
         var table = text.match(/[^\r\n]+/g).map(function (line) {
         var values = line.split(/\s/).map(parseFloat)
         return (values.includes(NaN) || values.length % 2) ? null : values
       })
       APC.updateTable(table)
+      */
     });
   }
 
