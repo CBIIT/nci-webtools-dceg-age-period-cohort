@@ -129,7 +129,7 @@
 
 
           <div class="margin-top text-right">
-            <button class="btn btn-default btn-sm" id="clear" type="button">Clear</button>
+            <button class="btn btn-default btn-sm" id="clear" type="button">Reset</button>
             <button class="btn btn-primary btn-sm" id="calculate" type="button">Calculate</button>
           </div>
 
@@ -174,9 +174,9 @@
       <div class="panel panel-body tab-content">
         <div class="tab-pane active" id="Input" role="tabpanel" style="display: grid;">
           <div style="margin-left: auto; display: flex;">
-            <button class="btn btn-link" onclick="APC.loadSample('./example_data/Holford1983Biometrics.csv')">Load Sample 1</button>
-            <button class="btn btn-link" onclick="APC.loadSample('./example_data/ClaytonSchifflers1987StatMed.csv')">Load Sample 2</button>
-            <button class="btn btn-link" onclick="APC.loadSample('./example_data/brcamort.csv')">Load Sample 3</button>
+            <button class="btn btn-link sampleLink" onclick="APC.loadSample('./example_data/Holford1983Biometrics.csv')">Load Sample 1</button>
+            <button class="btn btn-link sampleLink" onclick="APC.loadSample('./example_data/ClaytonSchifflers1987StatMed.csv')">Load Sample 2</button>
+            <button class="btn btn-link sampleLink" onclick="APC.loadSample('./example_data/brcamort.csv')">Load Sample 3</button>
           </div>
           <label for="paste-area" class="sr-only">Paste data here</label>
           <div class="alert alert-danger" id="errors" style="display: none"></div>

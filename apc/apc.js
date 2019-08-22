@@ -900,7 +900,12 @@ var APC = (function () {
     // Enables input selection after clearing fields
     $('#paste').prop('disabled', false) 
     $('#upload').prop('disabled', false)
-    $('#file').prop('disabled', false)
+    if ($('#upload').prop('checked')) {
+      $('#file').prop('disabled', false)
+    } 
+
+    // Enables sample links
+    $('.sampleLink').prop('disabled', false)
 
     // Remove tooltip
     $('#input-panel').removeAttr('title')
@@ -1086,6 +1091,9 @@ var APC = (function () {
       $('#paste').prop('disabled', true) 
       $('#upload').prop('disabled', true)
       $('#file').prop('disabled', true)
+
+      // Disables sample links
+      $('.sampleLink').prop('disabled', true)
 
       // Add tooltip notifying user to clear input before calculating new data
       $('#input-panel').attr('title', 'Clear form before calcualting new data')
