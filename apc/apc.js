@@ -93,6 +93,8 @@ $(document).ready(function () {
 
     if (!table.includes(null) && table.length > 1)
       APC.updateTable(table)
+      $('#upload').prop('checked', false)
+      $('#paste').prop('checked', true)
   })
 })
 
@@ -735,6 +737,8 @@ var APC = (function () {
     })
     .then(function(text) { 
       updateUI(FileInput.parseFileContents(text));
+      $('#upload').prop('checked', false)
+      $('#paste').prop('checked', true)
     });
   }
 
