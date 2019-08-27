@@ -261,6 +261,9 @@ table.dataTable thead .sorting_desc {
   padding-left: 0;
 }
 
+.pr-0 {
+  padding-right: 0;
+}
 
 
 /* Tablets */
