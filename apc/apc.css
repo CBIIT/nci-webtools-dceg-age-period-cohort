@@ -265,6 +265,9 @@ table.dataTable thead .sorting_desc {
   padding-right: 0;
 }
 
+.mx-1 {
+  margin: 0 .25rem;
+}
 
 /* Tablets */
 @media screen and (max-width: 768px) {
