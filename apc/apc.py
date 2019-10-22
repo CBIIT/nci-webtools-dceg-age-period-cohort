@@ -1,6 +1,5 @@
 from flask import Flask, request
 from rpy2.robjects import r
-import traceback
 
 app = Flask(__name__, static_folder='', static_url_path='')
 r.source('apcWrapper.R')
@@ -17,7 +16,7 @@ def ping():
 @app.errorhandler(Exception)
 def error_handler(e):
     """ Ensure errors are logged and returned """
-    app.logger.error(format_exc())
+    app.logger.error(str(e))
     return str(e), 400
 
 @app.after_request
