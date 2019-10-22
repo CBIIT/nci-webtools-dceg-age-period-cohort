@@ -7,22 +7,18 @@ r.source('apcWrapper.R')
 
 @app.route('/calculate/', methods=['POST'], strict_slashes=False)
 def calculate():
-    try:
-        return r.calculate(request.data.decode())[0]
-    except Exception as e:
-        print('------------EXCEPTION------------')
-        traceback.print_exc(1)
-        return str(e), 400
+    return r.calculate(request.data.decode())[0]
 
 @app.route('/apcRest/ping/', strict_slashes=False)
 @app.route('/ping/', strict_slashes=False)
 def ping():
-    try:
-        return r('"true"')[0]
-    except Exception as e:
-        print('------------EXCEPTION------------')
-        traceback.print_exc(1)
-        return str(e), 400
+    return r('"true"')[0]
+
+@app.errorhandler(Exception)
+def error_handler(e):
+    """ Ensure errors are logged and returned """
+    app.logger.error(format_exc())
+    return str(e), 400
 
 @app.after_request
 def after_request(response):
