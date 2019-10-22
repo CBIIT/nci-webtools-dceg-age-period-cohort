@@ -8,7 +8,7 @@ r.source('apcWrapper.R')
 @app.route('/calculate/', methods=['POST'], strict_slashes=False)
 def calculate():
     try:
-        return r.calculate(request.data)[0]
+        return r.calculate(request.data.decode())[0]
     except Exception as e:
         print('------------EXCEPTION------------')
         traceback.print_exc(1)
