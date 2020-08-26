@@ -21,7 +21,7 @@
 <body>
   <a class="sr-only sr-only-focusable d-block bg-primary text-white py-1 text-center" href="#main">Skip to main content</a>
   <header class="container mb-4">
-    <a href="http://dceg.cancer.gov" target="_blank" class="row" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics">
+    <a href="http://dceg.cancer.gov" target="_blank" rel="noreferer noopener" class="row" title="National Cancer Institute: Division of Cancer Epidemiology and Genetics">
       <img src="images/DCEG-logo.svg" height="100" alt="Division of Cancer Epidemiology and Genetics Logo" />
       <span class="sr-only">Link to https://dceg.cancer.gov</span>
     </a>
@@ -63,7 +63,7 @@
               </div>
             </div>
             <div class="form-group border p-2">
-              <p>Copy and paste (<kbd>cmd/ctrl+v</kbd>)</kbd> data into table on right or upload a csv with population and count information.</p>
+              <p>Copy and paste (<kbd>cmd/ctrl+v</kbd>) data into table on right or upload a csv with population and count information.</p>
               <div class="custom-control custom-radio">
                 <input type="radio" class="custom-control-input" id="paste" name="inputData" data-check-disabled="#file" checked>
                 <label class="custom-control-label" for="paste">Copy and Paste Data</label>
@@ -242,23 +242,50 @@
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="unsupported-browser-modal" data-backdrop="static" tabindex="-1" aria-labelledby="unsupported-browser-modal-title" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="unsupported-browser-modal-title">Unsupported Browser Detected</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           <p>Your current browser is not supported. Please use one of the following browsers to access this website:</p>
+            <ul>
+              <li><a rel="noreferer noopener" target="_blank" href="https://www.google.com/chrome/">Google Chrome</a></li>
+              <li><a rel="noreferer noopener" target="_blank" href="https://www.microsoft.com/en-us/edge">Microsoft Edge</a></li>
+              <li><a rel="noreferer noopener" target="_blank" href="https://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a></li>
+              <li><a rel="noreferer noopener" target="_blank" href="https://www.opera.com/">Opera</a></li>
+              <li><a rel="noreferer noopener" target="_blank" href="https://www.apple.com/safari/">Safari</a></li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Acknowledge</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <footer class="container">
     <p>Rosenberg PS, Check DP, Anderson WF. A Web Tool for Age-Period-Cohort Analysis of Cancer Incidence and Mortality Rates. Cancer Epidemiology, Biomarkers Prevent 2014:23:2296, <a href="http://www.ncbi.nlm.nih.gov/pubmed/25146089" target="_blank" rel="noreferer noopener">PMID: 25146089</a></p>
     <ul class="list-inline list-inline-separators text-center mb-3">
-      <li class="list-inline-item"><a href="http://www.cancer.gov/" title="Home" target="_blank">Home</a></li>
-      <li class="list-inline-item"><a href="mailto:NCIAPCWebToolAdmin@mail.nih.gov" title="Support">Support</a></li>
-      <li class="list-inline-item"><a href="http://www.cancer.gov/global/web/policies" title="Policies" target="_blank">Policies</a></li>
-      <li class="list-inline-item"><a href="http://www.cancer.gov/global/web/policies/accessibility" title="Accessibility" target="_blank">Accessibility</a></li>
-      <li class="list-inline-item"><a href="http://cancer.gov/global/viewing-files" title="Viewing Files" target="_blank">Viewing Files</a></li>
-      <li class="list-inline-item"><a href="http://www.cancer.gov/global/web/policies/foia" title="FOIA" target="_blank">FOIA</a></li>
+      <li class="list-inline-item"><a rel="noreferer noopener" href="http://www.cancer.gov/" title="Home" target="_blank">Home</a></li>
+      <li class="list-inline-item"><a rel="noreferer noopener" href="mailto:NCIAPCWebToolAdmin@mail.nih.gov" title="Support">Support</a></li>
+      <li class="list-inline-item"><a rel="noreferer noopener" href="http://www.cancer.gov/global/web/policies" title="Policies" target="_blank">Policies</a></li>
+      <li class="list-inline-item"><a rel="noreferer noopener" href="http://www.cancer.gov/global/web/policies/accessibility" title="Accessibility" target="_blank">Accessibility</a></li>
+      <li class="list-inline-item"><a rel="noreferer noopener" href="http://cancer.gov/global/viewing-files" title="Viewing Files" target="_blank">Viewing Files</a></li>
+      <li class="list-inline-item"><a rel="noreferer noopener" href="http://www.cancer.gov/global/web/policies/foia" title="FOIA" target="_blank">FOIA</a></li>
     </ul>
     <ul class="list-inline list-inline-separators text-center mb-3">
-      <li class="list-inline-item"><a href="http://www.hhs.gov/" target="_blank">U.S. Department of Health and Human Services</a></li>
-      <li class="list-inline-item"><a href="http://www.nih.gov" target="_blank">National Institutes of Health</a></li>
-      <li class="list-inline-item"><a href="http://www.cancer.gov/" target="_blank">National Cancer Institute</a></li>
-      <li class="list-inline-item"><a href="http://usa.gov" target="_blank">USA.gov</a></li>
+      <li class="list-inline-item"><a rel="noreferer noopener" href="http://www.hhs.gov/" target="_blank">U.S. Department of Health and Human Services</a></li>
+      <li class="list-inline-item"><a rel="noreferer noopener" href="http://www.nih.gov" target="_blank">National Institutes of Health</a></li>
+      <li class="list-inline-item"><a rel="noreferer noopener" href="http://www.cancer.gov/" target="_blank">National Cancer Institute</a></li>
+      <li class="list-inline-item"><a rel="noreferer noopener" href="http://usa.gov" target="_blank">USA.gov</a></li>
     </ul>
     <p class="text-center"> NIH ... Turning Discovery Into Health<sup>®</sup></p>
   </footer>

@@ -56,18 +56,16 @@ $(document).ready(function () {
     referenceAge: $('#referenceAge'),
     referencePeriod: $('#referencePeriod'),
     referenceCohort: $('#referenceCohort'),
-  })
+  });
 
+  // show unsupported browser modal if needed
+  if (window.navigator.userAgent.match(/Trident|MSIE/)) {
+    $('#unsupported-browser-modal').modal('show');
+  }
+
+  // set form handlers
   $('#clear').click(APC.clear)
   $('#calculate').click(APC.calculate)
-
-  // handler for downloading all example csv files
-  // $('#downloadExamples').click(function() {
-  //   APC.downloadSamples(
-  //   './example_data/Holford1983Biometrics.csv',
-  //   './example_data/ClaytonSchifflers1987StatMed.csv',
-  //   './example_data/brcamort.csv');
-  // });
 
   // set handler for downloading files
   $('#download').click(function() {
