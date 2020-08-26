@@ -60,17 +60,14 @@ $(document).ready(function () {
 
   $('#clear').click(APC.clear)
   $('#calculate').click(APC.calculate)
-  $('#apc-tabs').tabCollapse()
-  $('#help').click(window.open.bind(
-    null, 'help.html', 'APC Help', 'width=850, height=550, scrollbars=1'))
 
   // handler for downloading all example csv files
-  $('#downloadExamples').click(function() {
-    APC.downloadSamples(
-    './example_data/Holford1983Biometrics.csv',
-    './example_data/ClaytonSchifflers1987StatMed.csv',
-    './example_data/brcamort.csv');
-  });
+  // $('#downloadExamples').click(function() {
+  //   APC.downloadSamples(
+  //   './example_data/Holford1983Biometrics.csv',
+  //   './example_data/ClaytonSchifflers1987StatMed.csv',
+  //   './example_data/brcamort.csv');
+  // });
 
   // set handler for downloading files
   $('#download').click(function() {
@@ -219,7 +216,7 @@ var DataTable = (function () {
     return createTable(
       createColumns(0, numCols),
       createMatrix(numRows, numCols + 1, '&zwj;'),
-      'input-table empty-table display cell-border')
+      'input-table table-background-instructions table table-striped table-bordered table-sm border-0')
   }
 
   /**
@@ -243,7 +240,7 @@ var DataTable = (function () {
     var table = createTable(
       createColumns(input.table.length, input.table[0].length),
       getData(input),
-      'input-table display cell-border')
+      'input-table table table-striped table-bordered table-sm border-0')
 
     // insert additional table headers
     createHeaders(input).forEach(function (header) {
@@ -265,7 +262,7 @@ var DataTable = (function () {
     var table = createTable(
       getColumns(headers),
       round(output, title == 'Wald Tests' ? 4 : 3),
-      'output-table display cell-border')
+      'output-table table table-striped table-bordered table-sm')
 
     if (title)
       table.tHead.insertAdjacentHTML('afterbegin', createTitle(output, title).outerHTML)
@@ -400,10 +397,10 @@ var DataTable = (function () {
     // create header for title/description
     /** @type HTMLTableHeaderElement */
     var titleHeader = document.createElement('th')
-    titleHeader.className = 'table-header'
+    titleHeader.className = 'bg-light-gray'
     titleHeader.colSpan = model.table[0].length
     titleHeader.innerHTML = (model.title || 'Created ' + new Date().toLocaleString()) +
-      '<div class="blue">' + (model.description || 'No description') + '</div>'
+      '<div class="text-primary">' + (model.description || 'No description') + '</div>'
     titleRow.appendChild(titleHeader)
     headers.push(titleRow)
 
@@ -418,7 +415,7 @@ var DataTable = (function () {
     for (var year = model.startYear; year < endYear; year += model.interval) {
       /** @type HTMLTableHeaderElement */
       var yearHeader = document.createElement('th')
-      yearHeader.className = 'grey'
+      yearHeader.className = 'bg-light'
       yearHeader.colSpan = 2
 
       // if year interval is one, display single years instead of a year range
@@ -467,15 +464,15 @@ var DataTable = (function () {
     /** @type Object[] */
     var columns = [{
       title: numRows
-        ? '<small>' + numRows + ' age groups</small>'
+        ? '<small class="d-block px-0 font-weight-bold text-center">' + numRows + ' age groups</small>'
         : 'Age',
-      className: numRows ? 'grey' : 'grey'
+      className: numRows ? 'bg-light-gray table-body-text-right' : 'bg-light-gray'
     }]
 
     while (numCols--)
       columns.push({
         title: numCols % 2 ? 'Count' : 'Population',
-        className: 'dt-body-right'
+        className: 'table-body-text-right'
       })
 
     return columns
@@ -547,7 +544,7 @@ var DataTable = (function () {
     return headers.map(function (header) {
       return {
         title: header,
-        className: 'dt-body-right'
+        className: 'table-body-text-right'
       }
     })
   }
@@ -676,15 +673,17 @@ var Excel = (function () {
 
 
 /**
- * @namespace CrossTalk
+ * @namespace APC
  * @description Creates input models, handles ajax calls,
  * and populates the DOM with results
  *
  * Exports the following functions:
- * CrossTalk.init(config: Object) - sets input fields and attaches event handlers
- * CrossTalk.flip() - flips both input tables
- * CrossTalk.clear() - resets the DOM
- * CrossTalk.calculate() - calls the calculation and updates the DOM with results
+ * - calculate
+ * - clear
+ * - setInputs
+ * - updateTable
+ * - getExcelData
+ * - loadSample
  */
 var APC = (function () {
 
@@ -830,6 +829,7 @@ var APC = (function () {
         var value = input.attr('type') == 'radio'
           ? input.prop('checked')
           : input.val()
+        value = DOMPurify.sanitize(value);
         data[key] = isNaN(+value) ? value : +value
       }
 
@@ -974,8 +974,8 @@ var APC = (function () {
    * @summary Updates reference cohort with the selected reference values
    */
   function updateReferenceCohort() {
-    var referencePeriod = +inputs.referencePeriod.val()
-    var referenceAge = +inputs.referenceAge.val()
+    var referencePeriod = +DOMPurify.sanitize(inputs.referencePeriod.val())
+    var referenceAge = +DOMPurify.sanitize(inputs.referenceAge.val())
 
     if (referenceAge && referencePeriod)
       inputs.referenceCohort.val(referencePeriod - referenceAge)
@@ -1105,13 +1105,17 @@ var APC = (function () {
       $.post({
         url: url,
         data: JSON.stringify(model),
-        beforeSend: $.fn.modal.bind($('#loading'), 'show'),
+        beforeSend: function() {
+          $('#loading').css('display', 'flex')
+        },
         contentType: 'application/json',
         dataType: 'json',
         jsonp: false
       }).done(displayResults)
         .fail(displayError)
-        .always($.fn.modal.bind($('#loading'), 'hide', null))
+        .always(function() {
+          $('#loading').css('display', 'none');
+        })
     }
   }
 
@@ -1231,22 +1235,6 @@ var APC = (function () {
       }
     })
   }
-
-  function displayModal(selector, title, summary, messages) {
-    $(selector).find('.modal-title').html(title)
-    $(selector).find('.modal-body')
-      .html($('div')
-        .append($('div').html(summary))
-        .append($('ul')
-          .append($.each(messages, function(index, message) {
-            return $('li').html(message)
-          }))
-        )
-      )
-
-    $(selector).modal('show')
-  }
-
 
   function displayErrors (errors) {
     $('#errors').empty()
