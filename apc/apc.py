@@ -1,5 +1,14 @@
 from flask import Flask, request, send_file
 from rpy2.robjects import r
+import rpy2.robjects as ro
+from rpy2.robjects import conversion
+
+# Initialize rpy2 conversions for Flask threading
+try:
+    from rpy2.robjects import pandas2ri
+    pandas2ri.activate()
+except:
+    pass
 
 app = Flask(__name__, static_folder='', static_url_path='')
 r.source('apcWrapper.R')
@@ -23,4 +32,5 @@ if __name__ == '__main__':
     @app.route('/')
     def index():
         return send_file('index.html')
-    app.run('0.0.0.0', port = 10000, debug = True, use_reloader = True)
+    # Disable threading to avoid rpy2 context issues
+    app.run('0.0.0.0', port = 10000, debug = True, use_reloader = True, threaded=False)
