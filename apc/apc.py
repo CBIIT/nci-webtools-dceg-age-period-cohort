@@ -33,4 +33,4 @@ if __name__ == '__main__':
     def index():
         return send_file('index.html')
     # Disable threading to avoid rpy2 context issues
-    app.run('0.0.0.0', port = 10000, debug = True, use_reloader = True, threaded=False)
+    app.run('0.0.0.0', port = 10000, debug = False, use_reloader = False, threaded=False)
