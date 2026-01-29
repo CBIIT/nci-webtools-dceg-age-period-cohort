@@ -5,10 +5,7 @@ services:
       dockerfile: docker/backend.dockerfile
     container_name: apc-tool
     ports:
-      - "10000:10000"
+      - "10000:80"
     volumes:
-      - ./:/app
-    environment:
-      - FLASK_ENV=development
-      - PYTHONUNBUFFERED=1
+      - ./tmp:/app/tmp
     restart: unless-stopped

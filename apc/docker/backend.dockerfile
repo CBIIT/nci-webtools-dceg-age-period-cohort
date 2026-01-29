@@ -1,51 +1,68 @@
-FROM rocker/r-ver:4.2.0
+FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    python3-dev \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    libxml2-dev \
-    libpcre2-dev \
-    liblzma-dev \
-    libbz2-dev \
-    zlib1g-dev \
-    libicu-dev \
+RUN dnf -y update \
+ && dnf -y install \
     gcc \
-    g++ \
-    gfortran \
+    gcc-c++ \
+    gcc-gfortran \
+    glibc-langpack-en \
+    httpd-devel \
+    libffi-devel \
     make \
-    && rm -rf /var/lib/apt/lists/*
+    openssl-devel \
+    python3 \
+    python3-devel \
+    python3-pip \
+    python3-setuptools \
+    python3-wheel \
+    R \
+    libcurl-devel \
+    libxml2-devel \
+    pcre2-devel \
+    xz-devel \
+    bzip2-devel \
+    zlib-devel \
+    libicu-devel \
+ && dnf clean all
 
 # Install R packages
 RUN R -e "install.packages(c('jsonlite', 'MASS'), repos='https://cloud.r-project.org/')"
 
-# Install Python packages
-RUN pip3 install --no-cache-dir \
-    flask \
-    rpy2
+# Create application directory
+RUN mkdir -p /app
 
-# Set working directory
-WORKDIR /app
+# Copy and install Python dependencies
+COPY requirements.txt /app/requirements.txt
+RUN pip3 install -r /app/requirements.txt
 
 # Copy application files
-COPY apc.py apc.wsgi apcWrapper.R apc.R ./
-COPY index.html help.html apc.css apc.js analytics.js ./
-COPY images/ ./images/
-COPY lib/ ./lib/
-COPY example_data/ ./example_data/
+COPY apc.py apc.wsgi apcWrapper.R apc.R /app/
+COPY index.html help.html apc.css apc.js analytics.js /app/
+COPY images/ /app/images/
+COPY lib/ /app/lib/
+COPY example_data/ /app/example_data/
 
 # Create tmp directory for output files
-RUN mkdir -p tmp
+RUN mkdir -p /app/tmp
 
-# Expose port
-EXPOSE 10000
+# Set proper permissions
+RUN chown -R apache:apache /app
 
-# Set environment variables
-ENV FLASK_APP=apc.py
-ENV PYTHONUNBUFFERED=1
-
-# Run the application
-CMD ["python3", "apc.py"]
+CMD mod_wsgi-express start-server /app/apc.wsgi \
+    --user apache \
+    --group apache \
+    --port 80 \
+    --max-clients 3000 \
+    --socket-timeout 900 \
+    --queue-timeout 900 \
+    --shutdown-timeout 900 \
+    --graceful-timeout 900 \
+    --connect-timeout 900 \
+    --request-timeout 900 \
+    --keep-alive-timeout 60 \
+    --compress-responses \
+    --log-to-terminal \
+    --access-log \
+    --access-log-format "%h %{X-Forwarded-For}i %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined \
+    --document-root /app \
+    --working-directory /app
