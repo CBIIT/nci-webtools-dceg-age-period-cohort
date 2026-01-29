@@ -45,13 +45,23 @@ COPY example_data/ /app/example_data/
 # Create tmp directory for output files
 RUN mkdir -p /app/tmp
 
+# Create fontconfig cache directory for R graphics
+RUN mkdir -p /var/cache/fontconfig && chmod 777 /var/cache/fontconfig
+
 # Set proper permissions
 RUN chown -R apache:apache /app
+
+# Set fontconfig cache directory
+ENV FONTCONFIG_PATH=/etc/fonts
+ENV FONTCONFIG_FILE=/etc/fonts/fonts.conf
+ENV FC_CACHEDIR=/var/cache/fontconfig
 
 CMD mod_wsgi-express start-server /app/apc.wsgi \
     --user apache \
     --group apache \
     --port 80 \
+    --processes 4 \
+    --threads 1 \
     --max-clients 3000 \
     --socket-timeout 900 \
     --queue-timeout 900 \

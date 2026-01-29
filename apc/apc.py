@@ -1,9 +1,10 @@
 from flask import Flask, request, send_file
 from rpy2.robjects import r
 import rpy2.robjects as ro
-from rpy2.robjects import conversion
+from rpy2.robjects import conversion, default_converter
+from rpy2.robjects.conversion import localconverter
 
-# Initialize rpy2 conversions for Flask threading
+# Initialize rpy2 conversions
 try:
     from rpy2.robjects import pandas2ri
     pandas2ri.activate()
@@ -15,7 +16,9 @@ r.source('apcWrapper.R')
 
 @app.route('/calculate/', methods=['POST'], strict_slashes=False)
 def calculate():
-    return r.calculate(request.data.decode())[0]
+    # Use localconverter to ensure conversion rules are available in this thread context
+    with localconverter(default_converter):
+        return r.calculate(request.data.decode())[0]
 
 @app.route('/apcRest/ping/', strict_slashes=False)
 @app.route('/ping/', strict_slashes=False)
