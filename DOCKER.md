@@ -38,11 +38,11 @@ For production, modify the docker-compose.yml:
 ### Production Build Example
 
 ```bash
-# Build production images
-docker build -f docker/backend.dockerfile -t apc-tool:latest ..
+# Build production image
+docker build -f apc/docker/backend.dockerfile -t apc-tool:latest ./apc
 
 # Run without volumes
-docker run -d -p 10000:10000 --name apc-tool apc-tool:latest
+docker run -d -p 10000:80 --name apc-tool apc-tool:latest
 ```
 
 ## Useful Commands
@@ -69,7 +69,7 @@ If you get a port conflict error:
 
 ```bash
 # Change ports in docker-compose.yml
-# For example, change "10000:10000" to "10001:10000"
+# For example, change "10000:80" to "10001:80"
 ```
 
 ### Permission Issues
@@ -87,15 +87,17 @@ If R packages fail to install, you may need to update the Dockerfile with additi
 
 ## Container Architecture
 
-- **Base Image**: rocker/r-ver:4.2.0 (includes R)
-- **Python**: 3.x (from apt)
-- **Key Dependencies**: Flask, rpy2, R packages (jsonlite, MASS)
+- **Base Image**: public.ecr.aws/amazonlinux/amazonlinux:2023 (Amazon Linux 2023)
+- **Web Server**: Apache with mod_wsgi-express
+- **Python**: 3.x (from DNF package manager)
+- **R**: Installed via DNF with required development libraries
+- **Key Dependencies**: Flask, rpy2, mod_wsgi, R packages (jsonlite, MASS)
 - **Working Directory**: /app
+- **Runtime User**: apache
+- **Port**: 80 (mapped to host port 10000)
 
 ## Custom Configuration
 
-To modify R packages or Python dependencies, edit the respective Dockerfile:
-- APC: `docker/backend.dockerfile`
-- CrossTalk: `docker/crosstalk.dockerfile`
-Dockerfile:
-- `docker/backend
+To modify R packages or Python dependencies, edit:
+- APC Backend: `apc/docker/backend.dockerfile`
+- Python packages: `apc/requirements.txt` (flask, rpy2, mod_wsgi)
