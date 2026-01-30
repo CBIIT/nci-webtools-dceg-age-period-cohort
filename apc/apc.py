@@ -8,7 +8,7 @@ from rpy2.robjects.conversion import localconverter
 try:
     from rpy2.robjects import pandas2ri
     pandas2ri.activate()
-except:
+except (ImportError, AttributeError):
     pass
 
 app = Flask(__name__, static_folder='', static_url_path='')
@@ -35,5 +35,7 @@ if __name__ == '__main__':
     @app.route('/')
     def index():
         return send_file('index.html')
-    # Disable threading to avoid rpy2 context issues
+    # Use single-threaded, multi-process mode to avoid rpy2 context issues
+    # This matches the production mod_wsgi configuration (--processes 4 --threads 1)
     app.run('0.0.0.0', port = 10000, debug = False, use_reloader = False, threaded=False)
+
