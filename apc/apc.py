@@ -44,7 +44,7 @@ if __name__ == '__main__':
     @app.route('/')
     def index():
         return send_file('index.html')
+
     # Use single-threaded, multi-process mode to avoid rpy2 context issues
     # This matches the production mod_wsgi configuration (--processes 4 --threads 1)
     app.run('0.0.0.0', port = 10000, debug = False, use_reloader = False, threaded=False)
-
