@@ -27,6 +27,8 @@ jobs:
       AWS_REGION: us-east-1
       TASK_DEFINITION_TEMPLATE_PATH: .github/aws
       BACKEND_CONTAINER_PORT: 80
+      ECS_CPU_UNITS: 0.5 vCPU
+      ECS_MEMORY_UNITS: 1 GB
       TIER: ${{ inputs.tier }}
       IMAGE_TIER: ${{ contains(fromJson('["dev","qa"]'), inputs.tier) && 'development' || 'release' }}
       CICD_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd
@@ -69,8 +71,6 @@ jobs:
             ["ecs_cluster"]="ECS_CLUSTER"
             ["ecs_web_task"]="ECS_WEB_TASK"
             ["ecs_web_service"]="ECS_WEB_SERVICE"
-            ["ecs_cpu_units"]="ECS_CPU_UNITS"
-            ["ecs_memory_units"]="ECS_MEMORY_UNITS"
             ["role_arn"]="ROLE_ARN"
           )
 
