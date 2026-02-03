@@ -74,5 +74,6 @@ CMD mod_wsgi-express start-server /app/apc.wsgi \
     --log-to-terminal \
     --access-log \
     --access-log-format "%h %{X-Forwarded-For}i %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined \
+    --mount-point /apc \
     --document-root /app \
     --working-directory /app
