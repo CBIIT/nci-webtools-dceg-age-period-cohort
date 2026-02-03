@@ -11,7 +11,6 @@ except (ImportError, AttributeError):
     pass
 
 app = Flask(__name__, static_folder='', static_url_path='')
-app.config['APPLICATION_ROOT'] = '/apc'
 r.source('apcWrapper.R')
 
 @app.before_request
