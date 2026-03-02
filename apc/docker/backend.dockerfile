@@ -1,5 +1,6 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 
+# Update all packages and install required packages
 RUN dnf -y update \
  && dnf -y install \
     gcc \
@@ -23,6 +24,16 @@ RUN dnf -y update \
     bzip2-devel \
     zlib-devel \
     libicu-devel \
+ && dnf -y upgrade \
+    libtasn1 \
+    gnupg2 \
+    gnupg2-minimal \
+    openssl \
+    openssl-libs \
+    openssl-devel \
+    openssl-fips-provider-latest \
+    python3-pip \
+    python3-pip-wheel \
  && dnf clean all
 
 # Install R packages
