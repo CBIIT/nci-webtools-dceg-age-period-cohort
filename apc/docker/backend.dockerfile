@@ -2,7 +2,6 @@ FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 
 # Update all packages to latest versions (addresses high and medium severity CVEs)
 RUN dnf -y update \
- && dnf -y upgrade \
  && dnf -y install \
     gcc \
     gcc-c++ \
@@ -25,7 +24,6 @@ RUN dnf -y update \
     bzip2-devel \
     zlib-devel \
     libicu-devel \
- && dnf -y upgrade --security \
  && dnf clean all
 
 # Install R packages
