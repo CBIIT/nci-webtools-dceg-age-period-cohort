@@ -11,11 +11,11 @@ RUN dnf -y update \
     libffi-devel \
     make \
     openssl-devel \
-    python3 \
-    python3-devel \
-    python3-pip \
-    python3-setuptools \
-    python3-wheel \
+    python3.11 \
+    python3.11-devel \
+    python3.11-pip \
+    python3.11-setuptools \
+    python3.11-wheel \
     R \
     libcurl-devel \
     libxml2-devel \
@@ -25,6 +25,11 @@ RUN dnf -y update \
     zlib-devel \
     libicu-devel \
  && dnf clean all
+
+# Create symlinks for python3 and pip3 to point to Python 3.11
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python3 \
+ && ln -sf /usr/bin/pip3.11 /usr/bin/pip3 \
+ && pip3 install --upgrade pip setuptools wheel
 
 # Install R packages
 RUN R -e "install.packages(c('jsonlite', 'MASS'), repos='https://cloud.r-project.org/')"
