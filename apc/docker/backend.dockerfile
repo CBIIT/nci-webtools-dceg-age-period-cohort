@@ -1,6 +1,5 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 
-# Update all packages to latest versions (addresses high and medium severity CVEs)
 RUN dnf -y update \
  && dnf -y install \
     gcc \
@@ -26,10 +25,10 @@ RUN dnf -y update \
     libicu-devel \
  && dnf clean all
 
-# Create symlinks for python3 and pip3 to point to Python 3.11
 RUN ln -sf /usr/bin/python3.11 /usr/bin/python3 \
  && ln -sf /usr/bin/pip3.11 /usr/bin/pip3 \
- && pip3 install --upgrade pip setuptools wheel
+ && pip3 install --upgrade pip setuptools wheel \
+ && if [ -e /usr/bin/python3.9 ]; then chmod 700 /usr/bin/python3.9; fi
 
 # Install R packages
 RUN R -e "install.packages(c('jsonlite', 'MASS'), repos='https://cloud.r-project.org/')"
