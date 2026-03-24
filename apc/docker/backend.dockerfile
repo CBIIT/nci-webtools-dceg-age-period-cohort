@@ -25,6 +25,10 @@ RUN dnf -y update \
     libicu-devel \
  && dnf clean all
 
+ # Restrict Python 3.9 to root only (security mitigation)
+RUN chmod 700 /usr/bin/python3.9
+
+
 RUN ln -sf /usr/bin/python3.11 /usr/bin/python3 \
  && ln -sf /usr/bin/pip3.11 /usr/bin/pip3 \
  && pip3 install --upgrade pip setuptools wheel \
