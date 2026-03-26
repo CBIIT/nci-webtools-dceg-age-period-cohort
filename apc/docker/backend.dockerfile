@@ -10,11 +10,11 @@ RUN dnf -y update \
     libffi-devel \
     make \
     openssl-devel \
-    python3 \
-    python3-devel \
-    python3-pip \
-    python3-setuptools \
-    python3-wheel \
+    python3.11 \
+    python3.11-devel \
+    python3.11-pip \
+    python3.11-setuptools \
+    python3.11-wheel \
     R \
     libcurl-devel \
     libxml2-devel \
@@ -24,6 +24,15 @@ RUN dnf -y update \
     zlib-devel \
     libicu-devel \
  && dnf clean all
+
+ # Restrict Python 3.9 to root only (security mitigation)
+RUN chmod 700 /usr/bin/python3.9
+
+
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python3 \
+ && ln -sf /usr/bin/pip3.11 /usr/bin/pip3 \
+ && pip3 install --upgrade pip setuptools wheel \
+ && if [ -e /usr/bin/python3.9 ]; then chmod 700 /usr/bin/python3.9; fi
 
 # Install R packages
 RUN R -e "install.packages(c('jsonlite', 'MASS'), repos='https://cloud.r-project.org/')"
@@ -74,6 +83,5 @@ CMD mod_wsgi-express start-server /app/apc.wsgi \
     --log-to-terminal \
     --access-log \
     --access-log-format "%h %{X-Forwarded-For}i %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined \
-    --mount-point /apc \
     --document-root /app \
     --working-directory /app
