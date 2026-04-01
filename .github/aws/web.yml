@@ -26,6 +26,8 @@ containerDefinitions:
         value: "production"
       - name: PYTHONUNBUFFERED
         value: "1"
+      - name: TZ
+        value: "${TZ}"
     portMappings:
       - protocol: tcp
         containerPort: $BACKEND_CONTAINER_PORT
