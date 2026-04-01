@@ -1,11 +1,9 @@
 services:
   apc:
     build:
-      context: .
-      dockerfile: docker/backend.dockerfile
-    container_name: apc-tool
+      context: ..
+      dockerfile: apc/docker/backend.dockerfile
     ports:
       - "10000:80"
     volumes:
       - ./tmp:/app/tmp
-    restart: unless-stopped
