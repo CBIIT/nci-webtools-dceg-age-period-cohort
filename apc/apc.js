@@ -322,6 +322,10 @@ var DataTable = (function () {
       dom: 't'
     })
 
+    // DataTables sets role="column" on <th> elements, which is not a valid ARIA role.
+    // <th> already carries the implicit columnheader role, so we remove the attribute.
+    $(table).find('th[role="column"]').removeAttr('role')
+
     return table
   }
 
@@ -871,9 +875,6 @@ var APC = (function () {
     /** @type HTMLTableElement */
     var table = data.table ? DataTable.createInput(data) : DataTable.createEmpty(12, 6)
 
-    // add role information
-    $(table).find('th').attr('role', 'column')
-
     // allow user to paste table information
     $(table).mouseup(focusPasteArea)
 
@@ -1202,7 +1203,6 @@ var APC = (function () {
     }
 
     var table = DataTable.createOutput(content.table, content.headers, titles[key] || null)
-    $(table).find('th').attr('role', 'column')
     panel.append(table)
     return panel
   }
