@@ -2,6 +2,62 @@ body {
   font-size: 0.9rem;
 }
 
+/* Override Bootstrap 4's default link color (#007bff) which fails WCAG 2 AA contrast
+   (3.77:1) on light backgrounds. #0062cc achieves 5.3:1 on bg-light (#f8f9fa). */
+a,
+a:not([class]),
+.btn-link {
+  color: #0062cc;
+}
+
+a:hover,
+a:not([class]):hover,
+.btn-link:hover {
+  color: #0056b3;
+}
+
+/* Inline text links (no class) must be visually distinguishable from surrounding text.
+   Underline provides a non-color indicator, satisfying WCAG 2 AA link-in-text-block. */
+a:not([class]) {
+  text-decoration: underline;
+}
+
+/* Bootstrap 4's .btn-primary (#007bff) gives only 3.97:1 white-on-blue (fails WCAG AA 4.5:1).
+   #0062cc achieves 5.67:1. */
+.btn-primary,
+.btn-primary:focus,
+.btn-primary.focus {
+  background-color: #0062cc;
+  border-color: #0062cc;
+}
+
+.btn-primary:hover {
+  background-color: #004fa3;
+  border-color: #004fa3;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #0062cc;
+}
+
+/* Bootstrap 4's .btn-outline-danger (#dc3545) gives only 4.29:1 on #f8f9fa (fails WCAG AA).
+   #c82333 achieves 5.40:1. */
+.btn-outline-danger {
+  color: #c82333;
+  border-color: #c82333;
+}
+
+.btn-outline-danger:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+}
+
+/* Bootstrap 4's .text-primary (#007bff) gives only 3.61:1 on .bg-light-gray (#f4f4f4).
+   #0062cc achieves 5.10:1. */
+.text-primary {
+  color: #0062cc !important;
+}
+
 label {
   font-weight: 500;
 }
