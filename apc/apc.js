@@ -543,9 +543,12 @@ var DataTable = (function () {
    * @returns
    */
   function getColumns (headers) {
-    return headers.map(function (header) {
+    return headers.map(function (header, index) {
+      var title = header == null || String(header).trim() === ''
+        ? (index === 0 ? 'Row' : 'Column ' + (index + 1))
+        : header
       return {
-        title: header,
+        title: title,
         className: 'table-body-text-right'
       }
     })
