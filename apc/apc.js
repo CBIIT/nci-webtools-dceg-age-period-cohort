@@ -528,6 +528,9 @@ var DataTable = (function () {
    * @function getColumns
    * @summary Creates column headers for the output table
    * @description
+   * Builds DataTables column definitions from API header strings. Entries may be
+   * empty or whitespace-only (e.g. unnamed first column after `cbind` in R);
+   * those are replaced so sortable headers keep an accessible title.
    *
    * Column data is an array of objects containing properties for each column:
    * [
@@ -539,8 +542,10 @@ var DataTable = (function () {
    *  ...
    * ]
    *
-   * @param {string[]} output
-   * @returns
+   * @param {Array<string|null|undefined>} headers Column labels from the server, one per table column.
+   *   `null`, `undefined`, or all-whitespace strings use fallbacks: index 0 becomes `"Row"`,
+   *   other indices become `"Column " + (index + 1)` (1-based table position).
+   * @returns {{title: string, className: string}[]} Column configs for `DataTable({ columns })`.
    */
   function getColumns (headers) {
     return headers.map(function (header, index) {
