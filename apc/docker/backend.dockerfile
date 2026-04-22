@@ -11,6 +11,9 @@ RUN dnf -y update \
    httpd-devel \
    && dnf clean all
 
+# Restrict Python 3.9 to root only
+RUN chmod 700 /usr/bin/python3.9
+
 RUN ln -sf /usr/bin/pip3.13 /usr/bin/pip3 \
    && pip3 install --upgrade pip setuptools wheel
 
