@@ -4,18 +4,18 @@ RUN dnf -y update \
    && dnf -y install \
    R-4.3.2 \
    R-devel-4.3.2 \
-   python3.11 \
-   python3.11-devel \
-   python3.11-pip \
+   python3.13 \
+   python3.13-devel \
+   python3.13-pip \
    httpd \
    httpd-devel \
    && dnf clean all
 
-# Restrict Python 3.9 to root only 
+# Restrict Python 3.9 to root only
 RUN chmod 700 /usr/bin/python3.9
 
-RUN ln -sf /usr/bin/pip3.11 /usr/bin/pip3 \
-   && pip3 install --upgrade pip setuptools wheel 
+RUN ln -sf /usr/bin/pip3.13 /usr/bin/pip3 \
+   && pip3 install --upgrade pip setuptools wheel
 
 RUN mkdir -p /app /app/tmp
 
