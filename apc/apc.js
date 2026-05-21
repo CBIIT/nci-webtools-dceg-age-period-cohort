@@ -322,6 +322,10 @@ var DataTable = (function () {
       dom: 't'
     })
 
+    // DataTables sets role="column" on <th> elements, which is not a valid ARIA role.
+    // <th> already carries the implicit columnheader role, so we remove the attribute.
+    $(table).find('th[role="column"]').removeAttr('role')
+
     return table
   }
 
@@ -524,6 +528,9 @@ var DataTable = (function () {
    * @function getColumns
    * @summary Creates column headers for the output table
    * @description
+   * Builds DataTables column definitions from API header strings. Entries may be
+   * empty or whitespace-only (e.g. unnamed first column after `cbind` in R);
+   * those are replaced so sortable headers keep an accessible title.
    *
    * Column data is an array of objects containing properties for each column:
    * [
@@ -535,13 +542,18 @@ var DataTable = (function () {
    *  ...
    * ]
    *
-   * @param {string[]} output
-   * @returns
+   * @param {Array<string|null|undefined>} headers Column labels from the server, one per table column.
+   *   `null`, `undefined`, or all-whitespace strings use fallbacks: index 0 becomes `"Row"`,
+   *   other indices become `"Column " + (index + 1)` (1-based table position).
+   * @returns {{title: string, className: string}[]} Column configs for `DataTable({ columns })`.
    */
   function getColumns (headers) {
-    return headers.map(function (header) {
+    return headers.map(function (header, index) {
+      var title = header == null || String(header).trim() === ''
+        ? (index === 0 ? 'Row' : 'Column ' + (index + 1))
+        : header
       return {
-        title: header,
+        title: title,
         className: 'table-body-text-right'
       }
     })
@@ -871,9 +883,6 @@ var APC = (function () {
     /** @type HTMLTableElement */
     var table = data.table ? DataTable.createInput(data) : DataTable.createEmpty(12, 6)
 
-    // add role information
-    $(table).find('th').attr('role', 'column')
-
     // allow user to paste table information
     $(table).mouseup(focusPasteArea)
 
@@ -1202,7 +1211,6 @@ var APC = (function () {
     }
 
     var table = DataTable.createOutput(content.table, content.headers, titles[key] || null)
-    $(table).find('th').attr('role', 'column')
     panel.append(table)
     return panel
   }

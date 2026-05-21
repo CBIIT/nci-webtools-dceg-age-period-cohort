@@ -25,6 +25,11 @@ def cleanup_r_context(exception=None):
     if hasattr(g, 'r_converter'):
         g.r_converter.__exit__(None, None, None)
 
+@app.route('/')
+@app.route('/index.html')
+def index():
+    return send_file('index.html')
+
 @app.route('/calculate/', methods=['POST'], strict_slashes=False)
 def calculate():
     return r.calculate(request.data.decode())[0]
@@ -41,10 +46,6 @@ def error_handler(e):
     return str(e), 400
 
 if __name__ == '__main__':
-    @app.route('/')
-    def index():
-        return send_file('index.html')
-
     # Use single-threaded, multi-process mode to avoid rpy2 context issues
     # This matches the production mod_wsgi configuration (--processes 4 --threads 1)
     app.run('0.0.0.0', port = 10000, debug = False, use_reloader = False, threaded=False)
