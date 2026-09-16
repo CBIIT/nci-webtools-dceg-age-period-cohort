@@ -1157,7 +1157,7 @@ var Modal = (function () {
       body: $('#modalBody')
     }
 
-    cfg.title.html(title)
+    cfg.title.text(title)
     cfg.body.html(body)
     cfg.container.modal('show')
   }
@@ -1739,7 +1739,7 @@ var CrossTalk = (function () {
         Modal.displayTable(data.title, data.tables)
       })
 
-      tableLink.html('View Dataset ' + linkname)
+      tableLink.text('View Dataset ' + linkname)
       linkDiv.append(tableLink)
 
       if (content.tables[j].length) {
@@ -1763,19 +1763,21 @@ var CrossTalk = (function () {
 
     var label = $("label[for='" + el.id + "']")
     label.addClass('errors')
-    var msg = ''
+    var msgs = []
 
     if (el.validity.badInput) {
-      msg += "'" + label[0].innerText + "' contains an invalid value </br>"
+      msgs.push("'" + label[0].innerText + "' contains an invalid value")
     }
     if (el.validity.valueMissing) {
-      msg += "'" + label[0].innerText + "' is required </br>"
+      msgs.push("'" + label[0].innerText + "' is required")
     }
 
     if (el.validity.customError) {
-      msg += el.validationMessage + '</br>'
+      msgs.push(el.validationMessage)
     }
 
-    $('#errors').append(msg)
+    msgs.forEach(function (m) {
+      $('#errors').append(document.createTextNode(m)).append($('<br>'))
+    })
   }
 })()

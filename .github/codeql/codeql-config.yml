@@ -1,0 +1,8 @@
+name: "CodeQL config"
+
+paths-ignore:
+  # Vendored third-party libraries (not maintained in this repo)
+  - apc/lib
+  - crosstalk/js/bootstrap-switch.js
+  - crosstalk/js/bootstrap-tabcollapse.js
+  - crosstalk/js/SpinBox.js
