@@ -8,17 +8,17 @@
 
 $(function() {
   $('[data-check-show]').change(function() {
-    var target = $(this).attr('data-check-show');
+    var target = $(document).find($(this).attr('data-check-show'));
     this.checked
-      ? $(target).show()
-      : $(target).hide()
+      ? target.show()
+      : target.hide()
   })
 
   $('[data-check-hide]').change(function() {
-    var target = $(this).attr('data-check-hide');
+    var target = $(document).find($(this).attr('data-check-hide'));
     this.checked
-      ? $(target).hide()
-      : $(target).show()
+      ? target.hide()
+      : target.show()
   })
 })
 
@@ -28,17 +28,17 @@ $(function() {
 
 $(function() {
   $('[data-check-enabled]').change(function() {
-    var target = $(this).attr('data-check-enabled');
+    var target = $(document).find($(this).attr('data-check-enabled'));
     this.checked
-      ? $(target).prop('disabled', false)
-      : $(target).prop('disabled', true)
+      ? target.prop('disabled', false)
+      : target.prop('disabled', true)
   })
 
   $('[data-check-disabled]').change(function() {
-    var target = $(this).attr('data-check-disabled');
+    var target = $(document).find($(this).attr('data-check-disabled'));
     this.checked
-      ? $(target).prop('disabled', true)
-      : $(target).prop('disabled', false) 
+      ? target.prop('disabled', true)
+      : target.prop('disabled', false)
   })
 })
 
