@@ -10,10 +10,10 @@ def calculate():
     try:
         return r.calculate(request.stream.read())[0]
 
-    except Exception as e:
+    except Exception:
         print('------------EXCEPTION------------')
         traceback.print_exc(1)
-        return str(e), 400
+        return 'An internal error occurred. Please try again.', 400
 
 @app.after_request
 def after_request(response):
