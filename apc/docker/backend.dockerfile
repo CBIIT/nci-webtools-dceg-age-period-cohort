@@ -1,7 +1,9 @@
 FROM public.ecr.aws/amazonlinux/amazonlinux:2023
 
-RUN dnf -y update \
-   && dnf -y install \
+# --releasever=latest: AL2023 repos are locked to the base image's release, so a
+# plain "dnf update" does not pick up security fixes published after that release.
+RUN dnf -y --releasever=latest update \
+   && dnf -y --releasever=latest install \
    R-4.3.2 \
    R-devel-4.3.2 \
    python3.13 \
@@ -14,14 +16,20 @@ RUN dnf -y update \
 # Restrict Python 3.9 to root only
 RUN chmod 700 /usr/bin/python3.9
 
-RUN ln -sf /usr/bin/pip3.13 /usr/bin/pip3 \
-   && pip3 install --upgrade pip setuptools wheel
+# Upgrade pip/setuptools/wheel into /usr/local, then drop the outdated OS copy of
+# pip so only the current version remains.
+RUN python3.13 -m pip install --upgrade pip setuptools wheel \
+   && dnf -y remove python3.13-pip \
+   && dnf clean all
 
 RUN mkdir -p /app /app/tmp
 
 # Copy and install Python dependencies
 COPY apc/requirements.txt /app/requirements.txt
-RUN pip3 install -r /app/requirements.txt
+# pip is only needed at build time; remove it afterwards so it is not shipped
+# in the runtime image.
+RUN python3.13 -m pip install -r /app/requirements.txt \
+   && python3.13 -m pip uninstall -y pip
 
 # Install R packages
 RUN R -e 'options(repos = c(CRAN = sprintf("https://packagemanager.posit.co/cran/latest/bin/linux/rhel9-%s/%s", R.version["arch"], substr(getRversion(), 1, 3)))); \
