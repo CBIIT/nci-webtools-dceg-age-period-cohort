@@ -1,3 +1,5 @@
+import traceback
+
 from flask import Flask, request, send_file, g
 from rpy2.robjects import r
 from rpy2.robjects import default_converter
@@ -41,9 +43,9 @@ def ping():
 
 @app.errorhandler(Exception)
 def error_handler(e):
-    """ Ensure errors are logged and returned """
-    app.logger.error(str(e))
-    return str(e), 400
+    """ Ensure errors are logged server-side and not returned to the client """
+    app.logger.error(traceback.format_exc())
+    return 'An internal error occurred. Please try again.', 400
 
 if __name__ == '__main__':
     # Use single-threaded, multi-process mode to avoid rpy2 context issues
