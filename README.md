@@ -11,6 +11,12 @@ Age-Period-Cohort analysis identifies patterns in cancer incidence or mortality 
 
 ---
 
+## APC Analytics
+
+`apc/index.html` loads the shared Adobe Launch library asynchronously using the approved embed. Launch manages its own page lifecycle; do not add a second Adobe loader, manual page-view calls, or `_satellite.pageBottom()` (see [Adobe's asynchronous deployment guidance](https://experienceleague.adobe.com/en/docs/experience-platform/tags/client-side/asynchronous-deployment)). `apc/analytics.js` retains the existing Google Analytics initialization, and the shared library's DAP configuration is unchanged.
+
+This integration covers the APC main page; the separately rendered help page and CrossTalk are unchanged. Loading the script alone does not confirm analytics receipt: Adobe property hostname rules and report-suite configuration must permit the deployed environment, and dashboard verification requires access to Adobe Analytics.
+
 ## CI/CD Process
 
 ### Overview
